@@ -1,0 +1,58 @@
+{% extends "baseForParent.html.twig" %}
+{% block title %}
+    Mes élèves
+{% endblock %}
+
+{% block script %}
+    <script language="JavaScript">
+        $("document").ready(function () {
+            $("#tableEleves").dataTable();
+        });
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+    <hr class="hr-4">
+    <div class="col-xs-12">
+        <div class="row">
+            <table class="table table-bordered" align="center" width="85%" id="tableEleves">
+                <thead>
+                <tr>
+                    <th>Prenom</th>
+                    <th>Nom</th>
+                    <th>Groupe</th>
+                    <th>Matricule</th>
+                    <th>Opérations</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for e in listEleves %}
+                    <tr>
+                        <td>{{ e.prenomEleve }}</td>
+                        <td>{{ e.nomEleve }}</td>
+                        <td>{{ e.groupe.nomGroupe }} {{ e.groupe.numGroupe }}</td>
+                        <td>{{ e.matriculeEleve }}</td>
+                        <td>
+                            <a href="{{ path('consulterNotes') }}?matEleve={{ e.matriculeEleve }}">Notes <i
+                                        class="menu-icon fa fa-calculator"></i></a> |
+                            <a href="">Absences <i class="menu-icon fa fa-thumbs-down"></i></a> |
+                            <a href="">Emploi <i class="menu-icon fa fa-calendar"></i></a> |
+                            <a href="{{ path('consulterPaiement') }}?matEleve={{ e.matriculeEleve }}">Paiements <i
+                                        class="menu-icon fa fa-money"></i></a> |
+                            <a href="{{ path('consulterHistorique') }}?matEleve={{ e.matriculeEleve }}">Historique <i
+                                        class="menu-icon fa fa-history"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <th>Prenom</th>
+                <th>Nom</th>
+                <th>Groupe</th>
+                <th>Matricule</th>
+                <th>Opérations</th>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}

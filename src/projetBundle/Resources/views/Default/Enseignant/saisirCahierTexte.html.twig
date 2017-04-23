@@ -1,0 +1,88 @@
+{% extends "baseForEnseignant.html.twig" %}
+{% block title %}
+    Saisir le cahier de texte
+{% endblock %}
+{% block script %}
+    <script language="JavaScript">
+        $("document").ready(function () {
+            $("#btnCharger").click(function () {
+                var matiereGroupe = $("#matiereGroupe").val();
+                if (matiereGroupe == "null") {
+                    $(".alert-danger").html("Veuillez sélectionner une matiere et groupe !");
+                    $(".alert-danger").slideToggle();
+                    setTimeout(function () {
+                        $(".alert-danger").slideToggle();
+                    }, 2500);
+
+                } else {
+                    $("#container").slideDown();
+                }
+            });
+
+
+        });
+
+
+    </script>
+{% endblock %}
+{% block mainContent %}
+
+    <hr class="hr-4">
+
+    <div class="alert alert-danger" style="display: none"></div>
+
+    <div class="col-xs-12" align="center">
+
+        <div class="row">
+
+            <select id="matiereGroupe">
+                <option value="null">Sélectionner une matiere</option>
+
+                {% for matiere in listMatiere %}
+
+                    <option value="{{ matiere.matiere.id }}|{{ matiere.groupe.id }}">{{ matiere.matiere.libelleMatiere }}
+                        - {{ matiere.groupe.nomGroupe }} {{ matiere.groupe.numGroupe }}</option>
+
+
+                {% endfor %}
+
+            </select>
+            <input type="button" value="Charger une page vide" class="btn btn-primary" id="btnCharger">
+
+            <div class="row" align="center" id="container" style="display: none">
+
+                <form id="formulaire">
+                    <table border="0">
+                        <tr>
+                            <td>
+
+                            <textarea id="contenuJour" placeholder="Ecrivez elli t7eb..." rows="40" cols="80"
+                                      class="responsive search-area">
+
+                    </textarea>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>
+                                <input class="btn btn-primary" value="Enregistrer" id="btnEnregistrer">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+{% endblock %}
+
+
+

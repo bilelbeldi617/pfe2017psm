@@ -1,0 +1,56 @@
+{% extends "::baseForParent.html.twig" %}
+{% block title %}
+    Consulter les paiements
+{% endblock %}
+
+{% block script %}
+    <script language="JavaScript">
+        $("document").ready(function () {
+            $("#tablePaiement").dataTable();
+        })
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+    <hr class="hr-4">
+    <div class="col-xs-12">
+        <center><h4>La liste des paiements de l'élève : <b>{{ eleve.prenomeleve }} {{ eleve.nomeleve }}</b></h4>
+        </center>
+        <table class="table table-bordered" width="80%" id="tablePaiement" style="margin-top: 50px;">
+            <thead>
+            <th>Annee Scolaire</th>
+            <th>Trimestre</th>
+            <th>Frais</th>
+            <th>Montant</th>
+            <th>Etat</th>
+            </thead>
+            <tbody>
+            {% for p in paiements %}
+                <tr>
+
+                    <td>{{ p.anneescolaire.periode }}</td>
+                    <td>{{ p.trimestre }}</td>
+                    <td>{{ p.frais.typefrais }}</td>
+                    <td>{{ p.frais.montantfrais }}</td>
+                    <td>
+                        {% if p.etat == "NP" %}
+                            Non Payé
+                        {% else %}
+                            Payé le ...
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <th>Annee Scolaire</th>
+            <th>Trimestre</th>
+            <th>Frais</th>
+            <th>Montant</th>
+            <th>Etat</th>
+            </tfoot>
+        </table>
+        <center><h4>Question? Problème? vous pouvez contacter l'administrateur <a
+                        href="{{ path('contacterAdmin') }}"><b>içi !</b></a></h4></center>
+    </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "baseForParent.html.twig" %}
+
+{% block title %}
+    Vos notifs
+{% endblock %}
+
+{% block mainContent %}
+    <hr class="hr-4">
+    <div class="col-xs-12">
+        <center><h4>Toutes vos notifications</h4></center>
+        <div class="timeline-container timeline-style2">
+
+
+            <div class="timeline-items">
+                {% for n in listNotifs %}
+                    <div class="timeline-item clearfix">
+                        <div class="timeline-info">
+                            <span class="timeline-date">{{ n.dateNotification|date('d-F H:i') }}</span>
+
+                            <i class="timeline-indicator btn btn-info no-hover"></i>
+                        </div>
+
+                        <div class="widget-box transparent">
+                            <div class="widget-body">
+                                <div class="widget-main no-padding">
+																	<span class="bigger-110">
+																		{{ n.texteNotification }}
+																	</span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div><!-- /.timeline-items -->
+        </div>
+    </div>
+{% endblock %}

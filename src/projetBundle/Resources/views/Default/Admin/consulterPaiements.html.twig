@@ -1,0 +1,35 @@
+{% extends "baseForAdmin.html.twig" %}
+
+{% block title %}
+    La liste des paiements
+{% endblock %}
+
+{% block mainContent %}
+    <hr class="hr-4">
+    <div class="col-xs-12">
+        <table class="table table-bordered" border="1" width="80%">
+            <tr class="table-header">
+                <td>Eleve</td>
+                <td>Types Frais</td>
+                <td>Total</td>
+                <td>Etat</td>
+                <td>Payer</td>
+            </tr>
+            {% for p in listPaiements %}
+                <tr>
+                    <td>{{ p.eleve.prenomEleve }} {{ p.eleve.nomEleve }}</td>
+                    <td>{{ p.fraisPaiement }}</td>
+                    <td>{{ p.totalePaiement }} DT</td>
+                    <td>{{ p.etatPaiement }}</td>
+                    <td>
+                        {% if p.etatPaiement != "2 tranches payés" %}
+                            <a href="{{ path('payer') }}?idPaiement={{ p.id }}">Payer</a>
+                        {% else %}
+                            <a href="">Plus d'infos</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

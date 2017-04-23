@@ -1,0 +1,76 @@
+{% extends "baseForAdmin.html.twig" %}
+
+{% block title %}
+    Affecter Manuellement les élèves
+{% endblock %}
+
+{% block script %}
+    <script language="JavaScript">
+        $("document").ready(function () {
+            $("#tableEleve").dataTable();
+        });
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+
+
+    <hr class="hr-4">
+    <div class="col-xs-12">
+        <center><h4>La liste des eleves sans groupe</h4></center>
+        <div class="row">
+
+            <div id="tableContainer">
+                <table id="tableEleve" class="display" cellspacing="0" width="95%" border="1">
+                    <thead class="table-header">
+                    <tr>
+                        <th>Groupe</th>
+                        <th>Niveau</th>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date Naissance</th>
+                        <th>Parent</th>
+
+
+                    </tr>
+                    </thead>
+                    <tfoot class="table-header">
+                    <tr>
+                        <th>Groupe</th>
+                        <th>Niveau</th>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date Naissance</th>
+                        <th>Parent</th>
+
+
+                    </tr>
+                    </tfoot>
+                    <tbody id="tableBody">
+                    {% for e in listEleves %}
+                        <tr>
+                            <td><a href="{{ path('affecter') }}?matEleve={{ e.matriculeEleve }}"><input type="button"
+                                                                                                        value="Affecter à un groupe"
+                                                                                                        class="btn btn-primary"></a>
+                            </td>
+                            <td>{{ e.niveauEleve }}</td>
+                            <td>{{ e.matriculeEleve }}</td>
+                            <td>{{ e.nomEleve }}</td>
+                            <td>{{ e.prenomEleve }}</td>
+                            <td>{{ e.dateNaissanceEleve }}</td>
+                            <td>{{ e.parent.nomParent }} {{ e.parent.prenomParent }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+
+    </div>
+{% endblock %}

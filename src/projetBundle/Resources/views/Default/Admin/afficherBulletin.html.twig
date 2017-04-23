@@ -1,0 +1,85 @@
+{% extends "baseForAdmin.html.twig" %}
+{% block title %}
+    Bulletin
+{% endblock %}
+
+{% block script %}
+
+    <script language="JavaScript">
+        function printIt() {
+
+            window.print();
+
+
+        }
+
+    </script>
+
+{% endblock %}
+
+
+{% block mainContent %}
+    <hr class="hr-4">
+
+    {% if message is defined %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% else %}
+
+        <div class="col-xs-12" id="printable">
+            <div>
+                <div class="row col-xs-8">
+                    <h4><b>* Bulletin élève : </b>{{ nomPrenomEleve }}</h4>
+                </div>
+                <div class="row col-xs-4">
+                    <h4><b>* Matricule : </b>{{ matriculeEleve }}</h4>
+                </div>
+            </div>
+
+            <div class="row" align="center">
+
+                <table border="1" class="table table-responsive" style="margin-top: 40px">
+                    <tr class="table-header">
+                        <td>Matiere</td>
+                        <td>Note 1</td>
+                        <td>Note 2</td>
+                        <td>Note 3</td>
+                        <td>Enseignant</td>
+                        <td>Moyenne</td>
+                        <td>Remarque de l'enseignant</td>
+                    </tr>
+                    {% for r in resultat %}
+                    <tr align="center">
+                        <td>{{ r.matiere }}</td>
+
+                        {% for i in 0..2 %}
+                            {% if r.note[i] is not defined %}
+                                <td> ---</td>
+                            {% else %}
+                                <td> {{ r.note[i] | number_format("2", ".", ",") }} </td>
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        <td>
+                            {{ r.nomenseignant.nomenseignant }} {{ r.nomenseignant.prenomenseignant }}
+                        </td>
+                        <td>
+                            {{ r.moyenne | number_format("2", ".", ",") }}
+                        </td>
+                        <td>
+                            <br><br>
+                        </td>
+                        {% endfor %}
+
+                    <tr align="center">
+                        <td colspan="6"><h4>Moyenne Générale</h4></td>
+                        <td><h4>{{ moyenneGenerale | number_format("2", ".", ",") }}</h4></td>
+                    </tr>
+                </table>
+                <button class="btn btn-primary" onclick="printIt()"><i class="fa fa-print"></i> Imprimer</button>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "::baseForAdmin.html.twig" %}
+    {% block title %}
+        Ajouter un enseignant
+    {% endblock %}
+
+    {% block script %}
+        <script language="JavaScript">
+            $("document").ready(function () {
+                var matriculeRandom = Math.floor(Math.random() * 99999999);
+                $("#matriculeEnseignant").val(matriculeRandom);
+                $("#formAjouterEnseignant").submit(function () {
+                    console.log($("#formAjouterEnseignant").serialize());
+                    $.ajax({
+                        url: "{{ path('ajouterEnseignantAJAX') }}",
+                        method: "POST",
+                        data: $("#formAjouterEnseignant").serialize(),
+                        success: function (response) {
+                            console.log(response);
+                            response = JSON.parse(response);
+                            if (response.status == "inserted") {
+                                var message = "<div class='alert alert-success'>Ajout avec success</div>";
+                            } else {
+                                var message = "<div class='alert alert-danger'>Failed !</div>";
+                            }
+                            $("#messageContainer").html(message);
+                        },
+                        error: function (erreur) {
+                            //console.log(erreur);
+                        }
+                    });
+                });
+            });
+        </script>
+    {% endblock %}
+
+    {% block mainContent %}
+        <div class="hr-4">
+            <div class="col-xs-12">
+                <div id="messageContainer" class="row">
+
+                </div>
+                <div class="row">
+                    <form name="ajouterEnseignant" id="formAjouterEnseignant" onsubmit="return false" action="#">
+                        <table border="1" align="center" class="table table-bordered">
+                            <tr>
+                                <td>Grade</td>
+                                <td><select name="idGrade">
+                                        {% for g in grades %}
+                                            <option value="{{ g.id }}">{{ g.nomGrade }}</option>
+                                        {% endfor %}
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td>Matricule</td>
+                                <td><input type="text" name="matriculeEnseignant" id="matriculeEnseignant" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nom</td>
+                                <td><input type="text" name="nomEnseignant" id="nomEnseignant"></td>
+                            </tr>
+                            <tr>
+                                <td>Prenom</td>
+                                <td><input type="text" name="prenomEnseignant" id="prenomEnseignant"></td>
+                            </tr>
+                            <tr>
+                                <td>Adresse</td>
+                                <td><input type="text" name="adresseEnseignant" id="adresseEnseignant"></td>
+                            </tr>
+                            <tr>
+                                <td>Numéro de téléphone</td>
+                                <td><input type="tel" name="numTelEnseignant" id="numTelEnseignant"></td>
+                            </tr>
+                            <tr>
+                                <td>CIN</td>
+                                <td><input type="text" name="cinEnseignant" id="cinEnseignant"></td>
+                            </tr>
+                            <tr>
+                                <td>E-mail</td>
+                                <td><input type="email" name="emailEnseignant" id="emailEnseignant"></td>
+                            </tr>
+                            <tr align="center">
+                                <td><input type="submit" name="submitBtn" id="submitBtn" value="Ajouter"
+                                           class="btn btn-primary"></td>
+                                <td><input type="reset" value="Vider" class="btn btn-danger"></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

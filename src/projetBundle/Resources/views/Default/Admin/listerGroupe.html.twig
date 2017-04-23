@@ -1,0 +1,98 @@
+{% extends "::baseForAdmin.html.twig" %}
+{% block title %}
+    Lister les groupes
+{% endblock %}
+
+{% block script %}
+    <script language="JavaScript">
+        $("document").ready(function () {
+            $("#btnLister").click(function () {
+                //console.log("click");
+                var nomGroupe = $("#listGroupe").val();
+                var anneeScolaire = $("#annee").val();
+                $("#mySpinner").fadeIn("slow");
+                $("#tableContainer").slideUp("fast");
+                $("#alertVide").slideUp("fast");
+
+                $.ajax({
+                    url: "{{ path('ListerGroupeAJAX') }}",
+                    method: "GET",
+                    data: {"listGroupe": nomGroupe, "annees": anneeScolaire},
+                    success: function (response) {
+                        var lines = "";
+                        console.log(response);
+                        response = JSON.parse(response);
+                        console.log(response.listGroupe);
+                        if (response.listGroupe.length == 0) {
+                            $("#alertVide").slideDown("fast");
+                            $("#tableContainer").slideUp("fast");
+                        } else {
+                            $.each(response.listGroupe, function (i, item) {
+                                lines += "<tr><td>" + item.id + "</td><td>" + item.nom_groupe + "</td><td>" + item.num_groupe + "</td><td>" + item.nbr_eleves + "</td><td><a href='{{ path('genererBulletinGroupe') }}?idGroupe=" + item.id + "'><input type='button' value='Génerer' class='btn btn-primary'></a> </td></tr>";
+                            });
+                            $("#tableBody").html(lines);
+                            $("#tableGroupe").dataTable();
+                            $("#alertVide").slideUp("fast");
+                            $("#tableContainer").slideDown("fast");
+                            $("#mySpinner").fadeOut("slow");
+                        }
+                    }
+                });
+
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+    <hr class="hr-4">
+    <div class="col-xs-12">
+        <div class="row" align="center">
+            <select name="listGroupe" id="listGroupe">
+                <option value="Premiere Annee">Premiere Annee</option>
+                <option value="Deuxieme Annee">Deuxieme Annee</option>
+                <option value="Troisieme Annee">Troisieme Annee</option>
+                <option value="Quatrieme Annee">Quatrieme Annee</option>
+                <option value="Cinquieme Annee">Cinquieme Annee</option>
+                <option value="Sixieme Annee">Sixieme Annee</option>
+            </select>
+            <select name="annee" id="annee">
+                {% for a in annees %}
+                    <option value="{{ a.id }}">{{ a.periode }}</option>
+                {% endfor %}
+            </select>
+            <input type="button" value="Lister" class="btn btn-primary" id="btnLister">
+        </div>
+        <hr class="hr-2">
+        <div class="row">
+            <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner" style="display: none"></i>
+            </center>
+            <div class="alert alert-warning" id="alertVide" style="display: none">Aucun groupe dans ce niveau!</div>
+            <div id="tableContainer" style="display: none">
+                <table id="tableGroupe" class="display" cellspacing="0" width="80%">
+                    <thead>
+                    <tr>
+                        <th>ID Groupe</th>
+                        <th>Nom Groupe</th>
+                        <th>Numéro Groupe</th>
+                        <th>Nombre Eleves</th>
+                        <th>Bulletins</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>ID Groupe</th>
+                        <th>Nom Groupe</th>
+                        <th>Numéro Groupe</th>
+                        <th>Nombre Eleves</th>
+                        <th>Bulletins</th>
+                    </tr>
+                    </tfoot>
+                    <tbody id="tableBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

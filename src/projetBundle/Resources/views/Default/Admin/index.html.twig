@@ -1,0 +1,20 @@
+{% extends "::baseForAdmin.html.twig" %}
+
+{% block title %}
+
+    Accueil
+
+{% endblock %}
+
+
+
+
+
+{% block mainContent %}
+
+    Des statistiques ...
+
+    {{ app.session.get("user").nomPa }}<br>
+    {{ app.session.get("anneeScolaireCourante").periode }}
+
+{% endblock %}
