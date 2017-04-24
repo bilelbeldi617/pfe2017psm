@@ -91,34 +91,6 @@ class FormDataCollector extends DataCollector implements FormDataCollectorInterf
     /**
      * {@inheritdoc}
      */
-    public function collectSubmittedData(FormInterface $form)
-    {
-        $hash = spl_object_hash($form);
-
-        if (!isset($this->dataByForm[$hash])) {
-            // field was created by form event
-            $this->collectConfiguration($form);
-            $this->collectDefaultData($form);
-        }
-
-        $this->dataByForm[$hash] = array_replace(
-            $this->dataByForm[$hash],
-            $this->dataExtractor->extractSubmittedData($form)
-        );
-
-        // Count errors
-        if (isset($this->dataByForm[$hash]['errors'])) {
-            $this->data['nb_errors'] += count($this->dataByForm[$hash]['errors']);
-        }
-
-        foreach ($form as $child) {
-            $this->collectSubmittedData($child);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function collectConfiguration(FormInterface $form)
     {
         $hash = spl_object_hash($form);
@@ -161,6 +133,34 @@ class FormDataCollector extends DataCollector implements FormDataCollectorInterf
     /**
      * {@inheritdoc}
      */
+    public function collectSubmittedData(FormInterface $form)
+    {
+        $hash = spl_object_hash($form);
+
+        if (!isset($this->dataByForm[$hash])) {
+            // field was created by form event
+            $this->collectConfiguration($form);
+            $this->collectDefaultData($form);
+        }
+
+        $this->dataByForm[$hash] = array_replace(
+            $this->dataByForm[$hash],
+            $this->dataExtractor->extractSubmittedData($form)
+        );
+
+        // Count errors
+        if (isset($this->dataByForm[$hash]['errors'])) {
+            $this->data['nb_errors'] += count($this->dataByForm[$hash]['errors']);
+        }
+
+        foreach ($form as $child) {
+            $this->collectSubmittedData($child);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function collectViewVariables(FormView $view)
     {
         $hash = spl_object_hash($view);
@@ -189,6 +189,32 @@ class FormDataCollector extends DataCollector implements FormDataCollectorInterf
         $this->recursiveBuildPreliminaryFormTree($form, $this->data['forms'][$form->getName()], $this->data['forms_by_hash']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFinalFormTree(FormInterface $form, FormView $view)
+    {
+        $this->data['forms'][$form->getName()] = array();
+
+        $this->recursiveBuildFinalFormTree($form, $view, $this->data['forms'][$form->getName()], $this->data['forms_by_hash']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'form';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
     private function recursiveBuildPreliminaryFormTree(FormInterface $form, &$output, array &$outputByHash)
     {
         $hash = spl_object_hash($form);
@@ -206,16 +232,6 @@ class FormDataCollector extends DataCollector implements FormDataCollectorInterf
 
             $this->recursiveBuildPreliminaryFormTree($child, $output['children'][$name], $outputByHash);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildFinalFormTree(FormInterface $form, FormView $view)
-    {
-        $this->data['forms'][$form->getName()] = array();
-
-        $this->recursiveBuildFinalFormTree($form, $view, $this->data['forms'][$form->getName()], $this->data['forms_by_hash']);
     }
 
     private function recursiveBuildFinalFormTree(FormInterface $form = null, FormView $view, &$output, array &$outputByHash)
@@ -260,21 +276,5 @@ class FormDataCollector extends DataCollector implements FormDataCollectorInterf
 
             $this->recursiveBuildFinalFormTree($childForm, $childView, $output['children'][$name], $outputByHash);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'form';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getData()
-    {
-        return $this->data;
     }
 }

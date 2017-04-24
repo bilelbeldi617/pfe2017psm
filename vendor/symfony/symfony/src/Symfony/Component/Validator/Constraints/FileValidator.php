@@ -42,7 +42,7 @@ class FileValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof File) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\File');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\File');
         }
 
         if (null === $value || '' === $value) {
@@ -168,7 +168,7 @@ class FileValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $path = $value instanceof FileObject ? $value->getPathname() : (string)$value;
+        $path = $value instanceof FileObject ? $value->getPathname() : (string) $value;
 
         if (!is_file($path)) {
             if ($this->context instanceof ExecutionContextInterface) {
@@ -252,7 +252,7 @@ class FileValidator extends ConstraintValidator
                 $value = new FileObject($value);
             }
 
-            $mimeTypes = (array)$constraint->mimeTypes;
+            $mimeTypes = (array) $constraint->mimeTypes;
             $mime = $value->getMimeType();
 
             foreach ($mimeTypes as $mimeType) {
@@ -285,6 +285,11 @@ class FileValidator extends ConstraintValidator
         }
     }
 
+    private static function moreDecimalsThan($double, $numberOfDecimals)
+    {
+        return strlen((string) $double) > strlen(round($double, $numberOfDecimals));
+    }
+
     /**
      * Convert the limit to the smallest possible number
      * (i.e. try "MB", then "kB", then "bytes").
@@ -299,31 +304,26 @@ class FileValidator extends ConstraintValidator
             $coefFactor = self::KB_BYTES;
         }
 
-        $limitAsString = (string)($limit / $coef);
+        $limitAsString = (string) ($limit / $coef);
 
         // Restrict the limit to 2 decimals (without rounding! we
         // need the precise value)
         while (self::moreDecimalsThan($limitAsString, 2)) {
             $coef /= $coefFactor;
-            $limitAsString = (string)($limit / $coef);
+            $limitAsString = (string) ($limit / $coef);
         }
 
         // Convert size to the same measure, but round to 2 decimals
-        $sizeAsString = (string)round($size / $coef, 2);
+        $sizeAsString = (string) round($size / $coef, 2);
 
         // If the size and limit produce the same string output
         // (due to rounding), reduce the coefficient
         while ($sizeAsString === $limitAsString) {
             $coef /= $coefFactor;
-            $limitAsString = (string)($limit / $coef);
-            $sizeAsString = (string)round($size / $coef, 2);
+            $limitAsString = (string) ($limit / $coef);
+            $sizeAsString = (string) round($size / $coef, 2);
         }
 
         return array($sizeAsString, $limitAsString, self::$suffices[$coef]);
-    }
-
-    private static function moreDecimalsThan($double, $numberOfDecimals)
-    {
-        return strlen((string)$double) > strlen(round($double, $numberOfDecimals));
     }
 }

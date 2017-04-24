@@ -39,25 +39,6 @@ class EntityUserProviderTest extends TestCase
         $this->assertSame($user1, $provider->refreshUser($user1));
     }
 
-    private function createSchema($em)
-    {
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema(array(
-            $em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\User'),
-        ));
-    }
-
-    private function getManager($em, $name = null)
-    {
-        $manager = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
-        $manager->expects($this->any())
-            ->method('getManager')
-            ->with($this->equalTo($name))
-            ->will($this->returnValue($em));
-
-        return $manager;
-    }
-
     public function testLoadUserByUsername()
     {
         $em = DoctrineTestHelper::createTestEntityManager();
@@ -216,18 +197,6 @@ class EntityUserProviderTest extends TestCase
         $provider->loadUserByUsername('name');
     }
 
-    private function getObjectManager($repository)
-    {
-        $em = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectManager')
-            ->setMethods(array('getClassMetadata', 'getRepository'))
-            ->getMockForAbstractClass();
-        $em->expects($this->any())
-            ->method('getRepository')
-            ->willReturn($repository);
-
-        return $em;
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -241,5 +210,36 @@ class EntityUserProviderTest extends TestCase
         );
 
         $provider->loadUserByUsername('name');
+    }
+
+    private function getManager($em, $name = null)
+    {
+        $manager = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $manager->expects($this->any())
+            ->method('getManager')
+            ->with($this->equalTo($name))
+            ->will($this->returnValue($em));
+
+        return $manager;
+    }
+
+    private function getObjectManager($repository)
+    {
+        $em = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectManager')
+            ->setMethods(array('getClassMetadata', 'getRepository'))
+            ->getMockForAbstractClass();
+        $em->expects($this->any())
+            ->method('getRepository')
+            ->willReturn($repository);
+
+        return $em;
+    }
+
+    private function createSchema($em)
+    {
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->createSchema(array(
+            $em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\User'),
+        ));
     }
 }

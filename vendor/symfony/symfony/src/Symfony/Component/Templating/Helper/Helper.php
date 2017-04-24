@@ -24,16 +24,6 @@ abstract class Helper implements HelperInterface
     protected $charset = 'UTF-8';
 
     /**
-     * Gets the default charset.
-     *
-     * @return string The default charset
-     */
-    public function getCharset()
-    {
-        return $this->charset;
-    }
-
-    /**
      * Sets the default charset.
      *
      * @param string $charset The charset
@@ -41,5 +31,15 @@ abstract class Helper implements HelperInterface
     public function setCharset($charset)
     {
         $this->charset = $charset;
+    }
+
+    /**
+     * Gets the default charset.
+     *
+     * @return string The default charset
+     */
+    public function getCharset()
+    {
+        return $this->charset;
     }
 }

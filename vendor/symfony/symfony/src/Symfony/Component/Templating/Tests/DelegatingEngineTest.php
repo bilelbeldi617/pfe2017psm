@@ -16,10 +16,6 @@ use Symfony\Component\Templating\DelegatingEngine;
 use Symfony\Component\Templating\StreamingEngineInterface;
 use Symfony\Component\Templating\EngineInterface;
 
-interface MyStreamingEngine extends StreamingEngineInterface, EngineInterface
-{
-}
-
 class DelegatingEngineTest extends TestCase
 {
     public function testRenderDelegatesToSupportedEngine()
@@ -36,18 +32,6 @@ class DelegatingEngineTest extends TestCase
         $result = $delegatingEngine->render('template.php', array('foo' => 'bar'));
 
         $this->assertSame('<html />', $result);
-    }
-
-    private function getEngineMock($template, $supports)
-    {
-        $engine = $this->getMockBuilder('Symfony\Component\Templating\EngineInterface')->getMock();
-
-        $engine->expects($this->once())
-            ->method('supports')
-            ->with($template)
-            ->will($this->returnValue($supports));
-
-        return $engine;
     }
 
     /**
@@ -75,18 +59,6 @@ class DelegatingEngineTest extends TestCase
         $result = $delegatingEngine->stream('template.php', array('foo' => 'bar'));
 
         $this->assertNull($result);
-    }
-
-    private function getStreamingEngineMock($template, $supports)
-    {
-        $engine = $this->getMockForAbstractClass('Symfony\Component\Templating\Tests\MyStreamingEngine');
-
-        $engine->expects($this->once())
-            ->method('supports')
-            ->with($template)
-            ->will($this->returnValue($supports));
-
-        return $engine;
     }
 
     /**
@@ -152,6 +124,34 @@ class DelegatingEngineTest extends TestCase
         $delegatingEngine = new DelegatingEngine(array($firstEngine, $secondEngine));
         $delegatingEngine->getEngine('template.php');
     }
+
+    private function getEngineMock($template, $supports)
+    {
+        $engine = $this->getMockBuilder('Symfony\Component\Templating\EngineInterface')->getMock();
+
+        $engine->expects($this->once())
+            ->method('supports')
+            ->with($template)
+            ->will($this->returnValue($supports));
+
+        return $engine;
+    }
+
+    private function getStreamingEngineMock($template, $supports)
+    {
+        $engine = $this->getMockForAbstractClass('Symfony\Component\Templating\Tests\MyStreamingEngine');
+
+        $engine->expects($this->once())
+            ->method('supports')
+            ->with($template)
+            ->will($this->returnValue($supports));
+
+        return $engine;
+    }
+}
+
+interface MyStreamingEngine extends StreamingEngineInterface, EngineInterface
+{
 }
 
 class TestEngine implements EngineInterface

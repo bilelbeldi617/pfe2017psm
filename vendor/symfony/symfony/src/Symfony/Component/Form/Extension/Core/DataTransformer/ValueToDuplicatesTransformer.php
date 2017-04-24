@@ -82,8 +82,8 @@ class ValueToDuplicatesTransformer implements DataTransformerInterface
             }
 
             throw new TransformationFailedException(
-                sprintf('The keys "%s" should not be empty', implode('", "', $emptyKeys)
-                ));
+                 sprintf('The keys "%s" should not be empty', implode('", "', $emptyKeys)
+            ));
         }
 
         return $result;

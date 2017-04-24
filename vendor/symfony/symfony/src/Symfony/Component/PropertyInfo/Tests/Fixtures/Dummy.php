@@ -19,32 +19,37 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Dummy extends ParentDummy
 {
     /**
-     * @var \DateTime
+     * @var string This is bar
      */
-    public $bal;
-    /**
-     * @var ParentDummy
-     */
-    public $parent;
-    /**
-     * @var \DateTime[]
-     * @Groups({"a", "b"})
-     */
-    public $collection;
-    /**
-     * @var ParentDummy
-     */
-    public $B;
+    private $bar;
+
     /**
      * Should be used.
      *
      * @var int Should be ignored
      */
     protected $baz;
+
     /**
-     * @var string This is bar
+     * @var \DateTime
      */
-    private $bar;
+    public $bal;
+
+    /**
+     * @var ParentDummy
+     */
+    public $parent;
+
+    /**
+     * @var \DateTime[]
+     * @Groups({"a", "b"})
+     */
+    public $collection;
+
+    /**
+     * @var ParentDummy
+     */
+    public $B;
 
     public static function getStatic()
     {

@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class IsTrueValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new IsTrueValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new IsTrue());
@@ -43,15 +53,5 @@ class IsTrueValidatorTest extends AbstractConstraintValidatorTest
             ->setParameter('{{ value }}', 'false')
             ->setCode(IsTrue::NOT_TRUE_ERROR)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new IsTrueValidator();
     }
 }

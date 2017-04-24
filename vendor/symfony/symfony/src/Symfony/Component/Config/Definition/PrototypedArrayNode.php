@@ -46,16 +46,6 @@ class PrototypedArrayNode extends ArrayNode
     }
 
     /**
-     * Retrieves the name of the attribute which value should be used as key.
-     *
-     * @return string The name of the attribute
-     */
-    public function getKeyAttribute()
-    {
-        return $this->keyAttribute;
-    }
-
-    /**
      * Sets the attribute which value is to be used as key.
      *
      * This is useful when you have an indexed array that should be an
@@ -77,12 +67,38 @@ class PrototypedArrayNode extends ArrayNode
      * array, then you can set the second argument of this method to false.
      *
      * @param string $attribute The name of the attribute which value is to be used as a key
-     * @param bool $remove Whether or not to remove the key
+     * @param bool   $remove    Whether or not to remove the key
      */
     public function setKeyAttribute($attribute, $remove = true)
     {
         $this->keyAttribute = $attribute;
         $this->removeKeyAttribute = $remove;
+    }
+
+    /**
+     * Retrieves the name of the attribute which value should be used as key.
+     *
+     * @return string The name of the attribute
+     */
+    public function getKeyAttribute()
+    {
+        return $this->keyAttribute;
+    }
+
+    /**
+     * Sets the default value of this node.
+     *
+     * @param string $value
+     *
+     * @throws \InvalidArgumentException if the default value is not an array
+     */
+    public function setDefaultValue($value)
+    {
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException($this->getPath().': the default value of an array node has to be an array.');
+        }
+
+        $this->defaultValue = $value;
     }
 
     /**
@@ -105,7 +121,7 @@ class PrototypedArrayNode extends ArrayNode
         if (null === $children) {
             $this->defaultChildren = array('defaults');
         } else {
-            $this->defaultChildren = is_int($children) && $children > 0 ? range(1, $children) : (array)$children;
+            $this->defaultChildren = is_int($children) && $children > 0 ? range(1, $children) : (array) $children;
         }
     }
 
@@ -133,19 +149,13 @@ class PrototypedArrayNode extends ArrayNode
     }
 
     /**
-     * Sets the default value of this node.
+     * Sets the node prototype.
      *
-     * @param string $value
-     *
-     * @throws \InvalidArgumentException if the default value is not an array
+     * @param PrototypeNodeInterface $node
      */
-    public function setDefaultValue($value)
+    public function setPrototype(PrototypeNodeInterface $node)
     {
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException($this->getPath() . ': the default value of an array node has to be an array.');
-        }
-
-        $this->defaultValue = $value;
+        $this->prototype = $node;
     }
 
     /**
@@ -156,16 +166,6 @@ class PrototypedArrayNode extends ArrayNode
     public function getPrototype()
     {
         return $this->prototype;
-    }
-
-    /**
-     * Sets the node prototype.
-     *
-     * @param PrototypeNodeInterface $node
-     */
-    public function setPrototype(PrototypeNodeInterface $node)
-    {
-        $this->prototype = $node;
     }
 
     /**
@@ -215,50 +215,6 @@ class PrototypedArrayNode extends ArrayNode
         }
 
         return $value;
-    }
-
-    /**
-     * Returns a prototype for the child node that is associated to $key in the value array.
-     * For general child nodes, this will be $this->prototype.
-     * But if $this->removeKeyAttribute is true and there are only two keys in the child node:
-     * one is same as this->keyAttribute and the other is 'value', then the prototype will be different.
-     *
-     * For example, assume $this->keyAttribute is 'name' and the value array is as follows:
-     * array(
-     *     array(
-     *         'name' => 'name001',
-     *         'value' => 'value001'
-     *     )
-     * )
-     *
-     * Now, the key is 0 and the child node is:
-     * array(
-     *    'name' => 'name001',
-     *    'value' => 'value001'
-     * )
-     *
-     * When normalizing the value array, the 'name' element will removed from the child node
-     * and its value becomes the new key of the child node:
-     * array(
-     *     'name001' => array('value' => 'value001')
-     * )
-     *
-     * Now only 'value' element is left in the child node which can be further simplified into a string:
-     * array('name001' => 'value001')
-     *
-     * Now, the key becomes 'name001' and the child node becomes 'value001' and
-     * the prototype of child node 'name001' should be a ScalarNode instead of an ArrayNode instance.
-     *
-     * @param string $key The key of the child node
-     *
-     * @return mixed The prototype instance
-     */
-    private function getPrototypeForChild($key)
-    {
-        $prototype = isset($this->valuePrototypes[$key]) ? $this->valuePrototypes[$key] : $this->prototype;
-        $prototype->setName($key);
-
-        return $prototype;
     }
 
     /**
@@ -336,7 +292,7 @@ class PrototypedArrayNode extends ArrayNode
     /**
      * Merges values together.
      *
-     * @param mixed $leftSide The left side to merge
+     * @param mixed $leftSide  The left side to merge
      * @param mixed $rightSide The right side to merge
      *
      * @return mixed The merged values
@@ -367,7 +323,7 @@ class PrototypedArrayNode extends ArrayNode
             if (!array_key_exists($k, $leftSide)) {
                 if (!$this->allowNewKeys) {
                     $ex = new InvalidConfigurationException(sprintf(
-                        'You are not allowed to define new elements for path "%s". ' .
+                        'You are not allowed to define new elements for path "%s". '.
                         'Please define all elements for this path in one config file.',
                         $this->getPath()
                     ));
@@ -385,5 +341,49 @@ class PrototypedArrayNode extends ArrayNode
         }
 
         return $leftSide;
+    }
+
+    /**
+     * Returns a prototype for the child node that is associated to $key in the value array.
+     * For general child nodes, this will be $this->prototype.
+     * But if $this->removeKeyAttribute is true and there are only two keys in the child node:
+     * one is same as this->keyAttribute and the other is 'value', then the prototype will be different.
+     *
+     * For example, assume $this->keyAttribute is 'name' and the value array is as follows:
+     * array(
+     *     array(
+     *         'name' => 'name001',
+     *         'value' => 'value001'
+     *     )
+     * )
+     *
+     * Now, the key is 0 and the child node is:
+     * array(
+     *    'name' => 'name001',
+     *    'value' => 'value001'
+     * )
+     *
+     * When normalizing the value array, the 'name' element will removed from the child node
+     * and its value becomes the new key of the child node:
+     * array(
+     *     'name001' => array('value' => 'value001')
+     * )
+     *
+     * Now only 'value' element is left in the child node which can be further simplified into a string:
+     * array('name001' => 'value001')
+     *
+     * Now, the key becomes 'name001' and the child node becomes 'value001' and
+     * the prototype of child node 'name001' should be a ScalarNode instead of an ArrayNode instance.
+     *
+     * @param string $key The key of the child node
+     *
+     * @return mixed The prototype instance
+     */
+    private function getPrototypeForChild($key)
+    {
+        $prototype = isset($this->valuePrototypes[$key]) ? $this->valuePrototypes[$key] : $this->prototype;
+        $prototype->setName($key);
+
+        return $prototype;
     }
 }

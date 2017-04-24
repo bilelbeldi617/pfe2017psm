@@ -5,26 +5,26 @@
 
     {% block script %}
         <script language="JavaScript">
-            $("document").ready(function () {
-                var matriculeRandom = Math.floor(Math.random() * 99999999);
+            $("document").ready(function(){
+                var matriculeRandom = Math.floor(Math.random()*99999999);
                 $("#matriculeEnseignant").val(matriculeRandom);
-                $("#formAjouterEnseignant").submit(function () {
+                $("#formAjouterEnseignant").submit(function (){
                     console.log($("#formAjouterEnseignant").serialize());
                     $.ajax({
-                        url: "{{ path('ajouterEnseignantAJAX') }}",
-                        method: "POST",
-                        data: $("#formAjouterEnseignant").serialize(),
-                        success: function (response) {
+                        url : "{{ path('ajouterEnseignantAJAX') }}",
+                        method : "POST",
+                        data : $("#formAjouterEnseignant").serialize(),
+                        success : function(response){
                             console.log(response);
                             response = JSON.parse(response);
-                            if (response.status == "inserted") {
+                            if(response.status == "inserted"){
                                 var message = "<div class='alert alert-success'>Ajout avec success</div>";
-                            } else {
+                            }else{
                                 var message = "<div class='alert alert-danger'>Failed !</div>";
                             }
                             $("#messageContainer").html(message);
                         },
-                        error: function (erreur) {
+                        error : function(erreur){
                             //console.log(erreur);
                         }
                     });
@@ -48,12 +48,11 @@
                                         {% for g in grades %}
                                             <option value="{{ g.id }}">{{ g.nomGrade }}</option>
                                         {% endfor %}
-                                    </select></td>
+                                </select></td>
                             </tr>
                             <tr>
                                 <td>Matricule</td>
-                                <td><input type="text" name="matriculeEnseignant" id="matriculeEnseignant" readonly>
-                                </td>
+                                <td><input type="text" name="matriculeEnseignant" id="matriculeEnseignant" readonly></td>
                             </tr>
                             <tr>
                                 <td>Nom</td>
@@ -80,8 +79,7 @@
                                 <td><input type="email" name="emailEnseignant" id="emailEnseignant"></td>
                             </tr>
                             <tr align="center">
-                                <td><input type="submit" name="submitBtn" id="submitBtn" value="Ajouter"
-                                           class="btn btn-primary"></td>
+                                <td><input type="submit" name="submitBtn" id="submitBtn" value="Ajouter" class="btn btn-primary"></td>
                                 <td><input type="reset" value="Vider" class="btn btn-danger"></td>
                             </tr>
                         </table>

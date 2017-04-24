@@ -32,36 +32,6 @@ class LintCommandTest extends TestCase
         $this->assertRegExp('/^\/\/ OK in /', trim($tester->getDisplay()));
     }
 
-    /**
-     * @return CommandTester
-     */
-    private function createCommandTester()
-    {
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem());
-
-        $command = new LintCommand();
-        $command->setTwigEnvironment($twig);
-
-        $application = new Application();
-        $application->add($command);
-        $command = $application->find('lint:twig');
-
-        return new CommandTester($command);
-    }
-
-    /**
-     * @return string Path to the new file
-     */
-    private function createFile($content)
-    {
-        $filename = tempnam(sys_get_temp_dir(), 'sf-');
-        file_put_contents($filename, $content);
-
-        $this->files[] = $filename;
-
-        return $filename;
-    }
-
     public function testLintIncorrectFile()
     {
         $tester = $this->createCommandTester();
@@ -94,6 +64,36 @@ class LintCommandTest extends TestCase
 
         $this->assertEquals(1, $ret, 'Returns 1 in case of error');
         $this->assertRegExp('/ERROR  in \S+ \(line /', trim($tester->getDisplay()));
+    }
+
+    /**
+     * @return CommandTester
+     */
+    private function createCommandTester()
+    {
+        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem());
+
+        $command = new LintCommand();
+        $command->setTwigEnvironment($twig);
+
+        $application = new Application();
+        $application->add($command);
+        $command = $application->find('lint:twig');
+
+        return new CommandTester($command);
+    }
+
+    /**
+     * @return string Path to the new file
+     */
+    private function createFile($content)
+    {
+        $filename = tempnam(sys_get_temp_dir(), 'sf-');
+        file_put_contents($filename, $content);
+
+        $this->files[] = $filename;
+
+        return $filename;
     }
 
     protected function setUp()

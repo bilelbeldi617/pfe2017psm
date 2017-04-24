@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle::layout.html.twig */
-
 class __TwigTemplate_468ec4d2d4ed7ff26f380c63a6508fc8465dacf5c8b43f6bb38822d37f13f635 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -15,52 +14,6 @@ class __TwigTemplate_468ec4d2d4ed7ff26f380c63a6508fc8465dacf5c8b43f6bb38822d37f1
             'head' => array($this, 'block_head'),
             'body' => array($this, 'block_body'),
         );
-    }
-
-    public function block_title($context, array $blocks = array())
-    {
-    }
-
-    // line 6
-
-    public function block_head($context, array $blocks = array())
-    {
-    }
-
-    // line 9
-
-    public function block_body($context, array $blocks = array())
-    {
-    }
-
-    // line 40
-
-    public function getTemplateName()
-    {
-        return "TwigBundle::layout.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(98 => 40, 93 => 9, 88 => 6, 80 => 41, 78 => 40, 46 => 10, 44 => 9, 40 => 8, 36 => 7, 32 => 6, 27 => 4, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "TwigBundle::layout.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/layout.html.twig");
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -129,5 +82,48 @@ class __TwigTemplate_468ec4d2d4ed7ff26f380c63a6508fc8465dacf5c8b43f6bb38822d37f1
     </body>
 </html>
 ";
+    }
+
+    // line 6
+    public function block_title($context, array $blocks = array())
+    {
+    }
+
+    // line 9
+    public function block_head($context, array $blocks = array())
+    {
+    }
+
+    // line 40
+    public function block_body($context, array $blocks = array())
+    {
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle::layout.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  98 => 40,  93 => 9,  88 => 6,  80 => 41,  78 => 40,  46 => 10,  44 => 9,  40 => 8,  36 => 7,  32 => 6,  27 => 4,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "TwigBundle::layout.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/layout.html.twig");
     }
 }

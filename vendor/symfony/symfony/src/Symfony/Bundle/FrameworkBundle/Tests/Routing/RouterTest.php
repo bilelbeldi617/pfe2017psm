@@ -43,30 +43,6 @@ class RouterTest extends TestCase
         $this->assertSame('"bar" == "bar"', $router->getRouteCollection()->get('foo')->getCondition());
     }
 
-    /**
-     * @param RouteCollection $routes
-     *
-     * @return \Symfony\Component\DependencyInjection\Container
-     */
-    private function getServiceContainer(RouteCollection $routes)
-    {
-        $loader = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderInterface')->getMock();
-
-        $loader
-            ->expects($this->any())
-            ->method('load')
-            ->will($this->returnValue($routes));
-
-        $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->setMethods(array('get'))->getMock();
-
-        $sc
-            ->expects($this->once())
-            ->method('get')
-            ->will($this->returnValue($loader));
-
-        return $sc;
-    }
-
     public function testDefaultsPlaceholders()
     {
         $routes = new RouteCollection();
@@ -80,7 +56,8 @@ class RouterTest extends TestCase
                 'boo' => array('%parameter%', '%%escaped_parameter%%', array('%bee_parameter%', 'bee')),
                 'bee' => array('bee', 'bee'),
             ),
-            array()
+            array(
+            )
         ));
 
         $sc = $this->getServiceContainer($routes);
@@ -111,7 +88,8 @@ class RouterTest extends TestCase
 
         $routes->add('foo', new Route(
             '/foo',
-            array(),
+            array(
+            ),
             array(
                 'foo' => 'before_%parameter.foo%',
                 'bar' => '%parameter.bar%_after',
@@ -228,5 +206,31 @@ class RouterTest extends TestCase
     public function getNonStringValues()
     {
         return array(array(null), array(false), array(true), array(new \stdClass()), array(array('foo', 'bar')), array(array(array())));
+    }
+
+    /**
+     * @param RouteCollection $routes
+     *
+     * @return \Symfony\Component\DependencyInjection\Container
+     */
+    private function getServiceContainer(RouteCollection $routes)
+    {
+        $loader = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderInterface')->getMock();
+
+        $loader
+            ->expects($this->any())
+            ->method('load')
+            ->will($this->returnValue($routes))
+        ;
+
+        $sc = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')->setMethods(array('get'))->getMock();
+
+        $sc
+            ->expects($this->once())
+            ->method('get')
+            ->will($this->returnValue($loader))
+        ;
+
+        return $sc;
     }
 }

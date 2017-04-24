@@ -28,7 +28,7 @@ class LoggingTranslatorPass implements CompilerPassInterface
 
         if ($container->hasParameter('translator.logging') && $container->getParameter('translator.logging')) {
             $translatorAlias = $container->getAlias('translator');
-            $definition = $container->getDefinition((string)$translatorAlias);
+            $definition = $container->getDefinition((string) $translatorAlias);
             $class = $container->getParameterBag()->resolveValue($definition->getClass());
 
             if (is_subclass_of($class, 'Symfony\Component\Translation\TranslatorInterface') && is_subclass_of($class, 'Symfony\Component\Translation\TranslatorBagInterface')) {

@@ -61,7 +61,7 @@ final class ClassUtils
         }
 
         // fallback in case doctrine common  is not installed
-        if (false === $pos = strrpos($class, '\\' . self::MARKER . '\\')) {
+        if (false === $pos = strrpos($class, '\\'.self::MARKER.'\\')) {
             return $class;
         }
 

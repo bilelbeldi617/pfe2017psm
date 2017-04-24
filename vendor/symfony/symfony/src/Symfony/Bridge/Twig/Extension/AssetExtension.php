@@ -52,7 +52,7 @@ class AssetExtension extends \Twig_Extension
      * If the package used to generate the path is an instance of
      * UrlPackage, you will always get a URL and not a path.
      *
-     * @param string $path A public path
+     * @param string $path        A public path
      * @param string $packageName The name of the asset package to use
      *
      * @return string The public path of the asset
@@ -72,6 +72,26 @@ class AssetExtension extends \Twig_Extension
         }
 
         return $this->packages->getUrl($path, $packageName);
+    }
+
+    /**
+     * Returns the version of an asset.
+     *
+     * @param string $path        A public path
+     * @param string $packageName The name of the asset package to use
+     *
+     * @return string The asset version
+     */
+    public function getAssetVersion($path, $packageName = null)
+    {
+        return $this->packages->getVersion($path, $packageName);
+    }
+
+    public function getAssetsVersion($packageName = null)
+    {
+        @trigger_error('The Twig assets_version() function was deprecated in 2.7 and will be removed in 3.0. Please use asset_version() instead.', E_USER_DEPRECATED);
+
+        return $this->packages->getVersion('/', $packageName);
     }
 
     private function getLegacyAssetUrl($path, $packageName = null, $absolute = false, $version = null)
@@ -115,26 +135,6 @@ class AssetExtension extends \Twig_Extension
         }
 
         return $url;
-    }
-
-    /**
-     * Returns the version of an asset.
-     *
-     * @param string $path A public path
-     * @param string $packageName The name of the asset package to use
-     *
-     * @return string The asset version
-     */
-    public function getAssetVersion($path, $packageName = null)
-    {
-        return $this->packages->getVersion($path, $packageName);
-    }
-
-    public function getAssetsVersion($packageName = null)
-    {
-        @trigger_error('The Twig assets_version() function was deprecated in 2.7 and will be removed in 3.0. Please use asset_version() instead.', E_USER_DEPRECATED);
-
-        return $this->packages->getVersion('/', $packageName);
     }
 
     /**

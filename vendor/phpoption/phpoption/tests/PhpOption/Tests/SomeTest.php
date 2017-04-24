@@ -38,7 +38,7 @@ class SomeTest extends \PHPUnit_Framework_TestCase
         $called = false;
         $self = $this;
         $some = new Some('foo');
-        $this->assertNull($some->ifDefined(function ($v) use (&$called, $self) {
+        $this->assertNull($some->ifDefined(function($v) use (&$called, $self) {
             $called = true;
             $self->assertEquals('foo', $v);
         }));
@@ -50,7 +50,7 @@ class SomeTest extends \PHPUnit_Framework_TestCase
         $called = false;
         $self = $this;
         $some = new Some('foo');
-        $this->assertSame($some, $some->forAll(function ($v) use (&$called, $self) {
+        $this->assertSame($some, $some->forAll(function($v) use (&$called, $self) {
             $called = true;
             $self->assertEquals('foo', $v);
         }));
@@ -60,9 +60,7 @@ class SomeTest extends \PHPUnit_Framework_TestCase
     public function testMap()
     {
         $some = new Some('foo');
-        $this->assertEquals('o', $some->map(function ($v) {
-            return substr($v, 1, 1);
-        })->get());
+        $this->assertEquals('o', $some->map(function($v) { return substr($v, 1, 1); })->get());
     }
 
     public function testFlatMap()
@@ -70,32 +68,24 @@ class SomeTest extends \PHPUnit_Framework_TestCase
         $repo = new Repository(array('foo'));
 
         $this->assertEquals(array('name' => 'foo'), $repo->getLastRegisteredUsername()
-            ->flatMap(array($repo, 'getUser'))
-            ->getOrCall(array($repo, 'getDefaultUser')));
+                                                        ->flatMap(array($repo, 'getUser'))
+                                                        ->getOrCall(array($repo, 'getDefaultUser')));
     }
 
     public function testFilter()
     {
         $some = new Some('foo');
 
-        $this->assertInstanceOf('PhpOption\None', $some->filter(function ($v) {
-            return 0 === strlen($v);
-        }));
-        $this->assertSame($some, $some->filter(function ($v) {
-            return strlen($v) > 0;
-        }));
+        $this->assertInstanceOf('PhpOption\None', $some->filter(function($v) { return 0 === strlen($v); }));
+        $this->assertSame($some, $some->filter(function($v) { return strlen($v) > 0; }));
     }
 
     public function testFilterNot()
     {
         $some = new Some('foo');
 
-        $this->assertInstanceOf('PhpOption\None', $some->filterNot(function ($v) {
-            return strlen($v) > 0;
-        }));
-        $this->assertSame($some, $some->filterNot(function ($v) {
-            return strlen($v) === 0;
-        }));
+        $this->assertInstanceOf('PhpOption\None', $some->filterNot(function($v) { return strlen($v) > 0; }));
+        $this->assertSame($some, $some->filterNot(function($v) { return strlen($v) === 0; }));
     }
 
     public function testSelect()
@@ -120,14 +110,14 @@ class SomeTest extends \PHPUnit_Framework_TestCase
     {
         $some = new Some(5);
 
-        $this->assertSame(6, $some->foldLeft(1, function ($a, $b) {
+        $this->assertSame(6, $some->foldLeft(1, function($a, $b) {
             $this->assertEquals(1, $a);
             $this->assertEquals(5, $b);
 
             return $a + $b;
         }));
 
-        $this->assertSame(6, $some->foldRight(1, function ($a, $b) {
+        $this->assertSame(6, $some->foldRight(1, function($a, $b) {
             $this->assertEquals(1, $b);
             $this->assertEquals(5, $a);
 

@@ -22,6 +22,11 @@ use Symfony\Component\Intl\Globals\IntlGlobals;
  */
 abstract class AbstractIntlDateFormatterTest extends TestCase
 {
+    protected function setUp()
+    {
+        \Locale::setDefault('en');
+    }
+
     /**
      * When a time zone is not specified, it uses the system default however it returns null in the getter method.
      *
@@ -45,27 +50,6 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
     }
 
     /**
-     * @param $locale
-     * @param $datetype
-     * @param $timetype
-     * @param null $timezone
-     * @param int $calendar
-     * @param null $pattern
-     *
-     * @return mixed
-     */
-    abstract protected function getDateFormatter($locale, $datetype, $timetype, $timezone = null, $calendar = IntlDateFormatter::GREGORIAN, $pattern = null);
-
-    protected function getDateTime($timestamp, $timeZone)
-    {
-        $dateTime = new \DateTime();
-        $dateTime->setTimestamp(null === $timestamp ? time() : $timestamp);
-        $dateTime->setTimezone(new \DateTimeZone($timeZone ?: getenv('TZ') ?: 'UTC'));
-
-        return $dateTime;
-    }
-
-    /**
      * @dataProvider formatProvider
      */
     public function testFormat($pattern, $timestamp, $expected)
@@ -77,39 +61,6 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         $this->assertSame($expected, $formatter->format($timestamp));
         $this->assertIsIntlSuccess($formatter, $errorMessage, $errorCode);
     }
-
-    protected function getDefaultDateFormatter($pattern = null)
-    {
-        return $this->getDateFormatter('en', IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT, 'UTC', IntlDateFormatter::GREGORIAN, $pattern);
-    }
-
-    protected function assertIsIntlSuccess($formatter, $errorMessage, $errorCode)
-    {
-        /* @var IntlDateFormatter $formatter */
-        $this->assertSame($errorMessage, $this->getIntlErrorMessage());
-        $this->assertSame($errorCode, $this->getIntlErrorCode());
-        $this->assertFalse($this->isIntlFailure($this->getIntlErrorCode()));
-        $this->assertSame($errorMessage, $formatter->getErrorMessage());
-        $this->assertSame($errorCode, $formatter->getErrorCode());
-        $this->assertFalse($this->isIntlFailure($formatter->getErrorCode()));
-    }
-
-    /**
-     * @return string
-     */
-    abstract protected function getIntlErrorMessage();
-
-    /**
-     * @return int
-     */
-    abstract protected function getIntlErrorCode();
-
-    /**
-     * @param int $errorCode
-     *
-     * @return bool
-     */
-    abstract protected function isIntlFailure($errorCode);
 
     public function formatProvider()
     {
@@ -317,16 +268,6 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         $this->assertIsIntlFailure($formatter, $errorMessage, $errorCode);
     }
 
-    protected function assertIsIntlFailure($formatter, $errorMessage, $errorCode)
-    {
-        $this->assertSame($errorMessage, $this->getIntlErrorMessage());
-        $this->assertSame($errorCode, $this->getIntlErrorCode());
-        $this->assertTrue($this->isIntlFailure($this->getIntlErrorCode()));
-        $this->assertSame($errorMessage, $formatter->getErrorMessage());
-        $this->assertSame($errorCode, $formatter->getErrorCode());
-        $this->assertTrue($this->isIntlFailure($formatter->getErrorCode()));
-    }
-
     public function formatErrorProvider()
     {
         // With PHP 5.5 IntlDateFormatter accepts empty values ('0')
@@ -499,7 +440,7 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         $this->assertEquals('Europe/London', getenv('TZ'));
 
         // Restores TZ.
-        putenv('TZ=' . $tz);
+        putenv('TZ='.$tz);
     }
 
     public function testFormatWithTimezoneFromPhp()
@@ -576,6 +517,19 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
     {
         $formatter = $this->getDateFormatter('en', IntlDateFormatter::NONE, IntlDateFormatter::FULL);
         $this->assertEquals(IntlDateFormatter::FULL, $formatter->getTimeType());
+    }
+
+    /**
+     * @dataProvider parseProvider
+     */
+    public function testParse($pattern, $value, $expected)
+    {
+        $errorCode = IntlGlobals::U_ZERO_ERROR;
+        $errorMessage = 'U_ZERO_ERROR';
+
+        $formatter = $this->getDefaultDateFormatter($pattern);
+        $this->assertSame($expected, $formatter->parse($value));
+        $this->assertIsIntlSuccess($formatter, $errorMessage, $errorCode);
     }
 
     public function parseProvider()
@@ -826,10 +780,6 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         );
     }
 
-    /*
-     * https://github.com/symfony/symfony/issues/4242
-     */
-
     public function parseStandaloneAmPmProvider()
     {
         return array(
@@ -868,25 +818,6 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         );
     }
 
-    public function parseErrorProvider()
-    {
-        return array(
-            // 1 char month
-            array('y-MMMMM-d', '1970-J-1'),
-            array('y-MMMMM-d', '1970-S-1'),
-
-            // standalone 1 char month
-            array('y-LLLLL-d', '1970-J-1'),
-            array('y-LLLLL-d', '1970-S-1'),
-        );
-    }
-
-    public function testParseAfterError()
-    {
-        $this->testParseError('y-MMMMM-d', '1970-J-1');
-        $this->testParse('y-M-d', '1970-1-1', 0);
-    }
-
     /**
      * @dataProvider parseErrorProvider
      */
@@ -900,17 +831,26 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         $this->assertIsIntlFailure($formatter, $errorMessage, $errorCode);
     }
 
-    /**
-     * @dataProvider parseProvider
-     */
-    public function testParse($pattern, $value, $expected)
+    public function parseErrorProvider()
     {
-        $errorCode = IntlGlobals::U_ZERO_ERROR;
-        $errorMessage = 'U_ZERO_ERROR';
+        return array(
+            // 1 char month
+            array('y-MMMMM-d', '1970-J-1'),
+            array('y-MMMMM-d', '1970-S-1'),
 
-        $formatter = $this->getDefaultDateFormatter($pattern);
-        $this->assertSame($expected, $formatter->parse($value));
-        $this->assertIsIntlSuccess($formatter, $errorMessage, $errorCode);
+            // standalone 1 char month
+            array('y-LLLLL-d', '1970-J-1'),
+            array('y-LLLLL-d', '1970-S-1'),
+        );
+    }
+
+    /*
+     * https://github.com/symfony/symfony/issues/4242
+     */
+    public function testParseAfterError()
+    {
+        $this->testParseError('y-MMMMM-d', '1970-J-1');
+        $this->testParse('y-M-d', '1970-1-1', 0);
     }
 
     public function testParseWithNullPositionValue()
@@ -960,8 +900,67 @@ abstract class AbstractIntlDateFormatterTest extends TestCase
         );
     }
 
-    protected function setUp()
+    protected function getDefaultDateFormatter($pattern = null)
     {
-        \Locale::setDefault('en');
+        return $this->getDateFormatter('en', IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT, 'UTC', IntlDateFormatter::GREGORIAN, $pattern);
     }
+
+    protected function getDateTime($timestamp, $timeZone)
+    {
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp(null === $timestamp ? time() : $timestamp);
+        $dateTime->setTimezone(new \DateTimeZone($timeZone ?: getenv('TZ') ?: 'UTC'));
+
+        return $dateTime;
+    }
+
+    protected function assertIsIntlFailure($formatter, $errorMessage, $errorCode)
+    {
+        $this->assertSame($errorMessage, $this->getIntlErrorMessage());
+        $this->assertSame($errorCode, $this->getIntlErrorCode());
+        $this->assertTrue($this->isIntlFailure($this->getIntlErrorCode()));
+        $this->assertSame($errorMessage, $formatter->getErrorMessage());
+        $this->assertSame($errorCode, $formatter->getErrorCode());
+        $this->assertTrue($this->isIntlFailure($formatter->getErrorCode()));
+    }
+
+    protected function assertIsIntlSuccess($formatter, $errorMessage, $errorCode)
+    {
+        /* @var IntlDateFormatter $formatter */
+        $this->assertSame($errorMessage, $this->getIntlErrorMessage());
+        $this->assertSame($errorCode, $this->getIntlErrorCode());
+        $this->assertFalse($this->isIntlFailure($this->getIntlErrorCode()));
+        $this->assertSame($errorMessage, $formatter->getErrorMessage());
+        $this->assertSame($errorCode, $formatter->getErrorCode());
+        $this->assertFalse($this->isIntlFailure($formatter->getErrorCode()));
+    }
+
+    /**
+     * @param $locale
+     * @param $datetype
+     * @param $timetype
+     * @param null $timezone
+     * @param int  $calendar
+     * @param null $pattern
+     *
+     * @return mixed
+     */
+    abstract protected function getDateFormatter($locale, $datetype, $timetype, $timezone = null, $calendar = IntlDateFormatter::GREGORIAN, $pattern = null);
+
+    /**
+     * @return string
+     */
+    abstract protected function getIntlErrorMessage();
+
+    /**
+     * @return int
+     */
+    abstract protected function getIntlErrorCode();
+
+    /**
+     * @param int $errorCode
+     *
+     * @return bool
+     */
+    abstract protected function isIntlFailure($errorCode);
 }

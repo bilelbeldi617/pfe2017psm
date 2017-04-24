@@ -30,7 +30,7 @@ class PhpFileLoaderTest extends TestCase
     {
         $loader = new PhpFileLoader($container = new ContainerBuilder(), new FileLocator());
 
-        $loader->load(__DIR__ . '/../Fixtures/php/simple.php');
+        $loader->load(__DIR__.'/../Fixtures/php/simple.php');
 
         $this->assertEquals('foo', $container->getParameter('foo'), '->load() loads a PHP file resource');
     }

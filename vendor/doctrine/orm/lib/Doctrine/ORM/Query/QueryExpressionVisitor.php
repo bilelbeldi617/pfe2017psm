@@ -43,7 +43,7 @@ class QueryExpressionVisitor extends ExpressionVisitor
     private static $operatorMap = array(
         Comparison::GT => Expr\Comparison::GT,
         Comparison::GTE => Expr\Comparison::GTE,
-        Comparison::LT => Expr\Comparison::LT,
+        Comparison::LT  => Expr\Comparison::LT,
         Comparison::LTE => Expr\Comparison::LTE
     );
 
@@ -95,6 +95,18 @@ class QueryExpressionVisitor extends ExpressionVisitor
     }
 
     /**
+     * Converts Criteria expression to Query one based on static map.
+     *
+     * @param string $criteriaOperator
+     *
+     * @return string|null
+     */
+    private static function convertComparisonOperator($criteriaOperator)
+    {
+        return isset(self::$operatorMap[$criteriaOperator]) ? self::$operatorMap[$criteriaOperator] : null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function walkCompositeExpression(CompositeExpression $expr)
@@ -105,7 +117,7 @@ class QueryExpressionVisitor extends ExpressionVisitor
             $expressionList[] = $this->dispatch($child);
         }
 
-        switch ($expr->getType()) {
+        switch($expr->getType()) {
             case CompositeExpression::TYPE_AND:
                 return new Expr\Andx($expressionList);
 
@@ -171,17 +183,5 @@ class QueryExpressionVisitor extends ExpressionVisitor
     public function walkValue(Value $value)
     {
         return $value->getValue();
-    }
-
-    /**
-     * Converts Criteria expression to Query one based on static map.
-     *
-     * @param string $criteriaOperator
-     *
-     * @return string|null
-     */
-    private static function convertComparisonOperator($criteriaOperator)
-    {
-        return isset(self::$operatorMap[$criteriaOperator]) ? self::$operatorMap[$criteriaOperator] : null;
     }
 }

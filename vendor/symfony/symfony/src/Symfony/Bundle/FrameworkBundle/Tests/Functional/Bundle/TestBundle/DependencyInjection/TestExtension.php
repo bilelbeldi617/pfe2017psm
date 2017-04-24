@@ -31,17 +31,17 @@ class TestExtension extends Extension implements PrependExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container)
     {
-        return new Configuration($this->customConfig);
+        $container->prependExtensionConfig('test', array('custom' => 'foo'));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        $container->prependExtensionConfig('test', array('custom' => 'foo'));
+        return new Configuration($this->customConfig);
     }
 
     public function setCustomConfig($customConfig)

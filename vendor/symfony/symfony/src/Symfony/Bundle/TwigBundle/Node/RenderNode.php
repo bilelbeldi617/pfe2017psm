@@ -38,6 +38,7 @@ class RenderNode extends \Twig_Node
             ->subcompile($this->getNode('expr'))
             ->raw(', ')
             ->subcompile($this->getNode('options'))
-            ->raw(");\n");
+            ->raw(");\n")
+        ;
     }
 }

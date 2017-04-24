@@ -3,43 +3,24 @@
                 them as JavaScript source code. Always use '/*' comments instead
                 of '//' comments to avoid impossible-to-debug side-effects #}
 
-    Sfjs = (function () {
+    Sfjs = (function() {
         "use strict";
 
         var classListIsSupported = 'classList' in document.documentElement;
 
         if (classListIsSupported) {
-            var hasClass = function (el, cssClass) {
-                return el.classList.contains(cssClass);
-            };
-            var removeClass = function (el, cssClass) {
-                el.classList.remove(cssClass);
-            };
-            var addClass = function (el, cssClass) {
-                el.classList.add(cssClass);
-            };
-            var toggleClass = function (el, cssClass) {
-                el.classList.toggle(cssClass);
-            };
+            var hasClass = function (el, cssClass) { return el.classList.contains(cssClass); };
+            var removeClass = function(el, cssClass) { el.classList.remove(cssClass); };
+            var addClass = function(el, cssClass) { el.classList.add(cssClass); };
+            var toggleClass = function(el, cssClass) { el.classList.toggle(cssClass); };
         } else {
-            var hasClass = function (el, cssClass) {
-                return el.className.match(new RegExp('\\b' + cssClass + '\\b'));
-            };
-            var removeClass = function (el, cssClass) {
-                el.className = el.className.replace(new RegExp('\\b' + cssClass + '\\b'), ' ');
-            };
-            var addClass = function (el, cssClass) {
-                if (!hasClass(el, cssClass)) {
-                    el.className += " " + cssClass;
-                }
-            };
-            var toggleClass = function (el, cssClass) {
-                hasClass(el, cssClass) ? removeClass(el, cssClass) : addClass(el, cssClass);
-            };
+            var hasClass = function (el, cssClass) { return el.className.match(new RegExp('\\b' + cssClass + '\\b')); };
+            var removeClass = function(el, cssClass) { el.className = el.className.replace(new RegExp('\\b' + cssClass + '\\b'), ' '); };
+            var addClass = function(el, cssClass) { if (!hasClass(el, cssClass)) { el.className += " " + cssClass; } };
+            var toggleClass = function(el, cssClass) { hasClass(el, cssClass) ? removeClass(el, cssClass) : addClass(el, cssClass); };
         }
 
-        var noop = function () {
-            },
+        var noop = function() {},
 
             collectionToArray = function (collection) {
                 var length = collection.length || 0,
@@ -54,19 +35,19 @@
 
             profilerStorageKey = 'sf2/profiler/',
 
-            request = function (url, onSuccess, onError, payload, options) {
+            request = function(url, onSuccess, onError, payload, options) {
                 var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
                 options = options || {};
                 options.maxTries = options.maxTries || 0;
                 xhr.open(options.method || 'GET', url, true);
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                xhr.onreadystatechange = function (state) {
+                xhr.onreadystatechange = function(state) {
                     if (4 !== xhr.readyState) {
                         return null;
                     }
 
                     if (xhr.status == 404 && options.maxTries > 1) {
-                        setTimeout(function () {
+                        setTimeout(function(){
                             options.maxTries--;
                             request(url, onSuccess, onError, payload, options);
                         }, 500);
@@ -83,7 +64,7 @@
                 xhr.send(payload || '');
             },
 
-            getPreference = function (name) {
+            getPreference = function(name) {
                 if (!window.localStorage) {
                     return null;
                 }
@@ -91,7 +72,7 @@
                 return localStorage.getItem(profilerStorageKey + name);
             },
 
-            setPreference = function (name, value) {
+            setPreference = function(name, value) {
                 if (!window.localStorage) {
                     return null;
                 }
@@ -101,7 +82,7 @@
 
             requestStack = [],
 
-            extractHeaders = function (xhr, stackElement) {
+            extractHeaders = function(xhr, stackElement) {
                 /* Here we avoid to call xhr.getResponseHeader in order to */
                 /* prevent polluting the console with CORS security errors */
                 var allHeaders = xhr.getAllResponseHeaders();
@@ -115,7 +96,7 @@
                 }
             },
 
-            renderAjaxRequests = function () {
+            renderAjaxRequests = function() {
                 var requestCounter = document.querySelectorAll('.sf-toolbar-ajax-requests');
                 if (!requestCounter.length) {
                     return;
@@ -241,52 +222,52 @@
         }
 
         {% if excluded_ajax_paths is defined %}
-        if (window.XMLHttpRequest && XMLHttpRequest.prototype.addEventListener) {
-            var proxied = XMLHttpRequest.prototype.open;
+            if (window.XMLHttpRequest && XMLHttpRequest.prototype.addEventListener) {
+                var proxied = XMLHttpRequest.prototype.open;
 
-            XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
-                var self = this;
+                XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+                    var self = this;
 
-                /* prevent logging AJAX calls to static and inline files, like templates */
-                var path = url;
-                if (url.substr(0, 1) === '/') {
-                    if (0 === url.indexOf('{{ request.basePath|e('js') }}')) {
-                        path = url.substr({{ request.basePath|length }});
-                    }
-                }
-                else if (0 === url.indexOf('{{ (request.schemeAndHttpHost ~ request.basePath)|e('js') }}')) {
-                    path = url.substr({{ (request.schemeAndHttpHost ~ request.basePath)|length }});
-                }
-
-                if (!path.match(new RegExp({{ excluded_ajax_paths|json_encode|raw }}))) {
-                    var stackElement = {
-                        loading: true,
-                        error: false,
-                        url: url,
-                        method: method,
-                        start: new Date()
-                    };
-
-                    requestStack.push(stackElement);
-
-                    this.addEventListener('readystatechange', function () {
-                        if (self.readyState == 4) {
-                            stackElement.duration = new Date() - stackElement.start;
-                            stackElement.loading = false;
-                            stackElement.error = self.status < 200 || self.status >= 400;
-
-                            extractHeaders(self, stackElement);
-
-                            Sfjs.renderAjaxRequests();
+                    /* prevent logging AJAX calls to static and inline files, like templates */
+                    var path = url;
+                    if (url.substr(0, 1) === '/') {
+                        if (0 === url.indexOf('{{ request.basePath|e('js') }}')) {
+                            path = url.substr({{ request.basePath|length }});
                         }
-                    }, false);
+                    }
+                    else if (0 === url.indexOf('{{ (request.schemeAndHttpHost ~ request.basePath)|e('js') }}')) {
+                        path = url.substr({{ (request.schemeAndHttpHost ~ request.basePath)|length }});
+                    }
 
-                    Sfjs.renderAjaxRequests();
-                }
+                    if (!path.match(new RegExp({{ excluded_ajax_paths|json_encode|raw }}))) {
+                        var stackElement = {
+                            loading: true,
+                            error: false,
+                            url: url,
+                            method: method,
+                            start: new Date()
+                        };
 
-                proxied.apply(this, Array.prototype.slice.call(arguments));
-            };
-        }
+                        requestStack.push(stackElement);
+
+                        this.addEventListener('readystatechange', function() {
+                            if (self.readyState == 4) {
+                                stackElement.duration = new Date() - stackElement.start;
+                                stackElement.loading = false;
+                                stackElement.error = self.status < 200 || self.status >= 400;
+
+                                extractHeaders(self, stackElement);
+
+                                Sfjs.renderAjaxRequests();
+                            }
+                        }, false);
+
+                        Sfjs.renderAjaxRequests();
+                    }
+
+                    proxied.apply(this, Array.prototype.slice.call(arguments));
+                };
+            }
         {% endif %}
 
         return {
@@ -308,21 +289,19 @@
 
             renderAjaxRequests: renderAjaxRequests,
 
-            load: function (selector, url, onSuccess, onError, options) {
+            load: function(selector, url, onSuccess, onError, options) {
                 var el = document.getElementById(selector);
 
                 if (el && el.getAttribute('data-sfurl') !== url) {
                     request(
                         url,
-                        function (xhr) {
+                        function(xhr) {
                             el.innerHTML = xhr.responseText;
                             el.setAttribute('data-sfurl', url);
                             removeClass(el, 'loading');
                             (onSuccess || noop)(xhr, el);
                         },
-                        function (xhr) {
-                            (onError || noop)(xhr, el);
-                        },
+                        function(xhr) { (onError || noop)(xhr, el); },
                         '',
                         options
                     );
@@ -331,7 +310,7 @@
                 return this;
             },
 
-            toggle: function (selector, elOn, elOff) {
+            toggle: function(selector, elOn, elOff) {
                 var tmp = elOn.style.display,
                     el = document.getElementById(selector);
 
@@ -345,7 +324,7 @@
                 return this;
             },
 
-            createTabs: function () {
+            createTabs: function() {
                 var tabGroups = document.querySelectorAll('.sf-tabs');
 
                 /* create the tab navigation for each group of tabs */
@@ -360,12 +339,8 @@
 
                         var tabNavigationItem = document.createElement('li');
                         tabNavigationItem.setAttribute('data-tab-id', tabId);
-                        if (j == 0) {
-                            Sfjs.addClass(tabNavigationItem, 'active');
-                        }
-                        if (Sfjs.hasClass(tabs[j], 'disabled')) {
-                            Sfjs.addClass(tabNavigationItem, 'disabled');
-                        }
+                        if (j == 0) { Sfjs.addClass(tabNavigationItem, 'active'); }
+                        if (Sfjs.hasClass(tabs[j], 'disabled')) { Sfjs.addClass(tabNavigationItem, 'disabled'); }
                         tabNavigationItem.innerHTML = tabTitle;
                         tabNavigation.appendChild(tabNavigationItem);
 
@@ -390,7 +365,7 @@
                             document.getElementById(tabId).className = 'hidden';
                         }
 
-                        tabNavigation[j].addEventListener('click', function (e) {
+                        tabNavigation[j].addEventListener('click', function(e) {
                             var activeTab = e.target || e.srcElement;
 
                             /* needed because when the tab contains HTML contents, user can click */
@@ -415,7 +390,7 @@
                 }
             },
 
-            createToggles: function () {
+            createToggles: function() {
                 var toggles = document.querySelectorAll('.sf-toggle');
 
                 for (var i = 0; i < toggles.length; i++) {
@@ -430,7 +405,7 @@
                         Sfjs.addClass(element, 'sf-toggle-hidden');
                     }
 
-                    Sfjs.addEventListener(toggles[i], 'click', function (e) {
+                    Sfjs.addEventListener(toggles[i], 'click', function(e) {
                         e.preventDefault();
 
                         var toggle = e.target || e.srcElement;
@@ -465,9 +440,9 @@
         };
     })();
 
-    Sfjs.addEventListener(window, 'load', function () {
+    Sfjs.addEventListener(window, 'load', function() {
         Sfjs.createTabs();
         Sfjs.createToggles();
     });
 
-    /*]]>*/</script>
+/*]]>*/</script>

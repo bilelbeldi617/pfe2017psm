@@ -23,7 +23,7 @@ interface PropertyDescriptionExtractorInterface
      *
      * @param string $class
      * @param string $property
-     * @param array $context
+     * @param array  $context
      *
      * @return string|null
      */
@@ -34,7 +34,7 @@ interface PropertyDescriptionExtractorInterface
      *
      * @param string $class
      * @param string $property
-     * @param array $context
+     * @param array  $context
      *
      * @return string|null
      */

@@ -61,9 +61,25 @@ class MappingRule
      */
     public function match($propertyPath)
     {
-        if ($propertyPath === (string)$this->propertyPath) {
+        if ($propertyPath === (string) $this->propertyPath) {
             return $this->getTarget();
         }
+    }
+
+    /**
+     * Matches a property path against a prefix of the rule path.
+     *
+     * @param string $propertyPath The property path to match against the rule
+     *
+     * @return bool Whether the property path is a prefix of the rule or not
+     */
+    public function isPrefix($propertyPath)
+    {
+        $length = strlen($propertyPath);
+        $prefix = substr($this->propertyPath, 0, $length);
+        $next = isset($this->propertyPath[$length]) ? $this->propertyPath[$length] : null;
+
+        return $prefix === $propertyPath && ('[' === $next || '.' === $next);
     }
 
     /**
@@ -84,21 +100,5 @@ class MappingRule
         }
 
         return $target;
-    }
-
-    /**
-     * Matches a property path against a prefix of the rule path.
-     *
-     * @param string $propertyPath The property path to match against the rule
-     *
-     * @return bool Whether the property path is a prefix of the rule or not
-     */
-    public function isPrefix($propertyPath)
-    {
-        $length = strlen($propertyPath);
-        $prefix = substr($this->propertyPath, 0, $length);
-        $next = isset($this->propertyPath[$length]) ? $this->propertyPath[$length] : null;
-
-        return $prefix === $propertyPath && ('[' === $next || '.' === $next);
     }
 }

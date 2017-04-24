@@ -34,17 +34,17 @@ interface ContainerInterface
      *
      * Note: The $scope parameter is deprecated since version 2.8 and will be removed in 3.0.
      *
-     * @param string $id The service identifier
+     * @param string $id      The service identifier
      * @param object $service The service instance
-     * @param string $scope The scope of the service
+     * @param string $scope   The scope of the service
      */
     public function set($id, $service, $scope = self::SCOPE_CONTAINER);
 
     /**
      * Gets a service.
      *
-     * @param string $id The service identifier
-     * @param int $invalidBehavior The behavior when the service does not exist
+     * @param string $id              The service identifier
+     * @param int    $invalidBehavior The behavior when the service does not exist
      *
      * @return object The associated service
      *
@@ -87,8 +87,8 @@ interface ContainerInterface
     /**
      * Sets a parameter.
      *
-     * @param string $name The parameter name
-     * @param mixed $value The parameter value
+     * @param string $name  The parameter name
+     * @param mixed  $value The parameter value
      */
     public function setParameter($name, $value);
 

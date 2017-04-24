@@ -21,12 +21,12 @@ class ConcreteComposite extends Composite
 {
     public $constraints;
 
-    public function getDefaultOption()
+    protected function getCompositeOption()
     {
         return 'constraints';
     }
 
-    protected function getCompositeOption()
+    public function getDefaultOption()
     {
         return 'constraints';
     }

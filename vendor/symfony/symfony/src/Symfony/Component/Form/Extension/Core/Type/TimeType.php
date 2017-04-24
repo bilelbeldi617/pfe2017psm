@@ -63,7 +63,7 @@ class TimeType extends AbstractType
                 $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $e) {
                     $data = $e->getData();
                     if ($data && preg_match('/^\d{2}:\d{2}$/', $data)) {
-                        $e->setData($data . ':00');
+                        $e->setData($data.':00');
                     }
                 });
             }

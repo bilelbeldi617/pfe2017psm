@@ -25,6 +25,11 @@ class CollectionToArrayTransformerTest extends TestCase
      */
     private $transformer;
 
+    protected function setUp()
+    {
+        $this->transformer = new CollectionToArrayTransformer();
+    }
+
     public function testTransform()
     {
         $array = array(
@@ -83,10 +88,5 @@ class CollectionToArrayTransformerTest extends TestCase
     public function testReverseTransformNull()
     {
         $this->assertEquals(new ArrayCollection(), $this->transformer->reverseTransform(null));
-    }
-
-    protected function setUp()
-    {
-        $this->transformer = new CollectionToArrayTransformer();
     }
 }

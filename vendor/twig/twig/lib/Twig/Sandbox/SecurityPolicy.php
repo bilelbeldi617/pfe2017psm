@@ -33,14 +33,6 @@ class Twig_Sandbox_SecurityPolicy implements Twig_Sandbox_SecurityPolicyInterfac
         $this->allowedFunctions = $allowedFunctions;
     }
 
-    public function setAllowedMethods(array $methods)
-    {
-        $this->allowedMethods = array();
-        foreach ($methods as $class => $m) {
-            $this->allowedMethods[$class] = array_map('strtolower', is_array($m) ? $m : array($m));
-        }
-    }
-
     public function setAllowedTags(array $tags)
     {
         $this->allowedTags = $tags;
@@ -49,6 +41,14 @@ class Twig_Sandbox_SecurityPolicy implements Twig_Sandbox_SecurityPolicyInterfac
     public function setAllowedFilters(array $filters)
     {
         $this->allowedFilters = $filters;
+    }
+
+    public function setAllowedMethods(array $methods)
+    {
+        $this->allowedMethods = array();
+        foreach ($methods as $class => $m) {
+            $this->allowedMethods[$class] = array_map('strtolower', is_array($m) ? $m : array($m));
+        }
     }
 
     public function setAllowedProperties(array $properties)

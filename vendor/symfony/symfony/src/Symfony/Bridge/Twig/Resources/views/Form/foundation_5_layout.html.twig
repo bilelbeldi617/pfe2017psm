@@ -251,16 +251,16 @@
     {% if label is empty %}
         {%- if label_format is not empty -%}
             {% set label = label_format|replace({
-            '%name%': name,
-            '%id%': id,
+                '%name%': name,
+                '%id%': id,
             }) %}
         {%- else -%}
             {% set label = name|humanize %}
         {%- endif -%}
     {% endif %}
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-    {{ widget|raw }}
-    {{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
+        {{ widget|raw }}
+        {{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
     </label>
 {%- endblock checkbox_radio_label %}
 

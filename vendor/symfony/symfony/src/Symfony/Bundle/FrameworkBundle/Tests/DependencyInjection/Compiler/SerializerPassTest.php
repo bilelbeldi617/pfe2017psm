@@ -55,9 +55,9 @@ class SerializerPassTest extends TestCase
         $container->expects($this->any())
             ->method('findTaggedServiceIds')
             ->will($this->onConsecutiveCalls(
-                array('n' => array('serializer.normalizer')),
-                array()
-            ));
+                    array('n' => array('serializer.normalizer')),
+                    array()
+              ));
 
         $container->expects($this->once())
             ->method('getDefinition')
@@ -78,10 +78,10 @@ class SerializerPassTest extends TestCase
         );
 
         $expected = array(
-            new Reference('n1'),
-            new Reference('n2'),
-            new Reference('n3'),
-        );
+           new Reference('n1'),
+           new Reference('n2'),
+           new Reference('n3'),
+       );
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('findTaggedServiceIds'))->getMock();
 
@@ -92,8 +92,8 @@ class SerializerPassTest extends TestCase
         $serializerPass = new SerializerPass();
 
         $method = new \ReflectionMethod(
-            'Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\SerializerPass',
-            'findAndSortTaggedServices'
+          'Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\SerializerPass',
+          'findAndSortTaggedServices'
         );
         $method->setAccessible(true);
 

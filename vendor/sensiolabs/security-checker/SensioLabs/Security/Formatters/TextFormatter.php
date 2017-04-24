@@ -25,8 +25,8 @@ class TextFormatter implements FormatterInterface
      * Displays a security report as plain text.
      *
      * @param OutputInterface $output
-     * @param string $lockFilePath The file path to the checked lock file
-     * @param array $vulnerabilities An array of vulnerabilities
+     * @param string          $lockFilePath    The file path to the checked lock file
+     * @param array           $vulnerabilities An array of vulnerabilities
      */
     public function displayResults(OutputInterface $output, $lockFilePath, array $vulnerabilities)
     {
@@ -43,23 +43,23 @@ class TextFormatter implements FormatterInterface
         }
 
         $message = sprintf('%d %s known vulnerabilities', $count, 1 === $count ? 'package has' : 'packages have');
-        $output->writeln($this->formatter->formatBlock(array('[' . $status . ']', $message), $style, true));
+        $output->writeln($this->formatter->formatBlock(array('['.$status.']', $message), $style, true));
         $output->write("\n");
 
         if (0 !== $count) {
             foreach ($vulnerabilities as $dependency => $issues) {
-                $dependencyFullName = $dependency . ' (' . $issues['version'] . ')';
-                $output->writeln('<info>' . $dependencyFullName . "\n" . str_repeat('-', strlen($dependencyFullName)) . "</>\n");
+                $dependencyFullName = $dependency.' ('.$issues['version'].')';
+                $output->writeln('<info>'.$dependencyFullName."\n".str_repeat('-', strlen($dependencyFullName))."</>\n");
 
                 foreach ($issues['advisories'] as $issue => $details) {
                     $output->write(' * ');
                     if ($details['cve']) {
-                        $output->write('<comment>' . $details['cve'] . ': </comment>');
+                        $output->write('<comment>'.$details['cve'].': </comment>');
                     }
                     $output->writeln($details['title']);
 
                     if ('' !== $details['link']) {
-                        $output->writeln('   ' . $details['link']);
+                        $output->writeln('   '.$details['link']);
                     }
 
                     $output->writeln('');

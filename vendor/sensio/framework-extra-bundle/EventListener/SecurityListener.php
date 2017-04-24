@@ -45,13 +45,6 @@ class SecurityListener implements EventSubscriberInterface
         $this->roleHierarchy = $roleHierarchy;
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(KernelEvents::CONTROLLER => 'onKernelController');
-    }
-
-    // code should be sync with Symfony\Component\Security\Core\Authorization\Voter\ExpressionVoter
-
     public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
@@ -76,6 +69,7 @@ class SecurityListener implements EventSubscriberInterface
         }
     }
 
+    // code should be sync with Symfony\Component\Security\Core\Authorization\Voter\ExpressionVoter
     private function getVariables(Request $request)
     {
         $token = $this->tokenStorage->getToken();
@@ -91,9 +85,7 @@ class SecurityListener implements EventSubscriberInterface
             'user' => $token->getUser(),
             'object' => $request,
             'request' => $request,
-            'roles' => array_map(function ($role) {
-                return $role->getRole();
-            }, $roles),
+            'roles' => array_map(function ($role) { return $role->getRole(); }, $roles),
             'trust_resolver' => $this->trustResolver,
             // needed for the is_granted expression function
             'auth_checker' => $this->authChecker,
@@ -101,5 +93,10 @@ class SecurityListener implements EventSubscriberInterface
 
         // controller variables should also be accessible
         return array_merge($request->attributes->all(), $variables);
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::CONTROLLER => 'onKernelController');
     }
 }

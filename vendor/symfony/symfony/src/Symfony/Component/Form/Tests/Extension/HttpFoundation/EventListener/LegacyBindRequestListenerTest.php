@@ -36,6 +36,42 @@ class LegacyBindRequestListenerTest extends TestCase
      */
     private $uploadedFile;
 
+    protected function setUp()
+    {
+        $path = tempnam(sys_get_temp_dir(), 'sf2');
+        touch($path);
+
+        $this->values = array(
+            'name' => 'Bernhard',
+            'image' => array('filename' => 'foobar.png'),
+        );
+
+        $this->filesPlain = array(
+            'image' => array(
+                'error' => UPLOAD_ERR_OK,
+                'name' => 'upload.png',
+                'size' => 123,
+                'tmp_name' => $path,
+                'type' => 'image/png',
+            ),
+        );
+
+        $this->filesNested = array(
+            'error' => array('image' => UPLOAD_ERR_OK),
+            'name' => array('image' => 'upload.png'),
+            'size' => array('image' => 123),
+            'tmp_name' => array('image' => $path),
+            'type' => array('image' => 'image/png'),
+        );
+
+        $this->uploadedFile = new UploadedFile($path, 'upload.png', 'image/png', 123, UPLOAD_ERR_OK);
+    }
+
+    protected function tearDown()
+    {
+        unlink($this->uploadedFile->getRealPath());
+    }
+
     public function requestMethodProvider()
     {
         return array(
@@ -215,41 +251,5 @@ class LegacyBindRequestListenerTest extends TestCase
         $listener->preBind($event);
 
         $this->assertNull($event->getData());
-    }
-
-    protected function setUp()
-    {
-        $path = tempnam(sys_get_temp_dir(), 'sf2');
-        touch($path);
-
-        $this->values = array(
-            'name' => 'Bernhard',
-            'image' => array('filename' => 'foobar.png'),
-        );
-
-        $this->filesPlain = array(
-            'image' => array(
-                'error' => UPLOAD_ERR_OK,
-                'name' => 'upload.png',
-                'size' => 123,
-                'tmp_name' => $path,
-                'type' => 'image/png',
-            ),
-        );
-
-        $this->filesNested = array(
-            'error' => array('image' => UPLOAD_ERR_OK),
-            'name' => array('image' => 'upload.png'),
-            'size' => array('image' => 123),
-            'tmp_name' => array('image' => $path),
-            'type' => array('image' => 'image/png'),
-        );
-
-        $this->uploadedFile = new UploadedFile($path, 'upload.png', 'image/png', 123, UPLOAD_ERR_OK);
-    }
-
-    protected function tearDown()
-    {
-        unlink($this->uploadedFile->getRealPath());
     }
 }

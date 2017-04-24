@@ -27,16 +27,6 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
 
 class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 {
-    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
-    {
-        $metadata = $this->getMetadata();
-
-        $this->assertEquals(
-            array('name' => 'DateTime', 'params' => array()),
-            $metadata->propertyMetadata['createdAt']->type
-        );
-    }
-
     public function getMetadata()
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Doctrine\BlogPost');
@@ -45,46 +35,21 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         return $metadata;
     }
 
-    protected function getDoctrineDriver()
+    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
     {
-        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
-        $registry->expects($this->atLeastOnce())
-            ->method('getManagerForClass')
-            ->will($this->returnValue($this->getEntityManager()));
+        $metadata = $this->getMetadata();
 
-        return new DoctrineTypeDriver(
-            $this->getAnnotationDriver(),
-            $registry
+        $this->assertEquals(
+            array('name'=> 'DateTime', 'params' => array()),
+            $metadata->propertyMetadata['createdAt']->type
         );
-    }
-
-    protected function getEntityManager()
-    {
-        $config = new Configuration();
-        $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
-        $config->setProxyNamespace('JMS\Tests\Proxies');
-        $config->setMetadataDriverImpl(
-            new DoctrineDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
-        );
-
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
-
-        return EntityManager::create($conn, $config);
-    }
-
-    public function getAnnotationDriver()
-    {
-        return new AnnotationDriver(new AnnotationReader());
     }
 
     public function testSingleValuedAssociationIsProperlyHinted()
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => array()),
+            array('name'=> 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => array()),
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -94,7 +59,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name' => 'ArrayCollection', 'params' => array(
+            array('name'=> 'ArrayCollection', 'params' => array(
                 array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => array()))
             ),
             $metadata->propertyMetadata['comments']->type
@@ -107,7 +72,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         // This would be guessed as boolean but we've overriden it to integer
         $this->assertEquals(
-            array('name' => 'integer', 'params' => array()),
+            array('name'=> 'integer', 'params' => array()),
             $metadata->propertyMetadata['published']->type
         );
     }
@@ -133,5 +98,40 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($plainMetadata, $doctrineMetadata);
+    }
+
+    protected function getEntityManager()
+    {
+        $config = new Configuration();
+        $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
+        $config->setProxyNamespace('JMS\Tests\Proxies');
+        $config->setMetadataDriverImpl(
+            new DoctrineDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/Doctrine')
+        );
+
+        $conn = array(
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
+        );
+
+        return EntityManager::create($conn, $config);
+    }
+
+    public function getAnnotationDriver()
+    {
+        return new AnnotationDriver(new AnnotationReader());
+    }
+
+    protected function getDoctrineDriver()
+    {
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $registry->expects($this->atLeastOnce())
+             ->method('getManagerForClass')
+             ->will($this->returnValue($this->getEntityManager()));
+
+        return new DoctrineTypeDriver(
+            $this->getAnnotationDriver(),
+            $registry
+        );
     }
 }

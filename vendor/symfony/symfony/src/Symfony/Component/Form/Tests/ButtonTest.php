@@ -24,6 +24,12 @@ class ButtonTest extends TestCase
 
     private $factory;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+    }
+
     /**
      * @dataProvider getDisabledStates
      */
@@ -42,16 +48,6 @@ class ButtonTest extends TestCase
         $this->assertSame($result, $button->isDisabled());
     }
 
-    private function getFormBuilder($name)
-    {
-        return new FormBuilder($name, null, $this->dispatcher, $this->factory);
-    }
-
-    private function getButtonBuilder($name)
-    {
-        return new ButtonBuilder($name);
-    }
-
     public function getDisabledStates()
     {
         return array(
@@ -63,9 +59,13 @@ class ButtonTest extends TestCase
         );
     }
 
-    protected function setUp()
+    private function getButtonBuilder($name)
     {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        return new ButtonBuilder($name);
+    }
+
+    private function getFormBuilder($name)
+    {
+        return new FormBuilder($name, null, $this->dispatcher, $this->factory);
     }
 }

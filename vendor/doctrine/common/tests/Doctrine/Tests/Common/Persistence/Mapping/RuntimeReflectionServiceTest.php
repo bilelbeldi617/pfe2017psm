@@ -26,11 +26,12 @@ use Doctrine\Common\Persistence\Mapping\RuntimeReflectionService;
  */
 class RuntimeReflectionServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public $unusedPublicProperty;
     /**
      * @var RuntimeReflectionService
      */
     private $reflectionService;
+
+    public $unusedPublicProperty;
 
     public function setUp()
     {
@@ -50,7 +51,7 @@ class RuntimeReflectionServiceTest extends \PHPUnit_Framework_TestCase
     public function testGetParentClasses()
     {
         $classes = $this->reflectionService->getParentClasses(__CLASS__);
-        $this->assertTrue(count($classes) >= 1, "The test class " . __CLASS__ . " should have at least one parent.");
+        $this->assertTrue(count($classes) >= 1, "The test class ".__CLASS__." should have at least one parent.");
     }
 
     public function testGetParentClassesForAbsentClass()

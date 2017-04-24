@@ -24,9 +24,14 @@ class PhpBundleReaderTest extends TestCase
      */
     private $reader;
 
+    protected function setUp()
+    {
+        $this->reader = new PhpBundleReader();
+    }
+
     public function testReadReturnsArray()
     {
-        $data = $this->reader->read(__DIR__ . '/Fixtures/php', 'en');
+        $data = $this->reader->read(__DIR__.'/Fixtures/php', 'en');
 
         $this->assertInternalType('array', $data);
         $this->assertSame('Bar', $data['Foo']);
@@ -38,7 +43,7 @@ class PhpBundleReaderTest extends TestCase
      */
     public function testReadFailsIfNonExistingLocale()
     {
-        $this->reader->read(__DIR__ . '/Fixtures/php', 'foo');
+        $this->reader->read(__DIR__.'/Fixtures/php', 'foo');
     }
 
     /**
@@ -46,7 +51,7 @@ class PhpBundleReaderTest extends TestCase
      */
     public function testReadFailsIfNonExistingDirectory()
     {
-        $this->reader->read(__DIR__ . '/foo', 'en');
+        $this->reader->read(__DIR__.'/foo', 'en');
     }
 
     /**
@@ -54,11 +59,6 @@ class PhpBundleReaderTest extends TestCase
      */
     public function testReadFailsIfNotAFile()
     {
-        $this->reader->read(__DIR__ . '/Fixtures/NotAFile', 'en');
-    }
-
-    protected function setUp()
-    {
-        $this->reader = new PhpBundleReader();
+        $this->reader->read(__DIR__.'/Fixtures/NotAFile', 'en');
     }
 }

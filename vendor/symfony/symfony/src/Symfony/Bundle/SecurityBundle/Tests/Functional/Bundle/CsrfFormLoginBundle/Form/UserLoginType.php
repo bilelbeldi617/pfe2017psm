@@ -47,7 +47,8 @@ class UserLoginType extends AbstractType
         $builder
             ->add('username', 'Symfony\Component\Form\Extension\Core\Type\TextType')
             ->add('password', 'Symfony\Component\Form\Extension\Core\Type\PasswordType')
-            ->add('_target_path', 'Symfony\Component\Form\Extension\Core\Type\HiddenType');
+            ->add('_target_path', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
+        ;
 
         $request = $this->requestStack->getCurrentRequest();
 
@@ -67,7 +68,7 @@ class UserLoginType extends AbstractType
                 $event->getForm()->addError(new FormError($error->getMessage()));
             }
 
-            $event->setData(array_replace((array)$event->getData(), array(
+            $event->setData(array_replace((array) $event->getData(), array(
                 'username' => $request->getSession()->get(Security::LAST_USERNAME),
             )));
         });

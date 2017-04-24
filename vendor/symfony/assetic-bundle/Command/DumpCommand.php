@@ -39,7 +39,8 @@ class DumpCommand extends AbstractCommand
             ->addOption('forks', null, InputOption::VALUE_REQUIRED, 'Fork work across many processes (requires kriswallsmith/spork)')
             ->addOption('watch', null, InputOption::VALUE_NONE, 'DEPRECATED: use assetic:watch instead')
             ->addOption('force', null, InputOption::VALUE_NONE, 'DEPRECATED: use assetic:watch instead')
-            ->addOption('period', null, InputOption::VALUE_REQUIRED, 'DEPRECATED: use assetic:watch instead', 1);
+            ->addOption('period', null, InputOption::VALUE_REQUIRED, 'DEPRECATED: use assetic:watch instead', 1)
+        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $stdout)
@@ -72,16 +73,16 @@ class DumpCommand extends AbstractCommand
 
         if ($input->getOption('watch')) {
             $stderr->writeln(
-                '<error>The --watch option is deprecated. Please use the ' .
+                '<error>The --watch option is deprecated. Please use the '.
                 'assetic:watch command instead.</error>'
             );
 
             // build assetic:watch arguments
             $arguments = array(
-                'command' => 'assetic:watch',
+                'command'  => 'assetic:watch',
                 'write_to' => $this->basePath,
                 '--period' => $input->getOption('period'),
-                '--env' => $input->getOption('env'),
+                '--env'    => $input->getOption('env'),
             );
 
             if ($input->getOption('no-debug')) {

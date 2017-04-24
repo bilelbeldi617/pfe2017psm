@@ -39,7 +39,7 @@ class JsonEncode implements EncoderInterface
      */
     public function getLastError()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Catch the exception raised by the encode() method instead to get the last JSON encoding error.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Catch the exception raised by the encode() method instead to get the last JSON encoding error.', E_USER_DEPRECATED);
 
         return $this->lastError;
     }
@@ -63,6 +63,14 @@ class JsonEncode implements EncoderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function supportsEncoding($format)
+    {
+        return JsonEncoder::FORMAT === $format;
+    }
+
+    /**
      * Merge default json encode options with context.
      *
      * @param array $context
@@ -72,13 +80,5 @@ class JsonEncode implements EncoderInterface
     private function resolveContext(array $context = array())
     {
         return array_merge(array('json_encode_options' => $this->options), $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsEncoding($format)
-    {
-        return JsonEncoder::FORMAT === $format;
     }
 }

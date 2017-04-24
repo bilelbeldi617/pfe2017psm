@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Validator;
 
-@trigger_error('The ' . __NAMESPACE__ . '\ValidationVisitor class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\ValidationVisitor class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
@@ -70,12 +70,12 @@ class ValidationVisitor implements ValidationVisitorInterface, GlobalExecutionCo
     /**
      * Creates a new validation visitor.
      *
-     * @param mixed $root The value passed to the validator
-     * @param MetadataFactoryInterface $metadataFactory The factory for obtaining metadata instances
-     * @param ConstraintValidatorFactoryInterface $validatorFactory The factory for creating constraint validators
-     * @param TranslatorInterface $translator The translator for translating violation messages
-     * @param string|null $translationDomain The domain of the translation messages
-     * @param ObjectInitializerInterface[] $objectInitializers The initializers for preparing objects before validation
+     * @param mixed                               $root               The value passed to the validator
+     * @param MetadataFactoryInterface            $metadataFactory    The factory for obtaining metadata instances
+     * @param ConstraintValidatorFactoryInterface $validatorFactory   The factory for creating constraint validators
+     * @param TranslatorInterface                 $translator         The translator for translating violation messages
+     * @param string|null                         $translationDomain  The domain of the translation messages
+     * @param ObjectInitializerInterface[]        $objectInitializers The initializers for preparing objects before validation
      *
      * @throws UnexpectedTypeException If any of the object initializers is not an instance of ObjectInitializerInterface
      */
@@ -154,7 +154,7 @@ class ValidationVisitor implements ValidationVisitorInterface, GlobalExecutionCo
                 // Ignore any scalar values in the collection
                 if (is_object($element) || is_array($element)) {
                     // Only repeat the traversal if $deep is set
-                    $this->validate($element, $group, $propertyPath . '[' . $key . ']', $deep, $deep);
+                    $this->validate($element, $group, $propertyPath.'['.$key.']', $deep, $deep);
                 }
             }
 

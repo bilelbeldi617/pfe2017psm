@@ -24,13 +24,13 @@ final class Php56
     public static function hash_equals($knownString, $userInput)
     {
         if (!is_string($knownString)) {
-            trigger_error('Expected known_string to be a string, ' . gettype($knownString) . ' given', E_USER_WARNING);
+            trigger_error('Expected known_string to be a string, '.gettype($knownString).' given', E_USER_WARNING);
 
             return false;
         }
 
         if (!is_string($userInput)) {
-            trigger_error('Expected user_input to be a string, ' . gettype($userInput) . ' given', E_USER_WARNING);
+            trigger_error('Expected user_input to be a string, '.gettype($userInput).' given', E_USER_WARNING);
 
             return false;
         }
@@ -61,7 +61,7 @@ final class Php56
      *
      * @param string $subject
      * @param string $ignore
-     * @param int $flags
+     * @param int    $flags
      *
      * @return string
      *
@@ -97,7 +97,7 @@ final class Php56
         }
 
         // Create the base char map to escape
-        $flags = (int)$flags;
+        $flags = (int) $flags;
         $charMap = array();
 
         if ($flags & self::LDAP_ESCAPE_FILTER) {
@@ -113,7 +113,7 @@ final class Php56
         }
 
         // Remove any chars to ignore from the list
-        $ignore = (string)$ignore;
+        $ignore = (string) $ignore;
 
         for ($i = 0, $l = strlen($ignore); $i < $l; ++$i) {
             unset($charMap[$ignore[$i]]);
@@ -125,11 +125,11 @@ final class Php56
         // Encode leading/trailing spaces if self::LDAP_ESCAPE_DN is passed
         if ($flags & self::LDAP_ESCAPE_DN) {
             if ($result[0] === ' ') {
-                $result = '\\20' . substr($result, 1);
+                $result = '\\20'.substr($result, 1);
             }
 
             if ($result[strlen($result) - 1] === ' ') {
-                $result = substr($result, 0, -1) . '\\20';
+                $result = substr($result, 0, -1).'\\20';
             }
         }
 

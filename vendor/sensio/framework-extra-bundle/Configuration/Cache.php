@@ -91,6 +91,16 @@ class Cache extends ConfigurationAnnotation
     }
 
     /**
+     * Sets the number of seconds for the max-age cache-control header field.
+     *
+     * @param int $maxage A number of seconds
+     */
+    public function setMaxAge($maxage)
+    {
+        $this->maxage = $maxage;
+    }
+
+    /**
      * Returns the number of seconds the response is considered fresh by a
      * private cache.
      *
@@ -102,13 +112,13 @@ class Cache extends ConfigurationAnnotation
     }
 
     /**
-     * Sets the number of seconds for the max-age cache-control header field.
+     * Sets the number of seconds for the s-maxage cache-control header field.
      *
-     * @param int $maxage A number of seconds
+     * @param int $smaxage A number of seconds
      */
-    public function setMaxAge($maxage)
+    public function setSMaxAge($smaxage)
     {
-        $this->maxage = $maxage;
+        $this->smaxage = $smaxage;
     }
 
     /**
@@ -123,16 +133,6 @@ class Cache extends ConfigurationAnnotation
     }
 
     /**
-     * Sets the number of seconds for the s-maxage cache-control header field.
-     *
-     * @param int $smaxage A number of seconds
-     */
-    public function setSMaxAge($smaxage)
-    {
-        $this->smaxage = $smaxage;
-    }
-
-    /**
      * Returns whether or not a response is public.
      *
      * @return bool
@@ -143,16 +143,6 @@ class Cache extends ConfigurationAnnotation
     }
 
     /**
-     * Sets a response public.
-     *
-     * @param bool $public A boolean value
-     */
-    public function setPublic($public)
-    {
-        $this->public = (bool)$public;
-    }
-
-    /**
      * Returns whether or not a response is private.
      *
      * @return bool
@@ -160,6 +150,16 @@ class Cache extends ConfigurationAnnotation
     public function isPrivate()
     {
         return $this->public === false;
+    }
+
+    /**
+     * Sets a response public.
+     *
+     * @param bool $public A boolean value
+     */
+    public function setPublic($public)
+    {
+        $this->public = (bool) $public;
     }
 
     /**
@@ -183,16 +183,6 @@ class Cache extends ConfigurationAnnotation
     }
 
     /**
-     * Returns the "Last-Modified"-header expression.
-     *
-     * @return string
-     */
-    public function getLastModified()
-    {
-        return $this->lastModified;
-    }
-
-    /**
      * Sets the "Last-Modified"-header expression.
      *
      * @param string $expression
@@ -203,13 +193,13 @@ class Cache extends ConfigurationAnnotation
     }
 
     /**
-     * Returns the "ETag"-header expression.
+     * Returns the "Last-Modified"-header expression.
      *
      * @return string
      */
-    public function getETag()
+    public function getLastModified()
     {
-        return $this->etag;
+        return $this->lastModified;
     }
 
     /**
@@ -220,6 +210,16 @@ class Cache extends ConfigurationAnnotation
     public function setETag($expression)
     {
         $this->etag = $expression;
+    }
+
+    /**
+     * Returns the "ETag"-header expression.
+     *
+     * @return string
+     */
+    public function getETag()
+    {
+        return $this->etag;
     }
 
     /**

@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Finder\Iterator;
 
-@trigger_error('The ' . __NAMESPACE__ . '\FilePathsIterator class is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\FilePathsIterator class is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -50,7 +50,7 @@ class FilePathsIterator extends \ArrayIterator
     private $current;
 
     /**
-     * @param array $paths List of paths returned by shell command
+     * @param array  $paths   List of paths returned by shell command
      * @param string $baseDir Base dir for relative path building
      */
     public function __construct(array $paths, $baseDir)
@@ -63,7 +63,7 @@ class FilePathsIterator extends \ArrayIterator
 
     /**
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      */
@@ -96,21 +96,6 @@ class FilePathsIterator extends \ArrayIterator
         $this->buildProperties();
     }
 
-    private function buildProperties()
-    {
-        $absolutePath = parent::current();
-
-        if ($this->baseDir === substr($absolutePath, 0, $this->baseDirLength)) {
-            $this->subPathname = ltrim(substr($absolutePath, $this->baseDirLength), '/\\');
-            $dir = dirname($this->subPathname);
-            $this->subPath = '.' === $dir ? '' : $dir;
-        } else {
-            $this->subPath = $this->subPathname = '';
-        }
-
-        $this->current = new SplFileInfo(parent::current(), $this->subPath, $this->subPathname);
-    }
-
     public function rewind()
     {
         parent::rewind();
@@ -131,5 +116,20 @@ class FilePathsIterator extends \ArrayIterator
     public function getSubPathname()
     {
         return $this->subPathname;
+    }
+
+    private function buildProperties()
+    {
+        $absolutePath = parent::current();
+
+        if ($this->baseDir === substr($absolutePath, 0, $this->baseDirLength)) {
+            $this->subPathname = ltrim(substr($absolutePath, $this->baseDirLength), '/\\');
+            $dir = dirname($this->subPathname);
+            $this->subPath = '.' === $dir ? '' : $dir;
+        } else {
+            $this->subPath = $this->subPathname = '';
+        }
+
+        $this->current = new SplFileInfo(parent::current(), $this->subPath, $this->subPathname);
     }
 }

@@ -29,17 +29,6 @@ use Symfony\Bundle\MonologBundle\DependencyInjection\Compiler\FixEmptyLoggerPass
  */
 class MonologBundle extends Bundle
 {
-    /**
-     * @internal
-     */
-    public static function includeStacktraces(HandlerInterface $handler)
-    {
-        $formatter = $handler->getFormatter();
-        if ($formatter instanceof LineFormatter || $formatter instanceof JsonFormatter) {
-            $formatter->includeStacktraces();
-        }
-    }
-
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
@@ -51,5 +40,16 @@ class MonologBundle extends Bundle
         $container->addCompilerPass(new FixEmptyLoggerPass($channelPass));
         $container->addCompilerPass(new AddProcessorsPass());
         $container->addCompilerPass(new AddSwiftMailerTransportPass());
+    }
+
+    /**
+     * @internal
+     */
+    public static function includeStacktraces(HandlerInterface $handler)
+    {
+        $formatter = $handler->getFormatter();
+        if ($formatter instanceof LineFormatter || $formatter instanceof JsonFormatter) {
+            $formatter->includeStacktraces();
+        }
     }
 }

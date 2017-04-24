@@ -33,11 +33,6 @@ class CollatorTest extends AbstractCollatorTest
         $collator->compare('a', 'b');
     }
 
-    protected function getCollator($locale)
-    {
-        return new Collator($locale);
-    }
-
     /**
      * @expectedException \Symfony\Component\Intl\Exception\MethodNotImplementedException
      */
@@ -111,5 +106,10 @@ class CollatorTest extends AbstractCollatorTest
     {
         $collator = Collator::create('en');
         $this->assertInstanceOf('\Symfony\Component\Intl\Collator\Collator', $collator);
+    }
+
+    protected function getCollator($locale)
+    {
+        return new Collator($locale);
     }
 }

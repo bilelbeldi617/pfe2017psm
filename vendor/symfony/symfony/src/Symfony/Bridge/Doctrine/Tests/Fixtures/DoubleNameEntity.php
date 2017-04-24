@@ -18,12 +18,14 @@ use Doctrine\ORM\Mapping\Entity;
 /** @Entity */
 class DoubleNameEntity
 {
-    /** @Column(type="string") */
-    public $name;
-    /** @Column(type="string", nullable=true) */
-    public $name2;
     /** @Id @Column(type="integer") */
     protected $id;
+
+    /** @Column(type="string") */
+    public $name;
+
+    /** @Column(type="string", nullable=true) */
+    public $name2;
 
     public function __construct($id, $name, $name2)
     {

@@ -55,21 +55,11 @@ class AnneeScolaire
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get periode
-     *
-     * @return string
-     */
-    public function getPeriode()
-    {
-        return $this->periode;
     }
 
     /**
@@ -83,5 +73,15 @@ class AnneeScolaire
         $this->periode = $periode;
 
         return $this;
+    }
+
+    /**
+     * Get periode
+     *
+     * @return string 
+     */
+    public function getPeriode()
+    {
+        return $this->periode;
     }
 }

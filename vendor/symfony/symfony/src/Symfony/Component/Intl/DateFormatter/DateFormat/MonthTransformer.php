@@ -116,7 +116,7 @@ class MonthTransformer extends Transformer
                 $regExp = '[JFMASOND]';
                 break;
             default:
-                $regExp = '\d{' . $length . '}';
+                $regExp = '\d{'.$length.'}';
                 break;
         }
 
@@ -138,7 +138,7 @@ class MonthTransformer extends Transformer
                 $matched = false;
             }
         } else {
-            $matched = (int)$matched;
+            $matched = (int) $matched;
         }
 
         return array(

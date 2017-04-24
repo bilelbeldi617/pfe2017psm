@@ -37,14 +37,6 @@ class HttpCacheListener implements EventSubscriberInterface
         $this->etags = new \SplObjectStorage();
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::CONTROLLER => 'onKernelController',
-            KernelEvents::RESPONSE => 'onKernelResponse',
-        );
-    }
-
     /**
      * Handles HTTP validation headers.
      */
@@ -82,18 +74,6 @@ class HttpCacheListener implements EventSubscriberInterface
                 $this->lastModifiedDates[$request] = $lastModifiedDate;
             }
         }
-    }
-
-    private function getExpressionLanguage()
-    {
-        if (null === $this->expressionLanguage) {
-            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
-                throw new \RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
-            }
-            $this->expressionLanguage = new ExpressionLanguage();
-        }
-
-        return $this->expressionLanguage;
     }
 
     /**
@@ -164,5 +144,25 @@ class HttpCacheListener implements EventSubscriberInterface
         }
 
         $event->setResponse($response);
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => 'onKernelController',
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        );
+    }
+
+    private function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage) {
+            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+                throw new \RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
+            }
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
     }
 }

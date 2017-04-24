@@ -23,6 +23,13 @@ use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPas
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        if (!class_exists('Doctrine\\Common\\Version')) {
+            $this->markTestSkipped('Doctrine is not available.');
+        }
+    }
+
     public function createYamlBundleTestContainer()
     {
         $container = new ContainerBuilder(new ParameterBag(array(
@@ -30,7 +37,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
             'kernel.bundles' => array('YamlBundle' => 'Fixtures\Bundles\YamlBundle\YamlBundle'),
             'kernel.cache_dir' => sys_get_temp_dir(),
             'kernel.environment' => 'test',
-            'kernel.root_dir' => __DIR__ . '/../../../../', // src dir
+            'kernel.root_dir' => __DIR__.'/../../../../', // src dir
         )));
         $container->set('annotation_reader', new AnnotationReader());
         $extension = new DoctrineExtension();
@@ -50,11 +57,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 ),
             ), 'orm' => array(
                 'default_entity_manager' => 'default',
-                'entity_managers' => array(
+                'entity_managers' => array (
                     'default' => array(
                         'mappings' => array('YamlBundle' => array(
                             'type' => 'yml',
-                            'dir' => __DIR__ . '/DependencyInjection/Fixtures/Bundles/YamlBundle/Resources/config/doctrine',
+                            'dir' => __DIR__.'/DependencyInjection/Fixtures/Bundles/YamlBundle/Resources/config/doctrine',
                             'prefix' => 'Fixtures\Bundles\YamlBundle\Entity',
                         )),
                     ),
@@ -72,12 +79,5 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $container->compile();
 
         return $container;
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Doctrine\\Common\\Version')) {
-            $this->markTestSkipped('Doctrine is not available.');
-        }
     }
 }

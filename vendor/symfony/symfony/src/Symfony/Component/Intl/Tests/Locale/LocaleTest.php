@@ -21,13 +21,6 @@ class LocaleTest extends AbstractLocaleTest
         $this->call('acceptFromHttp', 'pt-br,en-us;q=0.7,en;q=0.5');
     }
 
-    protected function call($methodName)
-    {
-        $args = array_slice(func_get_args(), 1);
-
-        return call_user_func_array(array('Symfony\Component\Intl\Locale\Locale', $methodName), $args);
-    }
-
     /**
      * @expectedException \Symfony\Component\Intl\Exception\MethodNotImplementedException
      */
@@ -160,5 +153,12 @@ class LocaleTest extends AbstractLocaleTest
     public function testSetDefaultAcceptsEn()
     {
         $this->call('setDefault', 'en');
+    }
+
+    protected function call($methodName)
+    {
+        $args = array_slice(func_get_args(), 1);
+
+        return call_user_func_array(array('Symfony\Component\Intl\Locale\Locale', $methodName), $args);
     }
 }

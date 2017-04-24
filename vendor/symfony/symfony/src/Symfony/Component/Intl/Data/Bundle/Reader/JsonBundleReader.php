@@ -28,7 +28,7 @@ class JsonBundleReader implements BundleReaderInterface
      */
     public function read($path, $locale)
     {
-        $fileName = $path . '/' . $locale . '.json';
+        $fileName = $path.'/'.$locale.'.json';
 
         if (!file_exists($fileName)) {
             throw new ResourceBundleNotFoundException(sprintf(

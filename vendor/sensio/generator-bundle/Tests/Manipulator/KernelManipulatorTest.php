@@ -35,7 +35,7 @@ class KernelManipulatorTest extends GeneratorTest
         $params = $this->prepareTestKernel($kernelOriginFilePath);
 
         list($kernelClassName, $fullpath) = $params;
-        $kernelClassName = self::STUB_NAMESPACE . '\\' . $kernelClassName;
+        $kernelClassName = self::STUB_NAMESPACE.'\\'.$kernelClassName;
         $this->registerClassLoader($kernelClassName, $fullpath);
 
         $kernel = new  $kernelClassName('test', true);
@@ -56,6 +56,32 @@ class KernelManipulatorTest extends GeneratorTest
     }
 
     /**
+     * @return array
+     */
+    public function kernelStubFilenamesProvider()
+    {
+        $stubs = array(
+            'With empty bundles array' => array(__DIR__.'/Stubs/EmptyBundlesKernelStub.php'),
+            'With empty multiline bundles array' => array(__DIR__.'/Stubs/EmptyBundlesMultilineKernelStub.php'),
+            'With bundles array contains comma' => array(__DIR__.'/Stubs/ContainsCommaKernelStub.php'),
+            'With bundles added w/o trailing comma' => array(__DIR__.'/Stubs/ContainsBundlesKernelStub.php'),
+            'With some extra code and bad formatted' => array(__DIR__.'/Stubs/ContainsExtraCodeKernelStub.php'),
+
+        );
+
+        if(PHP_VERSION_ID >= 50400){
+            $stubs = array_merge($stubs, array(
+                'With empty bundles array, short array syntax' => array(__DIR__.'/Stubs/EmptyBundlesShortArraySyntaxKernelStub.php'),
+                'With empty multiline bundles array, short array syntax' => array(__DIR__.'/Stubs/EmptyBundlesMultilineShortArraySyntaxKernelStub.php'),
+                'With bundles array contains comma, short array syntax' => array(__DIR__.'/Stubs/ContainsCommaShortArraySyntaxKernelStub.php'),
+                'With bundles added w/o trailing comma, short array syntax' => array(__DIR__.'/Stubs/ContainsBundlesShortArraySyntaxKernelStub.php'),
+            ));
+        }
+
+        return $stubs;
+    }
+
+    /**
      * Copies stub file to tmp.
      *
      * @param string $kernelOriginFilePath
@@ -68,10 +94,10 @@ class KernelManipulatorTest extends GeneratorTest
         $fileName = $pathInfo['basename'];
         $className = $pathInfo['filename'];
 
-        $targetDir = $this->tmpDir . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, self::STUB_NAMESPACE);
+        $targetDir = $this->tmpDir.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, self::STUB_NAMESPACE);
         $this->filesystem->mkdir($targetDir);
 
-        $targetPath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+        $targetPath = $targetDir.DIRECTORY_SEPARATOR.$fileName;
         $this->filesystem->copy($kernelOriginFilePath, $targetPath, true);
 
         return array($className, $targetPath);
@@ -94,31 +120,5 @@ class KernelManipulatorTest extends GeneratorTest
                 }
             }
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function kernelStubFilenamesProvider()
-    {
-        $stubs = array(
-            'With empty bundles array' => array(__DIR__ . '/Stubs/EmptyBundlesKernelStub.php'),
-            'With empty multiline bundles array' => array(__DIR__ . '/Stubs/EmptyBundlesMultilineKernelStub.php'),
-            'With bundles array contains comma' => array(__DIR__ . '/Stubs/ContainsCommaKernelStub.php'),
-            'With bundles added w/o trailing comma' => array(__DIR__ . '/Stubs/ContainsBundlesKernelStub.php'),
-            'With some extra code and bad formatted' => array(__DIR__ . '/Stubs/ContainsExtraCodeKernelStub.php'),
-
-        );
-
-        if (PHP_VERSION_ID >= 50400) {
-            $stubs = array_merge($stubs, array(
-                'With empty bundles array, short array syntax' => array(__DIR__ . '/Stubs/EmptyBundlesShortArraySyntaxKernelStub.php'),
-                'With empty multiline bundles array, short array syntax' => array(__DIR__ . '/Stubs/EmptyBundlesMultilineShortArraySyntaxKernelStub.php'),
-                'With bundles array contains comma, short array syntax' => array(__DIR__ . '/Stubs/ContainsCommaShortArraySyntaxKernelStub.php'),
-                'With bundles added w/o trailing comma, short array syntax' => array(__DIR__ . '/Stubs/ContainsBundlesShortArraySyntaxKernelStub.php'),
-            ));
-        }
-
-        return $stubs;
     }
 }

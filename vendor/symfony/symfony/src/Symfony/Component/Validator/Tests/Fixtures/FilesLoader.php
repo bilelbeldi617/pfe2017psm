@@ -25,15 +25,15 @@ abstract class FilesLoader extends BaseFilesLoader
         parent::__construct($paths);
     }
 
-    public function getTimesCalled()
-    {
-        return $this->timesCalled;
-    }
-
     protected function getFileLoaderInstance($file)
     {
         ++$this->timesCalled;
 
         return $this->loader;
+    }
+
+    public function getTimesCalled()
+    {
+        return $this->timesCalled;
     }
 }

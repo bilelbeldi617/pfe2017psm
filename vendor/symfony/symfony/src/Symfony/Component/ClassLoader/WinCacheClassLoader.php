@@ -48,18 +48,19 @@ namespace Symfony\Component\ClassLoader;
  */
 class WinCacheClassLoader
 {
+    private $prefix;
+
     /**
      * A class loader object that implements the findFile() method.
      *
      * @var object
      */
     protected $decorated;
-    private $prefix;
 
     /**
      * Constructor.
      *
-     * @param string $prefix The WinCache namespace prefix to use
+     * @param string $prefix    The WinCache namespace prefix to use
      * @param object $decorated A class loader object that implements the findFile() method
      *
      * @throws \RuntimeException
@@ -122,10 +123,10 @@ class WinCacheClassLoader
      */
     public function findFile($class)
     {
-        $file = wincache_ucache_get($this->prefix . $class, $success);
+        $file = wincache_ucache_get($this->prefix.$class, $success);
 
         if (!$success) {
-            wincache_ucache_set($this->prefix . $class, $file = $this->decorated->findFile($class) ?: null, 0);
+            wincache_ucache_set($this->prefix.$class, $file = $this->decorated->findFile($class) ?: null, 0);
         }
 
         return $file;

@@ -32,9 +32,9 @@ class Router extends BaseRouter implements WarmableInterface
      * Constructor.
      *
      * @param ContainerInterface $container A ContainerInterface instance
-     * @param mixed $resource The main resource to load
-     * @param array $options An array of options
-     * @param RequestContext $context The context
+     * @param mixed              $resource  The main resource to load
+     * @param array              $options   An array of options
+     * @param RequestContext     $context   The context
      */
     public function __construct(ContainerInterface $container, $resource, array $options = array(), RequestContext $context = null)
     {
@@ -56,6 +56,21 @@ class Router extends BaseRouter implements WarmableInterface
         }
 
         return $this->collection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function warmUp($cacheDir)
+    {
+        $currentDir = $this->getOption('cache_dir');
+
+        // force cache generation
+        $this->setOption('cache_dir', $cacheDir);
+        $this->getMatcher();
+        $this->getGenerator();
+
+        $this->setOption('cache_dir', $currentDir);
     }
 
     /**
@@ -138,34 +153,19 @@ class Router extends BaseRouter implements WarmableInterface
             $resolved = $container->getParameter($match[1]);
 
             if (is_string($resolved) || is_numeric($resolved)) {
-                return (string)$resolved;
+                return (string) $resolved;
             }
 
             throw new RuntimeException(sprintf(
-                    'The container parameter "%s", used in the route configuration value "%s", ' .
-                    'must be a string or numeric, but it is of type %s.',
-                    $match[1],
-                    $value,
-                    gettype($resolved)
+                'The container parameter "%s", used in the route configuration value "%s", '.
+                'must be a string or numeric, but it is of type %s.',
+                $match[1],
+                $value,
+                gettype($resolved)
                 )
             );
         }, $value);
 
         return str_replace('%%', '%', $escapedValue);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function warmUp($cacheDir)
-    {
-        $currentDir = $this->getOption('cache_dir');
-
-        // force cache generation
-        $this->setOption('cache_dir', $cacheDir);
-        $this->getMatcher();
-        $this->getGenerator();
-
-        $this->setOption('cache_dir', $currentDir);
     }
 }

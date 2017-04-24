@@ -9,45 +9,14 @@ class __TwigTemplate_ea27e4b058d104a6eb77119fd8355caf60be73f75155ab048a72298386b
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(54 => 9, 47 => 7, 45 => 6, 38 => 5, 34 => 4, 28 => 3, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<?xml version=\"1.0\" encoding=\"{{ _charset }}\" ?>
-
-<error code=\"{{ status_code }}\" message=\"{{ status_text }}\">
-{% for e in exception.toarray %}
-    <exception class=\"{{ e.class }}\" message=\"{{ e.message }}\">
-{% include '@Twig/Exception/traces.xml.twig' with { 'exception': e } only %}
-    </exception>
-{% endfor %}
-</error>
-", "@Twig/Exception/exception.xml.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\exception.xml.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_a934d76df89d967d2af923eb8a59537cb33faf112cfaa28d28ee78da95614a72 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_a934d76df89d967d2af923eb8a59537cb33faf112cfaa28d28ee78da95614a72->enter($__internal_a934d76df89d967d2af923eb8a59537cb33faf112cfaa28d28ee78da95614a72_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/exception.xml.twig"));
+        $__internal_a1704bcb795bbedce78f9b18cfacc948350091f842b7d05bf8e2f5cdcb50a722 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_a1704bcb795bbedce78f9b18cfacc948350091f842b7d05bf8e2f5cdcb50a722->enter($__internal_a1704bcb795bbedce78f9b18cfacc948350091f842b7d05bf8e2f5cdcb50a722_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/exception.xml.twig"));
 
         // line 1
         echo "<?xml version=\"1.0\" encoding=\"";
@@ -84,13 +53,45 @@ class __TwigTemplate_ea27e4b058d104a6eb77119fd8355caf60be73f75155ab048a72298386b
         // line 9
         echo "</error>
 ";
-
-        $__internal_a934d76df89d967d2af923eb8a59537cb33faf112cfaa28d28ee78da95614a72->leave($__internal_a934d76df89d967d2af923eb8a59537cb33faf112cfaa28d28ee78da95614a72_prof);
+        
+        $__internal_a1704bcb795bbedce78f9b18cfacc948350091f842b7d05bf8e2f5cdcb50a722->leave($__internal_a1704bcb795bbedce78f9b18cfacc948350091f842b7d05bf8e2f5cdcb50a722_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@Twig/Exception/exception.xml.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  54 => 9,  47 => 7,  45 => 6,  38 => 5,  34 => 4,  28 => 3,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<?xml version=\"1.0\" encoding=\"{{ _charset }}\" ?>
+
+<error code=\"{{ status_code }}\" message=\"{{ status_text }}\">
+{% for e in exception.toarray %}
+    <exception class=\"{{ e.class }}\" message=\"{{ e.message }}\">
+{% include '@Twig/Exception/traces.xml.twig' with { 'exception': e } only %}
+    </exception>
+{% endfor %}
+</error>
+", "@Twig/Exception/exception.xml.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\exception.xml.twig");
     }
 }

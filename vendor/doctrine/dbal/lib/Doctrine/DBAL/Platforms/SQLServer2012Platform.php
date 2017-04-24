@@ -36,7 +36,7 @@ class SQLServer2012Platform extends SQLServer2008Platform
     public function getAlterSequenceSQL(Sequence $sequence)
     {
         return 'ALTER SEQUENCE ' . $sequence->getQuotedName($this) .
-            ' INCREMENT BY ' . $sequence->getAllocationSize();
+               ' INCREMENT BY ' . $sequence->getAllocationSize();
     }
 
     /**
@@ -45,9 +45,9 @@ class SQLServer2012Platform extends SQLServer2008Platform
     public function getCreateSequenceSQL(Sequence $sequence)
     {
         return 'CREATE SEQUENCE ' . $sequence->getQuotedName($this) .
-            ' START WITH ' . $sequence->getInitialValue() .
-            ' INCREMENT BY ' . $sequence->getAllocationSize() .
-            ' MINVALUE ' . $sequence->getInitialValue();
+               ' START WITH ' . $sequence->getInitialValue() .
+               ' INCREMENT BY ' . $sequence->getAllocationSize() .
+               ' MINVALUE ' . $sequence->getInitialValue();
     }
 
     /**
@@ -115,14 +115,14 @@ class SQLServer2012Platform extends SQLServer2008Platform
         // Queries using OFFSET... FETCH MUST have an ORDER BY clause
         // Find the position of the last instance of ORDER BY and ensure it is not within a parenthetical statement
         // but can be in a newline
-        $matches = array();
+        $matches      = array();
         $matchesCount = preg_match_all("/[\\s]+order by /i", $query, $matches, PREG_OFFSET_CAPTURE);
-        $orderByPos = false;
+        $orderByPos   = false;
 
         if ($matchesCount > 0) {
             $orderByPos = $matches[0][($matchesCount - 1)][1];
         }
-
+        
         if ($orderByPos === false
             || substr_count($query, "(", $orderByPos) - substr_count($query, ")", $orderByPos)
         ) {
@@ -147,10 +147,10 @@ class SQLServer2012Platform extends SQLServer2008Platform
         // This looks somewhat like MYSQL, but limit/offset are in inverse positions
         // Supposedly SQL:2008 core standard.
         // Per TSQL spec, FETCH NEXT n ROWS ONLY is not valid without OFFSET n ROWS.
-        $query .= " OFFSET " . (int)$offset . " ROWS";
+        $query .= " OFFSET " . (int) $offset . " ROWS";
 
         if ($limit !== null) {
-            $query .= " FETCH NEXT " . (int)$limit . " ROWS ONLY";
+            $query .= " FETCH NEXT " . (int) $limit . " ROWS ONLY";
         }
 
         return $query;

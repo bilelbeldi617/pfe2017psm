@@ -58,6 +58,62 @@ class EntityTypeTest extends BaseTypeTest
      */
     private $emRegistry;
 
+    protected function setUp()
+    {
+        $this->em = DoctrineTestHelper::createTestEntityManager();
+        $this->emRegistry = $this->createRegistryMock('default', $this->em);
+
+        parent::setUp();
+
+        $schemaTool = new SchemaTool($this->em);
+        $classes = array(
+            $this->em->getClassMetadata(self::ITEM_GROUP_CLASS),
+            $this->em->getClassMetadata(self::SINGLE_IDENT_CLASS),
+            $this->em->getClassMetadata(self::SINGLE_IDENT_NO_TO_STRING_CLASS),
+            $this->em->getClassMetadata(self::SINGLE_STRING_IDENT_CLASS),
+            $this->em->getClassMetadata(self::SINGLE_ASSOC_IDENT_CLASS),
+            $this->em->getClassMetadata(self::SINGLE_STRING_CASTABLE_IDENT_CLASS),
+            $this->em->getClassMetadata(self::COMPOSITE_IDENT_CLASS),
+            $this->em->getClassMetadata(self::COMPOSITE_STRING_IDENT_CLASS),
+        );
+
+        try {
+            $schemaTool->dropSchema($classes);
+        } catch (\Exception $e) {
+        }
+
+        try {
+            $schemaTool->createSchema($classes);
+        } catch (\Exception $e) {
+        }
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->em = null;
+        $this->emRegistry = null;
+    }
+
+    protected function getExtensions()
+    {
+        return array_merge(parent::getExtensions(), array(
+            new DoctrineOrmExtension($this->emRegistry),
+        ));
+    }
+
+    protected function persist(array $entities)
+    {
+        foreach ($entities as $entity) {
+            $this->em->persist($entity);
+        }
+
+        $this->em->flush();
+        // no clear, because entities managed by the choice field must
+        // be managed!
+    }
+
     /**
      * @group legacy
      */
@@ -104,17 +160,6 @@ class EntityTypeTest extends BaseTypeTest
         ));
 
         $this->assertEquals(array(1 => new ChoiceView($entity1, '1', 'Foo'), 2 => new ChoiceView($entity2, '2', 'Bar')), $field->createView()->vars['choices']);
-    }
-
-    protected function persist(array $entities)
-    {
-        foreach ($entities as $entity) {
-            $this->em->persist($entity);
-        }
-
-        $this->em->flush();
-        // no clear, because entities managed by the choice field must
-        // be managed!
     }
 
     public function testSetDataToUninitializedEntityWithNonRequiredToString()
@@ -728,7 +773,7 @@ class EntityTypeTest extends BaseTypeTest
                     return '';
                 }
 
-                return $entity->groupName . '/' . $entity->name;
+                return $entity->groupName.'/'.$entity->name;
             },
         ));
 
@@ -737,7 +782,7 @@ class EntityTypeTest extends BaseTypeTest
         $this->assertEquals(array(
             'BazGroup/Foo' => new ChoiceView($entity1, 'BazGroup/Foo', 'Foo'),
             'BooGroup/Bar' => new ChoiceView($entity2, 'BooGroup/Bar', 'Bar'),
-        ), $field->createView()->vars['choices']);
+            ), $field->createView()->vars['choices']);
         $this->assertTrue($field->isSynchronized(), 'Field should be synchronized.');
         $this->assertSame($entity2, $field->getData(), 'Entity should be loaded by custom value.');
         $this->assertSame('BooGroup/Bar', $field->getViewData());
@@ -763,8 +808,8 @@ class EntityTypeTest extends BaseTypeTest
         $unitOfWorkIdentityMap = $this->em->getUnitOfWork()->getIdentityMap();
         $managedEntitiesNames = array_map('strval', $unitOfWorkIdentityMap['Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity']);
 
-        $this->assertContains((string)$entity1, $managedEntitiesNames);
-        $this->assertNotContains((string)$entity2, $managedEntitiesNames);
+        $this->assertContains((string) $entity1, $managedEntitiesNames);
+        $this->assertNotContains((string) $entity2, $managedEntitiesNames);
     }
 
     public function testGroupByChoices()
@@ -1252,6 +1297,17 @@ class EntityTypeTest extends BaseTypeTest
         $this->assertEquals(array(1 => new ChoiceView($entity1, '1', 'Foo'), 2 => new ChoiceView($entity2, '2', 'Bar')), $view->vars['choices']);
     }
 
+    protected function createRegistryMock($name, $em)
+    {
+        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry->expects($this->any())
+            ->method('getManager')
+            ->with($this->equalTo($name))
+            ->will($this->returnValue($em));
+
+        return $registry;
+    }
+
     public function testPassDisabledAsOption()
     {
         $form = $this->factory->create(static::TESTED_TYPE, null, array(
@@ -1459,61 +1515,5 @@ class EntityTypeTest extends BaseTypeTest
         $this->assertEquals($collection, $form->getData());
         $this->assertEquals($collection, $form->getNormData());
         $this->assertSame(array(), $form->getViewData(), 'View data is always an array');
-    }
-
-    protected function setUp()
-    {
-        $this->em = DoctrineTestHelper::createTestEntityManager();
-        $this->emRegistry = $this->createRegistryMock('default', $this->em);
-
-        parent::setUp();
-
-        $schemaTool = new SchemaTool($this->em);
-        $classes = array(
-            $this->em->getClassMetadata(self::ITEM_GROUP_CLASS),
-            $this->em->getClassMetadata(self::SINGLE_IDENT_CLASS),
-            $this->em->getClassMetadata(self::SINGLE_IDENT_NO_TO_STRING_CLASS),
-            $this->em->getClassMetadata(self::SINGLE_STRING_IDENT_CLASS),
-            $this->em->getClassMetadata(self::SINGLE_ASSOC_IDENT_CLASS),
-            $this->em->getClassMetadata(self::SINGLE_STRING_CASTABLE_IDENT_CLASS),
-            $this->em->getClassMetadata(self::COMPOSITE_IDENT_CLASS),
-            $this->em->getClassMetadata(self::COMPOSITE_STRING_IDENT_CLASS),
-        );
-
-        try {
-            $schemaTool->dropSchema($classes);
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $schemaTool->createSchema($classes);
-        } catch (\Exception $e) {
-        }
-    }
-
-    protected function createRegistryMock($name, $em)
-    {
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
-        $registry->expects($this->any())
-            ->method('getManager')
-            ->with($this->equalTo($name))
-            ->will($this->returnValue($em));
-
-        return $registry;
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->em = null;
-        $this->emRegistry = null;
-    }
-
-    protected function getExtensions()
-    {
-        return array_merge(parent::getExtensions(), array(
-            new DoctrineOrmExtension($this->emRegistry),
-        ));
     }
 }

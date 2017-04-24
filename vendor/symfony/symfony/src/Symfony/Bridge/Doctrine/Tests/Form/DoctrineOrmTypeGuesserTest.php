@@ -27,17 +27,6 @@ class DoctrineOrmTypeGuesserTest extends TestCase
         $this->assertEquals($expected, $this->getGuesser($classMetadata)->guessRequired('TestEntity', 'field'));
     }
 
-    private function getGuesser(ClassMetadata $classMetadata)
-    {
-        $em = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')->getMock();
-        $em->expects($this->once())->method('getClassMetaData')->with('TestEntity')->will($this->returnValue($classMetadata));
-
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
-        $registry->expects($this->once())->method('getManagers')->will($this->returnValue(array($em)));
-
-        return new DoctrineOrmTypeGuesser($registry);
-    }
-
     public function requiredProvider()
     {
         $return = array();
@@ -94,5 +83,16 @@ class DoctrineOrmTypeGuesserTest extends TestCase
         $return[] = array($classMetadata, null);
 
         return $return;
+    }
+
+    private function getGuesser(ClassMetadata $classMetadata)
+    {
+        $em = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')->getMock();
+        $em->expects($this->once())->method('getClassMetaData')->with('TestEntity')->will($this->returnValue($classMetadata));
+
+        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry->expects($this->once())->method('getManagers')->will($this->returnValue(array($em)));
+
+        return new DoctrineOrmTypeGuesser($registry);
     }
 }

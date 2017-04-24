@@ -17,15 +17,15 @@ class FileResourceTest extends \PHPUnit_Framework_TestCase
 {
     private $loader;
 
-    public function testCastAsString()
-    {
-        $baseDir = '/path/to/MyBundle/Resources/views/';
-        $resource = new FileResource($this->loader, 'MyBundle', $baseDir, $baseDir . 'Section/template.html.twig');
-        $this->assertEquals('MyBundle:Section:template.html.twig', (string)$resource);
-    }
-
     protected function setUp()
     {
         $this->loader = $this->getMockBuilder('Symfony\\Component\\Templating\\Loader\\LoaderInterface')->getMock();
+    }
+
+    public function testCastAsString()
+    {
+        $baseDir = '/path/to/MyBundle/Resources/views/';
+        $resource = new FileResource($this->loader, 'MyBundle', $baseDir, $baseDir.'Section/template.html.twig');
+        $this->assertEquals('MyBundle:Section:template.html.twig', (string) $resource);
     }
 }

@@ -16,113 +16,10 @@ class __TwigTemplate_eb9a959419c82748592e53d572895ef01a257650d1897b4f51a6ef2d3cf
         );
     }
 
-    public function block_title($context, array $blocks = array())
-    {
-        $__internal_d049f4a48d8cc7772a507329680971e40bcd4e6b05fb52250429b0400b9627b1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d049f4a48d8cc7772a507329680971e40bcd4e6b05fb52250429b0400b9627b1->enter($__internal_d049f4a48d8cc7772a507329680971e40bcd4e6b05fb52250429b0400b9627b1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
-
-
-        $__internal_d049f4a48d8cc7772a507329680971e40bcd4e6b05fb52250429b0400b9627b1->leave($__internal_d049f4a48d8cc7772a507329680971e40bcd4e6b05fb52250429b0400b9627b1_prof);
-
-    }
-
-    // line 6
-
-    public function block_head($context, array $blocks = array())
-    {
-        $__internal_a9b1355d763b4bbbb346c82385fba0f4c549e94ff6bb17a3e4c469597317abca = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_a9b1355d763b4bbbb346c82385fba0f4c549e94ff6bb17a3e4c469597317abca->enter($__internal_a9b1355d763b4bbbb346c82385fba0f4c549e94ff6bb17a3e4c469597317abca_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "head"));
-
-
-        $__internal_a9b1355d763b4bbbb346c82385fba0f4c549e94ff6bb17a3e4c469597317abca->leave($__internal_a9b1355d763b4bbbb346c82385fba0f4c549e94ff6bb17a3e4c469597317abca_prof);
-
-    }
-
-    // line 9
-
-    public function block_body($context, array $blocks = array())
-    {
-        $__internal_a6fe3f70e6d08aab46fe9110a3aa1799c8d1a1db75e1376b9832a2b407d5d0f7 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_a6fe3f70e6d08aab46fe9110a3aa1799c8d1a1db75e1376b9832a2b407d5d0f7->enter($__internal_a6fe3f70e6d08aab46fe9110a3aa1799c8d1a1db75e1376b9832a2b407d5d0f7_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "body"));
-
-
-        $__internal_a6fe3f70e6d08aab46fe9110a3aa1799c8d1a1db75e1376b9832a2b407d5d0f7->leave($__internal_a6fe3f70e6d08aab46fe9110a3aa1799c8d1a1db75e1376b9832a2b407d5d0f7_prof);
-
-    }
-
-    // line 40
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(116 => 40, 105 => 9, 94 => 6, 83 => 41, 81 => 40, 49 => 10, 47 => 9, 43 => 8, 39 => 7, 35 => 6, 30 => 4, 25 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset=\"{{ _charset }}\" />
-        <meta name=\"robots\" content=\"noindex,nofollow\" />
-        <title>{% block title %}{% endblock %}</title>
-        <link href=\"{{ absolute_url(asset('bundles/framework/css/structure.css')) }}\" rel=\"stylesheet\" />
-        <link href=\"{{ absolute_url(asset('bundles/framework/css/body.css')) }}\" rel=\"stylesheet\" />
-        {% block head %}{% endblock %}
-    </head>
-    <body>
-        <div id=\"content\">
-            <div class=\"header clear-fix\">
-                <div class=\"header-logo\">
-                    <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALYAAAA+CAMAAACxzRGDAAAAUVBMVEX////Ly8yko6WLioxkYmVXVVkwLjLl5eWxsLJKSEzy8vJxcHLY2Ni+vb89Oz9XVVh+fH+Yl5n///+xsbLY2Nlxb3KkpKWXlph+fX+LiYy+vr/IZP61AAAAAXRSTlMAQObYZgAABRBJREFUeNrVmtuWoyAQRS1FEEQSzQU7//+hYxUiXsKQZLJWM+chsUloN+WhCuguYoKyYqzmvGasKqH4HyRKxndipcgcumH8qViTM7TkUclcwaHmf5XM0eWq4km1KjdqXfMXJHVe1J3hL8lk5fCGv6wmT+o0d87U+XNrk0Y9nfv+7LM6ZJH5ZBL6LAbSxQ3Q5FDr22Skr8PQSy4n7isnsQxSX4r6pobhjCHHeDNOKrO3yGmCvZOjV9jmt8ulTdXFKdbKLNh+kOMvBzuVRa4Y7MUsdEUSWQe7xxCfZmcwjHU83LqzFvSbJQOXQvptbPnEFoyZtUUGwTeKuLuTHyT1kaP0P6cR01OKvv448gtl61dqZfmJezQmU/t+1R2fJLtBwXV6uWGwB9SZPrn0fKO2WAvQN1PUhHjTom3xgXYTkvlSKHs19OhslETq6X3HrXbjt8XbGj9b4Gi+lUAnL6XxQj8Pyk9N4Bt1xUrsLVN/3isYMug8rODMdbgOvoHs8uAb2fcANIAzkKCLYy+AXRpSU8sr1r4P67xhLgPp7vM32zlqt7Bhq2fI1Hwp+VgANxok59SsGV3oqdUL0YVDMRY7Yg8QLbVUU4NZNoOq5hJHuxEM28Sh/IyUZ8D3reR+yc58EGvOy2U0HQL6G9V+kWyEWHmzaMx6t4o9RhOm/riUiYrzqij4Ptqkn7AaCXqc+F47m04ahfde7YIz8RHEBN6BdVwdIGRVdNbKqYu1Hc0x0wBY4wqC8+XUgBGnj81SZsQB+0yAS1x/BlI/6ebHHk0lauQLuPDpu6EwAVJ7T0rl2uXa23jcqNyOZekhqYHRz3JOANrF4wCCmEs1f9D1lUe0n4NAATed80Y5e0Q7CO2TezM/BR6wKdgQzKbCF4uOQC3Bk0fKAzbFlyRWg3gksA/gmm7eOjrpaKX7fHlEW2xLbE6GZsPiCiShVzN7RG2xTz2G+OJtEqzdJ7APxy3MrSsV0VukXbKMp9lhs5BN6dr3CN+sySUaoxGwfRUM3I/gdPYONgVU+PLX4vUWm32AvUySarbONvcpV2RQEPKKjEBHFk01kQDGRblnn8ZuE9g+JUl8OWAPbkFK2K6JxhJVvF47FzYYnAN22ttwxKYCoH36rheEB7KG/HF/YUaa2G5JF+55tpyrl7B1WHM39HuP2N2EXPl1UBu8vbj4OjvD+NoTE4ssF+ScARgaJY1N7+u8bY/Y9BSM5PKwJbvMVab32YP5FB5TtcYVrGoASolVLTzI7kVsYVxRtAb5n2JXq1vCdtd47XtYItynrN0835PasLg0y13aOPbmPI+on2Lr9e5tjSHvgkAvclUjL3Fsdaw03IzgTR62yYClk7QMah4IQ0qSsoYYbOix6zJR1ZGDNMOY3Bb6W5S6jiyovep3t7bUPyoq7OkjYumrfESp8zSBc/OLosVf+nTnnKjsqR16++WDwpI8FxJWRFTlI6NKnqYJaL96TqjAbo9Toi5QiWBDcmfdFV+T8dkvFe5bItgstbM2X6QG2mVun+cazfRwOS0eiaeRRJKgLfc3BQAqfnhJyz8lfR6580SF/FXVu83Nz1xrrnFqqXL6Qxl47DNSm4RFflvN5sABDD8peouqLLKQXVdGbnqf+qIpOxON4ZyYdJEJ6sy4zS2c5eRPTT4Jyp46qDE5/ptAWqJOQ9e6yE82FXBbZCk1/tXVoshVoopE3CB0zmraI3nbqCJ/gW3ZMgtbC5nh/QHlOoOZBxQCRgAAAABJRU5ErkJggg==\" alt=\"Symfony\" />
-                </div>
-
-                <div class=\"search\">
-                    <form method=\"get\" action=\"https://symfony.com/search\" target=\"_blank\">
-                        <div class=\"form-row\">
-                            <label for=\"search-id\">
-                                <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAABUElEQVQoz2NgAIJ29iBdD0d7X2cPb+tY2f9MDMjgP2O2hKu7vS8CBlisZUNSMJ3fxRMkXO61wm2ue6I3iB1q8Z8ZriDZFCS03fm/wX+1/xp/TBo8QPxeqf+MUAW+QIFKj/+q/wX/c/3n/i/6Qd/bx943z/Q/K1SBI1D9fKv/AhCn/Wf5L5EHdFGKw39OqAIXoPpOMziX4T9/DFBBnuN/HqhAEtCKCNf/XDA/rZRyAmrpsvrPDVUw3wrkqCiLaewg6TohX1d7X0ffs5r/OaAKfinmgt3t4ulr4+Xg4ANip3j+l/zPArNT4LNOD0pAgWCSOUIBy3+h/+pXbBa5tni0eMx23+/mB1YSYnENroT5Pw/QSOX/mkCo+l/jgo0v2KJA643s8PgAmsMBDCbu/5xALHPB2husxN9uCzsDOgAq5kAoaZVnYMCh5Ky1r88Eh/+iABM8jUk7ClYIAAAAAElFTkSuQmCC\" alt=\"Search on Symfony website\" />
-                            </label>
-
-                            <input name=\"q\" id=\"search-id\" type=\"search\" placeholder=\"Search on Symfony website\" />
-
-                            <button type=\"submit\" class=\"sf-button\">
-                                <span class=\"border-l\">
-                                    <span class=\"border-r\">
-                                        <span class=\"btn-bg\">OK</span>
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
-                   </form>
-                </div>
-            </div>
-
-            <div class=\"sf-reset\">
-                {% block body %}{% endblock %}
-            </div>
-        </div>
-    </body>
-</html>
-", "@Twig/layout.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\layout.html.twig");
-    }
-
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_db24f471823d6c0e171d04244d5308a2757a498a4c6e3a7923a9a94e54b39dcf = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_db24f471823d6c0e171d04244d5308a2757a498a4c6e3a7923a9a94e54b39dcf->enter($__internal_db24f471823d6c0e171d04244d5308a2757a498a4c6e3a7923a9a94e54b39dcf_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/layout.html.twig"));
+        $__internal_33a25860e9fdabd15800a8dbaa5f886a696d23874963600022e0eae1298f5e87 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_33a25860e9fdabd15800a8dbaa5f886a696d23874963600022e0eae1298f5e87->enter($__internal_33a25860e9fdabd15800a8dbaa5f886a696d23874963600022e0eae1298f5e87_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/layout.html.twig"));
 
         // line 1
         echo "<!DOCTYPE html>
@@ -188,13 +85,113 @@ class __TwigTemplate_eb9a959419c82748592e53d572895ef01a257650d1897b4f51a6ef2d3cf
     </body>
 </html>
 ";
+        
+        $__internal_33a25860e9fdabd15800a8dbaa5f886a696d23874963600022e0eae1298f5e87->leave($__internal_33a25860e9fdabd15800a8dbaa5f886a696d23874963600022e0eae1298f5e87_prof);
 
-        $__internal_db24f471823d6c0e171d04244d5308a2757a498a4c6e3a7923a9a94e54b39dcf->leave($__internal_db24f471823d6c0e171d04244d5308a2757a498a4c6e3a7923a9a94e54b39dcf_prof);
+    }
+
+    // line 6
+    public function block_title($context, array $blocks = array())
+    {
+        $__internal_c8346ea6d75b9b5f2802f949fd2a12a88c1821c3e0f138dab56cbe35445b4821 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_c8346ea6d75b9b5f2802f949fd2a12a88c1821c3e0f138dab56cbe35445b4821->enter($__internal_c8346ea6d75b9b5f2802f949fd2a12a88c1821c3e0f138dab56cbe35445b4821_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+
+        
+        $__internal_c8346ea6d75b9b5f2802f949fd2a12a88c1821c3e0f138dab56cbe35445b4821->leave($__internal_c8346ea6d75b9b5f2802f949fd2a12a88c1821c3e0f138dab56cbe35445b4821_prof);
+
+    }
+
+    // line 9
+    public function block_head($context, array $blocks = array())
+    {
+        $__internal_3416a59834257dfad9182b4e9e5034f9b2ea237274b582f6d5a2811090d2e2c6 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_3416a59834257dfad9182b4e9e5034f9b2ea237274b582f6d5a2811090d2e2c6->enter($__internal_3416a59834257dfad9182b4e9e5034f9b2ea237274b582f6d5a2811090d2e2c6_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "head"));
+
+        
+        $__internal_3416a59834257dfad9182b4e9e5034f9b2ea237274b582f6d5a2811090d2e2c6->leave($__internal_3416a59834257dfad9182b4e9e5034f9b2ea237274b582f6d5a2811090d2e2c6_prof);
+
+    }
+
+    // line 40
+    public function block_body($context, array $blocks = array())
+    {
+        $__internal_5d566b83199a3653a7e3c68c9d648895cee1fcbf98b7fb02fc15848111c304a3 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_5d566b83199a3653a7e3c68c9d648895cee1fcbf98b7fb02fc15848111c304a3->enter($__internal_5d566b83199a3653a7e3c68c9d648895cee1fcbf98b7fb02fc15848111c304a3_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "body"));
+
+        
+        $__internal_5d566b83199a3653a7e3c68c9d648895cee1fcbf98b7fb02fc15848111c304a3->leave($__internal_5d566b83199a3653a7e3c68c9d648895cee1fcbf98b7fb02fc15848111c304a3_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@Twig/layout.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  116 => 40,  105 => 9,  94 => 6,  83 => 41,  81 => 40,  49 => 10,  47 => 9,  43 => 8,  39 => 7,  35 => 6,  30 => 4,  25 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=\"{{ _charset }}\" />
+        <meta name=\"robots\" content=\"noindex,nofollow\" />
+        <title>{% block title %}{% endblock %}</title>
+        <link href=\"{{ absolute_url(asset('bundles/framework/css/structure.css')) }}\" rel=\"stylesheet\" />
+        <link href=\"{{ absolute_url(asset('bundles/framework/css/body.css')) }}\" rel=\"stylesheet\" />
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div id=\"content\">
+            <div class=\"header clear-fix\">
+                <div class=\"header-logo\">
+                    <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALYAAAA+CAMAAACxzRGDAAAAUVBMVEX////Ly8yko6WLioxkYmVXVVkwLjLl5eWxsLJKSEzy8vJxcHLY2Ni+vb89Oz9XVVh+fH+Yl5n///+xsbLY2Nlxb3KkpKWXlph+fX+LiYy+vr/IZP61AAAAAXRSTlMAQObYZgAABRBJREFUeNrVmtuWoyAQRS1FEEQSzQU7//+hYxUiXsKQZLJWM+chsUloN+WhCuguYoKyYqzmvGasKqH4HyRKxndipcgcumH8qViTM7TkUclcwaHmf5XM0eWq4km1KjdqXfMXJHVe1J3hL8lk5fCGv6wmT+o0d87U+XNrk0Y9nfv+7LM6ZJH5ZBL6LAbSxQ3Q5FDr22Skr8PQSy4n7isnsQxSX4r6pobhjCHHeDNOKrO3yGmCvZOjV9jmt8ulTdXFKdbKLNh+kOMvBzuVRa4Y7MUsdEUSWQe7xxCfZmcwjHU83LqzFvSbJQOXQvptbPnEFoyZtUUGwTeKuLuTHyT1kaP0P6cR01OKvv448gtl61dqZfmJezQmU/t+1R2fJLtBwXV6uWGwB9SZPrn0fKO2WAvQN1PUhHjTom3xgXYTkvlSKHs19OhslETq6X3HrXbjt8XbGj9b4Gi+lUAnL6XxQj8Pyk9N4Bt1xUrsLVN/3isYMug8rODMdbgOvoHs8uAb2fcANIAzkKCLYy+AXRpSU8sr1r4P67xhLgPp7vM32zlqt7Bhq2fI1Hwp+VgANxok59SsGV3oqdUL0YVDMRY7Yg8QLbVUU4NZNoOq5hJHuxEM28Sh/IyUZ8D3reR+yc58EGvOy2U0HQL6G9V+kWyEWHmzaMx6t4o9RhOm/riUiYrzqij4Ptqkn7AaCXqc+F47m04ahfde7YIz8RHEBN6BdVwdIGRVdNbKqYu1Hc0x0wBY4wqC8+XUgBGnj81SZsQB+0yAS1x/BlI/6ebHHk0lauQLuPDpu6EwAVJ7T0rl2uXa23jcqNyOZekhqYHRz3JOANrF4wCCmEs1f9D1lUe0n4NAATed80Y5e0Q7CO2TezM/BR6wKdgQzKbCF4uOQC3Bk0fKAzbFlyRWg3gksA/gmm7eOjrpaKX7fHlEW2xLbE6GZsPiCiShVzN7RG2xTz2G+OJtEqzdJ7APxy3MrSsV0VukXbKMp9lhs5BN6dr3CN+sySUaoxGwfRUM3I/gdPYONgVU+PLX4vUWm32AvUySarbONvcpV2RQEPKKjEBHFk01kQDGRblnn8ZuE9g+JUl8OWAPbkFK2K6JxhJVvF47FzYYnAN22ttwxKYCoH36rheEB7KG/HF/YUaa2G5JF+55tpyrl7B1WHM39HuP2N2EXPl1UBu8vbj4OjvD+NoTE4ssF+ScARgaJY1N7+u8bY/Y9BSM5PKwJbvMVab32YP5FB5TtcYVrGoASolVLTzI7kVsYVxRtAb5n2JXq1vCdtd47XtYItynrN0835PasLg0y13aOPbmPI+on2Lr9e5tjSHvgkAvclUjL3Fsdaw03IzgTR62yYClk7QMah4IQ0qSsoYYbOix6zJR1ZGDNMOY3Bb6W5S6jiyovep3t7bUPyoq7OkjYumrfESp8zSBc/OLosVf+nTnnKjsqR16++WDwpI8FxJWRFTlI6NKnqYJaL96TqjAbo9Toi5QiWBDcmfdFV+T8dkvFe5bItgstbM2X6QG2mVun+cazfRwOS0eiaeRRJKgLfc3BQAqfnhJyz8lfR6580SF/FXVu83Nz1xrrnFqqXL6Qxl47DNSm4RFflvN5sABDD8peouqLLKQXVdGbnqf+qIpOxON4ZyYdJEJ6sy4zS2c5eRPTT4Jyp46qDE5/ptAWqJOQ9e6yE82FXBbZCk1/tXVoshVoopE3CB0zmraI3nbqCJ/gW3ZMgtbC5nh/QHlOoOZBxQCRgAAAABJRU5ErkJggg==\" alt=\"Symfony\" />
+                </div>
+
+                <div class=\"search\">
+                    <form method=\"get\" action=\"https://symfony.com/search\" target=\"_blank\">
+                        <div class=\"form-row\">
+                            <label for=\"search-id\">
+                                <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAABUElEQVQoz2NgAIJ29iBdD0d7X2cPb+tY2f9MDMjgP2O2hKu7vS8CBlisZUNSMJ3fxRMkXO61wm2ue6I3iB1q8Z8ZriDZFCS03fm/wX+1/xp/TBo8QPxeqf+MUAW+QIFKj/+q/wX/c/3n/i/6Qd/bx943z/Q/K1SBI1D9fKv/AhCn/Wf5L5EHdFGKw39OqAIXoPpOMziX4T9/DFBBnuN/HqhAEtCKCNf/XDA/rZRyAmrpsvrPDVUw3wrkqCiLaewg6TohX1d7X0ffs5r/OaAKfinmgt3t4ulr4+Xg4ANip3j+l/zPArNT4LNOD0pAgWCSOUIBy3+h/+pXbBa5tni0eMx23+/mB1YSYnENroT5Pw/QSOX/mkCo+l/jgo0v2KJA643s8PgAmsMBDCbu/5xALHPB2husxN9uCzsDOgAq5kAoaZVnYMCh5Ky1r88Eh/+iABM8jUk7ClYIAAAAAElFTkSuQmCC\" alt=\"Search on Symfony website\" />
+                            </label>
+
+                            <input name=\"q\" id=\"search-id\" type=\"search\" placeholder=\"Search on Symfony website\" />
+
+                            <button type=\"submit\" class=\"sf-button\">
+                                <span class=\"border-l\">
+                                    <span class=\"border-r\">
+                                        <span class=\"btn-bg\">OK</span>
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                   </form>
+                </div>
+            </div>
+
+            <div class=\"sf-reset\">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>
+", "@Twig/layout.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\layout.html.twig");
     }
 }

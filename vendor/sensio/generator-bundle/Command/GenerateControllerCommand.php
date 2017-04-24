@@ -64,7 +64,8 @@ APP_PATH/Resources/SensioGeneratorBundle/skeleton/controller</info>
 You can check https://github.com/sensio/SensioGeneratorBundle/tree/master/Resources/skeleton
 in order to know the file structure of the skeleton
 EOT
-            );
+            )
+        ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -105,70 +106,6 @@ EOT
         $questionHelper->writeGeneratorSummary($output, array());
     }
 
-    public function parseShortcutNotation($shortcut)
-    {
-        $entity = str_replace('/', '\\', $shortcut);
-
-        if (false === $pos = strpos($entity, ':')) {
-            throw new \InvalidArgumentException(sprintf('The controller name must contain a : ("%s" given, expecting something like AcmeBlogBundle:Post)', $entity));
-        }
-
-        return array(substr($entity, 0, $pos), substr($entity, $pos + 1));
-    }
-
-    public function parseActions($actions)
-    {
-        if (empty($actions) || $actions !== array_values($actions)) {
-            return $actions;
-        }
-
-        // '$actions' can be an array with just 1 element defining several actions
-        // separated by white spaces: $actions = array('... ... ...');
-        if (1 === count($actions)) {
-            $actions = explode(' ', $actions[0]);
-        }
-
-        $parsedActions = array();
-
-        foreach ($actions as $action) {
-            $data = explode(':', $action);
-
-            // name
-            if (!isset($data[0])) {
-                throw new \InvalidArgumentException('An action must have a name');
-            }
-            $name = array_shift($data);
-
-            // route
-            $route = (isset($data[0]) && '' != $data[0]) ? array_shift($data) : '/' . substr($name, 0, -6);
-            if ($route) {
-                $placeholders = $this->getPlaceholdersFromRoute($route);
-            } else {
-                $placeholders = array();
-            }
-
-            // template
-            $template = (0 < count($data) && '' != $data[0]) ? implode(':', $data) : 'default';
-
-            $parsedActions[$name] = array(
-                'name' => $name,
-                'route' => $route,
-                'placeholders' => $placeholders,
-                'template' => $template,
-            );
-        }
-
-        return $parsedActions;
-    }
-
-    public function getPlaceholdersFromRoute($route)
-    {
-        preg_match_all('/{(.*?)}/', $route, $placeholders);
-        $placeholders = $placeholders[1];
-
-        return $placeholders;
-    }
-
     public function interact(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -197,7 +134,7 @@ EOT
             try {
                 $b = $this->getContainer()->get('kernel')->getBundle($bundle);
 
-                if (!file_exists($b->getPath() . '/Controller/' . $controller . 'Controller.php')) {
+                if (!file_exists($b->getPath().'/Controller/'.$controller.'Controller.php')) {
                     break;
                 }
 
@@ -206,7 +143,7 @@ EOT
                 $output->writeln(sprintf('<bg=red>Bundle "%s" does not exist.</>', $bundle));
             }
         }
-        $input->setOption('controller', $bundle . ':' . $controller);
+        $input->setOption('controller', $bundle.':'.$controller);
 
         // routing format
         $defaultFormat = (null !== $input->getOption('route-format') ? $input->getOption('route-format') : 'annotation');
@@ -305,14 +242,14 @@ EOT
             }
 
             // route
-            $question = new Question($questionHelper->getQuestion('Action route', '/' . substr($actionName, 0, -6)), '/' . substr($actionName, 0, -6));
+            $question = new Question($questionHelper->getQuestion('Action route', '/'.substr($actionName, 0, -6)), '/'.substr($actionName, 0, -6));
             $route = $questionHelper->ask($input, $output, $question);
             $placeholders = $this->getPlaceholdersFromRoute($route);
 
             // template
-            $defaultTemplate = $input->getOption('controller') . ':' .
+            $defaultTemplate = $input->getOption('controller').':'.
                 strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('\\1_\\2', '\\1_\\2'), strtr(substr($actionName, 0, -6), '_', '.')))
-                . '.html.' . $input->getOption('template-format');
+                .'.html.'.$input->getOption('template-format');
             $question = new Question($questionHelper->getQuestion('Template name (optional)', $defaultTemplate), $defaultTemplate);
             $template = $questionHelper->ask($input, $output, $question);
 
@@ -326,6 +263,70 @@ EOT
         }
 
         return $actions;
+    }
+
+    public function parseActions($actions)
+    {
+        if (empty($actions) || $actions !== array_values($actions)) {
+            return $actions;
+        }
+
+        // '$actions' can be an array with just 1 element defining several actions
+        // separated by white spaces: $actions = array('... ... ...');
+        if (1 === count($actions)) {
+            $actions = explode(' ', $actions[0]);
+        }
+
+        $parsedActions = array();
+
+        foreach ($actions as $action) {
+            $data = explode(':', $action);
+
+            // name
+            if (!isset($data[0])) {
+                throw new \InvalidArgumentException('An action must have a name');
+            }
+            $name = array_shift($data);
+
+            // route
+            $route = (isset($data[0]) && '' != $data[0]) ? array_shift($data) : '/'.substr($name, 0, -6);
+            if ($route) {
+                $placeholders = $this->getPlaceholdersFromRoute($route);
+            } else {
+                $placeholders = array();
+            }
+
+            // template
+            $template = (0 < count($data) && '' != $data[0]) ? implode(':', $data) : 'default';
+
+            $parsedActions[$name] = array(
+                'name' => $name,
+                'route' => $route,
+                'placeholders' => $placeholders,
+                'template' => $template,
+            );
+        }
+
+        return $parsedActions;
+    }
+
+    public function getPlaceholdersFromRoute($route)
+    {
+        preg_match_all('/{(.*?)}/', $route, $placeholders);
+        $placeholders = $placeholders[1];
+
+        return $placeholders;
+    }
+
+    public function parseShortcutNotation($shortcut)
+    {
+        $entity = str_replace('/', '\\', $shortcut);
+
+        if (false === $pos = strpos($entity, ':')) {
+            throw new \InvalidArgumentException(sprintf('The controller name must contain a : ("%s" given, expecting something like AcmeBlogBundle:Post)', $entity));
+        }
+
+        return array(substr($entity, 0, $pos), substr($entity, $pos + 1));
     }
 
     protected function createGenerator()

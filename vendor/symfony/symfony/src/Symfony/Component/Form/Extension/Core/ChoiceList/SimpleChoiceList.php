@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Form\Extension\Core\ChoiceList;
 
-@trigger_error('The ' . __NAMESPACE__ . '\SimpleChoiceList class is deprecated since version 2.7 and will be removed in 3.0. Use Symfony\Component\Form\ChoiceList\ArrayChoiceList instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\SimpleChoiceList class is deprecated since version 2.7 and will be removed in 3.0. Use Symfony\Component\Form\ChoiceList\ArrayChoiceList instead.', E_USER_DEPRECATED);
 
 /**
  * A choice list for choices of type string or integer.
@@ -39,7 +39,7 @@ class SimpleChoiceList extends ChoiceList
     /**
      * Creates a new simple choice list.
      *
-     * @param array $choices The array of choices with the choices as keys and
+     * @param array $choices          The array of choices with the choices as keys and
      *                                the labels as values. Choices may also be given
      *                                as hierarchy of unlimited depth by creating nested
      *                                arrays. The title of the sub-hierarchy is stored
@@ -68,14 +68,6 @@ class SimpleChoiceList extends ChoiceList
     /**
      * {@inheritdoc}
      */
-    protected function fixChoices(array $choices)
-    {
-        return $this->fixIndices($choices);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getValuesForChoices(array $choices)
     {
         $choices = $this->fixChoices($choices);
@@ -91,13 +83,13 @@ class SimpleChoiceList extends ChoiceList
      * Takes care of splitting the single $choices array passed in the
      * constructor into choices and labels.
      *
-     * @param array $bucketForPreferred The bucket where to store the preferred
+     * @param array              $bucketForPreferred The bucket where to store the preferred
      *                                               view objects.
-     * @param array $bucketForRemaining The bucket where to store the
+     * @param array              $bucketForRemaining The bucket where to store the
      *                                               non-preferred view objects.
-     * @param array|\Traversable $choices The list of choices
-     * @param array $labels Ignored
-     * @param array $preferredChoices The preferred choices
+     * @param array|\Traversable $choices            The list of choices
+     * @param array              $labels             Ignored
+     * @param array              $preferredChoices   The preferred choices
      */
     protected function addChoices(array &$bucketForPreferred, array &$bucketForRemaining, $choices, array $labels, array $preferredChoices)
     {
@@ -134,7 +126,7 @@ class SimpleChoiceList extends ChoiceList
      * Optimized for performance by treating the preferred choices as array
      * where choices are stored in the keys.
      *
-     * @param mixed $choice The choice to test
+     * @param mixed $choice           The choice to test
      * @param array $preferredChoices An array of preferred choices
      *
      * @return bool Whether the choice is preferred
@@ -160,10 +152,18 @@ class SimpleChoiceList extends ChoiceList
     /**
      * {@inheritdoc}
      */
+    protected function fixChoices(array $choices)
+    {
+        return $this->fixIndices($choices);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function createValue($choice)
     {
         // Choices are guaranteed to be unique and scalar, so we can simply
         // convert them to strings
-        return (string)$choice;
+        return (string) $choice;
     }
 }

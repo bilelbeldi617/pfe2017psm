@@ -49,20 +49,22 @@ class TransNode extends \Twig_Node
             $defaults = $this->getNode('vars');
             $vars = null;
         }
-        list($msg, $defaults) = $this->compileString($this->getNode('body'), $defaults, (bool)$vars);
+        list($msg, $defaults) = $this->compileString($this->getNode('body'), $defaults, (bool) $vars);
 
         $method = !$this->hasNode('count') ? 'trans' : 'transChoice';
 
         $compiler
-            ->write('echo $this->env->getExtension(\'Symfony\Bridge\Twig\Extension\TranslationExtension\')->getTranslator()->' . $method . '(')
-            ->subcompile($msg);
+            ->write('echo $this->env->getExtension(\'Symfony\Bridge\Twig\Extension\TranslationExtension\')->getTranslator()->'.$method.'(')
+            ->subcompile($msg)
+        ;
 
         $compiler->raw(', ');
 
         if ($this->hasNode('count')) {
             $compiler
                 ->subcompile($this->getNode('count'))
-                ->raw(', ');
+                ->raw(', ')
+            ;
         }
 
         if (null !== $vars) {
@@ -71,7 +73,8 @@ class TransNode extends \Twig_Node
                 ->subcompile($defaults)
                 ->raw(', ')
                 ->subcompile($this->getNode('vars'))
-                ->raw(')');
+                ->raw(')')
+            ;
         } else {
             $compiler->subcompile($defaults);
         }
@@ -87,7 +90,8 @@ class TransNode extends \Twig_Node
         if ($this->hasNode('locale')) {
             $compiler
                 ->raw(', ')
-                ->subcompile($this->getNode('locale'));
+                ->subcompile($this->getNode('locale'))
+            ;
         }
         $compiler->raw(");\n");
     }
@@ -105,7 +109,7 @@ class TransNode extends \Twig_Node
         preg_match_all('/(?<!%)%([^%]+)%/', $msg, $matches);
 
         foreach ($matches[1] as $var) {
-            $key = new \Twig_Node_Expression_Constant('%' . $var . '%', $body->getTemplateLine());
+            $key = new \Twig_Node_Expression_Constant('%'.$var.'%', $body->getTemplateLine());
             if (!$vars->hasElement($key)) {
                 if ('count' === $var && $this->hasNode('count')) {
                     $vars->addElement($this->getNode('count'), $key);

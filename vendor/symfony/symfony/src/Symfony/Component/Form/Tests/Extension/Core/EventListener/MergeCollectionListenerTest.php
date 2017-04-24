@@ -21,6 +21,34 @@ abstract class MergeCollectionListenerTest extends TestCase
     protected $factory;
     protected $form;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->form = $this->getForm('axes');
+    }
+
+    protected function tearDown()
+    {
+        $this->dispatcher = null;
+        $this->factory = null;
+        $this->form = null;
+    }
+
+    abstract protected function getBuilder($name = 'name');
+
+    protected function getForm($name = 'name', $propertyPath = null)
+    {
+        $propertyPath = $propertyPath ?: $name;
+
+        return $this->getBuilder($name)->setAttribute('property_path', $propertyPath)->getForm();
+    }
+
+    protected function getMockForm()
+    {
+        return $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
+    }
+
     public function getBooleanMatrix1()
     {
         return array(
@@ -38,6 +66,8 @@ abstract class MergeCollectionListenerTest extends TestCase
             array(false, false),
         );
     }
+
+    abstract protected function getData(array $data);
 
     /**
      * @dataProvider getBooleanMatrix1
@@ -62,8 +92,6 @@ abstract class MergeCollectionListenerTest extends TestCase
         // The original object matches the new object
         $this->assertEquals($newData, $event->getData());
     }
-
-    abstract protected function getData(array $data);
 
     /**
      * @dataProvider getBooleanMatrix1
@@ -224,33 +252,5 @@ abstract class MergeCollectionListenerTest extends TestCase
         $listener->onSubmit($event);
 
         $this->assertNull($event->getData());
-    }
-
-    protected function setUp()
-    {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->form = $this->getForm('axes');
-    }
-
-    protected function getForm($name = 'name', $propertyPath = null)
-    {
-        $propertyPath = $propertyPath ?: $name;
-
-        return $this->getBuilder($name)->setAttribute('property_path', $propertyPath)->getForm();
-    }
-
-    abstract protected function getBuilder($name = 'name');
-
-    protected function tearDown()
-    {
-        $this->dispatcher = null;
-        $this->factory = null;
-        $this->form = null;
-    }
-
-    protected function getMockForm()
-    {
-        return $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
     }
 }

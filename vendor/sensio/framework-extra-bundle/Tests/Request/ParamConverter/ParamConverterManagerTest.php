@@ -31,31 +31,30 @@ class ParamConverterManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array($high, $low), $manager->all());
     }
 
-    protected function createParamConverterMock()
-    {
-        return $this->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface')->getMock();
-    }
-
     public function testApply()
     {
         $supported = $this->createParamConverterMock();
         $supported
             ->expects($this->once())
             ->method('supports')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
         $supported
             ->expects($this->once())
             ->method('apply')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $invalid = $this->createParamConverterMock();
         $invalid
             ->expects($this->once())
             ->method('supports')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
         $invalid
             ->expects($this->never())
-            ->method('apply');
+            ->method('apply')
+        ;
 
         $configurations = array(
             new Configuration\ParamConverter(array(
@@ -75,11 +74,13 @@ class ParamConverterManagerTest extends \PHPUnit_Framework_TestCase
         $converter
             ->expects($this->any())
             ->method('supports')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $converter
             ->expects($this->any())
-            ->method('apply');
+            ->method('apply')
+        ;
 
         $request = new Request();
         $request->attributes->set('param', '1234');
@@ -105,7 +106,8 @@ class ParamConverterManagerTest extends \PHPUnit_Framework_TestCase
         $converter
             ->expects($this->any())
             ->method('supports')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $request = new Request();
         $request->attributes->set('param', '1234');
@@ -145,11 +147,13 @@ class ParamConverterManagerTest extends \PHPUnit_Framework_TestCase
         $converter = $this->createParamConverterMock();
         $converter
             ->expects($this->never())
-            ->method('supports');
+            ->method('supports')
+        ;
 
         $converter
             ->expects($this->never())
-            ->method('apply');
+            ->method('apply')
+        ;
 
         $request = new Request();
         $request->attributes->set('converted', new \stdClass());
@@ -162,5 +166,10 @@ class ParamConverterManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new ParamConverterManager();
         $manager->add($converter);
         $manager->apply($request, array($configuration));
+    }
+
+    protected function createParamConverterMock()
+    {
+        return $this->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface')->getMock();
     }
 }

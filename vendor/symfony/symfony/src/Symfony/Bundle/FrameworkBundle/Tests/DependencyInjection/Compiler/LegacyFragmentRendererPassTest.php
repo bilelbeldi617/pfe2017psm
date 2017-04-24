@@ -67,7 +67,8 @@ class LegacyFragmentRendererPassTest extends TestCase
         $renderer
             ->expects($this->once())
             ->method('addMethodCall')
-            ->with('addRenderer', array(new Reference('my_content_renderer')));
+            ->with('addRenderer', array(new Reference('my_content_renderer')))
+        ;
 
         $definition = $this->getMockBuilder('Symfony\Component\DependencyInjection\Definition')->getMock();
         $definition->expects($this->atLeastOnce())

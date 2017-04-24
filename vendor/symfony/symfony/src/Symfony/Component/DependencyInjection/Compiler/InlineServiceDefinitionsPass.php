@@ -55,8 +55,8 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
      * Processes inline arguments.
      *
      * @param ContainerBuilder $container The ContainerBuilder
-     * @param array $arguments An array of arguments
-     * @param bool $isRoot If we are processing the root definitions or not
+     * @param array            $arguments An array of arguments
+     * @param bool             $isRoot    If we are processing the root definitions or not
      *
      * @return array
      */
@@ -69,7 +69,7 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
             if (is_array($argument)) {
                 $arguments[$k] = $this->inlineArguments($container, $argument);
             } elseif ($argument instanceof Reference) {
-                if (!$container->hasDefinition($id = (string)$argument)) {
+                if (!$container->hasDefinition($id = (string) $argument)) {
                     continue;
                 }
 
@@ -102,8 +102,8 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
      * Checks if the definition is inlineable.
      *
      * @param ContainerBuilder $container
-     * @param string $id
-     * @param Definition $definition
+     * @param string           $id
+     * @param Definition       $definition
      *
      * @return bool If the definition is inlineable
      */

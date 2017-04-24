@@ -36,7 +36,7 @@ class TimeZoneTransformer extends Transformer
         }
 
         // From ICU >= 4.8, the zero offset is not more used, example: GMT instead of GMT+00:00
-        $format = (0 !== (int)$dateTime->format('O')) ? '\G\M\TP' : '\G\M\T';
+        $format = (0 !== (int) $dateTime->format('O')) ? '\G\M\TP' : '\G\M\T';
 
         return $dateTime->format($format);
     }
@@ -82,8 +82,8 @@ class TimeZoneTransformer extends Transformer
     public static function getEtcTimeZoneId($formattedTimeZone)
     {
         if (preg_match('/GMT(?P<signal>[+-])(?P<hours>\d{2}):?(?P<minutes>\d{2})/', $formattedTimeZone, $matches)) {
-            $hours = (int)$matches['hours'];
-            $minutes = (int)$matches['minutes'];
+            $hours = (int) $matches['hours'];
+            $minutes = (int) $matches['minutes'];
             $signal = $matches['signal'] == '-' ? '+' : '-';
 
             if (0 < $minutes) {
@@ -93,7 +93,7 @@ class TimeZoneTransformer extends Transformer
                 ));
             }
 
-            return 'Etc/GMT' . ($hours !== 0 ? $signal . $hours : '');
+            return 'Etc/GMT'.($hours !== 0 ? $signal.$hours : '');
         }
 
         throw new \InvalidArgumentException(sprintf('The GMT time zone "%s" does not match with the supported formats GMT[+-]HH:MM or GMT[+-]HHMM.', $formattedTimeZone));

@@ -33,12 +33,12 @@ class MemcacheCacheTest extends BaseCacheTest
     {
         parent::setUp();
 
-        if (!extension_loaded('memcache')) {
-            $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of memcache');
+        if ( ! extension_loaded('memcache')) {
+            $this->markTestSkipped('The ' . __CLASS__ .' requires the use of memcache');
         }
 
         if (@fsockopen('localhost', 11211) === false) {
-            $this->markTestSkipped('The ' . __CLASS__ . ' cannot connect to memcache');
+            $this->markTestSkipped('The ' . __CLASS__ .' cannot connect to memcache');
         }
     }
 
@@ -48,7 +48,7 @@ class MemcacheCacheTest extends BaseCacheTest
     protected function createCacheDriver()
     {
         $container = $this->compileContainer('memcache');
-        $cache = $container->get('doctrine_cache.providers.my_memcache_cache');
+        $cache     = $container->get('doctrine_cache.providers.my_memcache_cache');
 
         return $cache;
     }

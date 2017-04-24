@@ -23,21 +23,6 @@ class FilesLoaderTest extends TestCase
         $this->assertEquals(4, $loader->getTimesCalled());
     }
 
-    public function getFilesLoader(LoaderInterface $loader)
-    {
-        return $this->getMockForAbstractClass('Symfony\Component\Validator\Tests\Fixtures\FilesLoader', array(array(
-            __DIR__ . '/constraint-mapping.xml',
-            __DIR__ . '/constraint-mapping.yaml',
-            __DIR__ . '/constraint-mapping.test',
-            __DIR__ . '/constraint-mapping.txt',
-        ), $loader));
-    }
-
-    public function getFileLoader()
-    {
-        return $this->getMockBuilder('Symfony\Component\Validator\Mapping\Loader\LoaderInterface')->getMock();
-    }
-
     public function testCallsActualFileLoaderForMetadata()
     {
         $fileLoader = $this->getFileLoader();
@@ -45,5 +30,20 @@ class FilesLoaderTest extends TestCase
             ->method('loadClassMetadata');
         $loader = $this->getFilesLoader($fileLoader);
         $loader->loadClassMetadata(new ClassMetadata('Symfony\Component\Validator\Tests\Fixtures\Entity'));
+    }
+
+    public function getFilesLoader(LoaderInterface $loader)
+    {
+        return $this->getMockForAbstractClass('Symfony\Component\Validator\Tests\Fixtures\FilesLoader', array(array(
+            __DIR__.'/constraint-mapping.xml',
+            __DIR__.'/constraint-mapping.yaml',
+            __DIR__.'/constraint-mapping.test',
+            __DIR__.'/constraint-mapping.txt',
+        ), $loader));
+    }
+
+    public function getFileLoader()
+    {
+        return $this->getMockBuilder('Symfony\Component\Validator\Mapping\Loader\LoaderInterface')->getMock();
     }
 }

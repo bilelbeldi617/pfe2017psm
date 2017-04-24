@@ -28,7 +28,7 @@ class PhpBundleReader implements BundleReaderInterface
      */
     public function read($path, $locale)
     {
-        $fileName = $path . '/' . $locale . '.php';
+        $fileName = $path.'/'.$locale.'.php';
 
         if (!file_exists($fileName)) {
             throw new ResourceBundleNotFoundException(sprintf(

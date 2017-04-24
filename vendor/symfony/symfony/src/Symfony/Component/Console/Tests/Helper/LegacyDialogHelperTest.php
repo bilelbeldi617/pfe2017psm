@@ -57,20 +57,6 @@ class LegacyDialogHelperTest extends TestCase
         $this->assertEquals(array('0', '1'), $dialog->select($this->getOutputStream(), 'What is your favorite superhero?', $heroes, ' 0 , 1 ', false, 'Input "%s" is not a superhero!', true));
     }
 
-    protected function getInputStream($input)
-    {
-        $stream = fopen('php://memory', 'r+', false);
-        fwrite($stream, $input);
-        rewind($stream);
-
-        return $stream;
-    }
-
-    protected function getOutputStream()
-    {
-        return new StreamOutput(fopen('php://memory', 'r+', false));
-    }
-
     public function testSelectOnErrorOutput()
     {
         $dialog = new DialogHelper();
@@ -85,14 +71,6 @@ class LegacyDialogHelperTest extends TestCase
 
         rewind($output->getErrorOutput()->getStream());
         $this->assertContains('Input "Stdout" is not a superhero!', stream_get_contents($output->getErrorOutput()->getStream()));
-    }
-
-    protected function getConsoleOutput($stderr)
-    {
-        $output = new ConsoleOutput();
-        $output->setErrorOutput($stderr);
-
-        return $output;
     }
 
     public function testAsk()
@@ -122,13 +100,6 @@ class LegacyDialogHelperTest extends TestCase
 
         rewind($output->getErrorOutput()->getStream());
         $this->assertEquals('Where should output go?', stream_get_contents($output->getErrorOutput()->getStream()));
-    }
-
-    private function hasSttyAvailable()
-    {
-        exec('stty 2>&1', $output, $exitcode);
-
-        return $exitcode === 0;
     }
 
     public function testAskWithAutocomplete()
@@ -255,5 +226,34 @@ class LegacyDialogHelperTest extends TestCase
         $dialog->setInput($input);
 
         $this->assertEquals('not yet', $dialog->ask($this->getOutputStream(), 'Do you have a job?', 'not yet'));
+    }
+
+    protected function getInputStream($input)
+    {
+        $stream = fopen('php://memory', 'r+', false);
+        fwrite($stream, $input);
+        rewind($stream);
+
+        return $stream;
+    }
+
+    protected function getOutputStream()
+    {
+        return new StreamOutput(fopen('php://memory', 'r+', false));
+    }
+
+    protected function getConsoleOutput($stderr)
+    {
+        $output = new ConsoleOutput();
+        $output->setErrorOutput($stderr);
+
+        return $output;
+    }
+
+    private function hasSttyAvailable()
+    {
+        exec('stty 2>&1', $output, $exitcode);
+
+        return $exitcode === 0;
     }
 }

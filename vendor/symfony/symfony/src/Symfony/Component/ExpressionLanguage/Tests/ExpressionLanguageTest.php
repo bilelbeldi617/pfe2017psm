@@ -30,14 +30,16 @@ class ExpressionLanguageTest extends TestCase
             ->with('1 + 1//')
             ->will($this->returnCallback(function () use (&$savedParsedExpression) {
                 return $savedParsedExpression;
-            }));
+            }))
+        ;
         $cacheMock
             ->expects($this->exactly(1))
             ->method('save')
             ->with('1 + 1//', $this->isInstanceOf('Symfony\Component\ExpressionLanguage\ParsedExpression'))
             ->will($this->returnCallback(function ($key, $expression) use (&$savedParsedExpression) {
                 $savedParsedExpression = $expression;
-            }));
+            }))
+        ;
 
         $parsedExpression = $expressionLanguage->parse('1 + 1', array());
         $this->assertSame($savedParsedExpression, $parsedExpression);
@@ -124,13 +126,15 @@ class ExpressionLanguageTest extends TestCase
             ->method('fetch')
             ->will($this->returnCallback(function ($key) use (&$savedParsedExpressions) {
                 return isset($savedParsedExpressions[$key]) ? $savedParsedExpressions[$key] : null;
-            }));
+            }))
+        ;
         $cacheMock
             ->expects($this->exactly(1))
             ->method('save')
             ->will($this->returnCallback(function ($key, $expression) use (&$savedParsedExpressions) {
                 $savedParsedExpressions[$key] = $expression;
-            }));
+            }))
+        ;
 
         $expression = 'a + b';
         $expressionLanguage->compile($expression, array('a', 'B' => 'b'));
@@ -175,16 +179,12 @@ class ExpressionLanguageTest extends TestCase
         return array(
             array(
                 function (ExpressionLanguage $el) {
-                    $el->register('fn', function () {
-                    }, function () {
-                    });
+                    $el->register('fn', function () {}, function () {});
                 },
             ),
             array(
                 function (ExpressionLanguage $el) {
-                    $el->addFunction(new ExpressionFunction('fn', function () {
-                    }, function () {
-                    }));
+                    $el->addFunction(new ExpressionFunction('fn', function () {}, function () {}));
                 },
             ),
             array(

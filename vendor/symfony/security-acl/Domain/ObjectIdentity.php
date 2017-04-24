@@ -66,7 +66,7 @@ final class ObjectIdentity implements ObjectIdentityInterface
             if ($domainObject instanceof DomainObjectInterface) {
                 return new self($domainObject->getObjectIdentifier(), ClassUtils::getRealClass($domainObject));
             } elseif (method_exists($domainObject, 'getId')) {
-                return new self((string)$domainObject->getId(), ClassUtils::getRealClass($domainObject));
+                return new self((string) $domainObject->getId(), ClassUtils::getRealClass($domainObject));
             }
         } catch (\InvalidArgumentException $e) {
             throw new InvalidDomainObjectException($e->getMessage(), 0, $e);
@@ -99,7 +99,7 @@ final class ObjectIdentity implements ObjectIdentityInterface
         // comparing the identifier with === might lead to problems, so we
         // waive this restriction
         return $this->identifier == $identity->getIdentifier()
-            && $this->type === $identity->getType();
+               && $this->type === $identity->getType();
     }
 
     /**

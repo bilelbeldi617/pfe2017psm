@@ -19,7 +19,7 @@ class XMLSchemaTest extends \PHPUnit_Framework_TestCase
     public static function dataValidateSchemaFiles()
     {
         $schemaFiles = array();
-        $di = new \DirectoryIterator(__DIR__ . '/Fixtures/config/xml');
+        $di = new \DirectoryIterator(__DIR__.'/Fixtures/config/xml');
         foreach ($di as $element) {
             if ($element->isFile() && substr($element->getFilename(), -4) === ".xml") {
                 $schemaFiles[] = array($element->getPathname());
@@ -48,7 +48,7 @@ class XMLSchemaTest extends \PHPUnit_Framework_TestCase
             $configNode->appendChild($dbalNode);
             $dbalDom->appendChild($configNode);
 
-            $ret = $dbalDom->schemaValidate(__DIR__ . '/../../Resources/config/schema/doctrine-1.0.xsd');
+            $ret = $dbalDom->schemaValidate(__DIR__.'/../../Resources/config/schema/doctrine-1.0.xsd');
             $this->assertTrue($ret, 'DoctrineBundle Dependency Injection XMLSchema did not validate this XML instance.');
             $found = true;
         }
@@ -61,7 +61,7 @@ class XMLSchemaTest extends \PHPUnit_Framework_TestCase
             $configNode->appendChild($ormNode);
             $ormDom->appendChild($configNode);
 
-            $ret = $ormDom->schemaValidate(__DIR__ . '/../../Resources/config/schema/doctrine-1.0.xsd');
+            $ret = $ormDom->schemaValidate(__DIR__.'/../../Resources/config/schema/doctrine-1.0.xsd');
             $this->assertTrue($ret, 'DoctrineBundle Dependency Injection XMLSchema did not validate this XML instance.');
             $found = true;
         }

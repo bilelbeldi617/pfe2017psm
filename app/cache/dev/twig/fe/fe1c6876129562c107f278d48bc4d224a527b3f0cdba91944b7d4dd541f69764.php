@@ -15,10 +15,28 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        // line 1
+        return $this->loadTemplate((($this->getAttribute($this->getAttribute((isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "request", array()), "isXmlHttpRequest", array())) ? ("@WebProfiler/Profiler/ajax_layout.html.twig") : ("@WebProfiler/Profiler/layout.html.twig")), "@Doctrine/Collector/db.html.twig", 1);
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_a15fd6047586ecf5caf63c863fdd57b095b47cbdb6b9a73735f175b22ae8ec7a = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_a15fd6047586ecf5caf63c863fdd57b095b47cbdb6b9a73735f175b22ae8ec7a->enter($__internal_a15fd6047586ecf5caf63c863fdd57b095b47cbdb6b9a73735f175b22ae8ec7a_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Doctrine/Collector/db.html.twig"));
+
+        $this->getParent($context)->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_a15fd6047586ecf5caf63c863fdd57b095b47cbdb6b9a73735f175b22ae8ec7a->leave($__internal_a15fd6047586ecf5caf63c863fdd57b095b47cbdb6b9a73735f175b22ae8ec7a_prof);
+
+    }
+
+    // line 3
     public function block_toolbar($context, array $blocks = array())
     {
-        $__internal_46860baa5862fa4324721170ab4dc959448551033f7f5cdb36955bbb3e0c4481 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_46860baa5862fa4324721170ab4dc959448551033f7f5cdb36955bbb3e0c4481->enter($__internal_46860baa5862fa4324721170ab4dc959448551033f7f5cdb36955bbb3e0c4481_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "toolbar"));
+        $__internal_84e02e397b8c68354407c00258f50003b5e1a0730b51fea57dfbbc23fd64e32f = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_84e02e397b8c68354407c00258f50003b5e1a0730b51fea57dfbbc23fd64e32f->enter($__internal_84e02e397b8c68354407c00258f50003b5e1a0730b51fea57dfbbc23fd64e32f_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "toolbar"));
 
         // line 4
         echo "    ";
@@ -122,7 +140,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                 <b>Database Queries</b>
                 <span class=\"sf-toolbar-status ";
             // line 44
-            echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "querycount", array()) > 50)) ? ("sf-toolbar-status-yellow") : (""));
+            echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "querycount", array()) > 50)) ? ("sf-toolbar-status-yellow") : (""));
             echo "\">";
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "querycount", array()), "html", null, true);
             echo "</span>
@@ -138,7 +156,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                 <b>Invalid entities</b>
                 <span class=\"sf-toolbar-status ";
             // line 52
-            echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "invalidEntityCount", array()) > 0)) ? ("sf-toolbar-status-red") : (""));
+            echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "invalidEntityCount", array()) > 0)) ? ("sf-toolbar-status-red") : (""));
             echo "\">";
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "invalidEntityCount", array()), "html", null, true);
             echo "</span>
@@ -158,7 +176,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                     <b>Cache misses</b>
                     <span class=\"sf-toolbar-status ";
                 // line 61
-                echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheMissesCount", array()) > 0)) ? ("sf-toolbar-status-yellow") : (""));
+                echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheMissesCount", array()) > 0)) ? ("sf-toolbar-status-yellow") : (""));
                 echo "\">";
                 echo twig_escape_filter($this->env, $this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheMissesCount", array()), "html", null, true);
                 echo "</span>
@@ -167,7 +185,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                     <b>Cache puts</b>
                     <span class=\"sf-toolbar-status ";
                 // line 65
-                echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cachePutsCount", array()) > 0)) ? ("sf-toolbar-status-yellow") : (""));
+                echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cachePutsCount", array()) > 0)) ? ("sf-toolbar-status-yellow") : (""));
                 echo "\">";
                 echo twig_escape_filter($this->env, $this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cachePutsCount", array()), "html", null, true);
                 echo "</span>
@@ -193,15 +211,16 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
 
     ";
         }
-
-        $__internal_46860baa5862fa4324721170ab4dc959448551033f7f5cdb36955bbb3e0c4481->leave($__internal_46860baa5862fa4324721170ab4dc959448551033f7f5cdb36955bbb3e0c4481_prof);
+        
+        $__internal_84e02e397b8c68354407c00258f50003b5e1a0730b51fea57dfbbc23fd64e32f->leave($__internal_84e02e397b8c68354407c00258f50003b5e1a0730b51fea57dfbbc23fd64e32f_prof);
 
     }
 
+    // line 80
     public function block_menu($context, array $blocks = array())
     {
-        $__internal_b4ae0f2102d5645527d5d9e243b8fada16cf135891bf2db2a9d07fd4c0dc011f = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_b4ae0f2102d5645527d5d9e243b8fada16cf135891bf2db2a9d07fd4c0dc011f->enter($__internal_b4ae0f2102d5645527d5d9e243b8fada16cf135891bf2db2a9d07fd4c0dc011f_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "menu"));
+        $__internal_f9656023a248edb7c7ba6e60d05e57a2fde8f2ee24da86f19f4e60ac9d591bfc = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_f9656023a248edb7c7ba6e60d05e57a2fde8f2ee24da86f19f4e60ac9d591bfc->enter($__internal_f9656023a248edb7c7ba6e60d05e57a2fde8f2ee24da86f19f4e60ac9d591bfc_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "menu"));
 
         // line 81
         echo "    ";
@@ -234,9 +253,9 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
             echo "
         <span class=\"label ";
             // line 96
-            echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "invalidEntityCount", array()) > 0)) ? ("label-status-error") : (""));
+            echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "invalidEntityCount", array()) > 0)) ? ("label-status-error") : (""));
             echo " ";
-            echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "querycount", array()) == 0)) ? ("disabled") : (""));
+            echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "querycount", array()) == 0)) ? ("disabled") : (""));
             echo "\">
             <span class=\"icon\">";
             // line 97
@@ -260,17 +279,16 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
 
     ";
         }
-
-        $__internal_b4ae0f2102d5645527d5d9e243b8fada16cf135891bf2db2a9d07fd4c0dc011f->leave($__internal_b4ae0f2102d5645527d5d9e243b8fada16cf135891bf2db2a9d07fd4c0dc011f_prof);
+        
+        $__internal_f9656023a248edb7c7ba6e60d05e57a2fde8f2ee24da86f19f4e60ac9d591bfc->leave($__internal_f9656023a248edb7c7ba6e60d05e57a2fde8f2ee24da86f19f4e60ac9d591bfc_prof);
 
     }
 
-    // line 3
-
+    // line 109
     public function block_panel($context, array $blocks = array())
     {
-        $__internal_48774284df354c9e70cb2f550acb5bd748285b60b08856962b7767dfaf0c56dd = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_48774284df354c9e70cb2f550acb5bd748285b60b08856962b7767dfaf0c56dd->enter($__internal_48774284df354c9e70cb2f550acb5bd748285b60b08856962b7767dfaf0c56dd_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "panel"));
+        $__internal_51719fef88524ab88b602967f39ff7a986c981c3e06409a5b9b113254d288f3f = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_51719fef88524ab88b602967f39ff7a986c981c3e06409a5b9b113254d288f3f->enter($__internal_51719fef88524ab88b602967f39ff7a986c981c3e06409a5b9b113254d288f3f_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "panel"));
 
         // line 110
         echo "    ";
@@ -283,9 +301,9 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
             // line 113
             echo "        ";
             echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\HttpKernelExtension')->renderFragment($this->env->getExtension('Symfony\Bridge\Twig\Extension\HttpKernelExtension')->controller("DoctrineBundle:Profiler:explain", array("token" =>             // line 114
-                (isset($context["token"]) ? $context["token"] : $this->getContext($context, "token")), "panel" => "db", "connectionName" => $this->getAttribute($this->getAttribute($this->getAttribute(            // line 116
-                (isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "request", array()), "query", array()), "get", array(0 => "connection"), "method"), "query" => $this->getAttribute($this->getAttribute($this->getAttribute(            // line 117
-                (isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "request", array()), "query", array()), "get", array(0 => "query"), "method"))));
+(isset($context["token"]) ? $context["token"] : $this->getContext($context, "token")), "panel" => "db", "connectionName" => $this->getAttribute($this->getAttribute($this->getAttribute(            // line 116
+(isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "request", array()), "query", array()), "get", array(0 => "connection"), "method"), "query" => $this->getAttribute($this->getAttribute($this->getAttribute(            // line 117
+(isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "request", array()), "query", array()), "get", array(0 => "query"), "method"))));
             // line 118
             echo "
     ";
@@ -296,17 +314,16 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
             echo "
     ";
         }
-
-        $__internal_48774284df354c9e70cb2f550acb5bd748285b60b08856962b7767dfaf0c56dd->leave($__internal_48774284df354c9e70cb2f550acb5bd748285b60b08856962b7767dfaf0c56dd_prof);
+        
+        $__internal_51719fef88524ab88b602967f39ff7a986c981c3e06409a5b9b113254d288f3f->leave($__internal_51719fef88524ab88b602967f39ff7a986c981c3e06409a5b9b113254d288f3f_prof);
 
     }
 
-    // line 80
-
+    // line 124
     public function block_queries($context, array $blocks = array())
     {
-        $__internal_427502b743a1bfb9664742d60e461da61be3aac21b1ecaec7ad44152b959a185 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_427502b743a1bfb9664742d60e461da61be3aac21b1ecaec7ad44152b959a185->enter($__internal_427502b743a1bfb9664742d60e461da61be3aac21b1ecaec7ad44152b959a185_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "queries"));
+        $__internal_8b6c6d32747c945598955e0b4a38ba4f75c65622f495cc561f7fd2defcbb46ee = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_8b6c6d32747c945598955e0b4a38ba4f75c65622f495cc561f7fd2defcbb46ee->enter($__internal_8b6c6d32747c945598955e0b4a38ba4f75c65622f495cc561f7fd2defcbb46ee_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "queries"));
 
         // line 125
         echo "    ";
@@ -402,10 +419,10 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable($this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "queries", array()));
         $context['loop'] = array(
-            'parent' => $context['_parent'],
-            'index0' => 0,
-            'index' => 1,
-            'first' => true,
+          'parent' => $context['_parent'],
+          'index0' => 0,
+          'index'  => 1,
+          'first'  => true,
         );
         if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
             $length = count($context['_seq']);
@@ -459,10 +476,10 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                 $context['_parent'] = $context;
                 $context['_seq'] = twig_ensure_traversable($context["queries"]);
                 $context['loop'] = array(
-                    'parent' => $context['_parent'],
-                    'index0' => 0,
-                    'index' => 1,
-                    'first' => true,
+                  'parent' => $context['_parent'],
+                  'index0' => 0,
+                  'index'  => 1,
+                  'first'  => true,
                 );
                 if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
                     $length = count($context['_seq']);
@@ -502,7 +519,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                                 <div class=\"text-small font-normal\">
                                     <a href=\"#\" ";
                     // line 212
-                    echo((((isset($context["profiler_markup_version"]) ? $context["profiler_markup_version"] : $this->getContext($context, "profiler_markup_version")) == 1)) ? ("onclick=\"return toggleRunnableQuery(this);\"") : (""));
+                    echo ((((isset($context["profiler_markup_version"]) ? $context["profiler_markup_version"] : $this->getContext($context, "profiler_markup_version")) == 1)) ? ("onclick=\"return toggleRunnableQuery(this);\"") : (""));
                     echo " class=\"sf-toggle link-inverse\" data-toggle-selector=\"#formatted-query-";
                     echo twig_escape_filter($this->env, $context["i"], "html", null, true);
                     echo "-";
@@ -513,7 +530,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
 
                                     <a href=\"#\" ";
                     // line 216
-                    echo((((isset($context["profiler_markup_version"]) ? $context["profiler_markup_version"] : $this->getContext($context, "profiler_markup_version")) == 1)) ? ("onclick=\"return toggleRunnableQuery(this);\"") : (""));
+                    echo ((((isset($context["profiler_markup_version"]) ? $context["profiler_markup_version"] : $this->getContext($context, "profiler_markup_version")) == 1)) ? ("onclick=\"return toggleRunnableQuery(this);\"") : (""));
                     echo " class=\"sf-toggle link-inverse\" data-toggle-selector=\"#original-query-";
                     echo twig_escape_filter($this->env, $context["i"], "html", null, true);
                     echo "-";
@@ -614,7 +631,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
 
     ";
         // line 245
-        if (!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "connections", array())) {
+        if ( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "connections", array())) {
             // line 246
             echo "        <div class=\"empty\">
             <p>There are no configured database connections.</p>
@@ -633,7 +650,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
 
     ";
         // line 255
-        if (!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "managers", array())) {
+        if ( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "managers", array())) {
             // line 256
             echo "        <div class=\"empty\">
             <p>There are no configured entity managers.</p>
@@ -652,7 +669,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
 
     ";
         // line 265
-        if (!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheEnabled", array())) {
+        if ( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheEnabled", array())) {
             // line 266
             echo "        <div class=\"empty\">
             <p>Second Level Cache is not enabled.</p>
@@ -661,7 +678,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
         } else {
             // line 270
             echo "        ";
-            if (!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheCounts", array())) {
+            if ( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : $this->getContext($context, "collector")), "cacheCounts", array())) {
                 // line 271
                 echo "            <div class=\"empty\">
                 <p>Second level cache information is not available.</p>
@@ -798,7 +815,7 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
                     $context["contains_errors"] = ($this->getAttribute($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "mappingErrors", array(), "any", false, true), $context["manager"], array(), "array", true, true) && $this->getAttribute($this->getAttribute($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "mappingErrors", array(), "any", false, true), $context["manager"], array(), "array", false, true), $context["class"], array(), "array", true, true));
                     // line 335
                     echo "                    <tr class=\"";
-                    echo(((isset($context["contains_errors"]) ? $context["contains_errors"] : $this->getContext($context, "contains_errors"))) ? ("status-error") : (""));
+                    echo (((isset($context["contains_errors"]) ? $context["contains_errors"] : $this->getContext($context, "contains_errors"))) ? ("status-error") : (""));
                     echo "\">
                         <td>";
                     // line 336
@@ -936,29 +953,30 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
         echo "
         //]]></script>
 ";
-
-        $__internal_427502b743a1bfb9664742d60e461da61be3aac21b1ecaec7ad44152b959a185->leave($__internal_427502b743a1bfb9664742d60e461da61be3aac21b1ecaec7ad44152b959a185_prof);
+        
+        $__internal_8b6c6d32747c945598955e0b4a38ba4f75c65622f495cc561f7fd2defcbb46ee->leave($__internal_8b6c6d32747c945598955e0b4a38ba4f75c65622f495cc561f7fd2defcbb46ee_prof);
 
     }
 
-    // line 109
+    public function getTemplateName()
+    {
+        return "@Doctrine/Collector/db.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 124
-
     public function getDebugInfo()
     {
-        return array(953 => 430, 934 => 413, 932 => 412, 872 => 354, 866 => 353, 861 => 350, 853 => 347, 849 => 345, 845 => 343, 836 => 341, 832 => 340, 829 => 339, 827 => 338, 822 => 336, 817 => 335, 814 => 334, 810 => 333, 800 => 325, 794 => 321, 792 => 320, 789 => 319, 783 => 317, 780 => 316, 776 => 315, 771 => 312, 768 => 311, 765 => 310, 760 => 308, 757 => 307, 755 => 306, 752 => 305, 747 => 303, 744 => 302, 742 => 301, 739 => 300, 734 => 298, 731 => 297, 729 => 296, 726 => 295, 718 => 290, 710 => 285, 702 => 280, 698 => 278, 692 => 276, 689 => 275, 683 => 271, 680 => 270, 674 => 266, 672 => 265, 667 => 262, 661 => 260, 655 => 256, 653 => 255, 648 => 252, 642 => 250, 636 => 246, 634 => 245, 629 => 242, 615 => 241, 610 => 238, 594 => 235, 586 => 233, 584 => 232, 578 => 229, 572 => 228, 566 => 225, 560 => 224, 556 => 222, 547 => 220, 544 => 219, 542 => 218, 533 => 216, 522 => 212, 515 => 208, 509 => 205, 504 => 203, 500 => 202, 493 => 201, 476 => 200, 472 => 199, 465 => 195, 461 => 194, 456 => 191, 450 => 187, 448 => 186, 445 => 185, 439 => 183, 436 => 182, 419 => 181, 414 => 178, 410 => 176, 403 => 172, 396 => 168, 389 => 164, 386 => 163, 384 => 162, 377 => 158, 369 => 153, 361 => 148, 355 => 144, 353 => 143, 350 => 142, 332 => 126, 329 => 125, 323 => 124, 312 => 120, 308 => 118, 306 => 117, 305 => 116, 304 => 114, 302 => 113, 300 => 112, 297 => 111, 294 => 110, 288 => 109, 278 => 104, 272 => 101, 269 => 100, 267 => 99, 262 => 97, 256 => 96, 253 => 95, 245 => 90, 241 => 89, 234 => 84, 232 => 83, 229 => 82, 226 => 81, 220 => 80, 209 => 75, 206 => 74, 203 => 73, 196 => 68, 188 => 65, 179 => 61, 172 => 57, 168 => 55, 166 => 54, 159 => 52, 152 => 48, 143 => 44, 139 => 42, 137 => 41, 134 => 40, 131 => 39, 127 => 37, 120 => 33, 113 => 30, 106 => 27, 104 => 26, 99 => 24, 96 => 23, 94 => 22, 91 => 21, 87 => 19, 81 => 17, 78 => 16, 72 => 14, 70 => 13, 62 => 12, 58 => 10, 55 => 9, 53 => 8, 50 => 7, 48 => 6, 45 => 5, 42 => 4, 36 => 3, 21 => 1,);
+        return array (  953 => 430,  934 => 413,  932 => 412,  872 => 354,  866 => 353,  861 => 350,  853 => 347,  849 => 345,  845 => 343,  836 => 341,  832 => 340,  829 => 339,  827 => 338,  822 => 336,  817 => 335,  814 => 334,  810 => 333,  800 => 325,  794 => 321,  792 => 320,  789 => 319,  783 => 317,  780 => 316,  776 => 315,  771 => 312,  768 => 311,  765 => 310,  760 => 308,  757 => 307,  755 => 306,  752 => 305,  747 => 303,  744 => 302,  742 => 301,  739 => 300,  734 => 298,  731 => 297,  729 => 296,  726 => 295,  718 => 290,  710 => 285,  702 => 280,  698 => 278,  692 => 276,  689 => 275,  683 => 271,  680 => 270,  674 => 266,  672 => 265,  667 => 262,  661 => 260,  655 => 256,  653 => 255,  648 => 252,  642 => 250,  636 => 246,  634 => 245,  629 => 242,  615 => 241,  610 => 238,  594 => 235,  586 => 233,  584 => 232,  578 => 229,  572 => 228,  566 => 225,  560 => 224,  556 => 222,  547 => 220,  544 => 219,  542 => 218,  533 => 216,  522 => 212,  515 => 208,  509 => 205,  504 => 203,  500 => 202,  493 => 201,  476 => 200,  472 => 199,  465 => 195,  461 => 194,  456 => 191,  450 => 187,  448 => 186,  445 => 185,  439 => 183,  436 => 182,  419 => 181,  414 => 178,  410 => 176,  403 => 172,  396 => 168,  389 => 164,  386 => 163,  384 => 162,  377 => 158,  369 => 153,  361 => 148,  355 => 144,  353 => 143,  350 => 142,  332 => 126,  329 => 125,  323 => 124,  312 => 120,  308 => 118,  306 => 117,  305 => 116,  304 => 114,  302 => 113,  300 => 112,  297 => 111,  294 => 110,  288 => 109,  278 => 104,  272 => 101,  269 => 100,  267 => 99,  262 => 97,  256 => 96,  253 => 95,  245 => 90,  241 => 89,  234 => 84,  232 => 83,  229 => 82,  226 => 81,  220 => 80,  209 => 75,  206 => 74,  203 => 73,  196 => 68,  188 => 65,  179 => 61,  172 => 57,  168 => 55,  166 => 54,  159 => 52,  152 => 48,  143 => 44,  139 => 42,  137 => 41,  134 => 40,  131 => 39,  127 => 37,  120 => 33,  113 => 30,  106 => 27,  104 => 26,  99 => 24,  96 => 23,  94 => 22,  91 => 21,  87 => 19,  81 => 17,  78 => 16,  72 => 14,  70 => 13,  62 => 12,  58 => 10,  55 => 9,  53 => 8,  50 => 7,  48 => 6,  45 => 5,  42 => 4,  36 => 3,  21 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -1398,27 +1416,5 @@ class __TwigTemplate_3add10b0ff313fd962a51e45277e022acc84e6b8b8db1fe1b891055abc1
         //]]></script>
 {% endblock %}
 ", "@Doctrine/Collector/db.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\doctrine\\doctrine-bundle\\Resources\\views\\Collector\\db.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        // line 1
-        return $this->loadTemplate((($this->getAttribute($this->getAttribute((isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "request", array()), "isXmlHttpRequest", array())) ? ("@WebProfiler/Profiler/ajax_layout.html.twig") : ("@WebProfiler/Profiler/layout.html.twig")), "@Doctrine/Collector/db.html.twig", 1);
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_3e79333cfeee59e8f859fd394fe8eaa9c7baceb467d449e1a71ecb6f97b3587b = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_3e79333cfeee59e8f859fd394fe8eaa9c7baceb467d449e1a71ecb6f97b3587b->enter($__internal_3e79333cfeee59e8f859fd394fe8eaa9c7baceb467d449e1a71ecb6f97b3587b_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Doctrine/Collector/db.html.twig"));
-
-        $this->getParent($context)->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_3e79333cfeee59e8f859fd394fe8eaa9c7baceb467d449e1a71ecb6f97b3587b->leave($__internal_3e79333cfeee59e8f859fd394fe8eaa9c7baceb467d449e1a71ecb6f97b3587b_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@Doctrine/Collector/db.html.twig";
     }
 }

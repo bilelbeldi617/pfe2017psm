@@ -39,21 +39,11 @@ class Poste
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get titrePoste
-     *
-     * @return string
-     */
-    public function getTitrePoste()
-    {
-        return $this->titrePoste;
     }
 
     /**
@@ -70,13 +60,13 @@ class Poste
     }
 
     /**
-     * Get salairePoste
+     * Get titrePoste
      *
-     * @return integer
+     * @return string 
      */
-    public function getSalairePoste()
+    public function getTitrePoste()
     {
-        return $this->salairePoste;
+        return $this->titrePoste;
     }
 
     /**
@@ -90,5 +80,15 @@ class Poste
         $this->salairePoste = $salairePoste;
 
         return $this;
+    }
+
+    /**
+     * Get salairePoste
+     *
+     * @return integer 
+     */
+    public function getSalairePoste()
+    {
+        return $this->salairePoste;
     }
 }

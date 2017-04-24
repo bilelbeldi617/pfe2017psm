@@ -20,7 +20,8 @@ class FormRendererTest extends TestCase
         $renderer = $this->getMockBuilder('Symfony\Component\Form\FormRenderer')
             ->setMethods(null)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $this->assertEquals('Is active', $renderer->humanize('is_active'));
         $this->assertEquals('Is active', $renderer->humanize('isActive'));

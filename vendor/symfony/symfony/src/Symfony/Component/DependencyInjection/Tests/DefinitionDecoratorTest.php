@@ -31,8 +31,8 @@ class DefinitionDecoratorTest extends TestCase
     {
         $def = new DefinitionDecorator('foo');
 
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
+        $getter = 'get'.ucfirst($property);
+        $setter = 'set'.ucfirst($property);
 
         $this->assertNull($def->$getter());
         $this->assertSame($def, $def->$setter('foo'));
@@ -58,8 +58,8 @@ class DefinitionDecoratorTest extends TestCase
     {
         $def = new DefinitionDecorator('foo');
 
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
+        $getter = 'get'.ucfirst($property);
+        $setter = 'set'.ucfirst($property);
 
         $this->assertNull($def->$getter());
         $this->assertSame($def, $def->$setter('foo'));

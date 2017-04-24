@@ -1,7 +1,6 @@
 <?php
 
 /* projetBundle:Default/Parent:mesEleves.html.twig */
-
 class __TwigTemplate_85b053573221c41c74503837cc6d955287203061679c792483174684cbba8a1c extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,23 +16,41 @@ class __TwigTemplate_85b053573221c41c74503837cc6d955287203061679c792483174684cbb
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "baseForParent.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_4c87fd1dafad13dcaead446b0f35b6e54eacb838f95c989f1e782b737358b908 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_4c87fd1dafad13dcaead446b0f35b6e54eacb838f95c989f1e782b737358b908->enter($__internal_4c87fd1dafad13dcaead446b0f35b6e54eacb838f95c989f1e782b737358b908_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "projetBundle:Default/Parent:mesEleves.html.twig"));
+
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_4c87fd1dafad13dcaead446b0f35b6e54eacb838f95c989f1e782b737358b908->leave($__internal_4c87fd1dafad13dcaead446b0f35b6e54eacb838f95c989f1e782b737358b908_prof);
+
+    }
+
+    // line 2
     public function block_title($context, array $blocks = array())
     {
-        $__internal_0abfc8a3f99910ac8619267867e67a8da721c8842ea25ecd2ac0a05e47e76dbf = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_0abfc8a3f99910ac8619267867e67a8da721c8842ea25ecd2ac0a05e47e76dbf->enter($__internal_0abfc8a3f99910ac8619267867e67a8da721c8842ea25ecd2ac0a05e47e76dbf_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_60ee0649ff307a399bb17907cf81083b40dd75e4bc9024897890c514f7251626 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_60ee0649ff307a399bb17907cf81083b40dd75e4bc9024897890c514f7251626->enter($__internal_60ee0649ff307a399bb17907cf81083b40dd75e4bc9024897890c514f7251626_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
         // line 3
         echo "    Mes élèves
 ";
-
-        $__internal_0abfc8a3f99910ac8619267867e67a8da721c8842ea25ecd2ac0a05e47e76dbf->leave($__internal_0abfc8a3f99910ac8619267867e67a8da721c8842ea25ecd2ac0a05e47e76dbf_prof);
+        
+        $__internal_60ee0649ff307a399bb17907cf81083b40dd75e4bc9024897890c514f7251626->leave($__internal_60ee0649ff307a399bb17907cf81083b40dd75e4bc9024897890c514f7251626_prof);
 
     }
 
+    // line 6
     public function block_script($context, array $blocks = array())
     {
-        $__internal_7e70a4d8ec983ab2b3b9296a4eb9b24508c09057a10ecc12836924daed555346 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_7e70a4d8ec983ab2b3b9296a4eb9b24508c09057a10ecc12836924daed555346->enter($__internal_7e70a4d8ec983ab2b3b9296a4eb9b24508c09057a10ecc12836924daed555346_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
+        $__internal_c908979aa6a383d973c5d53a27d33eed2d3496950fde0ca568214d4629765a7b = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_c908979aa6a383d973c5d53a27d33eed2d3496950fde0ca568214d4629765a7b->enter($__internal_c908979aa6a383d973c5d53a27d33eed2d3496950fde0ca568214d4629765a7b_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
 
         // line 7
         echo "    <script language=\"JavaScript\">
@@ -42,17 +59,16 @@ class __TwigTemplate_85b053573221c41c74503837cc6d955287203061679c792483174684cbb
         });
     </script>
 ";
-
-        $__internal_7e70a4d8ec983ab2b3b9296a4eb9b24508c09057a10ecc12836924daed555346->leave($__internal_7e70a4d8ec983ab2b3b9296a4eb9b24508c09057a10ecc12836924daed555346_prof);
+        
+        $__internal_c908979aa6a383d973c5d53a27d33eed2d3496950fde0ca568214d4629765a7b->leave($__internal_c908979aa6a383d973c5d53a27d33eed2d3496950fde0ca568214d4629765a7b_prof);
 
     }
 
-    // line 2
-
+    // line 14
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_c869d037650163bdd6e0788991b89e094dc58c46f47dc7da16fff6f64d79bdc9 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_c869d037650163bdd6e0788991b89e094dc58c46f47dc7da16fff6f64d79bdc9->enter($__internal_c869d037650163bdd6e0788991b89e094dc58c46f47dc7da16fff6f64d79bdc9_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_0ac7174cdd14680b3d6b78c4e4a083c65d853f932ad7bf1c4f4c1d04cf11cfca = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_0ac7174cdd14680b3d6b78c4e4a083c65d853f932ad7bf1c4f4c1d04cf11cfca->enter($__internal_0ac7174cdd14680b3d6b78c4e4a083c65d853f932ad7bf1c4f4c1d04cf11cfca_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 15
         echo "    <hr class=\"hr-4\">
@@ -135,29 +151,30 @@ class __TwigTemplate_85b053573221c41c74503837cc6d955287203061679c792483174684cbb
         </div>
     </div>
 ";
-
-        $__internal_c869d037650163bdd6e0788991b89e094dc58c46f47dc7da16fff6f64d79bdc9->leave($__internal_c869d037650163bdd6e0788991b89e094dc58c46f47dc7da16fff6f64d79bdc9_prof);
+        
+        $__internal_0ac7174cdd14680b3d6b78c4e4a083c65d853f932ad7bf1c4f4c1d04cf11cfca->leave($__internal_0ac7174cdd14680b3d6b78c4e4a083c65d853f932ad7bf1c4f4c1d04cf11cfca_prof);
 
     }
 
-    // line 6
+    public function getTemplateName()
+    {
+        return "projetBundle:Default/Parent:mesEleves.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 14
-
     public function getDebugInfo()
     {
-        return array(142 => 44, 130 => 40, 124 => 39, 116 => 36, 111 => 34, 105 => 33, 101 => 32, 97 => 31, 94 => 30, 90 => 29, 74 => 15, 68 => 14, 56 => 7, 50 => 6, 42 => 3, 36 => 2, 11 => 1,);
+        return array (  142 => 44,  130 => 40,  124 => 39,  116 => 36,  111 => 34,  105 => 33,  101 => 32,  97 => 31,  94 => 30,  90 => 29,  74 => 15,  68 => 14,  56 => 7,  50 => 6,  42 => 3,  36 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -219,26 +236,5 @@ class __TwigTemplate_85b053573221c41c74503837cc6d955287203061679c792483174684cbb
         </div>
     </div>
 {% endblock %}", "projetBundle:Default/Parent:mesEleves.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle/Resources/views/Default/Parent/mesEleves.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "baseForParent.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_0f4c722d525fef0acc38837bc3047636f97fcd30f9c9754878d7f77a31452978 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_0f4c722d525fef0acc38837bc3047636f97fcd30f9c9754878d7f77a31452978->enter($__internal_0f4c722d525fef0acc38837bc3047636f97fcd30f9c9754878d7f77a31452978_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "projetBundle:Default/Parent:mesEleves.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_0f4c722d525fef0acc38837bc3047636f97fcd30f9c9754878d7f77a31452978->leave($__internal_0f4c722d525fef0acc38837bc3047636f97fcd30f9c9754878d7f77a31452978_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "projetBundle:Default/Parent:mesEleves.html.twig";
     }
 }

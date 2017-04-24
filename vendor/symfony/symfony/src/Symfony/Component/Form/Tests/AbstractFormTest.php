@@ -42,11 +42,6 @@ abstract class AbstractFormTest extends TestCase
         $this->form = $this->createForm();
     }
 
-    /**
-     * @return \Symfony\Component\Form\FormInterface
-     */
-    abstract protected function createForm();
-
     protected function tearDown()
     {
         $this->dispatcher = null;
@@ -55,10 +50,15 @@ abstract class AbstractFormTest extends TestCase
     }
 
     /**
-     * @param string $name
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    abstract protected function createForm();
+
+    /**
+     * @param string                   $name
      * @param EventDispatcherInterface $dispatcher
-     * @param string $dataClass
-     * @param array $options
+     * @param string                   $dataClass
+     * @param array                    $options
      *
      * @return FormBuilder
      */

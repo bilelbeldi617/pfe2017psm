@@ -112,7 +112,7 @@ class OrderedHashMap implements \ArrayAccess, \IteratorAggregate, \Countable
     public function offsetGet($key)
     {
         if (!isset($this->elements[$key])) {
-            throw new \OutOfBoundsException('The offset "' . $key . '" does not exist.');
+            throw new \OutOfBoundsException('The offset "'.$key.'" does not exist.');
         }
 
         return $this->elements[$key];
@@ -130,7 +130,7 @@ class OrderedHashMap implements \ArrayAccess, \IteratorAggregate, \Countable
                     ? 0
                     // Imitate PHP's behavior of generating a key that equals
                     // the highest existing integer key + 1
-                    : 1 + (int)max($this->orderedKeys);
+                    : 1 + (int) max($this->orderedKeys);
             }
 
             $this->orderedKeys[] = $key;

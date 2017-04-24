@@ -39,20 +39,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($config['handlers']['foobar']['nested']);
     }
 
-    /**
-     * Processes an array of configurations and returns a compiled version.
-     *
-     * @param array $configs An array of raw configurations
-     *
-     * @return array A normalized array
-     */
-    protected function process($configs)
-    {
-        $processor = new Processor();
-
-        return $processor->processConfiguration(new Configuration(), $configs);
-    }
-
     public function provideProcessStringChannels()
     {
         return array(
@@ -213,7 +199,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'from_email' => 'foo@bar.com',
                         'to_email' => 'foo@bar.com',
                         'subject' => 'Subject',
-                        'mailer' => 'mailer',
+                        'mailer'  => 'mailer',
                         'email_prototype' => array(
                             'id' => 'monolog.prototype',
                             'method' => 'getPrototype'
@@ -232,8 +218,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('mailer', $config['handlers']['swift']['mailer']);
     }
 
-    public function testWithElasticsearchHandler()
-    {
+    public function testWithElasticsearchHandler() {
         $configs = array(
             array(
                 'handlers' => array(
@@ -349,5 +334,19 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
 
         $this->assertTrue($config['handlers']['foobar']['nested']);
+    }
+
+    /**
+     * Processes an array of configurations and returns a compiled version.
+     *
+     * @param array $configs An array of raw configurations
+     *
+     * @return array A normalized array
+     */
+    protected function process($configs)
+    {
+        $processor = new Processor();
+
+        return $processor->processConfiguration(new Configuration(), $configs);
     }
 }

@@ -27,20 +27,21 @@ class HttpBasicLdapFactory extends HttpBasicFactory
 {
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        $provider = 'security.authentication.provider.ldap_bind.' . $id;
+        $provider = 'security.authentication.provider.ldap_bind.'.$id;
         $container
             ->setDefinition($provider, new DefinitionDecorator('security.authentication.provider.ldap_bind'))
             ->replaceArgument(0, new Reference($userProvider))
-            ->replaceArgument(1, new Reference('security.user_checker.' . $id))
+            ->replaceArgument(1, new Reference('security.user_checker.'.$id))
             ->replaceArgument(2, $id)
             ->replaceArgument(3, new Reference($config['service']))
-            ->replaceArgument(4, $config['dn_string']);
+            ->replaceArgument(4, $config['dn_string'])
+        ;
 
         // entry point
         $entryPointId = $this->createEntryPoint($container, $id, $config, $defaultEntryPoint);
 
         // listener
-        $listenerId = 'security.authentication.listener.basic.' . $id;
+        $listenerId = 'security.authentication.listener.basic.'.$id;
         $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.basic'));
         $listener->replaceArgument(2, $id);
         $listener->replaceArgument(3, new Reference($entryPointId));
@@ -54,9 +55,10 @@ class HttpBasicLdapFactory extends HttpBasicFactory
 
         $node
             ->children()
-            ->scalarNode('service')->end()
-            ->scalarNode('dn_string')->defaultValue('{username}')->end()
-            ->end();
+                ->scalarNode('service')->end()
+                ->scalarNode('dn_string')->defaultValue('{username}')->end()
+            ->end()
+        ;
     }
 
     public function getKey()

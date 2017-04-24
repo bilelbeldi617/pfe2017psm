@@ -73,6 +73,11 @@ class SerializerBuilder
     private $includeInterfaceMetadata = false;
     private $driverFactory;
 
+    public static function create()
+    {
+        return new static();
+    }
+
     public function __construct()
     {
         $this->handlerRegistry = new HandlerRegistry();
@@ -80,11 +85,6 @@ class SerializerBuilder
         $this->driverFactory = new DefaultDriverFactory();
         $this->serializationVisitors = new Map();
         $this->deserializationVisitors = new Map();
-    }
-
-    public static function create()
-    {
-        return new static();
     }
 
     public function setAnnotationReader(Reader $reader)
@@ -96,17 +96,17 @@ class SerializerBuilder
 
     public function setDebug($bool)
     {
-        $this->debug = (boolean)$bool;
+        $this->debug = (boolean) $bool;
 
         return $this;
     }
 
     public function setCacheDir($dir)
     {
-        if (!is_dir($dir)) {
+        if ( ! is_dir($dir)) {
             $this->createDir($dir);
         }
-        if (!is_writable($dir)) {
+        if ( ! is_writable($dir)) {
             throw new InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
         }
 
@@ -115,21 +115,29 @@ class SerializerBuilder
         return $this;
     }
 
-    private function createDir($dir)
+    public function addDefaultHandlers()
     {
-        if (is_dir($dir)) {
-            return;
-        }
+        $this->handlersConfigured = true;
+        $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
 
-        if (false === @mkdir($dir, 0777, true)) {
-            throw new RuntimeException(sprintf('Could not create directory "%s".', $dir));
-        }
+        return $this;
     }
 
     public function configureHandlers(\Closure $closure)
     {
         $this->handlersConfigured = true;
         $closure($this->handlerRegistry);
+
+        return $this;
+    }
+
+    public function addDefaultListeners()
+    {
+        $this->listenersConfigured = true;
+        $this->eventDispatcher->addSubscriber(new DoctrineProxySubscriber());
 
         return $this;
     }
@@ -172,6 +180,33 @@ class SerializerBuilder
         return $this;
     }
 
+    public function addDefaultSerializationVisitors()
+    {
+        $this->initializePropertyNamingStrategy();
+
+        $this->visitorsAdded = true;
+        $this->serializationVisitors->setAll(array(
+            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy),
+            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy),
+            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy),
+        ));
+
+        return $this;
+    }
+
+    public function addDefaultDeserializationVisitors()
+    {
+        $this->initializePropertyNamingStrategy();
+
+        $this->visitorsAdded = true;
+        $this->deserializationVisitors->setAll(array(
+            'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
+            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
+        ));
+
+        return $this;
+    }
+
     /**
      * @param Boolean $include Whether to include the metadata from the interfaces
      *
@@ -179,7 +214,7 @@ class SerializerBuilder
      */
     public function includeInterfaceMetadata($include)
     {
-        $this->includeInterfaceMetadata = (Boolean)$include;
+        $this->includeInterfaceMetadata = (Boolean) $include;
 
         return $this;
     }
@@ -189,7 +224,7 @@ class SerializerBuilder
      *
      * This method overrides any previously defined directories.
      *
-     * @param array <string,string> $namespacePrefixToDirMap
+     * @param array<string,string> $namespacePrefixToDirMap
      *
      * @return SerializerBuilder
      *
@@ -198,28 +233,12 @@ class SerializerBuilder
     public function setMetadataDirs(array $namespacePrefixToDirMap)
     {
         foreach ($namespacePrefixToDirMap as $dir) {
-            if (!is_dir($dir)) {
+            if ( ! is_dir($dir)) {
                 throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
             }
         }
 
         $this->metadataDirs = $namespacePrefixToDirMap;
-
-        return $this;
-    }
-
-    /**
-     * Adds a map of namespace prefixes to directories.
-     *
-     * @param array <string,string> $namespacePrefixToDirMap
-     *
-     * @return SerializerBuilder
-     */
-    public function addMetadataDirs(array $namespacePrefixToDirMap)
-    {
-        foreach ($namespacePrefixToDirMap as $prefix => $dir) {
-            $this->addMetadataDir($dir, $prefix);
-        }
 
         return $this;
     }
@@ -252,7 +271,7 @@ class SerializerBuilder
      */
     public function addMetadataDir($dir, $namespacePrefix = '')
     {
-        if (!is_dir($dir)) {
+        if ( ! is_dir($dir)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
@@ -261,6 +280,22 @@ class SerializerBuilder
         }
 
         $this->metadataDirs[$namespacePrefix] = $dir;
+
+        return $this;
+    }
+
+    /**
+     * Adds a map of namespace prefixes to directories.
+     *
+     * @param array<string,string> $namespacePrefixToDirMap
+     *
+     * @return SerializerBuilder
+     */
+    public function addMetadataDirs(array $namespacePrefixToDirMap)
+    {
+        foreach ($namespacePrefixToDirMap as $prefix => $dir) {
+            $this->addMetadataDir($dir, $prefix);
+        }
 
         return $this;
     }
@@ -278,11 +313,11 @@ class SerializerBuilder
      */
     public function replaceMetadataDir($dir, $namespacePrefix = '')
     {
-        if (!is_dir($dir)) {
+        if ( ! is_dir($dir)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
-        if (!isset($this->metadataDirs[$namespacePrefix])) {
+        if ( ! isset($this->metadataDirs[$namespacePrefix])) {
             throw new InvalidArgumentException(sprintf('There is no directory configured for namespace prefix "%s". Please use addMetadataDir() for adding new directories.', $namespacePrefix));
         }
 
@@ -303,8 +338,8 @@ class SerializerBuilder
             $annotationReader = new AnnotationReader();
 
             if (null !== $this->cacheDir) {
-                $this->createDir($this->cacheDir . '/annotations');
-                $annotationReader = new FileCacheReader($annotationReader, $this->cacheDir . '/annotations', $this->debug);
+                $this->createDir($this->cacheDir.'/annotations');
+                $annotationReader = new FileCacheReader($annotationReader, $this->cacheDir.'/annotations', $this->debug);
             }
         }
 
@@ -314,19 +349,19 @@ class SerializerBuilder
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
         if (null !== $this->cacheDir) {
-            $this->createDir($this->cacheDir . '/metadata');
-            $metadataFactory->setCache(new FileCache($this->cacheDir . '/metadata'));
+            $this->createDir($this->cacheDir.'/metadata');
+            $metadataFactory->setCache(new FileCache($this->cacheDir.'/metadata'));
         }
 
-        if (!$this->handlersConfigured) {
+        if ( ! $this->handlersConfigured) {
             $this->addDefaultHandlers();
         }
 
-        if (!$this->listenersConfigured) {
+        if ( ! $this->listenersConfigured) {
             $this->addDefaultListeners();
         }
 
-        if (!$this->visitorsAdded) {
+        if ( ! $this->visitorsAdded) {
             $this->addDefaultSerializationVisitors();
             $this->addDefaultDeserializationVisitors();
         }
@@ -341,39 +376,6 @@ class SerializerBuilder
         );
     }
 
-    public function addDefaultHandlers()
-    {
-        $this->handlersConfigured = true;
-        $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
-
-        return $this;
-    }
-
-    public function addDefaultListeners()
-    {
-        $this->listenersConfigured = true;
-        $this->eventDispatcher->addSubscriber(new DoctrineProxySubscriber());
-
-        return $this;
-    }
-
-    public function addDefaultSerializationVisitors()
-    {
-        $this->initializePropertyNamingStrategy();
-
-        $this->visitorsAdded = true;
-        $this->serializationVisitors->setAll(array(
-            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy),
-            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy),
-            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy),
-        ));
-
-        return $this;
-    }
-
     private function initializePropertyNamingStrategy()
     {
         if (null !== $this->propertyNamingStrategy) {
@@ -383,16 +385,14 @@ class SerializerBuilder
         $this->propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
     }
 
-    public function addDefaultDeserializationVisitors()
+    private function createDir($dir)
     {
-        $this->initializePropertyNamingStrategy();
+        if (is_dir($dir)) {
+            return;
+        }
 
-        $this->visitorsAdded = true;
-        $this->deserializationVisitors->setAll(array(
-            'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
-            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
-        ));
-
-        return $this;
+        if (false === @mkdir($dir, 0777, true)) {
+            throw new RuntimeException(sprintf('Could not create directory "%s".', $dir));
+        }
     }
 }

@@ -18,6 +18,19 @@ class ArrayToPartsTransformerTest extends TestCase
 {
     private $transformer;
 
+    protected function setUp()
+    {
+        $this->transformer = new ArrayToPartsTransformer(array(
+            'first' => array('a', 'b', 'c'),
+            'second' => array('d', 'e', 'f'),
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->transformer = null;
+    }
+
     public function testTransform()
     {
         $input = array(
@@ -133,18 +146,5 @@ class ArrayToPartsTransformerTest extends TestCase
     public function testReverseTransformRequiresArray()
     {
         $this->transformer->reverseTransform('12345');
-    }
-
-    protected function setUp()
-    {
-        $this->transformer = new ArrayToPartsTransformer(array(
-            'first' => array('a', 'b', 'c'),
-            'second' => array('d', 'e', 'f'),
-        ));
-    }
-
-    protected function tearDown()
-    {
-        $this->transformer = null;
     }
 }

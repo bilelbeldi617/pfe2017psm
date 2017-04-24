@@ -19,23 +19,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class GroupDummy extends GroupDummyParent implements GroupDummyInterface
 {
     /**
-     * @Groups({"b", "c", "name_converter"})
-     */
-    protected $bar;
-    /**
      * @Groups({"a"})
      */
     private $foo;
+    /**
+     * @Groups({"b", "c", "name_converter"})
+     */
+    protected $bar;
     private $fooBar;
     private $symfony;
-
-    /**
-     * @Groups({"c"})
-     */
-    public function getBar()
-    {
-        return $this->bar;
-    }
 
     /**
      * @Groups({"b"})
@@ -45,14 +37,22 @@ class GroupDummy extends GroupDummyParent implements GroupDummyInterface
         $this->bar = $bar;
     }
 
-    public function getFoo()
+    /**
+     * @Groups({"c"})
+     */
+    public function getBar()
     {
-        return $this->foo;
+        return $this->bar;
     }
 
     public function setFoo($foo)
     {
         $this->foo = $foo;
+    }
+
+    public function getFoo()
+    {
+        return $this->foo;
     }
 
     public function setFooBar($fooBar)
@@ -68,13 +68,13 @@ class GroupDummy extends GroupDummyParent implements GroupDummyInterface
         return $this->fooBar;
     }
 
-    public function getSymfony()
-    {
-        return $this->symfony;
-    }
-
     public function setSymfony($symfony)
     {
         $this->symfony = $symfony;
+    }
+
+    public function getSymfony()
+    {
+        return $this->symfony;
     }
 }

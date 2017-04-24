@@ -28,16 +28,16 @@ class AclCacheTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->cacheProvider = new ArrayCache();
+        $this->cacheProvider              = new ArrayCache();
         $this->permissionGrantingStrategy = new PermissionGrantingStrategy();
-        $this->aclCache = new AclCache($this->cacheProvider, $this->permissionGrantingStrategy);
+        $this->aclCache                   = new AclCache($this->cacheProvider, $this->permissionGrantingStrategy);
     }
 
     public function tearDown()
     {
-        $this->cacheProvider = null;
+        $this->cacheProvider              = null;
         $this->permissionGrantingStrategy = null;
-        $this->aclCache = null;
+        $this->aclCache                   = null;
     }
 
     /**
@@ -101,35 +101,6 @@ class AclCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->cacheProvider->contains('oid1'));
     }
 
-    protected function getAcl($depth = 0)
-    {
-        static $id = 1;
-
-        $acl = new Acl(
-            'oid' . $id,
-            new ObjectIdentity('class', 'foo' . $id),
-            $this->permissionGrantingStrategy,
-            array(),
-            $depth > 0
-        );
-
-        // insert some ACEs
-        $sid = new UserSecurityIdentity('johannes', 'Foo');
-
-        $acl->insertClassAce($sid, 1);
-        $acl->insertClassFieldAce('foo', $sid, 1);
-        $acl->insertObjectAce($sid, 1);
-        $acl->insertObjectFieldAce('foo', $sid, 1);
-
-        $id++;
-
-        if ($depth > 0) {
-            $acl->setParentAcl($this->getAcl($depth - 1));
-        }
-
-        return $acl;
-    }
-
     public function testPutInCacheWithParent()
     {
         $acl = $this->getAcl(2);
@@ -190,5 +161,34 @@ class AclCacheTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($acl->getClassFieldAces('foo'), $cachedAcl->getClassFieldAces('foo'));
         $this->assertEquals($acl->getObjectFieldAces('foo'), $cachedAcl->getObjectFieldAces('foo'));
+    }
+
+    protected function getAcl($depth = 0)
+    {
+        static $id = 1;
+
+        $acl = new Acl(
+            'oid' . $id,
+            new ObjectIdentity('class', 'foo' . $id),
+            $this->permissionGrantingStrategy,
+            array(),
+            $depth > 0
+        );
+
+        // insert some ACEs
+        $sid = new UserSecurityIdentity('johannes', 'Foo');
+
+        $acl->insertClassAce($sid, 1);
+        $acl->insertClassFieldAce('foo', $sid, 1);
+        $acl->insertObjectAce($sid, 1);
+        $acl->insertObjectFieldAce('foo', $sid, 1);
+
+        $id++;
+
+        if ($depth > 0) {
+            $acl->setParentAcl($this->getAcl($depth - 1));
+        }
+
+        return $acl;
     }
 }

@@ -40,9 +40,9 @@ class LocaleListener implements EventSubscriberInterface
      *
      * RequestStack will become required in 3.0.
      *
-     * @param RequestStack $requestStack A RequestStack instance
-     * @param string $defaultLocale The default locale
-     * @param RequestContextAwareInterface|null $router The router
+     * @param RequestStack                      $requestStack  A RequestStack instance
+     * @param string                            $defaultLocale The default locale
+     * @param RequestContextAwareInterface|null $router        The router
      *
      * @throws \InvalidArgumentException
      */
@@ -54,9 +54,9 @@ class LocaleListener implements EventSubscriberInterface
             $defaultLocale = $requestStack;
             $requestStack = func_num_args() < 3 ? null : $tmp;
 
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack to be given as first argument as ' . __CLASS__ . '::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack to be given as first argument as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         } elseif (!$requestStack instanceof RequestStack) {
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack instance as ' . __CLASS__ . '::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack instance as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         }
 
         if (null !== $requestStack && !$requestStack instanceof RequestStack) {
@@ -69,15 +69,6 @@ class LocaleListener implements EventSubscriberInterface
         $this->defaultLocale = $defaultLocale;
         $this->requestStack = $requestStack;
         $this->router = $router;
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            // must be registered after the Router to have access to the _locale
-            KernelEvents::REQUEST => array(array('onKernelRequest', 16)),
-            KernelEvents::FINISH_REQUEST => array(array('onKernelFinishRequest', 0)),
-        );
     }
 
     /**
@@ -93,7 +84,7 @@ class LocaleListener implements EventSubscriberInterface
      */
     public function setRequest(Request $request = null)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         if (null === $request) {
             return;
@@ -101,20 +92,6 @@ class LocaleListener implements EventSubscriberInterface
 
         $this->setLocale($request);
         $this->setRouterContext($request);
-    }
-
-    private function setLocale(Request $request)
-    {
-        if ($locale = $request->attributes->get('_locale')) {
-            $request->setLocale($locale);
-        }
-    }
-
-    private function setRouterContext(Request $request)
-    {
-        if (null !== $this->router) {
-            $this->router->getContext()->setParameter('_locale', $request->getLocale());
-        }
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -135,5 +112,28 @@ class LocaleListener implements EventSubscriberInterface
         if (null !== $parentRequest = $this->requestStack->getParentRequest()) {
             $this->setRouterContext($parentRequest);
         }
+    }
+
+    private function setLocale(Request $request)
+    {
+        if ($locale = $request->attributes->get('_locale')) {
+            $request->setLocale($locale);
+        }
+    }
+
+    private function setRouterContext(Request $request)
+    {
+        if (null !== $this->router) {
+            $this->router->getContext()->setParameter('_locale', $request->getLocale());
+        }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            // must be registered after the Router to have access to the _locale
+            KernelEvents::REQUEST => array(array('onKernelRequest', 16)),
+            KernelEvents::FINISH_REQUEST => array(array('onKernelFinishRequest', 0)),
+        );
     }
 }

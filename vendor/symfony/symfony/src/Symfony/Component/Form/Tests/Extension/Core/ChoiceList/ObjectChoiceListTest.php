@@ -42,6 +42,16 @@ class ObjectChoiceListTest extends AbstractChoiceListTest
 
     private $obj4;
 
+    protected function setUp()
+    {
+        $this->obj1 = (object) array('name' => 'A');
+        $this->obj2 = (object) array('name' => 'B');
+        $this->obj3 = (object) array('name' => 'C');
+        $this->obj4 = (object) array('name' => 'D');
+
+        parent::setUp();
+    }
+
     public function testInitArray()
     {
         $this->list = new ObjectChoiceList(
@@ -72,17 +82,17 @@ class ObjectChoiceListTest extends AbstractChoiceListTest
 
     public function testInitArrayWithGroupPath()
     {
-        $this->obj1 = (object)array('name' => 'A', 'category' => 'Group 1');
-        $this->obj2 = (object)array('name' => 'B', 'category' => 'Group 1');
-        $this->obj3 = (object)array('name' => 'C', 'category' => 'Group 2');
-        $this->obj4 = (object)array('name' => 'D', 'category' => 'Group 2');
+        $this->obj1 = (object) array('name' => 'A', 'category' => 'Group 1');
+        $this->obj2 = (object) array('name' => 'B', 'category' => 'Group 1');
+        $this->obj3 = (object) array('name' => 'C', 'category' => 'Group 2');
+        $this->obj4 = (object) array('name' => 'D', 'category' => 'Group 2');
 
         // Objects with NULL groups are not grouped
-        $obj5 = (object)array('name' => 'E', 'category' => null);
+        $obj5 = (object) array('name' => 'E', 'category' => null);
 
         // Objects without the group property are not grouped either
         // see https://github.com/symfony/symfony/commit/d9b7abb7c7a0f28e0ce970afc5e305dce5dccddf
-        $obj6 = (object)array('name' => 'F');
+        $obj6 = (object) array('name' => 'F');
 
         $this->list = new ObjectChoiceList(
             array($this->obj1, $this->obj2, $this->obj3, $this->obj4, $obj5, $obj6),
@@ -110,10 +120,10 @@ class ObjectChoiceListTest extends AbstractChoiceListTest
      */
     public function testInitArrayWithGroupPathThrowsExceptionIfNestedArray()
     {
-        $this->obj1 = (object)array('name' => 'A', 'category' => 'Group 1');
-        $this->obj2 = (object)array('name' => 'B', 'category' => 'Group 1');
-        $this->obj3 = (object)array('name' => 'C', 'category' => 'Group 2');
-        $this->obj4 = (object)array('name' => 'D', 'category' => 'Group 2');
+        $this->obj1 = (object) array('name' => 'A', 'category' => 'Group 1');
+        $this->obj2 = (object) array('name' => 'B', 'category' => 'Group 1');
+        $this->obj3 = (object) array('name' => 'C', 'category' => 'Group 2');
+        $this->obj4 = (object) array('name' => 'D', 'category' => 'Group 2');
 
         new ObjectChoiceList(
             array(
@@ -128,10 +138,10 @@ class ObjectChoiceListTest extends AbstractChoiceListTest
 
     public function testInitArrayWithValuePath()
     {
-        $this->obj1 = (object)array('name' => 'A', 'id' => 10);
-        $this->obj2 = (object)array('name' => 'B', 'id' => 20);
-        $this->obj3 = (object)array('name' => 'C', 'id' => 30);
-        $this->obj4 = (object)array('name' => 'D', 'id' => 40);
+        $this->obj1 = (object) array('name' => 'A', 'id' => 10);
+        $this->obj2 = (object) array('name' => 'B', 'id' => 20);
+        $this->obj3 = (object) array('name' => 'C', 'id' => 30);
+        $this->obj4 = (object) array('name' => 'D', 'id' => 40);
 
         $this->list = new ObjectChoiceList(
             array($this->obj1, $this->obj2, $this->obj3, $this->obj4),
@@ -170,7 +180,7 @@ class ObjectChoiceListTest extends AbstractChoiceListTest
     {
         $this->obj1 = new ObjectChoiceListTest_EntityWithToString('A');
         $this->obj2 = new ObjectChoiceListTest_EntityWithToString('B');
-        $this->obj3 = (object)array('name' => 'C');
+        $this->obj3 = (object) array('name' => 'C');
         $this->obj4 = new ObjectChoiceListTest_EntityWithToString('D');
 
         new ObjectChoiceList(
@@ -289,16 +299,6 @@ class ObjectChoiceListTest extends AbstractChoiceListTest
 
         $choices = array(clone $this->obj1, clone $this->obj2, 'foobar');
         $this->assertSame(array('A', 'B'), $this->list->getValuesForChoices($choices));
-    }
-
-    protected function setUp()
-    {
-        $this->obj1 = (object)array('name' => 'A');
-        $this->obj2 = (object)array('name' => 'B');
-        $this->obj3 = (object)array('name' => 'C');
-        $this->obj4 = (object)array('name' => 'D');
-
-        parent::setUp();
     }
 
     /**

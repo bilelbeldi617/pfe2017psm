@@ -30,6 +30,13 @@ namespace Doctrine\ORM;
 final class Events
 {
     /**
+     * Private constructor. This class is not meant to be instantiated.
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * The preRemove event occurs for a given entity before the respective
      * EntityManager remove operation for that entity is executed.
      *
@@ -38,6 +45,7 @@ final class Events
      * @var string
      */
     const preRemove = 'preRemove';
+
     /**
      * The postRemove event occurs for an entity after the entity has
      * been deleted. It will be invoked after the database delete operations.
@@ -47,6 +55,7 @@ final class Events
      * @var string
      */
     const postRemove = 'postRemove';
+
     /**
      * The prePersist event occurs for a given entity before the respective
      * EntityManager persist operation for that entity is executed.
@@ -56,6 +65,7 @@ final class Events
      * @var string
      */
     const prePersist = 'prePersist';
+
     /**
      * The postPersist event occurs for an entity after the entity has
      * been made persistent. It will be invoked after the database insert operations.
@@ -66,6 +76,7 @@ final class Events
      * @var string
      */
     const postPersist = 'postPersist';
+
     /**
      * The preUpdate event occurs before the database update operations to
      * entity data.
@@ -75,6 +86,7 @@ final class Events
      * @var string
      */
     const preUpdate = 'preUpdate';
+
     /**
      * The postUpdate event occurs after the database update operations to
      * entity data.
@@ -84,6 +96,7 @@ final class Events
      * @var string
      */
     const postUpdate = 'postUpdate';
+
     /**
      * The postLoad event occurs for an entity after the entity has been loaded
      * into the current EntityManager from the database or after the refresh operation
@@ -98,6 +111,7 @@ final class Events
      * @var string
      */
     const postLoad = 'postLoad';
+
     /**
      * The loadClassMetadata event occurs after the mapping metadata for a class
      * has been loaded from a mapping source (annotations/xml/yaml).
@@ -105,12 +119,14 @@ final class Events
      * @var string
      */
     const loadClassMetadata = 'loadClassMetadata';
+
     /**
      * The preFlush event occurs when the EntityManager#flush() operation is invoked,
      * but before any changes to managed entities have been calculated. This event is
      * always raised right after EntityManager#flush() call.
      */
     const preFlush = 'preFlush';
+
     /**
      * The onFlush event occurs when the EntityManager#flush() operation is invoked,
      * after any changes to managed entities have been determined but before any
@@ -121,6 +137,7 @@ final class Events
      * @var string
      */
     const onFlush = 'onFlush';
+
     /**
      * The postFlush event occurs when the EntityManager#flush() operation is invoked and
      * after all actual database operations are executed successfully. The event is only raised if there is
@@ -131,6 +148,7 @@ final class Events
      * @var string
      */
     const postFlush = 'postFlush';
+
     /**
      * The onClear event occurs when the EntityManager#clear() operation is invoked,
      * after all references to entities have been removed from the unit of work.
@@ -138,11 +156,4 @@ final class Events
      * @var string
      */
     const onClear = 'onClear';
-
-    /**
-     * Private constructor. This class is not meant to be instantiated.
-     */
-    private function __construct()
-    {
-    }
 }

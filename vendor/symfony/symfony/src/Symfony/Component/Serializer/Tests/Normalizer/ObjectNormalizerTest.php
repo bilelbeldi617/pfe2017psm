@@ -38,6 +38,13 @@ class ObjectNormalizerTest extends TestCase
      */
     private $serializer;
 
+    protected function setUp()
+    {
+        $this->serializer = $this->getMockBuilder(__NAMESPACE__.'\ObjectSerializerNormalizer')->getMock();
+        $this->normalizer = new ObjectNormalizer();
+        $this->normalizer->setSerializer($this->serializer);
+    }
+
     public function testNormalize()
     {
         $obj = new ObjectDummy();
@@ -52,7 +59,8 @@ class ObjectNormalizerTest extends TestCase
             ->expects($this->once())
             ->method('normalize')
             ->with($object, 'any')
-            ->will($this->returnValue('string_object'));
+            ->will($this->returnValue('string_object'))
+        ;
 
         $this->assertEquals(
             array(
@@ -71,7 +79,7 @@ class ObjectNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => 'foo', 'bar' => 'bar', 'baz' => true, 'fooBar' => 'foobar'),
-            __NAMESPACE__ . '\ObjectDummy',
+            __NAMESPACE__.'\ObjectDummy',
             'any'
         );
         $this->assertEquals('foo', $obj->getFoo());
@@ -85,7 +93,7 @@ class ObjectNormalizerTest extends TestCase
         $data->foo = 'foo';
         $data->bar = 'bar';
         $data->fooBar = 'foobar';
-        $obj = $this->normalizer->denormalize($data, __NAMESPACE__ . '\ObjectDummy', 'any');
+        $obj = $this->normalizer->denormalize($data, __NAMESPACE__.'\ObjectDummy', 'any');
         $this->assertEquals('foo', $obj->getFoo());
         $this->assertEquals('bar', $obj->bar);
     }
@@ -98,7 +106,7 @@ class ObjectNormalizerTest extends TestCase
         $this->normalizer->setCamelizedAttributes(array('camel_case'));
         $obj = $this->normalizer->denormalize(
             array('camel_case' => 'camelCase'),
-            __NAMESPACE__ . '\ObjectDummy'
+            __NAMESPACE__.'\ObjectDummy'
         );
         $this->assertEquals('camelCase', $obj->getCamelCase());
     }
@@ -108,21 +116,21 @@ class ObjectNormalizerTest extends TestCase
         $this->normalizer = new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter());
         $obj = $this->normalizer->denormalize(
             array('camel_case' => 'camelCase'),
-            __NAMESPACE__ . '\ObjectDummy'
+            __NAMESPACE__.'\ObjectDummy'
         );
         $this->assertEquals('camelCase', $obj->getCamelCase());
     }
 
     public function testDenormalizeNull()
     {
-        $this->assertEquals(new ObjectDummy(), $this->normalizer->denormalize(null, __NAMESPACE__ . '\ObjectDummy'));
+        $this->assertEquals(new ObjectDummy(), $this->normalizer->denormalize(null, __NAMESPACE__.'\ObjectDummy'));
     }
 
     public function testConstructorDenormalize()
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => 'foo', 'bar' => 'bar', 'baz' => true, 'fooBar' => 'foobar'),
-            __NAMESPACE__ . '\ObjectConstructorDummy', 'any');
+            __NAMESPACE__.'\ObjectConstructorDummy', 'any');
         $this->assertEquals('foo', $obj->getFoo());
         $this->assertEquals('bar', $obj->bar);
         $this->assertTrue($obj->isBaz());
@@ -132,7 +140,7 @@ class ObjectNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => 'foo', 'bar' => null, 'baz' => true),
-            __NAMESPACE__ . '\ObjectConstructorDummy', 'any');
+            __NAMESPACE__.'\ObjectConstructorDummy', 'any');
         $this->assertEquals('foo', $obj->getFoo());
         $this->assertNull($obj->bar);
         $this->assertTrue($obj->isBaz());
@@ -142,7 +150,7 @@ class ObjectNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => 'test', 'baz' => array(1, 2, 3)),
-            __NAMESPACE__ . '\ObjectConstructorOptionalArgsDummy', 'any');
+            __NAMESPACE__.'\ObjectConstructorOptionalArgsDummy', 'any');
         $this->assertEquals('test', $obj->getFoo());
         $this->assertEquals(array(), $obj->bar);
         $this->assertEquals(array(1, 2, 3), $obj->getBaz());
@@ -157,7 +165,7 @@ class ObjectNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('bar' => 'test'),
-            __NAMESPACE__ . '\ObjectConstructorArgsWithDefaultValueDummy', 'any');
+            __NAMESPACE__.'\ObjectConstructorArgsWithDefaultValueDummy', 'any');
         $this->assertEquals(array(), $obj->getFoo());
         $this->assertEquals('test', $obj->getBar());
     }
@@ -169,7 +177,7 @@ class ObjectNormalizerTest extends TestCase
         $data->bar = 'bar';
         $data->baz = true;
         $data->fooBar = 'foobar';
-        $obj = $this->normalizer->denormalize($data, __NAMESPACE__ . '\ObjectConstructorDummy', 'any');
+        $obj = $this->normalizer->denormalize($data, __NAMESPACE__.'\ObjectConstructorDummy', 'any');
         $this->assertEquals('foo', $obj->getFoo());
         $this->assertEquals('bar', $obj->bar);
     }
@@ -338,7 +346,7 @@ class ObjectNormalizerTest extends TestCase
 
         $this->assertEquals(
             $obj,
-            $this->normalizer->denormalize(array('fooBar' => 'fooBar', 'foo' => 'foo', 'baz' => 'baz'), __NAMESPACE__ . '\ObjectDummy')
+            $this->normalizer->denormalize(array('fooBar' => 'fooBar', 'foo' => 'foo', 'baz' => 'baz'), __NAMESPACE__.'\ObjectDummy')
         );
     }
 
@@ -466,7 +474,7 @@ class ObjectNormalizerTest extends TestCase
     {
         $this->assertEquals(
             new ObjectDummy(),
-            $this->normalizer->denormalize(array('non_existing' => true), __NAMESPACE__ . '\ObjectDummy')
+            $this->normalizer->denormalize(array('non_existing' => true), __NAMESPACE__.'\ObjectDummy')
         );
     }
 
@@ -492,25 +500,17 @@ class ObjectNormalizerTest extends TestCase
             'bar' => null,
         );
 
-        $this->assertEquals($expected, $this->normalizer->normalize($objectDummy, null, array('not_serializable' => function () {
-        })));
-    }
-
-    protected function setUp()
-    {
-        $this->serializer = $this->getMockBuilder(__NAMESPACE__ . '\ObjectSerializerNormalizer')->getMock();
-        $this->normalizer = new ObjectNormalizer();
-        $this->normalizer->setSerializer($this->serializer);
+        $this->assertEquals($expected, $this->normalizer->normalize($objectDummy, null, array('not_serializable' => function () {})));
     }
 }
 
 class ObjectDummy
 {
-    public $bar;
     protected $foo;
+    public $bar;
+    private $baz;
     protected $camelCase;
     protected $object;
-    private $baz;
 
     public function getFoo()
     {
@@ -534,7 +534,7 @@ class ObjectDummy
 
     public function getFooBar()
     {
-        return $this->foo . $this->bar;
+        return $this->foo.$this->bar;
     }
 
     public function getCamelCase()
@@ -552,21 +552,21 @@ class ObjectDummy
         throw new \RuntimeException('Dummy::otherMethod() should not be called');
     }
 
-    public function getObject()
-    {
-        return $this->object;
-    }
-
     public function setObject($object)
     {
         $this->object = $object;
+    }
+
+    public function getObject()
+    {
+        return $this->object;
     }
 }
 
 class ObjectConstructorDummy
 {
-    public $bar;
     protected $foo;
+    public $bar;
     private $baz;
 
     public function __construct($foo, $bar, $baz)
@@ -598,8 +598,8 @@ abstract class ObjectSerializerNormalizer implements SerializerInterface, Normal
 
 class ObjectConstructorOptionalArgsDummy
 {
-    public $bar;
     protected $foo;
+    public $bar;
     private $baz;
 
     public function __construct($foo, $bar = array(), $baz = array())
@@ -654,8 +654,8 @@ class ObjectConstructorArgsWithDefaultValueDummy
 
 class ObjectWithStaticPropertiesAndMethods
 {
-    public static $bar = 'A';
     public $foo = 'K';
+    public static $bar = 'A';
 
     public static function getBaz()
     {

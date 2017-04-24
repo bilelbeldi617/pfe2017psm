@@ -26,8 +26,8 @@ class Packages
     private $packages = array();
 
     /**
-     * @param PackageInterface $defaultPackage The default package
-     * @param PackageInterface[] $packages Additional packages indexed by name
+     * @param PackageInterface   $defaultPackage The default package
+     * @param PackageInterface[] $packages       Additional packages indexed by name
      */
     public function __construct(PackageInterface $defaultPackage = null, array $packages = array())
     {
@@ -36,17 +36,6 @@ class Packages
         foreach ($packages as $name => $package) {
             $this->addPackage($name, $package);
         }
-    }
-
-    /**
-     * Adds a  package.
-     *
-     * @param string $name The package name
-     * @param PackageInterface $package The package
-     */
-    public function addPackage($name, PackageInterface $package)
-    {
-        $this->packages[$name] = $package;
     }
 
     /**
@@ -60,16 +49,14 @@ class Packages
     }
 
     /**
-     * Gets the version to add to public URL.
+     * Adds a  package.
      *
-     * @param string $path A public path
-     * @param string $packageName A package name
-     *
-     * @return string The current version
+     * @param string           $name    The package name
+     * @param PackageInterface $package The package
      */
-    public function getVersion($path, $packageName = null)
+    public function addPackage($name, PackageInterface $package)
     {
-        return $this->getPackage($packageName)->getVersion($path);
+        $this->packages[$name] = $package;
     }
 
     /**
@@ -100,11 +87,24 @@ class Packages
     }
 
     /**
+     * Gets the version to add to public URL.
+     *
+     * @param string $path        A public path
+     * @param string $packageName A package name
+     *
+     * @return string The current version
+     */
+    public function getVersion($path, $packageName = null)
+    {
+        return $this->getPackage($packageName)->getVersion($path);
+    }
+
+    /**
      * Returns the public path.
      *
      * Absolute paths (i.e. http://...) are returned unmodified.
      *
-     * @param string $path A public path
+     * @param string $path        A public path
      * @param string $packageName The name of the asset package to use
      *
      * @return string A public path which takes into account the base path and URL path

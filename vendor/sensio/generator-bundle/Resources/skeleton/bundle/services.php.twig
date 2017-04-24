@@ -10,15 +10,15 @@ use Symfony\Component\DependencyInjection\Parameter;
 
 {% block services %}
 $container->setDefinition(
-'{{ extension_alias }}.example',
-new Definition(
-'{{ namespace }}\Example',
-array(
-new Reference('service_id'),
-"plain_value",
-new Parameter('parameter_name'),
-)
-)
+    '{{ extension_alias }}.example',
+    new Definition(
+        '{{ namespace }}\Example',
+        array(
+            new Reference('service_id'),
+            "plain_value",
+            new Parameter('parameter_name'),
+        )
+    )
 );
 {% endblock services %}
 

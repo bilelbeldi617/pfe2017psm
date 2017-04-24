@@ -21,8 +21,8 @@ class RedirectableUrlMatcher extends BaseMatcher
     /**
      * Redirects the user to another URL.
      *
-     * @param string $path The path info to redirect to
-     * @param string $route The route that matched
+     * @param string $path   The path info to redirect to
+     * @param string $route  The route that matched
      * @param string $scheme The URL scheme (null to keep the current one)
      *
      * @return array An array of parameters

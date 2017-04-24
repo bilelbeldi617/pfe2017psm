@@ -13,6 +13,17 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TemplateAnnotationTest extends WebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testController($url, $checkHtml)
+    {
+        $client = self::createClient();
+        $crawler = $client->request('GET', $url);
+
+        $this->assertEquals($checkHtml, $crawler->filterXPath('//body')->html());
+    }
+
     public static function urlProvider()
     {
         return array(
@@ -32,16 +43,5 @@ class TemplateAnnotationTest extends WebTestCase
             array('/no-listener/', 'I did not get rendered via twig'),
             array('/streamed/', 'foo, bar'),
         );
-    }
-
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testController($url, $checkHtml)
-    {
-        $client = self::createClient();
-        $crawler = $client->request('GET', $url);
-
-        $this->assertEquals($checkHtml, $crawler->filterXPath('//body')->html());
     }
 }

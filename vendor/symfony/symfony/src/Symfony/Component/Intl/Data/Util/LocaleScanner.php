@@ -31,6 +31,33 @@ namespace Symfony\Component\Intl\Data\Util;
 class LocaleScanner
 {
     /**
+     * Returns all locales found in the given directory.
+     *
+     * @param string $sourceDir The directory with ICU files
+     *
+     * @return array An array of locales. The result also contains locales that
+     *               are in fact just aliases for other locales. Use
+     *               {@link scanAliases()} to determine which of the locales
+     *               are aliases
+     */
+    public function scanLocales($sourceDir)
+    {
+        $locales = glob($sourceDir.'/*.txt');
+
+        // Remove file extension and sort
+        array_walk($locales, function (&$locale) { $locale = basename($locale, '.txt'); });
+
+        // Remove non-locales
+        $locales = array_filter($locales, function ($locale) {
+            return preg_match('/^[a-z]{2}(_.+)?$/', $locale);
+        });
+
+        sort($locales);
+
+        return $locales;
+    }
+
+    /**
      * Returns all locale aliases found in the given directory.
      *
      * @param string $sourceDir The directory with ICU files
@@ -45,7 +72,7 @@ class LocaleScanner
 
         // Delete locales that are no aliases
         foreach ($locales as $locale) {
-            $content = file_get_contents($sourceDir . '/' . $locale . '.txt');
+            $content = file_get_contents($sourceDir.'/'.$locale.'.txt');
 
             // Aliases contain the text "%%ALIAS" followed by the aliased locale
             if (preg_match('/"%%ALIAS"\{"([^"]+)"\}/', $content, $matches)) {
@@ -54,34 +81,5 @@ class LocaleScanner
         }
 
         return $aliases;
-    }
-
-    /**
-     * Returns all locales found in the given directory.
-     *
-     * @param string $sourceDir The directory with ICU files
-     *
-     * @return array An array of locales. The result also contains locales that
-     *               are in fact just aliases for other locales. Use
-     *               {@link scanAliases()} to determine which of the locales
-     *               are aliases
-     */
-    public function scanLocales($sourceDir)
-    {
-        $locales = glob($sourceDir . '/*.txt');
-
-        // Remove file extension and sort
-        array_walk($locales, function (&$locale) {
-            $locale = basename($locale, '.txt');
-        });
-
-        // Remove non-locales
-        $locales = array_filter($locales, function ($locale) {
-            return preg_match('/^[a-z]{2}(_.+)?$/', $locale);
-        });
-
-        sort($locales);
-
-        return $locales;
     }
 }

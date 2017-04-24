@@ -35,18 +35,18 @@ class GetterMetadata extends MemberMetadata
     /**
      * Constructor.
      *
-     * @param string $class The class the getter is defined on
-     * @param string $property The property which the getter returns
-     * @param string|null $method The method that is called to retrieve the value being validated (null for auto-detection)
+     * @param string      $class    The class the getter is defined on
+     * @param string      $property The property which the getter returns
+     * @param string|null $method   The method that is called to retrieve the value being validated (null for auto-detection)
      *
      * @throws ValidatorException
      */
     public function __construct($class, $property, $method = null)
     {
         if (null === $method) {
-            $getMethod = 'get' . ucfirst($property);
-            $isMethod = 'is' . ucfirst($property);
-            $hasMethod = 'has' . ucfirst($property);
+            $getMethod = 'get'.ucfirst($property);
+            $isMethod = 'is'.ucfirst($property);
+            $hasMethod = 'has'.ucfirst($property);
 
             if (method_exists($class, $getMethod)) {
                 $method = $getMethod;

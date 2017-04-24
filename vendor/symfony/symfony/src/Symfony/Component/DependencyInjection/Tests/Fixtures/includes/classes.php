@@ -10,23 +10,33 @@ function sc_configure($instance)
 
 class BarClass
 {
-    public $foo = 'foo';
     protected $baz;
-
-    public function getBaz()
-    {
-        return $this->baz;
-    }
+    public $foo = 'foo';
 
     public function setBaz(BazClass $baz)
     {
         $this->baz = $baz;
+    }
+
+    public function getBaz()
+    {
+        return $this->baz;
     }
 }
 
 class BazClass
 {
     protected $foo;
+
+    public function setFoo(Foo $foo)
+    {
+        $this->foo = $foo;
+    }
+
+    public function configure($instance)
+    {
+        $instance->configure();
+    }
 
     public static function getInstance()
     {
@@ -40,16 +50,6 @@ class BazClass
 
     public static function configureStatic1()
     {
-    }
-
-    public function setFoo(Foo $foo)
-    {
-        $this->foo = $foo;
-    }
-
-    public function configure($instance)
-    {
-        $instance->configure();
     }
 }
 

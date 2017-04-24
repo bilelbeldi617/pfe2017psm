@@ -34,8 +34,7 @@ class ORMQueryBuilderLoaderTest extends TestCase
      */
     public function testClosureRequiresTheEntityManager()
     {
-        $closure = function () {
-        };
+        $closure = function () {};
 
         new ORMQueryBuilderLoader($closure);
     }
@@ -43,6 +42,11 @@ class ORMQueryBuilderLoaderTest extends TestCase
     public function testIdentifierTypeIsStringArray()
     {
         $this->checkIdentifierType('Symfony\Bridge\Doctrine\Tests\Fixtures\SingleStringIdEntity', Connection::PARAM_STR_ARRAY);
+    }
+
+    public function testIdentifierTypeIsIntegerArray()
+    {
+        $this->checkIdentifierType('Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity', Connection::PARAM_INT_ARRAY);
     }
 
     protected function checkIdentifierType($classname, $expectedType)
@@ -72,11 +76,6 @@ class ORMQueryBuilderLoaderTest extends TestCase
 
         $loader = new ORMQueryBuilderLoader($qb);
         $loader->getEntitiesByIds('id', array(1, 2));
-    }
-
-    public function testIdentifierTypeIsIntegerArray()
-    {
-        $this->checkIdentifierType('Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity', Connection::PARAM_INT_ARRAY);
     }
 
     public function testFilterNonIntegerValues()

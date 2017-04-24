@@ -60,7 +60,8 @@ The <info>%command.name%</info> command exports a profile to the standard output
 
   <info>php %command.full_name% profile_token</info>
 EOF
-            );
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

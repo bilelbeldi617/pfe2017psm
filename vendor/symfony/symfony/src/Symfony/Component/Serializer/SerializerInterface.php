@@ -21,9 +21,9 @@ interface SerializerInterface
     /**
      * Serializes data in the appropriate format.
      *
-     * @param mixed $data any data
-     * @param string $format format name
-     * @param array $context options normalizers/encoders have access to
+     * @param mixed  $data    any data
+     * @param string $format  format name
+     * @param array  $context options normalizers/encoders have access to
      *
      * @return string
      */
@@ -32,10 +32,10 @@ interface SerializerInterface
     /**
      * Deserializes data into the given type.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $type
      * @param string $format
-     * @param array $context
+     * @param array  $context
      *
      * @return object
      */

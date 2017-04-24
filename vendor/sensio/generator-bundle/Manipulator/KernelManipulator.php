@@ -54,7 +54,7 @@ class KernelManipulator extends Manipulator
             throw new \RuntimeException(sprintf('Bundle "%s" is already defined in "AppKernel::registerBundles()".', $bundle));
         }
 
-        $this->setCode(token_get_all('<?php ' . implode('', $lines)), $method->getStartLine());
+        $this->setCode(token_get_all('<?php '.implode('', $lines)), $method->getStartLine());
 
         while ($token = $this->next()) {
             // $bundles
@@ -101,13 +101,13 @@ class KernelManipulator extends Manipulator
 
                 if ('(' !== substr($leadingContent, -1) && '[' !== substr($leadingContent, -1)) {
                     // end of leading content is not open parentheses or bracket, then assume that array contains at least one element
-                    $leadingContent = rtrim($leadingContent, ',') . ',';
+                    $leadingContent = rtrim($leadingContent, ',').',';
                 }
 
                 $lines = array_merge(
                     array($leadingContent, "\n"),
                     array(str_repeat(' ', 12), sprintf('new %s(),', $bundle), "\n"),
-                    array(str_repeat(' ', 8), $closingSymbol . ';', "\n"),
+                    array(str_repeat(' ', 8), $closingSymbol.';', "\n"),
                     array_slice($src, $this->line)
                 );
 

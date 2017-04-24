@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:exception.xml.twig */
-
 class __TwigTemplate_c327b5ae16eb12308316210b8c3257fd7e086d61ff6b5dd00e859fa7edab9d00 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,35 +9,8 @@ class __TwigTemplate_c327b5ae16eb12308316210b8c3257fd7e086d61ff6b5dd00e859fa7eda
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "TwigBundle:Exception:exception.xml.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(51 => 9, 44 => 7, 42 => 6, 35 => 5, 31 => 4, 25 => 3, 19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "TwigBundle:Exception:exception.xml.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.xml.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -78,5 +50,33 @@ class __TwigTemplate_c327b5ae16eb12308316210b8c3257fd7e086d61ff6b5dd00e859fa7eda
         // line 9
         echo "</error>
 ";
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle:Exception:exception.xml.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  51 => 9,  44 => 7,  42 => 6,  35 => 5,  31 => 4,  25 => 3,  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "TwigBundle:Exception:exception.xml.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.xml.twig");
     }
 }

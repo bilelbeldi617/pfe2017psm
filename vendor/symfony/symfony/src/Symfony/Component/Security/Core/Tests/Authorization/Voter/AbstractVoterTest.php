@@ -24,6 +24,11 @@ class AbstractVoterTest extends TestCase
      */
     protected $token;
 
+    protected function setUp()
+    {
+        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+    }
+
     /**
      * @return array
      */
@@ -112,7 +117,7 @@ class AbstractVoterTest extends TestCase
     /**
      * @dataProvider getSupportsAttributeData
      *
-     * @param bool $expected
+     * @param bool   $expected
      * @param string $attribute
      * @param string $message
      */
@@ -121,10 +126,5 @@ class AbstractVoterTest extends TestCase
         $voter = new Fixtures\MyVoter();
 
         $this->assertEquals($expected, $voter->supportsAttribute($attribute), $message);
-    }
-
-    protected function setUp()
-    {
-        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
     }
 }

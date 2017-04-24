@@ -31,25 +31,25 @@ class DeleteCommand extends CacheCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cacheName = $input->getArgument('cache-name');
+        $cacheName     = $input->getArgument('cache-name');
         $cacheProvider = $this->getCacheProvider($cacheName);
-        $cacheId = $input->getArgument('cache-id');
-        $all = $input->getOption('all');
+        $cacheId       = $input->getArgument('cache-id');
+        $all           = $input->getOption('all');
 
-        if ($all && !method_exists($cacheProvider, 'deleteAll')) {
+        if ($all && ! method_exists($cacheProvider, 'deleteAll')) {
             throw new \RuntimeException('Cache provider does not implement a deleteAll method.');
         }
 
-        if (!$all && !$cacheId) {
+        if ( ! $all && ! $cacheId) {
             throw new \InvalidArgumentException('Missing cache ID');
         }
 
         $success = $all ? $cacheProvider->deleteAll() : $cacheProvider->delete($cacheId);
-        $color = $success ? 'info' : 'error';
+        $color   = $success ? 'info' : 'error';
         $success = $success ? 'succeeded' : 'failed';
         $message = null;
 
-        if (!$all) {
+        if ( ! $all) {
             $message = "Deletion of <$color>%s</$color> in <$color>%s</$color> has <$color>%s</$color>";
             $message = sprintf($message, $cacheId, $cacheName, $success, true);
         }

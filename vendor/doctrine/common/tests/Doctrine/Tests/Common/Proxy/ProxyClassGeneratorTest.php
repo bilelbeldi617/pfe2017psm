@@ -49,6 +49,21 @@ class ProxyClassGeneratorTest extends PHPUnit_Framework_TestCase
      */
     protected $proxyGenerator;
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function setUp()
+    {
+        $this->metadata       = new LazyLoadableObjectClassMetadata();
+        $this->proxyGenerator = new ProxyGenerator(__DIR__ . '/generated', __NAMESPACE__ . 'Proxy', true);
+
+        if (class_exists($this->proxyClass, false)) {
+            return;
+        }
+
+        $this->generateAndRequire($this->proxyGenerator, $this->metadata);
+    }
+
     public function testReferenceProxyRespectsMethodsParametersTypeHinting()
     {
         $method = new ReflectionMethod($this->proxyClass, 'publicTypeHintedMethod');
@@ -103,17 +118,6 @@ class ProxyClassGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, substr_count($classCode, 'parent::__sleep()'));
     }
 
-    private function createClassMetadata($className, array $ids)
-    {
-        $metadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
-        $reflClass = new ReflectionClass($className);
-        $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflClass));
-        $metadata->expects($this->any())->method('getIdentifierFieldNames')->will($this->returnValue($ids));
-        $metadata->expects($this->any())->method('getName')->will($this->returnValue($className));
-
-        return $metadata;
-    }
-
     /**
      * Check that the proxy doesn't serialize static properties (in __sleep() method)
      * @group DCOM-212
@@ -131,6 +135,13 @@ class ProxyClassGeneratorTest extends PHPUnit_Framework_TestCase
         $classCode = file_get_contents(__DIR__ . '/generated/__CG__DoctrineTestsCommonProxyStaticPropertyClass.php');
         $this->assertEquals(1, substr_count($classCode, 'function __sleep'));
         $this->assertNotContains('protectedStaticProperty', $classCode);
+    }
+
+    private function generateAndRequire($proxyGenerator, $metadata)
+    {
+        $proxyGenerator->generateProxyClass($metadata, $proxyGenerator->getProxyFileName($metadata->getName()));
+
+        require_once $proxyGenerator->getProxyFileName($metadata->getName());
     }
 
     public function testClassWithCallableTypeHintOnProxiedMethod()
@@ -182,7 +193,7 @@ class ProxyClassGeneratorTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException(
             'Doctrine\Common\Proxy\Exception\UnexpectedValueException',
             'The type hint of parameter "foo" in method "invalidTypeHintMethod"'
-            . ' in class "' . $className . '" is invalid.'
+                .' in class "' . $className . '" is invalid.'
         );
         $proxyGenerator->generateProxyClass($metadata);
     }
@@ -221,26 +232,15 @@ class ProxyClassGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertContains("eval()'d code", $reflClass->getFileName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function setUp()
+    private function createClassMetadata($className, array $ids)
     {
-        $this->metadata = new LazyLoadableObjectClassMetadata();
-        $this->proxyGenerator = new ProxyGenerator(__DIR__ . '/generated', __NAMESPACE__ . 'Proxy', true);
+        $metadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $reflClass = new ReflectionClass($className);
+        $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflClass));
+        $metadata->expects($this->any())->method('getIdentifierFieldNames')->will($this->returnValue($ids));
+        $metadata->expects($this->any())->method('getName')->will($this->returnValue($className));
 
-        if (class_exists($this->proxyClass, false)) {
-            return;
-        }
-
-        $this->generateAndRequire($this->proxyGenerator, $this->metadata);
-    }
-
-    private function generateAndRequire($proxyGenerator, $metadata)
-    {
-        $proxyGenerator->generateProxyClass($metadata, $proxyGenerator->getProxyFileName($metadata->getName()));
-
-        require_once $proxyGenerator->getProxyFileName($metadata->getName());
+        return $metadata;
     }
 }
 

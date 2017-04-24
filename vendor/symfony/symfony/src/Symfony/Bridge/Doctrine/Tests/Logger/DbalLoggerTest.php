@@ -27,12 +27,14 @@ class DbalLoggerTest extends TestCase
             ->getMockBuilder('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger')
             ->setConstructorArgs(array($logger, null))
             ->setMethods(array('log'))
-            ->getMock();
+            ->getMock()
+        ;
 
         $dbalLogger
             ->expects($this->once())
             ->method('log')
-            ->with($sql, $logParams);
+            ->with($sql, $logParams)
+        ;
 
         $dbalLogger->startQuery($sql, $params);
     }
@@ -57,12 +59,14 @@ class DbalLoggerTest extends TestCase
             ->getMockBuilder('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger')
             ->setConstructorArgs(array($logger, null))
             ->setMethods(array('log'))
-            ->getMock();
+            ->getMock()
+        ;
 
         $dbalLogger
             ->expects($this->once())
             ->method('log')
-            ->with('SQL', array('utf8' => 'foo', 'nonutf8' => DbalLogger::BINARY_DATA_VALUE));
+            ->with('SQL', array('utf8' => 'foo', 'nonutf8' => DbalLogger::BINARY_DATA_VALUE))
+        ;
 
         $dbalLogger->startQuery('SQL', array(
             'utf8' => 'foo',
@@ -78,7 +82,8 @@ class DbalLoggerTest extends TestCase
             ->getMockBuilder('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger')
             ->setConstructorArgs(array($logger, null))
             ->setMethods(array('log'))
-            ->getMock();
+            ->getMock()
+        ;
 
         $dbalLogger
             ->expects($this->once())
@@ -89,7 +94,8 @@ class DbalLoggerTest extends TestCase
                         'nonutf8' => DbalLogger::BINARY_DATA_VALUE,
                     ),
                 )
-            );
+            )
+        ;
 
         $dbalLogger->startQuery('SQL', array(
             'utf8' => 'foo',
@@ -107,7 +113,8 @@ class DbalLoggerTest extends TestCase
             ->getMockBuilder('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger')
             ->setConstructorArgs(array($logger, null))
             ->setMethods(array('log'))
-            ->getMock();
+            ->getMock()
+        ;
 
         $testString = 'abc';
 
@@ -117,7 +124,8 @@ class DbalLoggerTest extends TestCase
         $dbalLogger
             ->expects($this->once())
             ->method('log')
-            ->with('SQL', array('short' => $shortString, 'long' => substr($longString, 0, DbalLogger::MAX_STRING_LENGTH - 6) . ' [...]'));
+            ->with('SQL', array('short' => $shortString, 'long' => substr($longString, 0, DbalLogger::MAX_STRING_LENGTH - 6).' [...]'))
+        ;
 
         $dbalLogger->startQuery('SQL', array(
             'short' => $shortString,
@@ -133,7 +141,8 @@ class DbalLoggerTest extends TestCase
             ->getMockBuilder('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger')
             ->setConstructorArgs(array($logger, null))
             ->setMethods(array('log'))
-            ->getMock();
+            ->getMock()
+        ;
 
         $testStringArray = array('é', 'á', 'ű', 'ő', 'ú', 'ö', 'ü', 'ó', 'í');
         $testStringCount = count($testStringArray);
@@ -149,11 +158,12 @@ class DbalLoggerTest extends TestCase
         $dbalLogger
             ->expects($this->once())
             ->method('log')
-            ->with('SQL', array('short' => $shortString, 'long' => mb_substr($longString, 0, DbalLogger::MAX_STRING_LENGTH - 6, 'UTF-8') . ' [...]'));
+            ->with('SQL', array('short' => $shortString, 'long' => mb_substr($longString, 0, DbalLogger::MAX_STRING_LENGTH - 6, 'UTF-8').' [...]'))
+        ;
 
         $dbalLogger->startQuery('SQL', array(
-            'short' => $shortString,
-            'long' => $longString,
-        ));
+                'short' => $shortString,
+                'long' => $longString,
+            ));
     }
 }

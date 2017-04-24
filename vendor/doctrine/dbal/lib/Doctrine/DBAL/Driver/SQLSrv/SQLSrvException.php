@@ -37,7 +37,7 @@ class SQLSrvException extends AbstractDriverException
         $errorCode = null;
 
         foreach ($errors as $error) {
-            $message .= "SQLSTATE [" . $error['SQLSTATE'] . ", " . $error['code'] . "]: " . $error['message'] . "\n";
+            $message .= "SQLSTATE [".$error['SQLSTATE'].", ".$error['code']."]: ". $error['message']."\n";
 
             if (null === $sqlState) {
                 $sqlState = $error['SQLSTATE'];
@@ -47,7 +47,7 @@ class SQLSrvException extends AbstractDriverException
                 $errorCode = $error['code'];
             }
         }
-        if (!$message) {
+        if ( ! $message) {
             $message = "SQL Server error occurred but no error message was retrieved from driver.";
         }
 

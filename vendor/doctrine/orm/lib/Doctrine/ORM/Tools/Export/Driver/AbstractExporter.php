@@ -71,6 +71,16 @@ abstract class AbstractExporter
     }
 
     /**
+     * Converts a single ClassMetadata instance to the exported format
+     * and returns it.
+     *
+     * @param ClassMetadataInfo $metadata
+     *
+     * @return string
+     */
+    abstract public function exportClassMetadata(ClassMetadataInfo $metadata);
+
+    /**
      * Sets the array of ClassMetadataInfo instances to export.
      *
      * @param array $metadata
@@ -90,23 +100,6 @@ abstract class AbstractExporter
     public function getExtension()
     {
         return $this->_extension;
-    }
-
-    /**
-     * Sets the directory to output the mapping files to.
-     *
-     *     [php]
-     *     $exporter = new YamlExporter($metadata, __DIR__ . '/yaml');
-     *     $exporter->setExtension('.yml');
-     *     $exporter->export();
-     *
-     * @param string $extension
-     *
-     * @return void
-     */
-    public function setExtension($extension)
-    {
-        $this->_extension = $extension;
     }
 
     /**
@@ -136,16 +129,16 @@ abstract class AbstractExporter
      */
     public function export()
     {
-        if (!is_dir($this->_outputDir)) {
+        if ( ! is_dir($this->_outputDir)) {
             mkdir($this->_outputDir, 0775, true);
         }
 
         foreach ($this->_metadata as $metadata) {
             //In case output is returned, write it to a file, skip otherwise
-            if ($output = $this->exportClassMetadata($metadata)) {
+            if($output = $this->exportClassMetadata($metadata)){
                 $path = $this->_generateOutputPath($metadata);
                 $dir = dirname($path);
-                if (!is_dir($dir)) {
+                if ( ! is_dir($dir)) {
                     mkdir($dir, 0775, true);
                 }
                 if (file_exists($path) && !$this->_overwriteExistingFiles) {
@@ -158,16 +151,6 @@ abstract class AbstractExporter
     }
 
     /**
-     * Converts a single ClassMetadata instance to the exported format
-     * and returns it.
-     *
-     * @param ClassMetadataInfo $metadata
-     *
-     * @return string
-     */
-    abstract public function exportClassMetadata(ClassMetadataInfo $metadata);
-
-    /**
      * Generates the path to write the class for the given ClassMetadataInfo instance.
      *
      * @param ClassMetadataInfo $metadata
@@ -177,6 +160,23 @@ abstract class AbstractExporter
     protected function _generateOutputPath(ClassMetadataInfo $metadata)
     {
         return $this->_outputDir . '/' . str_replace('\\', '.', $metadata->name) . $this->_extension;
+    }
+
+    /**
+     * Sets the directory to output the mapping files to.
+     *
+     *     [php]
+     *     $exporter = new YamlExporter($metadata, __DIR__ . '/yaml');
+     *     $exporter->setExtension('.yml');
+     *     $exporter->export();
+     *
+     * @param string $extension
+     *
+     * @return void
+     */
+    public function setExtension($extension)
+    {
+        $this->_extension = $extension;
     }
 
     /**

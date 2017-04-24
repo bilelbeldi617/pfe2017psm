@@ -34,12 +34,12 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     /**
      * Constructor.
      *
-     * @param ManagerRegistry $managerRegistry Manager registry
+     * @param ManagerRegistry            $managerRegistry     Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
     public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->managerRegistry     = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
     }
 
@@ -71,11 +71,11 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Fallback to default constructor if missing identifier(s)
-        $classMetadata = $objectManager->getClassMetadata($metadata->name);
+        $classMetadata  = $objectManager->getClassMetadata($metadata->name);
         $identifierList = array();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if (!array_key_exists($name, $data)) {
+            if ( ! array_key_exists($name, $data)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 

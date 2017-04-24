@@ -76,6 +76,14 @@ class TwigExtractor extends AbstractFileExtractor implements ExtractorInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+    }
+
     protected function extractTemplate($template, MessageCatalogue $catalogue)
     {
         $visitor = $this->twig->getExtension('Symfony\Bridge\Twig\Extension\TranslationExtension')->getTranslationNodeVisitor();
@@ -84,18 +92,10 @@ class TwigExtractor extends AbstractFileExtractor implements ExtractorInterface
         $this->twig->parse($this->twig->tokenize(new \Twig_Source($template, '')));
 
         foreach ($visitor->getMessages() as $message) {
-            $catalogue->set(trim($message[0]), $this->prefix . trim($message[0]), $message[1] ?: $this->defaultDomain);
+            $catalogue->set(trim($message[0]), $this->prefix.trim($message[0]), $message[1] ?: $this->defaultDomain);
         }
 
         $visitor->disable();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
     }
 
     /**

@@ -39,7 +39,7 @@ class SimpleFormFactory extends FormLoginFactory
 
         $node->children()
             ->scalarNode('authenticator')->cannotBeEmpty()->end()
-            ->end();
+        ->end();
     }
 
     protected function getListenerId()
@@ -49,12 +49,13 @@ class SimpleFormFactory extends FormLoginFactory
 
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
-        $provider = 'security.authentication.provider.simple_form.' . $id;
+        $provider = 'security.authentication.provider.simple_form.'.$id;
         $container
             ->setDefinition($provider, new DefinitionDecorator('security.authentication.provider.simple'))
             ->replaceArgument(0, new Reference($config['authenticator']))
             ->replaceArgument(1, new Reference($userProviderId))
-            ->replaceArgument(2, $id);
+            ->replaceArgument(2, $id)
+        ;
 
         return $provider;
     }
@@ -63,7 +64,7 @@ class SimpleFormFactory extends FormLoginFactory
     {
         $listenerId = parent::createListener($container, $id, $config, $userProvider);
 
-        $simpleAuthHandlerId = 'security.authentication.simple_success_failure_handler.' . $id;
+        $simpleAuthHandlerId = 'security.authentication.simple_success_failure_handler.'.$id;
         $simpleAuthHandler = $container->setDefinition($simpleAuthHandlerId, new DefinitionDecorator('security.authentication.simple_success_failure_handler'));
         $simpleAuthHandler->replaceArgument(0, new Reference($config['authenticator']));
         $simpleAuthHandler->replaceArgument(1, new Reference($this->getSuccessHandlerId($id)));

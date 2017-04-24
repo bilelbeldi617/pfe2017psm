@@ -26,7 +26,7 @@ interface AccessDeniedHandlerInterface
     /**
      * Handles an access denied failure.
      *
-     * @param Request $request
+     * @param Request               $request
      * @param AccessDeniedException $accessDeniedException
      *
      * @return Response may return null

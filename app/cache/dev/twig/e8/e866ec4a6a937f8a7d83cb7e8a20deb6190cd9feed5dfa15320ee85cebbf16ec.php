@@ -16,23 +16,41 @@ class __TwigTemplate_633b1bc6b4f5092c4cbf93b1ee354bfee7b435bdeb967a140d1b3bb2746
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_865ee255bccaaefa6c7d3a438eef40797c0b42fa6908f34bf05beb58e08914b5 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_865ee255bccaaefa6c7d3a438eef40797c0b42fa6908f34bf05beb58e08914b5->enter($__internal_865ee255bccaaefa6c7d3a438eef40797c0b42fa6908f34bf05beb58e08914b5_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Admin/ajouterMatiere.html.twig"));
+
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_865ee255bccaaefa6c7d3a438eef40797c0b42fa6908f34bf05beb58e08914b5->leave($__internal_865ee255bccaaefa6c7d3a438eef40797c0b42fa6908f34bf05beb58e08914b5_prof);
+
+    }
+
+    // line 3
     public function block_title($context, array $blocks = array())
     {
-        $__internal_67e6430febe883ae9f688ec9ac42c23f6e21ea3d4a9893decf3cf5a47e85e53c = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_67e6430febe883ae9f688ec9ac42c23f6e21ea3d4a9893decf3cf5a47e85e53c->enter($__internal_67e6430febe883ae9f688ec9ac42c23f6e21ea3d4a9893decf3cf5a47e85e53c_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_f80b9a3586e23159f1727e44056cc6fa6caabb40b640298fb781ba7608f7992e = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_f80b9a3586e23159f1727e44056cc6fa6caabb40b640298fb781ba7608f7992e->enter($__internal_f80b9a3586e23159f1727e44056cc6fa6caabb40b640298fb781ba7608f7992e_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
         // line 4
         echo "    Ajouter une matiere
 ";
-
-        $__internal_67e6430febe883ae9f688ec9ac42c23f6e21ea3d4a9893decf3cf5a47e85e53c->leave($__internal_67e6430febe883ae9f688ec9ac42c23f6e21ea3d4a9893decf3cf5a47e85e53c_prof);
+        
+        $__internal_f80b9a3586e23159f1727e44056cc6fa6caabb40b640298fb781ba7608f7992e->leave($__internal_f80b9a3586e23159f1727e44056cc6fa6caabb40b640298fb781ba7608f7992e_prof);
 
     }
 
+    // line 7
     public function block_script($context, array $blocks = array())
     {
-        $__internal_07c0c393f2c195f6c4cd10c4d691d6b16c20d631240ecdc5f5ccab60a7c71111 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_07c0c393f2c195f6c4cd10c4d691d6b16c20d631240ecdc5f5ccab60a7c71111->enter($__internal_07c0c393f2c195f6c4cd10c4d691d6b16c20d631240ecdc5f5ccab60a7c71111_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
+        $__internal_6769e6b7a709578e29c757e6837fd9636bb07bad5d4537b9b85e0f64c11f0927 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_6769e6b7a709578e29c757e6837fd9636bb07bad5d4537b9b85e0f64c11f0927->enter($__internal_6769e6b7a709578e29c757e6837fd9636bb07bad5d4537b9b85e0f64c11f0927_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
 
         // line 8
         echo "    <script language=\"JavaScript\">
@@ -102,17 +120,16 @@ class __TwigTemplate_633b1bc6b4f5092c4cbf93b1ee354bfee7b435bdeb967a140d1b3bb2746
 
 
 ";
-
-        $__internal_07c0c393f2c195f6c4cd10c4d691d6b16c20d631240ecdc5f5ccab60a7c71111->leave($__internal_07c0c393f2c195f6c4cd10c4d691d6b16c20d631240ecdc5f5ccab60a7c71111_prof);
+        
+        $__internal_6769e6b7a709578e29c757e6837fd9636bb07bad5d4537b9b85e0f64c11f0927->leave($__internal_6769e6b7a709578e29c757e6837fd9636bb07bad5d4537b9b85e0f64c11f0927_prof);
 
     }
 
-    // line 3
-
+    // line 74
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_2830ea199f257fb2d872033a05facde55cd7c19970c5b836d359fd9c9e6dda84 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_2830ea199f257fb2d872033a05facde55cd7c19970c5b836d359fd9c9e6dda84->enter($__internal_2830ea199f257fb2d872033a05facde55cd7c19970c5b836d359fd9c9e6dda84_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_f067165756d1ff254efa5516d4bbb68e6709bdb5b4095d4a4a1c9145cc8b3c99 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_f067165756d1ff254efa5516d4bbb68e6709bdb5b4095d4a4a1c9145cc8b3c99->enter($__internal_f067165756d1ff254efa5516d4bbb68e6709bdb5b4095d4a4a1c9145cc8b3c99_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 75
         echo "
@@ -191,29 +208,30 @@ class __TwigTemplate_633b1bc6b4f5092c4cbf93b1ee354bfee7b435bdeb967a140d1b3bb2746
 
 
 ";
-
-        $__internal_2830ea199f257fb2d872033a05facde55cd7c19970c5b836d359fd9c9e6dda84->leave($__internal_2830ea199f257fb2d872033a05facde55cd7c19970c5b836d359fd9c9e6dda84_prof);
+        
+        $__internal_f067165756d1ff254efa5516d4bbb68e6709bdb5b4095d4a4a1c9145cc8b3c99->leave($__internal_f067165756d1ff254efa5516d4bbb68e6709bdb5b4095d4a4a1c9145cc8b3c99_prof);
 
     }
 
-    // line 7
+    public function getTemplateName()
+    {
+        return "@projet/Default/Admin/ajouterMatiere.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 74
-
     public function getDebugInfo()
     {
-        return array(200 => 124, 190 => 120, 186 => 118, 182 => 117, 172 => 110, 135 => 75, 129 => 74, 80 => 30, 56 => 8, 50 => 7, 42 => 4, 36 => 3, 11 => 1,);
+        return array (  200 => 124,  190 => 120,  186 => 118,  182 => 117,  172 => 110,  135 => 75,  129 => 74,  80 => 30,  56 => 8,  50 => 7,  42 => 4,  36 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -354,26 +372,5 @@ class __TwigTemplate_633b1bc6b4f5092c4cbf93b1ee354bfee7b435bdeb967a140d1b3bb2746
 
 
 {% endblock %}", "@projet/Default/Admin/ajouterMatiere.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Admin\\ajouterMatiere.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_c0bae1e0d41d2f536d9dd4787710e68604e456b972c1380ea352de80d9601801 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_c0bae1e0d41d2f536d9dd4787710e68604e456b972c1380ea352de80d9601801->enter($__internal_c0bae1e0d41d2f536d9dd4787710e68604e456b972c1380ea352de80d9601801_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Admin/ajouterMatiere.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_c0bae1e0d41d2f536d9dd4787710e68604e456b972c1380ea352de80d9601801->leave($__internal_c0bae1e0d41d2f536d9dd4787710e68604e456b972c1380ea352de80d9601801_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@projet/Default/Admin/ajouterMatiere.html.twig";
     }
 }

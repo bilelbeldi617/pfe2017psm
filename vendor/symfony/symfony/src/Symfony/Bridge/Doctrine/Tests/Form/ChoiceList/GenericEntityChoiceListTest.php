@@ -38,6 +38,38 @@ class GenericEntityChoiceListTest extends TestCase
      */
     private $em;
 
+    protected function setUp()
+    {
+        $this->em = DoctrineTestHelper::createTestEntityManager();
+
+        $schemaTool = new SchemaTool($this->em);
+        $classes = array(
+            $this->em->getClassMetadata(self::SINGLE_INT_ID_CLASS),
+            $this->em->getClassMetadata(self::SINGLE_STRING_ID_CLASS),
+            $this->em->getClassMetadata(self::COMPOSITE_ID_CLASS),
+            $this->em->getClassMetadata(self::GROUPABLE_CLASS),
+        );
+
+        try {
+            $schemaTool->dropSchema($classes);
+        } catch (\Exception $e) {
+        }
+
+        try {
+            $schemaTool->createSchema($classes);
+        } catch (\Exception $e) {
+        }
+
+        parent::setUp();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->em = null;
+    }
+
     /**
      * @expectedException \Symfony\Component\Form\Exception\StringCastException
      * @expectedMessage   Entity "Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity" passed to the choice field must have a "__toString()" method defined (or you can also override the "property" option).
@@ -253,37 +285,5 @@ class GenericEntityChoiceListTest extends TestCase
         );
 
         $this->assertEquals(array(1, 2), $choiceList->getIndicesForChoices(array($item1, $item2)));
-    }
-
-    protected function setUp()
-    {
-        $this->em = DoctrineTestHelper::createTestEntityManager();
-
-        $schemaTool = new SchemaTool($this->em);
-        $classes = array(
-            $this->em->getClassMetadata(self::SINGLE_INT_ID_CLASS),
-            $this->em->getClassMetadata(self::SINGLE_STRING_ID_CLASS),
-            $this->em->getClassMetadata(self::COMPOSITE_ID_CLASS),
-            $this->em->getClassMetadata(self::GROUPABLE_CLASS),
-        );
-
-        try {
-            $schemaTool->dropSchema($classes);
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $schemaTool->createSchema($classes);
-        } catch (\Exception $e) {
-        }
-
-        parent::setUp();
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->em = null;
     }
 }

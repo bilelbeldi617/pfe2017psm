@@ -1,7 +1,6 @@
 <?php
 
 /* baseForParent.html.twig */
-
 class __TwigTemplate_ccaeafc3ac26f3ffa204e800d08ce5e84cff0475391877d199bb27068a42db08 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,46 +16,558 @@ class __TwigTemplate_ccaeafc3ac26f3ffa204e800d08ce5e84cff0475391877d199bb27068a4
         );
     }
 
-    public function block_title($context, array $blocks = array())
+    protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_c1864102f71457c68df4c6e04852c6e03621118172c5eb28a2f2569ef293c9fc = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_c1864102f71457c68df4c6e04852c6e03621118172c5eb28a2f2569ef293c9fc->enter($__internal_c1864102f71457c68df4c6e04852c6e03621118172c5eb28a2f2569ef293c9fc_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_e3ed1c6aa042e5b7f7c54a52595ea089e537dc64f717a1a4717d3608fa1cd870 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_e3ed1c6aa042e5b7f7c54a52595ea089e537dc64f717a1a4717d3608fa1cd870->enter($__internal_e3ed1c6aa042e5b7f7c54a52595ea089e537dc64f717a1a4717d3608fa1cd870_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "baseForParent.html.twig"));
 
-        echo " ";
+        // line 1
+        echo "<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />
+    <meta charset=\"utf-8\" />
+    <title>";
+        // line 6
+        $this->displayBlock('title', $context, $blocks);
+        // line 7
+        echo "    </title>
 
-        $__internal_c1864102f71457c68df4c6e04852c6e03621118172c5eb28a2f2569ef293c9fc->leave($__internal_c1864102f71457c68df4c6e04852c6e03621118172c5eb28a2f2569ef293c9fc_prof);
+    <meta name=\"description\" content=\"overview &amp; stats\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0\" />
+    <link rel=\"stylesheet\" href=\"";
+        // line 11
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/bootstrap.min.css"), "html", null, true);
+        echo "\" />
+    <link rel=\"stylesheet\" href=\"";
+        // line 12
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/bootstrap-editable.min.css"), "html", null, true);
+        echo "\" />
+    <link rel=\"stylesheet\" href=\"";
+        // line 13
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/font-awesome/4.5.0/css/font-awesome.min.css"), "html", null, true);
+        echo "\" />
+
+    <!-- page specific plugin styles -->
+
+    <!-- text fonts -->
+    <link rel=\"stylesheet\" href=\"";
+        // line 18
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/fonts.googleapis.com.css"), "html", null, true);
+        echo "\" />
+
+    <!-- ace styles -->
+    <link rel=\"stylesheet\" href=\"";
+        // line 21
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace.min.css"), "html", null, true);
+        echo "\" class=\"ace-main-stylesheet\" id=\"main-ace-style\" />
+
+    <!--[if lte IE 9]>
+    <link rel=\"stylesheet\" href=\"";
+        // line 24
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-part2.min.css"), "html", null, true);
+        echo "\" class=\"ace-main-stylesheet\" />
+    <![endif]-->
+    <link rel=\"stylesheet\" href=\"";
+        // line 26
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-skins.min.css"), "html", null, true);
+        echo "\" />
+    <link rel=\"stylesheet\" href=\"";
+        // line 27
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-rtl.min.css"), "html", null, true);
+        echo "\" />
+
+    <!--[if lte IE 9]>
+    <link rel=\"stylesheet\" href=\"";
+        // line 30
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-ie.min.css"), "html", null, true);
+        echo "\" />
+    <![endif]-->
+
+    <!-- inline styles related to this page -->
+
+    <!-- ace settings handler -->
+    <script src=\"";
+        // line 36
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/ace-extra.min.js"), "html", null, true);
+        echo "\"></script>
+
+    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+    <!--[if lte IE 8]>
+    <script src=\"";
+        // line 41
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/html5shiv.min.js"), "html", null, true);
+        echo "\"></script>
+    <script src=\"";
+        // line 42
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/respond.min.js"), "html", null, true);
+        echo "\"></script>
+    <![endif]-->
+
+    <script src=\"";
+        // line 45
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery-2.1.4.min.js"), "html", null, true);
+        echo "\"></script>
+    <script src=\"";
+        // line 46
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/bootstrap-editable.min.js"), "html", null, true);
+        echo "\"></script>
+
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css\"/>
+    <script type=\"text/javascript\" src=\"https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js\"></script>
+
+    <script language=\"JavaScript\">
+        \$(\"document\").ready(function(){
+            setInterval(function () {
+
+
+
+            \$.ajax({
+               url: \"";
+        // line 58
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("getNotif");
+        echo "\",
+                method: \"GET\",
+                data :{\"parent\" :  \"";
+        // line 60
+        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute($this->getAttribute((isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "session", array()), "get", array(0 => "user"), "method"), "id", array()), "html", null, true);
+        echo "\"},
+                success: function(response){
+                    response = JSON.parse(response);
+                    console.log(response);
+                    \$(\"#nbrNotif\").html(response.nbrNvNotifs);
+                    \$(\"#nbrNotif2\").html(response.nbrNvNotifs+\" Notifications\");
+                    var notif = \"\";
+                    if(response.nbrNvNotifs == 0){
+                        notif = \"<h6>Aucune nouvelle notification</h6>\";
+                    }else {
+
+                        \$.each(response.listNotifs, function (i, item) {
+                            if (item.vu == 0) {
+                                notif += \"<li><div class='clearfix'><span class='pull-left'><h6>\" + item.titre_notification + \"</h6></span></div></li>\";
+                            }
+                        });
+                    }
+
+                    \$(\"#notifContainer\").html(notif);
+
+                }
+            });
+            }, 10000);
+        });
+    </script>
+
+    ";
+        // line 86
+        $this->displayBlock('script', $context, $blocks);
+        // line 87
+        echo "</head>
+
+<body class=\"no-skin\">
+<div id=\"navbar\" class=\"navbar navbar-default          ace-save-state\">
+<div class=\"navbar-container ace-save-state\" id=\"navbar-container\">
+<button type=\"button\" class=\"navbar-toggle menu-toggler pull-left\" id=\"menu-toggler\" data-target=\"#sidebar\">
+    <span class=\"sr-only\">Toggle sidebar</span>
+
+    <span class=\"icon-bar\"></span>
+
+    <span class=\"icon-bar\"></span>
+
+    <span class=\"icon-bar\"></span>
+</button>
+
+<div class=\"navbar-header pull-left\">
+    <a href=\"index.html\" class=\"navbar-brand\">
+        <small>
+            <i class=\"fa fa-leaf\"></i>
+            Prima School Manager
+        </small>
+    </a>
+</div>
+
+<div class=\"navbar-buttons navbar-header pull-right\" role=\"navigation\">
+<ul class=\"nav ace-nav\">
+
+
+<li class=\"purple dropdown-modal\">
+    <a data-toggle=\"dropdown\" class=\"dropdown-toggle\" href=\"#\">
+        <i class=\"ace-icon fa fa-bell icon-animated-bell\"></i>
+        <span class=\"badge badge-important\"><div id=\"nbrNotif\"></div></span>
+    </a>
+
+    <ul class=\"dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close\">
+        <li class=\"dropdown-header\">
+            <i class=\"ace-icon fa fa-exclamation-triangle\" id=\"nbrNotif2\"></i>
+        </li>
+
+        <li class=\"dropdown-content\">
+            <ul class=\"dropdown-menu dropdown-navbar navbar-pink\" id=\"notifContainer\">
+                <li>
+                    <a href=\"#\">
+                        <div class=\"clearfix\">
+\t\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-left\">
+\t\t\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"btn btn-xs no-hover btn-pink fa fa-comment\"></i>
+\t\t\t\t\t\t\t\t\t\t\t\t\t\tNew Comments
+\t\t\t\t\t\t\t\t\t\t\t\t\t</span>
+                            <span class=\"pull-right badge badge-info\">+12</span>
+                        </div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        <li class=\"dropdown-footer\">
+            <a href=\"";
+        // line 144
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("voirToutNotif");
+        echo "\">
+                Voir toutes les notifications
+                <i class=\"ace-icon fa fa-arrow-right\"></i>
+            </a>
+        </li>
+    </ul>
+</li>
+
+
+
+<li class=\"light-blue dropdown-modal\">
+    <a data-toggle=\"dropdown\" href=\"#\" class=\"dropdown-toggle\">
+        <img class=\"nav-user-photo\" src=\"\" alt=\"Jason's Photo\" />
+\t\t\t\t\t\t\t\t<span class=\"user-info\">
+\t\t\t\t\t\t\t\t\t<small>Bienvenu</small>
+
+\t\t\t\t\t\t\t\t</span>
+
+        <i class=\"ace-icon fa fa-caret-down\"></i>
+    </a>
+
+    <ul class=\"user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close\">
+        <li>
+            <a href=\"#\">
+                <i class=\"ace-icon fa fa-cog\"></i>
+                Settings
+            </a>
+        </li>
+
+        <li>
+            <a href=\"";
+        // line 174
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("profile");
+        echo "\">
+                <i class=\"ace-icon fa fa-user\"></i>
+                Profile
+            </a>
+        </li>
+
+        <li class=\"divider\"></li>
+
+        <li>
+            <a href=\"#\">
+                <i class=\"ace-icon fa fa-power-off\"></i>
+                Logout
+            </a>
+        </li>
+    </ul>
+</li>
+</ul>
+</div>
+</div><!-- /.navbar-container -->
+</div>
+
+<div class=\"main-container ace-save-state\" id=\"main-container\">
+    <script type=\"text/javascript\">
+        try{ace.settings.loadState('main-container')}catch(e){}
+    </script>
+
+    <div id=\"sidebar\" class=\"sidebar responsive ace-save-state\">
+        <script type=\"text/javascript\">
+            try{ace.settings.loadState('sidebar')}catch(e){}
+        </script>
+
+        <div class=\"sidebar-shortcuts\" id=\"sidebar-shortcuts\">
+            <div class=\"sidebar-shortcuts-large\" id=\"sidebar-shortcuts-large\">
+                <button class=\"btn btn-success\">
+                    <i class=\"ace-icon fa fa-signal\"></i>
+                </button>
+
+                <button class=\"btn btn-info\">
+                    <i class=\"ace-icon fa fa-pencil\"></i>
+                </button>
+
+                <button class=\"btn btn-warning\">
+                    <i class=\"ace-icon fa fa-users\"></i>
+                </button>
+
+                <button class=\"btn btn-danger\">
+                    <i class=\"ace-icon fa fa-cogs\"></i>
+                </button>
+            </div>
+
+            <div class=\"sidebar-shortcuts-mini\" id=\"sidebar-shortcuts-mini\">
+                <span class=\"btn btn-success\"></span>
+
+                <span class=\"btn btn-info\"></span>
+
+                <span class=\"btn btn-warning\"></span>
+
+                <span class=\"btn btn-danger\"></span>
+            </div>
+        </div><!-- /.sidebar-shortcuts -->
+
+        <ul class=\"nav nav-list\">
+
+            <li class=\"\">
+                <a href=\"";
+        // line 238
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("dashParent");
+        echo "\">
+                    <i class=\"menu-icon fa fa-home\"></i>
+                    <span class=\"menu-text\"> Accueil </span>
+                </a>
+
+                <b class=\"arrow\"></b>
+            </li>
+
+            <li class=\"\">
+                <a href=\"#\" class=\"dropdown-toggle\">
+                    <i class=\"menu-icon fa fa-phone\"></i>
+                    <span class=\"menu-text\">Contacter </span>
+
+                    <b class=\"arrow fa fa-angle-down\"></b>
+                </a>
+
+                <b class=\"arrow\"></b>
+
+                <ul class=\"submenu nav-hide\" style=\"display: none;\">
+                    <li class=\"\">
+                        <a href=\"";
+        // line 258
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("contacterEnseignant");
+        echo "\">
+                            <i class=\"menu-icon fa fa-caret-right\"></i>
+                            Contacter Enseignants
+                        </a>
+
+                        <b class=\"arrow\"></b>
+                    </li>
+
+                    <li class=\"\">
+                        <a href=\"";
+        // line 267
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("contacterAdmin");
+        echo "\">
+                            <i class=\"menu-icon fa fa-caret-right\"></i>
+                            Contacter l'administrateur
+                        </a>
+
+                        <b class=\"arrow\"></b>
+                    </li>
+
+                </ul>
+
+
+            </li>
+
+            <li class=\"\">
+                <a href=\"#\" class=\"dropdown-toggle\">
+                    <i class=\"menu-icon fa fa-users\"></i>
+                    <span class=\"menu-text\">Elèves </span>
+
+                    <b class=\"arrow fa fa-angle-down\"></b>
+                </a>
+
+                <b class=\"arrow\"></b>
+
+                <ul class=\"submenu nav-hide\" style=\"display: none;\">
+
+
+                    <li class=\"\">
+                        <a href=\"";
+        // line 294
+        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("mesEleves");
+        echo "\">
+                            <i class=\"menu-icon fa fa-caret-right\"></i>
+                            Mes élèves
+                        </a>
+
+                        <b class=\"arrow\"></b>
+                    </li>
+
+
+                </ul>
+
+
+            </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </ul><!-- /.nav-list -->
+
+        <div class=\"sidebar-toggle sidebar-collapse\" id=\"sidebar-collapse\">
+            <i id=\"sidebar-toggle-icon\" class=\"ace-icon fa fa-angle-double-left ace-save-state\" data-icon1=\"ace-icon fa fa-angle-double-left\" data-icon2=\"ace-icon fa fa-angle-double-right\"></i>
+        </div>
+    </div>
+
+    <div class=\"main-content\">
+        <div class=\"main-content-inner\">
+
+            <div class=\"page-content\">
+
+
+                <div class=\"row\">
+                    <div class=\"col-xs-12\">
+                        <!-- Contenu de la page -->
+                        ";
+        // line 336
+        $this->displayBlock('mainContent', $context, $blocks);
+        // line 340
+        echo "
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div>
+    </div><!-- /.main-content -->
+
+    <div class=\"footer\">
+        <div class=\"footer-inner\">
+            <div class=\"footer-content\">
+\t\t\t\t\t\t<span class=\"bigger-120\">
+\t\t\t\t\t\t\t<span class=\"blue bolder\">PrimaSchoolManager</span>
+\t\t\t\t\t\t\tApplication &copy;
+\t\t\t\t\t\t</span>
+
+                &nbsp; </div>
+        </div>
+    </div>
+
+    <a href=\"#\" id=\"btn-scroll-up\" class=\"btn-scroll-up btn btn-sm btn-inverse\">
+        <i class=\"ace-icon fa fa-angle-double-up icon-only bigger-110\"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+
+<script type=\"text/javascript\">
+    if('ontouchstart' in document.documentElement) document.write(\"<script src='assets/js/jquery.mobile.custom.min.js'>\"+\"<\"+\"/script>\");
+</script>
+<script src=\"";
+        // line 371
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/bootstrap.min.js"), "html", null, true);
+        echo "\"></script>
+
+<!-- page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script src=\"assets/js/excanvas.min.js\"></script>
+<![endif]-->
+";
+        // line 382
+        echo "<script src=\"";
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery-ui.custom.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 383
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.ui.touch-punch.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 384
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.easypiechart.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 385
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.sparkline.index.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 386
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.flot.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 387
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.flot.pie.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 388
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.flot.resize.min.js"), "html", null, true);
+        echo "\"></script>
+
+<!-- ace scripts -->
+<script src=\"";
+        // line 391
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/ace-elements.min.js"), "html", null, true);
+        echo "\"></script>
+<script src=\"";
+        // line 392
+        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/ace.min.js"), "html", null, true);
+        echo "\"></script>
+
+<!-- inline scripts related to this page -->
+";
+        // line 850
+        echo "
+</body>
+</html>
+";
+        
+        $__internal_e3ed1c6aa042e5b7f7c54a52595ea089e537dc64f717a1a4717d3608fa1cd870->leave($__internal_e3ed1c6aa042e5b7f7c54a52595ea089e537dc64f717a1a4717d3608fa1cd870_prof);
 
     }
 
     // line 6
-
-    public function block_script($context, array $blocks = array())
+    public function block_title($context, array $blocks = array())
     {
-        $__internal_80a61e68772abf0cf101fefbcd7ebdec55cbe4bdd8fc319ef372b963d753a436 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_80a61e68772abf0cf101fefbcd7ebdec55cbe4bdd8fc319ef372b963d753a436->enter($__internal_80a61e68772abf0cf101fefbcd7ebdec55cbe4bdd8fc319ef372b963d753a436_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
+        $__internal_3c8589961c6936aa1a7f9340524270ce9224395468c0beb7494ac3344080efa2 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_3c8589961c6936aa1a7f9340524270ce9224395468c0beb7494ac3344080efa2->enter($__internal_3c8589961c6936aa1a7f9340524270ce9224395468c0beb7494ac3344080efa2_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
-
-        $__internal_80a61e68772abf0cf101fefbcd7ebdec55cbe4bdd8fc319ef372b963d753a436->leave($__internal_80a61e68772abf0cf101fefbcd7ebdec55cbe4bdd8fc319ef372b963d753a436_prof);
+        echo " ";
+        
+        $__internal_3c8589961c6936aa1a7f9340524270ce9224395468c0beb7494ac3344080efa2->leave($__internal_3c8589961c6936aa1a7f9340524270ce9224395468c0beb7494ac3344080efa2_prof);
 
     }
 
     // line 86
+    public function block_script($context, array $blocks = array())
+    {
+        $__internal_82d55bbb7962e3763b739c94dbb71ad5bf3834b642b3a8206021dab562bc8536 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_82d55bbb7962e3763b739c94dbb71ad5bf3834b642b3a8206021dab562bc8536->enter($__internal_82d55bbb7962e3763b739c94dbb71ad5bf3834b642b3a8206021dab562bc8536_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
 
+        
+        $__internal_82d55bbb7962e3763b739c94dbb71ad5bf3834b642b3a8206021dab562bc8536->leave($__internal_82d55bbb7962e3763b739c94dbb71ad5bf3834b642b3a8206021dab562bc8536_prof);
+
+    }
+
+    // line 336
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_d922a51b3761d68688d19d1585975b3464e8dd12aa0611149872f97a31975d25 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d922a51b3761d68688d19d1585975b3464e8dd12aa0611149872f97a31975d25->enter($__internal_d922a51b3761d68688d19d1585975b3464e8dd12aa0611149872f97a31975d25_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_93da222fe99a601bf4b38839bb4429f256c0d7893ced2ecb25082c912b92e094 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_93da222fe99a601bf4b38839bb4429f256c0d7893ced2ecb25082c912b92e094->enter($__internal_93da222fe99a601bf4b38839bb4429f256c0d7893ced2ecb25082c912b92e094_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 337
         echo "
 
                         ";
-
-        $__internal_d922a51b3761d68688d19d1585975b3464e8dd12aa0611149872f97a31975d25->leave($__internal_d922a51b3761d68688d19d1585975b3464e8dd12aa0611149872f97a31975d25_prof);
+        
+        $__internal_93da222fe99a601bf4b38839bb4429f256c0d7893ced2ecb25082c912b92e094->leave($__internal_93da222fe99a601bf4b38839bb4429f256c0d7893ced2ecb25082c912b92e094_prof);
 
     }
 
-    // line 336
+    public function getTemplateName()
+    {
+        return "baseForParent.html.twig";
+    }
 
     public function isTraitable()
     {
@@ -65,13 +576,13 @@ class __TwigTemplate_ccaeafc3ac26f3ffa204e800d08ce5e84cff0475391877d199bb27068a4
 
     public function getDebugInfo()
     {
-        return array(559 => 337, 553 => 336, 542 => 86, 530 => 6, 520 => 850, 514 => 392, 510 => 391, 504 => 388, 500 => 387, 496 => 386, 492 => 385, 488 => 384, 484 => 383, 479 => 382, 469 => 371, 436 => 340, 434 => 336, 389 => 294, 359 => 267, 347 => 258, 324 => 238, 257 => 174, 224 => 144, 165 => 87, 163 => 86, 134 => 60, 129 => 58, 114 => 46, 110 => 45, 104 => 42, 100 => 41, 92 => 36, 83 => 30, 77 => 27, 73 => 26, 68 => 24, 62 => 21, 56 => 18, 48 => 13, 44 => 12, 40 => 11, 34 => 7, 32 => 6, 25 => 1,);
+        return array (  559 => 337,  553 => 336,  542 => 86,  530 => 6,  520 => 850,  514 => 392,  510 => 391,  504 => 388,  500 => 387,  496 => 386,  492 => 385,  488 => 384,  484 => 383,  479 => 382,  469 => 371,  436 => 340,  434 => 336,  389 => 294,  359 => 267,  347 => 258,  324 => 238,  257 => 174,  224 => 144,  165 => 87,  163 => 86,  134 => 60,  129 => 58,  114 => 46,  110 => 45,  104 => 42,  100 => 41,  92 => 36,  83 => 30,  77 => 27,  73 => 26,  68 => 24,  62 => 21,  56 => 18,  48 => 13,  44 => 12,  40 => 11,  34 => 7,  32 => 6,  25 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -931,520 +1442,5 @@ jQuery(function(\$) {
 </body>
 </html>
 ", "baseForParent.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\app\\Resources\\views\\baseForParent.html.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_c721d619b0b6a8b23b3f31333eb6bf03abc7ad1ab1c4c388ebbd6aeaf1bbb781 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_c721d619b0b6a8b23b3f31333eb6bf03abc7ad1ab1c4c388ebbd6aeaf1bbb781->enter($__internal_c721d619b0b6a8b23b3f31333eb6bf03abc7ad1ab1c4c388ebbd6aeaf1bbb781_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "baseForParent.html.twig"));
-
-        // line 1
-        echo "<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />
-    <meta charset=\"utf-8\" />
-    <title>";
-        // line 6
-        $this->displayBlock('title', $context, $blocks);
-        // line 7
-        echo "    </title>
-
-    <meta name=\"description\" content=\"overview &amp; stats\" />
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0\" />
-    <link rel=\"stylesheet\" href=\"";
-        // line 11
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/bootstrap.min.css"), "html", null, true);
-        echo "\" />
-    <link rel=\"stylesheet\" href=\"";
-        // line 12
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/bootstrap-editable.min.css"), "html", null, true);
-        echo "\" />
-    <link rel=\"stylesheet\" href=\"";
-        // line 13
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/font-awesome/4.5.0/css/font-awesome.min.css"), "html", null, true);
-        echo "\" />
-
-    <!-- page specific plugin styles -->
-
-    <!-- text fonts -->
-    <link rel=\"stylesheet\" href=\"";
-        // line 18
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/fonts.googleapis.com.css"), "html", null, true);
-        echo "\" />
-
-    <!-- ace styles -->
-    <link rel=\"stylesheet\" href=\"";
-        // line 21
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace.min.css"), "html", null, true);
-        echo "\" class=\"ace-main-stylesheet\" id=\"main-ace-style\" />
-
-    <!--[if lte IE 9]>
-    <link rel=\"stylesheet\" href=\"";
-        // line 24
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-part2.min.css"), "html", null, true);
-        echo "\" class=\"ace-main-stylesheet\" />
-    <![endif]-->
-    <link rel=\"stylesheet\" href=\"";
-        // line 26
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-skins.min.css"), "html", null, true);
-        echo "\" />
-    <link rel=\"stylesheet\" href=\"";
-        // line 27
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-rtl.min.css"), "html", null, true);
-        echo "\" />
-
-    <!--[if lte IE 9]>
-    <link rel=\"stylesheet\" href=\"";
-        // line 30
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/css/ace-ie.min.css"), "html", null, true);
-        echo "\" />
-    <![endif]-->
-
-    <!-- inline styles related to this page -->
-
-    <!-- ace settings handler -->
-    <script src=\"";
-        // line 36
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/ace-extra.min.js"), "html", null, true);
-        echo "\"></script>
-
-    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-    <!--[if lte IE 8]>
-    <script src=\"";
-        // line 41
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/html5shiv.min.js"), "html", null, true);
-        echo "\"></script>
-    <script src=\"";
-        // line 42
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/respond.min.js"), "html", null, true);
-        echo "\"></script>
-    <![endif]-->
-
-    <script src=\"";
-        // line 45
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery-2.1.4.min.js"), "html", null, true);
-        echo "\"></script>
-    <script src=\"";
-        // line 46
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/bootstrap-editable.min.js"), "html", null, true);
-        echo "\"></script>
-
-    <link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css\"/>
-    <script type=\"text/javascript\" src=\"https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js\"></script>
-
-    <script language=\"JavaScript\">
-        \$(\"document\").ready(function(){
-            setInterval(function () {
-
-
-
-            \$.ajax({
-               url: \"";
-        // line 58
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("getNotif");
-        echo "\",
-                method: \"GET\",
-                data :{\"parent\" :  \"";
-        // line 60
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute($this->getAttribute((isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "session", array()), "get", array(0 => "user"), "method"), "id", array()), "html", null, true);
-        echo "\"},
-                success: function(response){
-                    response = JSON.parse(response);
-                    console.log(response);
-                    \$(\"#nbrNotif\").html(response.nbrNvNotifs);
-                    \$(\"#nbrNotif2\").html(response.nbrNvNotifs+\" Notifications\");
-                    var notif = \"\";
-                    if(response.nbrNvNotifs == 0){
-                        notif = \"<h6>Aucune nouvelle notification</h6>\";
-                    }else {
-
-                        \$.each(response.listNotifs, function (i, item) {
-                            if (item.vu == 0) {
-                                notif += \"<li><div class='clearfix'><span class='pull-left'><h6>\" + item.titre_notification + \"</h6></span></div></li>\";
-                            }
-                        });
-                    }
-
-                    \$(\"#notifContainer\").html(notif);
-
-                }
-            });
-            }, 10000);
-        });
-    </script>
-
-    ";
-        // line 86
-        $this->displayBlock('script', $context, $blocks);
-        // line 87
-        echo "</head>
-
-<body class=\"no-skin\">
-<div id=\"navbar\" class=\"navbar navbar-default          ace-save-state\">
-<div class=\"navbar-container ace-save-state\" id=\"navbar-container\">
-<button type=\"button\" class=\"navbar-toggle menu-toggler pull-left\" id=\"menu-toggler\" data-target=\"#sidebar\">
-    <span class=\"sr-only\">Toggle sidebar</span>
-
-    <span class=\"icon-bar\"></span>
-
-    <span class=\"icon-bar\"></span>
-
-    <span class=\"icon-bar\"></span>
-</button>
-
-<div class=\"navbar-header pull-left\">
-    <a href=\"index.html\" class=\"navbar-brand\">
-        <small>
-            <i class=\"fa fa-leaf\"></i>
-            Prima School Manager
-        </small>
-    </a>
-</div>
-
-<div class=\"navbar-buttons navbar-header pull-right\" role=\"navigation\">
-<ul class=\"nav ace-nav\">
-
-
-<li class=\"purple dropdown-modal\">
-    <a data-toggle=\"dropdown\" class=\"dropdown-toggle\" href=\"#\">
-        <i class=\"ace-icon fa fa-bell icon-animated-bell\"></i>
-        <span class=\"badge badge-important\"><div id=\"nbrNotif\"></div></span>
-    </a>
-
-    <ul class=\"dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close\">
-        <li class=\"dropdown-header\">
-            <i class=\"ace-icon fa fa-exclamation-triangle\" id=\"nbrNotif2\"></i>
-        </li>
-
-        <li class=\"dropdown-content\">
-            <ul class=\"dropdown-menu dropdown-navbar navbar-pink\" id=\"notifContainer\">
-                <li>
-                    <a href=\"#\">
-                        <div class=\"clearfix\">
-\t\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"pull-left\">
-\t\t\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"btn btn-xs no-hover btn-pink fa fa-comment\"></i>
-\t\t\t\t\t\t\t\t\t\t\t\t\t\tNew Comments
-\t\t\t\t\t\t\t\t\t\t\t\t\t</span>
-                            <span class=\"pull-right badge badge-info\">+12</span>
-                        </div>
-                    </a>
-                </li>
-
-            </ul>
-        </li>
-
-        <li class=\"dropdown-footer\">
-            <a href=\"";
-        // line 144
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("voirToutNotif");
-        echo "\">
-                Voir toutes les notifications
-                <i class=\"ace-icon fa fa-arrow-right\"></i>
-            </a>
-        </li>
-    </ul>
-</li>
-
-
-
-<li class=\"light-blue dropdown-modal\">
-    <a data-toggle=\"dropdown\" href=\"#\" class=\"dropdown-toggle\">
-        <img class=\"nav-user-photo\" src=\"\" alt=\"Jason's Photo\" />
-\t\t\t\t\t\t\t\t<span class=\"user-info\">
-\t\t\t\t\t\t\t\t\t<small>Bienvenu</small>
-
-\t\t\t\t\t\t\t\t</span>
-
-        <i class=\"ace-icon fa fa-caret-down\"></i>
-    </a>
-
-    <ul class=\"user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close\">
-        <li>
-            <a href=\"#\">
-                <i class=\"ace-icon fa fa-cog\"></i>
-                Settings
-            </a>
-        </li>
-
-        <li>
-            <a href=\"";
-        // line 174
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("profile");
-        echo "\">
-                <i class=\"ace-icon fa fa-user\"></i>
-                Profile
-            </a>
-        </li>
-
-        <li class=\"divider\"></li>
-
-        <li>
-            <a href=\"#\">
-                <i class=\"ace-icon fa fa-power-off\"></i>
-                Logout
-            </a>
-        </li>
-    </ul>
-</li>
-</ul>
-</div>
-</div><!-- /.navbar-container -->
-</div>
-
-<div class=\"main-container ace-save-state\" id=\"main-container\">
-    <script type=\"text/javascript\">
-        try{ace.settings.loadState('main-container')}catch(e){}
-    </script>
-
-    <div id=\"sidebar\" class=\"sidebar responsive ace-save-state\">
-        <script type=\"text/javascript\">
-            try{ace.settings.loadState('sidebar')}catch(e){}
-        </script>
-
-        <div class=\"sidebar-shortcuts\" id=\"sidebar-shortcuts\">
-            <div class=\"sidebar-shortcuts-large\" id=\"sidebar-shortcuts-large\">
-                <button class=\"btn btn-success\">
-                    <i class=\"ace-icon fa fa-signal\"></i>
-                </button>
-
-                <button class=\"btn btn-info\">
-                    <i class=\"ace-icon fa fa-pencil\"></i>
-                </button>
-
-                <button class=\"btn btn-warning\">
-                    <i class=\"ace-icon fa fa-users\"></i>
-                </button>
-
-                <button class=\"btn btn-danger\">
-                    <i class=\"ace-icon fa fa-cogs\"></i>
-                </button>
-            </div>
-
-            <div class=\"sidebar-shortcuts-mini\" id=\"sidebar-shortcuts-mini\">
-                <span class=\"btn btn-success\"></span>
-
-                <span class=\"btn btn-info\"></span>
-
-                <span class=\"btn btn-warning\"></span>
-
-                <span class=\"btn btn-danger\"></span>
-            </div>
-        </div><!-- /.sidebar-shortcuts -->
-
-        <ul class=\"nav nav-list\">
-
-            <li class=\"\">
-                <a href=\"";
-        // line 238
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("dashParent");
-        echo "\">
-                    <i class=\"menu-icon fa fa-home\"></i>
-                    <span class=\"menu-text\"> Accueil </span>
-                </a>
-
-                <b class=\"arrow\"></b>
-            </li>
-
-            <li class=\"\">
-                <a href=\"#\" class=\"dropdown-toggle\">
-                    <i class=\"menu-icon fa fa-phone\"></i>
-                    <span class=\"menu-text\">Contacter </span>
-
-                    <b class=\"arrow fa fa-angle-down\"></b>
-                </a>
-
-                <b class=\"arrow\"></b>
-
-                <ul class=\"submenu nav-hide\" style=\"display: none;\">
-                    <li class=\"\">
-                        <a href=\"";
-        // line 258
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("contacterEnseignant");
-        echo "\">
-                            <i class=\"menu-icon fa fa-caret-right\"></i>
-                            Contacter Enseignants
-                        </a>
-
-                        <b class=\"arrow\"></b>
-                    </li>
-
-                    <li class=\"\">
-                        <a href=\"";
-        // line 267
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("contacterAdmin");
-        echo "\">
-                            <i class=\"menu-icon fa fa-caret-right\"></i>
-                            Contacter l'administrateur
-                        </a>
-
-                        <b class=\"arrow\"></b>
-                    </li>
-
-                </ul>
-
-
-            </li>
-
-            <li class=\"\">
-                <a href=\"#\" class=\"dropdown-toggle\">
-                    <i class=\"menu-icon fa fa-users\"></i>
-                    <span class=\"menu-text\">Elèves </span>
-
-                    <b class=\"arrow fa fa-angle-down\"></b>
-                </a>
-
-                <b class=\"arrow\"></b>
-
-                <ul class=\"submenu nav-hide\" style=\"display: none;\">
-
-
-                    <li class=\"\">
-                        <a href=\"";
-        // line 294
-        echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("mesEleves");
-        echo "\">
-                            <i class=\"menu-icon fa fa-caret-right\"></i>
-                            Mes élèves
-                        </a>
-
-                        <b class=\"arrow\"></b>
-                    </li>
-
-
-                </ul>
-
-
-            </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </ul><!-- /.nav-list -->
-
-        <div class=\"sidebar-toggle sidebar-collapse\" id=\"sidebar-collapse\">
-            <i id=\"sidebar-toggle-icon\" class=\"ace-icon fa fa-angle-double-left ace-save-state\" data-icon1=\"ace-icon fa fa-angle-double-left\" data-icon2=\"ace-icon fa fa-angle-double-right\"></i>
-        </div>
-    </div>
-
-    <div class=\"main-content\">
-        <div class=\"main-content-inner\">
-
-            <div class=\"page-content\">
-
-
-                <div class=\"row\">
-                    <div class=\"col-xs-12\">
-                        <!-- Contenu de la page -->
-                        ";
-        // line 336
-        $this->displayBlock('mainContent', $context, $blocks);
-        // line 340
-        echo "
-
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.page-content -->
-        </div>
-    </div><!-- /.main-content -->
-
-    <div class=\"footer\">
-        <div class=\"footer-inner\">
-            <div class=\"footer-content\">
-\t\t\t\t\t\t<span class=\"bigger-120\">
-\t\t\t\t\t\t\t<span class=\"blue bolder\">PrimaSchoolManager</span>
-\t\t\t\t\t\t\tApplication &copy;
-\t\t\t\t\t\t</span>
-
-                &nbsp; </div>
-        </div>
-    </div>
-
-    <a href=\"#\" id=\"btn-scroll-up\" class=\"btn-scroll-up btn btn-sm btn-inverse\">
-        <i class=\"ace-icon fa fa-angle-double-up icon-only bigger-110\"></i>
-    </a>
-</div><!-- /.main-container -->
-
-<!-- basic scripts -->
-
-
-<script type=\"text/javascript\">
-    if('ontouchstart' in document.documentElement) document.write(\"<script src='assets/js/jquery.mobile.custom.min.js'>\"+\"<\"+\"/script>\");
-</script>
-<script src=\"";
-        // line 371
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/bootstrap.min.js"), "html", null, true);
-        echo "\"></script>
-
-<!-- page specific plugin scripts -->
-
-<!--[if lte IE 8]>
-<script src=\"assets/js/excanvas.min.js\"></script>
-<![endif]-->
-";
-        // line 382
-        echo "<script src=\"";
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery-ui.custom.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 383
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.ui.touch-punch.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 384
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.easypiechart.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 385
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.sparkline.index.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 386
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.flot.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 387
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.flot.pie.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 388
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/jquery.flot.resize.min.js"), "html", null, true);
-        echo "\"></script>
-
-<!-- ace scripts -->
-<script src=\"";
-        // line 391
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/ace-elements.min.js"), "html", null, true);
-        echo "\"></script>
-<script src=\"";
-        // line 392
-        echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\AssetExtension')->getAssetUrl("assets/js/ace.min.js"), "html", null, true);
-        echo "\"></script>
-
-<!-- inline scripts related to this page -->
-";
-        // line 850
-        echo "
-</body>
-</html>
-";
-
-        $__internal_c721d619b0b6a8b23b3f31333eb6bf03abc7ad1ab1c4c388ebbd6aeaf1bbb781->leave($__internal_c721d619b0b6a8b23b3f31333eb6bf03abc7ad1ab1c4c388ebbd6aeaf1bbb781_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "baseForParent.html.twig";
     }
 }

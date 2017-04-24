@@ -33,7 +33,7 @@ class IsbnValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Isbn) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Isbn');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Isbn');
         }
 
         if (null === $value || '' === $value) {
@@ -44,7 +44,7 @@ class IsbnValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         $canonical = str_replace('-', '', $value);
 
         if (null === $constraint->type) {
@@ -166,19 +166,6 @@ class IsbnValidator extends ConstraintValidator
         return 0 === $checkSum % 11 ? true : Isbn::CHECKSUM_FAILED_ERROR;
     }
 
-    protected function getMessage($constraint, $type = null)
-    {
-        if (null !== $constraint->message) {
-            return $constraint->message;
-        } elseif ('isbn10' === $type) {
-            return $constraint->isbn10Message;
-        } elseif ('isbn13' === $type) {
-            return $constraint->isbn13Message;
-        }
-
-        return $constraint->bothIsbnMessage;
-    }
-
     protected function validateIsbn13($isbn)
     {
         // Error priority:
@@ -208,9 +195,22 @@ class IsbnValidator extends ConstraintValidator
 
         for ($i = 1; $i < 12; $i += 2) {
             $checkSum += $isbn[$i]
-                * 3;
+            * 3;
         }
 
         return 0 === $checkSum % 10 ? true : Isbn::CHECKSUM_FAILED_ERROR;
+    }
+
+    protected function getMessage($constraint, $type = null)
+    {
+        if (null !== $constraint->message) {
+            return $constraint->message;
+        } elseif ('isbn10' === $type) {
+            return $constraint->isbn10Message;
+        } elseif ('isbn13' === $type) {
+            return $constraint->isbn13Message;
+        }
+
+        return $constraint->bothIsbnMessage;
     }
 }

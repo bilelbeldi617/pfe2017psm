@@ -33,7 +33,7 @@ class CacheLoader extends Loader
      * Constructor.
      *
      * @param LoaderInterface $loader A Loader instance
-     * @param string $dir The directory where to store the cache files
+     * @param string          $dir    The directory where to store the cache files
      */
     public function __construct(LoaderInterface $loader, $dir)
     {
@@ -51,9 +51,9 @@ class CacheLoader extends Loader
     public function load(TemplateReferenceInterface $template)
     {
         $key = hash('sha256', $template->getLogicalName());
-        $dir = $this->dir . DIRECTORY_SEPARATOR . substr($key, 0, 2);
-        $file = substr($key, 2) . '.tpl';
-        $path = $dir . DIRECTORY_SEPARATOR . $file;
+        $dir = $this->dir.DIRECTORY_SEPARATOR.substr($key, 0, 2);
+        $file = substr($key, 2).'.tpl';
+        $path = $dir.DIRECTORY_SEPARATOR.$file;
 
         if (is_file($path)) {
             if (null !== $this->logger) {
@@ -92,7 +92,7 @@ class CacheLoader extends Loader
      * Returns true if the template is still fresh.
      *
      * @param TemplateReferenceInterface $template A template
-     * @param int $time The last modification time of the cached template (timestamp)
+     * @param int                        $time     The last modification time of the cached template (timestamp)
      *
      * @return bool
      */

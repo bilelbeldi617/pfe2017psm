@@ -39,7 +39,7 @@ final class Php55ArrayColumn
 
             if ($indexKey !== null && array_key_exists($indexKey, $row)) {
                 $keySet = true;
-                $key = (string)$row[$indexKey];
+                $key = (string) $row[$indexKey];
             }
 
             if ($columnKey === null) {

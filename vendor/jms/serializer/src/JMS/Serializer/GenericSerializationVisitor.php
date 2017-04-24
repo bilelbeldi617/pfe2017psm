@@ -29,19 +29,19 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     private $dataStack;
     private $data;
 
+    public function setNavigator(GraphNavigator $navigator)
+    {
+        $this->navigator = $navigator;
+        $this->root = null;
+        $this->dataStack = new \SplStack;
+    }
+
     /**
      * @return GraphNavigator
      */
     public function getNavigator()
     {
         return $this->navigator;
-    }
-
-    public function setNavigator(GraphNavigator $navigator)
-    {
-        $this->navigator = $navigator;
-        $this->root = null;
-        $this->dataStack = new \SplStack;
     }
 
     public function visitNull($data, array $type, Context $context)
@@ -55,7 +55,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (string)$data;
+        return (string) $data;
     }
 
     public function visitBoolean($data, array $type, Context $context)
@@ -64,7 +64,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (boolean)$data;
+        return (boolean) $data;
     }
 
     public function visitInteger($data, array $type, Context $context)
@@ -73,7 +73,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (int)$data;
+        return (int) $data;
     }
 
     public function visitDouble($data, array $type, Context $context)
@@ -82,7 +82,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (float)$data;
+        return (float) $data;
     }
 
     /**

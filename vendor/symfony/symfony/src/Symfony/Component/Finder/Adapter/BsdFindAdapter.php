@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Finder\Adapter;
 
-@trigger_error('The ' . __NAMESPACE__ . '\BsdFindAdapter class is deprecated since version 2.8 and will be removed in 3.0. Use directly the Finder class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\BsdFindAdapter class is deprecated since version 2.8 and will be removed in 3.0. Use directly the Finder class instead.', E_USER_DEPRECATED);
 
 use Symfony\Component\Finder\Shell\Shell;
 use Symfony\Component\Finder\Shell\Command;
@@ -71,7 +71,7 @@ class BsdFindAdapter extends AbstractFindAdapter
 
         $command
             ->add('-print0 | xargs -0 stat -f')
-            ->arg($format . '%t%N')
+            ->arg($format.'%t%N')
             ->add('| sort | cut -f 2');
     }
 
@@ -100,7 +100,8 @@ class BsdFindAdapter extends AbstractFindAdapter
                 ->add($expr->isCaseSensitive() ? null : '-i')
                 ->add($not ? '-L' : '-l')
                 ->add('-Ee')->arg($expr->renderPattern())
-                ->add('{}');
+                ->add('{}')
+            ;
         }
     }
 }

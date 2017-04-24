@@ -45,7 +45,8 @@ in memory). Use <comment>curl</comment> or any other similar tool to warm up
 the classes cache if you want.
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

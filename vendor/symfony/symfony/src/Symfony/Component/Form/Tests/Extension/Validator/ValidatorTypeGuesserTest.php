@@ -49,6 +49,17 @@ class ValidatorTypeGuesserTest extends TestCase
      */
     private $metadataFactory;
 
+    protected function setUp()
+    {
+        $this->metadata = new ClassMetadata(self::TEST_CLASS);
+        $this->metadataFactory = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface')->getMock();
+        $this->metadataFactory->expects($this->any())
+            ->method('getMetadataFor')
+            ->with(self::TEST_CLASS)
+            ->will($this->returnValue($this->metadata));
+        $this->guesser = new ValidatorTypeGuesser($this->metadataFactory);
+    }
+
     public function guessRequiredProvider()
     {
         return array(
@@ -58,18 +69,6 @@ class ValidatorTypeGuesserTest extends TestCase
             array(new Length(10), new ValueGuess(false, Guess::LOW_CONFIDENCE)),
             array(new Range(array('min' => 1, 'max' => 20)), new ValueGuess(false, Guess::LOW_CONFIDENCE)),
         );
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testLegacyGuessRequired()
-    {
-        if (PHP_VERSION_ID >= 70000) {
-            $this->markTestSkipped('Cannot use a class called True on PHP 7 or higher.');
-        }
-        $true = 'Symfony\Component\Validator\Constraints\True';
-        $this->testGuessRequired(new $true(), new ValueGuess(true, Guess::HIGH_CONFIDENCE));
     }
 
     /**
@@ -84,6 +83,18 @@ class ValidatorTypeGuesserTest extends TestCase
         $this->metadata->addPropertyConstraint(self::TEST_PROPERTY, $constraint);
 
         $this->assertEquals($guess, $this->guesser->guessRequired(self::TEST_CLASS, self::TEST_PROPERTY));
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testLegacyGuessRequired()
+    {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->markTestSkipped('Cannot use a class called True on PHP 7 or higher.');
+        }
+        $true = 'Symfony\Component\Validator\Constraints\True';
+        $this->testGuessRequired(new $true(), new ValueGuess(true, Guess::HIGH_CONFIDENCE));
     }
 
     public function testGuessRequiredReturnsFalseForUnmappedProperties()
@@ -130,17 +141,6 @@ class ValidatorTypeGuesserTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Form\Guess\ValueGuess', $result);
         $this->assertNull($result->getValue());
         $this->assertEquals(Guess::MEDIUM_CONFIDENCE, $result->getConfidence());
-    }
-
-    protected function setUp()
-    {
-        $this->metadata = new ClassMetadata(self::TEST_CLASS);
-        $this->metadataFactory = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface')->getMock();
-        $this->metadataFactory->expects($this->any())
-            ->method('getMetadataFor')
-            ->with(self::TEST_CLASS)
-            ->will($this->returnValue($this->metadata));
-        $this->guesser = new ValidatorTypeGuesser($this->metadataFactory);
     }
 }
 

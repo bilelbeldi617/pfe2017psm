@@ -28,6 +28,28 @@ use IteratorAggregate;
 abstract class Option implements IteratorAggregate
 {
     /**
+     * Creates an option given a return value.
+     *
+     * This is intended for consuming existing APIs and allows you to easily
+     * convert them to an option. By default, we treat ``null`` as the None case,
+     * and everything else as Some.
+     *
+     * @param mixed $value The actual return value.
+     * @param mixed $noneValue The value which should be considered "None"; null
+     *                         by default.
+     *
+     * @return Option
+     */
+    public static function fromValue($value, $noneValue = null)
+    {
+        if ($value === $noneValue) {
+            return None::create();
+        }
+
+        return new Some($value);
+    }
+
+    /**
      * Creates an option from an array's value.
      *
      * If the key does not exist in the array, the array is not actually an array, or the
@@ -42,7 +64,7 @@ abstract class Option implements IteratorAggregate
      */
     public static function fromArraysValue($array, $key)
     {
-        if (!isset($array[$key])) {
+        if ( ! isset($array[$key])) {
             return None::create();
         }
 
@@ -65,7 +87,7 @@ abstract class Option implements IteratorAggregate
      */
     public static function fromReturn($callback, array $arguments = array(), $noneValue = null)
     {
-        return new LazyOption(function () use ($callback, $arguments, $noneValue) {
+        return new LazyOption(function() use ($callback, $arguments, $noneValue) {
             $return = call_user_func_array($callback, $arguments);
 
             if ($return === $noneValue) {
@@ -93,7 +115,7 @@ abstract class Option implements IteratorAggregate
         if ($value instanceof Option) {
             return $value;
         } elseif ($value instanceof \Closure) {
-            return new LazyOption(function () use ($value, $noneValue) {
+            return new LazyOption(function() use ($value, $noneValue) {
                 $return = $value();
 
                 if ($return instanceof Option) {
@@ -105,28 +127,6 @@ abstract class Option implements IteratorAggregate
         } else {
             return Option::fromValue($value, $noneValue);
         }
-    }
-
-    /**
-     * Creates an option given a return value.
-     *
-     * This is intended for consuming existing APIs and allows you to easily
-     * convert them to an option. By default, we treat ``null`` as the None case,
-     * and everything else as Some.
-     *
-     * @param mixed $value The actual return value.
-     * @param mixed $noneValue The value which should be considered "None"; null
-     *                         by default.
-     *
-     * @return Option
-     */
-    public static function fromValue($value, $noneValue = null)
-    {
-        if ($value === $noneValue) {
-            return None::create();
-        }
-
-        return new Some($value);
     }
 
     /**

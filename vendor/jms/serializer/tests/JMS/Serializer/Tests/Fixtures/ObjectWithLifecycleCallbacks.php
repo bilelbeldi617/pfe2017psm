@@ -52,7 +52,7 @@ class ObjectWithLifecycleCallbacks
      */
     private function prepareForSerialization()
     {
-        $this->name = $this->firstname . ' ' . $this->lastname;
+        $this->name = $this->firstname.' '.$this->lastname;
     }
 
     /**

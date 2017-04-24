@@ -41,19 +41,9 @@ class TestClass
         $this->publicGetter = $value;
     }
 
-    public function getPublicAccessor()
-    {
-        return $this->publicAccessor;
-    }
-
     public function setPublicAccessor($value)
     {
         $this->publicAccessor = $value;
-    }
-
-    public function getPublicAccessorWithDefaultValue()
-    {
-        return $this->publicAccessorWithDefaultValue;
     }
 
     public function setPublicAccessorWithDefaultValue($value = null)
@@ -61,24 +51,34 @@ class TestClass
         $this->publicAccessorWithDefaultValue = $value;
     }
 
-    public function getPublicAccessorWithRequiredAndDefaultValue()
-    {
-        return $this->publicAccessorWithRequiredAndDefaultValue;
-    }
-
     public function setPublicAccessorWithRequiredAndDefaultValue($value, $optional = null)
     {
         $this->publicAccessorWithRequiredAndDefaultValue = $value;
     }
 
-    public function getPublicAccessorWithMoreRequiredParameters()
-    {
-        return $this->publicAccessorWithMoreRequiredParameters;
-    }
-
     public function setPublicAccessorWithMoreRequiredParameters($value, $needed)
     {
         $this->publicAccessorWithMoreRequiredParameters = $value;
+    }
+
+    public function getPublicAccessor()
+    {
+        return $this->publicAccessor;
+    }
+
+    public function getPublicAccessorWithDefaultValue()
+    {
+        return $this->publicAccessorWithDefaultValue;
+    }
+
+    public function getPublicAccessorWithRequiredAndDefaultValue()
+    {
+        return $this->publicAccessorWithRequiredAndDefaultValue;
+    }
+
+    public function getPublicAccessorWithMoreRequiredParameters()
+    {
+        return $this->publicAccessorWithMoreRequiredParameters;
     }
 
     public function setPublicIsAccessor($value)
@@ -113,11 +113,6 @@ class TestClass
     public function getPublicMethodMutator()
     {
         return $this->publicGetSetter;
-    }
-
-    public function getPublicGetter()
-    {
-        return $this->publicGetter;
     }
 
     protected function setProtectedAccessor($value)
@@ -172,5 +167,10 @@ class TestClass
     private function hasPrivateHasAccessor()
     {
         return 'foobar';
+    }
+
+    public function getPublicGetter()
+    {
+        return $this->publicGetter;
     }
 }

@@ -19,7 +19,7 @@ interface DataMapperInterface
     /**
      * Maps properties of some data to a list of forms.
      *
-     * @param mixed $data Structured data
+     * @param mixed           $data  Structured data
      * @param FormInterface[] $forms A list of {@link FormInterface} instances
      *
      * @throws Exception\UnexpectedTypeException if the type of the data parameter is not supported.
@@ -30,7 +30,7 @@ interface DataMapperInterface
      * Maps the data of a list of forms into the properties of some data.
      *
      * @param FormInterface[] $forms A list of {@link FormInterface} instances
-     * @param mixed $data Structured data
+     * @param mixed           $data  Structured data
      *
      * @throws Exception\UnexpectedTypeException if the type of the data parameter is not supported.
      */

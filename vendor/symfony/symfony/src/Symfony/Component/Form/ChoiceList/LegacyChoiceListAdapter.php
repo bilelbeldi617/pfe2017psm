@@ -65,21 +65,6 @@ class LegacyChoiceListAdapter implements ChoiceListInterface
         return $this->choices;
     }
 
-    private function initialize()
-    {
-        $this->choices = array();
-        $this->values = array();
-        $this->structuredValues = $this->adaptedList->getValues();
-
-        $innerChoices = $this->adaptedList->getChoices();
-
-        foreach ($innerChoices as $index => $choice) {
-            $value = $this->structuredValues[$index];
-            $this->values[] = $value;
-            $this->choices[$value] = $choice;
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -140,5 +125,20 @@ class LegacyChoiceListAdapter implements ChoiceListInterface
     public function getAdaptedList()
     {
         return $this->adaptedList;
+    }
+
+    private function initialize()
+    {
+        $this->choices = array();
+        $this->values = array();
+        $this->structuredValues = $this->adaptedList->getValues();
+
+        $innerChoices = $this->adaptedList->getChoices();
+
+        foreach ($innerChoices as $index => $choice) {
+            $value = $this->structuredValues[$index];
+            $this->values[] = $value;
+            $this->choices[$value] = $choice;
+        }
     }
 }

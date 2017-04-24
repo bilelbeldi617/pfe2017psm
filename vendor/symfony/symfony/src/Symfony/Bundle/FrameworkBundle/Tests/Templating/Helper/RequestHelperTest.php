@@ -20,6 +20,14 @@ class RequestHelperTest extends TestCase
 {
     protected $requestStack;
 
+    protected function setUp()
+    {
+        $this->requestStack = new RequestStack();
+        $request = new Request();
+        $request->initialize(array('foobar' => 'bar'));
+        $this->requestStack->push($request);
+    }
+
     public function testGetParameter()
     {
         $helper = new RequestHelper($this->requestStack);
@@ -42,13 +50,5 @@ class RequestHelperTest extends TestCase
         $helper = new RequestHelper($this->requestStack);
 
         $this->assertEquals('request', $helper->getName());
-    }
-
-    protected function setUp()
-    {
-        $this->requestStack = new RequestStack();
-        $request = new Request();
-        $request->initialize(array('foobar' => 'bar'));
-        $this->requestStack->push($request);
     }
 }

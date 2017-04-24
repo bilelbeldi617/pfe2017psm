@@ -24,19 +24,19 @@ use Symfony\Component\Validator\Validator as LegacyValidator;
  */
 class LegacyValidatorTest extends AbstractLegacyApiTest
 {
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
-     */
-    public function testValidateValueRejectsValid()
-    {
-        $this->validator->validateValue(new Entity(), new Valid());
-    }
-
     protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array())
     {
         $translator = new IdentityTranslator();
         $translator->setLocale('en');
 
         return new LegacyValidator($metadataFactory, new ConstraintValidatorFactory(), $translator, 'validators', $objectInitializers);
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
+     */
+    public function testValidateValueRejectsValid()
+    {
+        $this->validator->validateValue(new Entity(), new Valid());
     }
 }

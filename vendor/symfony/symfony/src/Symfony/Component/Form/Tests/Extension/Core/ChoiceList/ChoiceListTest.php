@@ -27,6 +27,16 @@ class ChoiceListTest extends AbstractChoiceListTest
 
     private $obj4;
 
+    protected function setUp()
+    {
+        $this->obj1 = new \stdClass();
+        $this->obj2 = new \stdClass();
+        $this->obj3 = new \stdClass();
+        $this->obj4 = new \stdClass();
+
+        parent::setUp();
+    }
+
     public function testInitArray()
     {
         $this->list = new ChoiceList(
@@ -109,16 +119,6 @@ class ChoiceListTest extends AbstractChoiceListTest
             array(0 => new ChoiceView($this->obj1, '0', 'A'), 1 => new ChoiceView($this->obj2, '1', null)),
             $this->list->getRemainingViews()
         );
-    }
-
-    protected function setUp()
-    {
-        $this->obj1 = new \stdClass();
-        $this->obj2 = new \stdClass();
-        $this->obj3 = new \stdClass();
-        $this->obj4 = new \stdClass();
-
-        parent::setUp();
     }
 
     /**

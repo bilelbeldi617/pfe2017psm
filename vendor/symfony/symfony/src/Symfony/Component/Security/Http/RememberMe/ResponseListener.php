@@ -23,14 +23,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class ResponseListener implements EventSubscriberInterface
 {
     /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(KernelEvents::RESPONSE => 'onKernelResponse');
-    }
-
-    /**
      * @param FilterResponseEvent $event
      */
     public function onKernelResponse(FilterResponseEvent $event)
@@ -45,5 +37,13 @@ class ResponseListener implements EventSubscriberInterface
         if ($request->attributes->has(RememberMeServicesInterface::COOKIE_ATTR_NAME)) {
             $response->headers->setCookie($request->attributes->get(RememberMeServicesInterface::COOKIE_ATTR_NAME));
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::RESPONSE => 'onKernelResponse');
     }
 }

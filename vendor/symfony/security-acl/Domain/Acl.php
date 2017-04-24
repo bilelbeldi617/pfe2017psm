@@ -50,11 +50,11 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     /**
      * Constructor.
      *
-     * @param int $id
-     * @param ObjectIdentityInterface $objectIdentity
+     * @param int                                 $id
+     * @param ObjectIdentityInterface             $objectIdentity
      * @param PermissionGrantingStrategyInterface $permissionGrantingStrategy
-     * @param array $loadedSids
-     * @param bool $entriesInheriting
+     * @param array                               $loadedSids
+     * @param bool                                $entriesInheriting
      */
     public function __construct($id, ObjectIdentityInterface $objectIdentity, PermissionGrantingStrategyInterface $permissionGrantingStrategy, array $loadedSids, $entriesInheriting)
     {
@@ -84,91 +84,11 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     }
 
     /**
-     * Deletes an ACE.
-     *
-     * @param string $property
-     * @param int $index
-     *
-     * @throws \OutOfBoundsException
-     */
-    private function deleteAce($property, $index)
-    {
-        $aces = &$this->$property;
-        if (!isset($aces[$index])) {
-            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
-        }
-
-        $oldValue = $this->$property;
-        unset($aces[$index]);
-        $this->$property = array_values($this->$property);
-        $this->onPropertyChanged($property, $oldValue, $this->$property);
-
-        for ($i = $index, $c = count($this->$property); $i < $c; ++$i) {
-            $this->onEntryPropertyChanged($aces[$i], 'aceOrder', $i + 1, $i);
-        }
-    }
-
-    /**
-     * Called when a property of the ACL changes.
-     *
-     * @param string $name
-     * @param mixed $oldValue
-     * @param mixed $newValue
-     */
-    private function onPropertyChanged($name, $oldValue, $newValue)
-    {
-        foreach ($this->listeners as $listener) {
-            $listener->propertyChanged($this, $name, $oldValue, $newValue);
-        }
-    }
-
-    /**
-     * Called when a property of an ACE associated with this ACL changes.
-     *
-     * @param EntryInterface $entry
-     * @param string $name
-     * @param mixed $oldValue
-     * @param mixed $newValue
-     */
-    private function onEntryPropertyChanged(EntryInterface $entry, $name, $oldValue, $newValue)
-    {
-        foreach ($this->listeners as $listener) {
-            $listener->propertyChanged($entry, $name, $oldValue, $newValue);
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function deleteClassFieldAce($index, $field)
     {
         $this->deleteFieldAce('classFieldAces', $index, $field);
-    }
-
-    /**
-     * Deletes a field-based ACE.
-     *
-     * @param string $property
-     * @param int $index
-     * @param string $field
-     *
-     * @throws \OutOfBoundsException
-     */
-    private function deleteFieldAce($property, $index, $field)
-    {
-        $aces = &$this->$property;
-        if (!isset($aces[$field][$index])) {
-            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
-        }
-
-        $oldValue = $this->$property;
-        unset($aces[$field][$index]);
-        $aces[$field] = array_values($aces[$field]);
-        $this->onPropertyChanged($property, $oldValue, $this->$property);
-
-        for ($i = $index, $c = count($aces[$field]); $i < $c; ++$i) {
-            $this->onEntryPropertyChanged($aces[$field][$i], 'aceOrder', $i + 1, $i);
-        }
     }
 
     /**
@@ -246,73 +166,9 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     /**
      * {@inheritdoc}
      */
-    public function setParentAcl(AclInterface $acl = null)
-    {
-        if (null !== $acl && null === $acl->getId()) {
-            throw new \InvalidArgumentException('$acl must have an ID.');
-        }
-
-        if ($this->parentAcl !== $acl) {
-            $this->onPropertyChanged('parentAcl', $this->parentAcl, $acl);
-            $this->parentAcl = $acl;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function insertClassAce(SecurityIdentityInterface $sid, $mask, $index = 0, $granting = true, $strategy = null)
     {
         $this->insertAce('classAces', $index, $mask, $sid, $granting, $strategy);
-    }
-
-    /**
-     * Inserts an ACE.
-     *
-     * @param string $property
-     * @param int $index
-     * @param int $mask
-     * @param SecurityIdentityInterface $sid
-     * @param bool $granting
-     * @param string $strategy
-     *
-     * @throws \OutOfBoundsException
-     * @throws \InvalidArgumentException
-     */
-    private function insertAce($property, $index, $mask, SecurityIdentityInterface $sid, $granting, $strategy = null)
-    {
-        if ($index < 0 || $index > count($this->$property)) {
-            throw new \OutOfBoundsException(sprintf('The index must be in the interval [0, %d].', count($this->$property)));
-        }
-
-        if (!is_int($mask)) {
-            throw new \InvalidArgumentException('$mask must be an integer.');
-        }
-
-        if (null === $strategy) {
-            if (true === $granting) {
-                $strategy = PermissionGrantingStrategy::ALL;
-            } else {
-                $strategy = PermissionGrantingStrategy::ANY;
-            }
-        }
-
-        $aces = &$this->$property;
-        $oldValue = $this->$property;
-        if (isset($aces[$index])) {
-            $this->$property = array_merge(
-                array_slice($this->$property, 0, $index),
-                array(true),
-                array_slice($this->$property, $index)
-            );
-
-            for ($i = $index, $c = count($this->$property) - 1; $i < $c; ++$i) {
-                $this->onEntryPropertyChanged($aces[$i + 1], 'aceOrder', $i, $i + 1);
-            }
-        }
-
-        $aces[$index] = new Entry(null, $this, $sid, $strategy, $mask, $granting, false, false);
-        $this->onPropertyChanged($property, $oldValue, $this->$property);
     }
 
     /**
@@ -321,64 +177,6 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     public function insertClassFieldAce($field, SecurityIdentityInterface $sid, $mask, $index = 0, $granting = true, $strategy = null)
     {
         $this->insertFieldAce('classFieldAces', $index, $field, $mask, $sid, $granting, $strategy);
-    }
-
-    /**
-     * Inserts a field-based ACE.
-     *
-     * @param string $property
-     * @param int $index
-     * @param string $field
-     * @param int $mask
-     * @param SecurityIdentityInterface $sid
-     * @param bool $granting
-     * @param string $strategy
-     *
-     * @throws \InvalidArgumentException
-     * @throws \OutOfBoundsException
-     */
-    private function insertFieldAce($property, $index, $field, $mask, SecurityIdentityInterface $sid, $granting, $strategy = null)
-    {
-        if (0 === strlen($field)) {
-            throw new \InvalidArgumentException('$field cannot be empty.');
-        }
-
-        if (!is_int($mask)) {
-            throw new \InvalidArgumentException('$mask must be an integer.');
-        }
-
-        if (null === $strategy) {
-            if (true === $granting) {
-                $strategy = PermissionGrantingStrategy::ALL;
-            } else {
-                $strategy = PermissionGrantingStrategy::ANY;
-            }
-        }
-
-        $aces = &$this->$property;
-        if (!isset($aces[$field])) {
-            $aces[$field] = array();
-        }
-
-        if ($index < 0 || $index > count($aces[$field])) {
-            throw new \OutOfBoundsException(sprintf('The index must be in the interval [0, %d].', count($this->$property)));
-        }
-
-        $oldValue = $aces;
-        if (isset($aces[$field][$index])) {
-            $aces[$field] = array_merge(
-                array_slice($aces[$field], 0, $index),
-                array(true),
-                array_slice($aces[$field], $index)
-            );
-
-            for ($i = $index, $c = count($aces[$field]) - 1; $i < $c; ++$i) {
-                $this->onEntryPropertyChanged($aces[$field][$i + 1], 'aceOrder', $i, $i + 1);
-            }
-        }
-
-        $aces[$field][$index] = new FieldEntry(null, $this, $field, $sid, $strategy, $mask, $granting, false, false);
-        $this->onPropertyChanged($property, $oldValue, $this->$property);
     }
 
     /**
@@ -403,17 +201,6 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     public function isEntriesInheriting()
     {
         return $this->entriesInheriting;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setEntriesInheriting($boolean)
-    {
-        if ($this->entriesInheriting !== $boolean) {
-            $this->onPropertyChanged('entriesInheriting', $this->entriesInheriting, $boolean);
-            $this->entriesInheriting = $boolean;
-        }
     }
 
     /**
@@ -491,17 +278,43 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     public function unserialize($serialized)
     {
         list($this->parentAcl,
-            $this->objectIdentity,
-            $this->classAces,
-            $this->classFieldAces,
-            $this->objectAces,
-            $this->objectFieldAces,
-            $this->id,
-            $this->loadedSids,
-            $this->entriesInheriting
-            ) = unserialize($serialized);
+             $this->objectIdentity,
+             $this->classAces,
+             $this->classFieldAces,
+             $this->objectAces,
+             $this->objectFieldAces,
+             $this->id,
+             $this->loadedSids,
+             $this->entriesInheriting
+        ) = unserialize($serialized);
 
         $this->listeners = array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEntriesInheriting($boolean)
+    {
+        if ($this->entriesInheriting !== $boolean) {
+            $this->onPropertyChanged('entriesInheriting', $this->entriesInheriting, $boolean);
+            $this->entriesInheriting = $boolean;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParentAcl(AclInterface $acl = null)
+    {
+        if (null !== $acl && null === $acl->getId()) {
+            throw new \InvalidArgumentException('$acl must have an ID.');
+        }
+
+        if ($this->parentAcl !== $acl) {
+            $this->onPropertyChanged('parentAcl', $this->parentAcl, $acl);
+            $this->parentAcl = $acl;
+        }
     }
 
     /**
@@ -513,73 +326,11 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     }
 
     /**
-     * Updates an ACE.
-     *
-     * @param string $property
-     * @param int $index
-     * @param int $mask
-     * @param string $strategy
-     *
-     * @throws \OutOfBoundsException
-     */
-    private function updateAce($property, $index, $mask, $strategy = null)
-    {
-        $aces = &$this->$property;
-        if (!isset($aces[$index])) {
-            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
-        }
-
-        $ace = $aces[$index];
-        if ($mask !== $oldMask = $ace->getMask()) {
-            $this->onEntryPropertyChanged($ace, 'mask', $oldMask, $mask);
-            $ace->setMask($mask);
-        }
-        if (null !== $strategy && $strategy !== $oldStrategy = $ace->getStrategy()) {
-            $this->onEntryPropertyChanged($ace, 'strategy', $oldStrategy, $strategy);
-            $ace->setStrategy($strategy);
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function updateClassFieldAce($index, $field, $mask, $strategy = null)
     {
         $this->updateFieldAce('classFieldAces', $index, $field, $mask, $strategy);
-    }
-
-    /**
-     * Updates a field-based ACE.
-     *
-     * @param string $property
-     * @param int $index
-     * @param string $field
-     * @param int $mask
-     * @param string $strategy
-     *
-     * @throws \InvalidArgumentException
-     * @throws \OutOfBoundsException
-     */
-    private function updateFieldAce($property, $index, $field, $mask, $strategy = null)
-    {
-        if (0 === strlen($field)) {
-            throw new \InvalidArgumentException('$field cannot be empty.');
-        }
-
-        $aces = &$this->$property;
-        if (!isset($aces[$field][$index])) {
-            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
-        }
-
-        $ace = $aces[$field][$index];
-        if ($mask !== $oldMask = $ace->getMask()) {
-            $this->onEntryPropertyChanged($ace, 'mask', $oldMask, $mask);
-            $ace->setMask($mask);
-        }
-        if (null !== $strategy && $strategy !== $oldStrategy = $ace->getStrategy()) {
-            $this->onEntryPropertyChanged($ace, 'strategy', $oldStrategy, $strategy);
-            $ace->setStrategy($strategy);
-        }
     }
 
     /**
@@ -604,33 +355,6 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
     public function updateClassAuditing($index, $auditSuccess, $auditFailure)
     {
         $this->updateAuditing($this->classAces, $index, $auditSuccess, $auditFailure);
-    }
-
-    /**
-     * Updates auditing for an ACE.
-     *
-     * @param array &$aces
-     * @param int $index
-     * @param bool $auditSuccess
-     * @param bool $auditFailure
-     *
-     * @throws \OutOfBoundsException
-     */
-    private function updateAuditing(array &$aces, $index, $auditSuccess, $auditFailure)
-    {
-        if (!isset($aces[$index])) {
-            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
-        }
-
-        if ($auditSuccess !== $aces[$index]->isAuditSuccess()) {
-            $this->onEntryPropertyChanged($aces[$index], 'auditSuccess', !$auditSuccess, $auditSuccess);
-            $aces[$index]->setAuditSuccess($auditSuccess);
-        }
-
-        if ($auditFailure !== $aces[$index]->isAuditFailure()) {
-            $this->onEntryPropertyChanged($aces[$index], 'auditFailure', !$auditFailure, $auditFailure);
-            $aces[$index]->setAuditFailure($auditFailure);
-        }
     }
 
     /**
@@ -663,5 +387,281 @@ class Acl implements AuditableAclInterface, NotifyPropertyChanged
         }
 
         $this->updateAuditing($this->objectFieldAces[$field], $index, $auditSuccess, $auditFailure);
+    }
+
+    /**
+     * Deletes an ACE.
+     *
+     * @param string $property
+     * @param int    $index
+     *
+     * @throws \OutOfBoundsException
+     */
+    private function deleteAce($property, $index)
+    {
+        $aces = &$this->$property;
+        if (!isset($aces[$index])) {
+            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
+        }
+
+        $oldValue = $this->$property;
+        unset($aces[$index]);
+        $this->$property = array_values($this->$property);
+        $this->onPropertyChanged($property, $oldValue, $this->$property);
+
+        for ($i = $index, $c = count($this->$property); $i < $c; ++$i) {
+            $this->onEntryPropertyChanged($aces[$i], 'aceOrder', $i + 1, $i);
+        }
+    }
+
+    /**
+     * Deletes a field-based ACE.
+     *
+     * @param string $property
+     * @param int    $index
+     * @param string $field
+     *
+     * @throws \OutOfBoundsException
+     */
+    private function deleteFieldAce($property, $index, $field)
+    {
+        $aces = &$this->$property;
+        if (!isset($aces[$field][$index])) {
+            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
+        }
+
+        $oldValue = $this->$property;
+        unset($aces[$field][$index]);
+        $aces[$field] = array_values($aces[$field]);
+        $this->onPropertyChanged($property, $oldValue, $this->$property);
+
+        for ($i = $index, $c = count($aces[$field]); $i < $c; ++$i) {
+            $this->onEntryPropertyChanged($aces[$field][$i], 'aceOrder', $i + 1, $i);
+        }
+    }
+
+    /**
+     * Inserts an ACE.
+     *
+     * @param string                    $property
+     * @param int                       $index
+     * @param int                       $mask
+     * @param SecurityIdentityInterface $sid
+     * @param bool                      $granting
+     * @param string                    $strategy
+     *
+     * @throws \OutOfBoundsException
+     * @throws \InvalidArgumentException
+     */
+    private function insertAce($property, $index, $mask, SecurityIdentityInterface $sid, $granting, $strategy = null)
+    {
+        if ($index < 0 || $index > count($this->$property)) {
+            throw new \OutOfBoundsException(sprintf('The index must be in the interval [0, %d].', count($this->$property)));
+        }
+
+        if (!is_int($mask)) {
+            throw new \InvalidArgumentException('$mask must be an integer.');
+        }
+
+        if (null === $strategy) {
+            if (true === $granting) {
+                $strategy = PermissionGrantingStrategy::ALL;
+            } else {
+                $strategy = PermissionGrantingStrategy::ANY;
+            }
+        }
+
+        $aces = &$this->$property;
+        $oldValue = $this->$property;
+        if (isset($aces[$index])) {
+            $this->$property = array_merge(
+                array_slice($this->$property, 0, $index),
+                array(true),
+                array_slice($this->$property, $index)
+            );
+
+            for ($i = $index, $c = count($this->$property) - 1; $i < $c; ++$i) {
+                $this->onEntryPropertyChanged($aces[$i + 1], 'aceOrder', $i, $i + 1);
+            }
+        }
+
+        $aces[$index] = new Entry(null, $this, $sid, $strategy, $mask, $granting, false, false);
+        $this->onPropertyChanged($property, $oldValue, $this->$property);
+    }
+
+    /**
+     * Inserts a field-based ACE.
+     *
+     * @param string                    $property
+     * @param int                       $index
+     * @param string                    $field
+     * @param int                       $mask
+     * @param SecurityIdentityInterface $sid
+     * @param bool                      $granting
+     * @param string                    $strategy
+     *
+     * @throws \InvalidArgumentException
+     * @throws \OutOfBoundsException
+     */
+    private function insertFieldAce($property, $index, $field, $mask, SecurityIdentityInterface $sid, $granting, $strategy = null)
+    {
+        if (0 === strlen($field)) {
+            throw new \InvalidArgumentException('$field cannot be empty.');
+        }
+
+        if (!is_int($mask)) {
+            throw new \InvalidArgumentException('$mask must be an integer.');
+        }
+
+        if (null === $strategy) {
+            if (true === $granting) {
+                $strategy = PermissionGrantingStrategy::ALL;
+            } else {
+                $strategy = PermissionGrantingStrategy::ANY;
+            }
+        }
+
+        $aces = &$this->$property;
+        if (!isset($aces[$field])) {
+            $aces[$field] = array();
+        }
+
+        if ($index < 0 || $index > count($aces[$field])) {
+            throw new \OutOfBoundsException(sprintf('The index must be in the interval [0, %d].', count($this->$property)));
+        }
+
+        $oldValue = $aces;
+        if (isset($aces[$field][$index])) {
+            $aces[$field] = array_merge(
+                array_slice($aces[$field], 0, $index),
+                array(true),
+                array_slice($aces[$field], $index)
+            );
+
+            for ($i = $index, $c = count($aces[$field]) - 1; $i < $c; ++$i) {
+                $this->onEntryPropertyChanged($aces[$field][$i + 1], 'aceOrder', $i, $i + 1);
+            }
+        }
+
+        $aces[$field][$index] = new FieldEntry(null, $this, $field, $sid, $strategy, $mask, $granting, false, false);
+        $this->onPropertyChanged($property, $oldValue, $this->$property);
+    }
+
+    /**
+     * Updates an ACE.
+     *
+     * @param string $property
+     * @param int    $index
+     * @param int    $mask
+     * @param string $strategy
+     *
+     * @throws \OutOfBoundsException
+     */
+    private function updateAce($property, $index, $mask, $strategy = null)
+    {
+        $aces = &$this->$property;
+        if (!isset($aces[$index])) {
+            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
+        }
+
+        $ace = $aces[$index];
+        if ($mask !== $oldMask = $ace->getMask()) {
+            $this->onEntryPropertyChanged($ace, 'mask', $oldMask, $mask);
+            $ace->setMask($mask);
+        }
+        if (null !== $strategy && $strategy !== $oldStrategy = $ace->getStrategy()) {
+            $this->onEntryPropertyChanged($ace, 'strategy', $oldStrategy, $strategy);
+            $ace->setStrategy($strategy);
+        }
+    }
+
+    /**
+     * Updates auditing for an ACE.
+     *
+     * @param array &$aces
+     * @param int   $index
+     * @param bool  $auditSuccess
+     * @param bool  $auditFailure
+     *
+     * @throws \OutOfBoundsException
+     */
+    private function updateAuditing(array &$aces, $index, $auditSuccess, $auditFailure)
+    {
+        if (!isset($aces[$index])) {
+            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
+        }
+
+        if ($auditSuccess !== $aces[$index]->isAuditSuccess()) {
+            $this->onEntryPropertyChanged($aces[$index], 'auditSuccess', !$auditSuccess, $auditSuccess);
+            $aces[$index]->setAuditSuccess($auditSuccess);
+        }
+
+        if ($auditFailure !== $aces[$index]->isAuditFailure()) {
+            $this->onEntryPropertyChanged($aces[$index], 'auditFailure', !$auditFailure, $auditFailure);
+            $aces[$index]->setAuditFailure($auditFailure);
+        }
+    }
+
+    /**
+     * Updates a field-based ACE.
+     *
+     * @param string $property
+     * @param int    $index
+     * @param string $field
+     * @param int    $mask
+     * @param string $strategy
+     *
+     * @throws \InvalidArgumentException
+     * @throws \OutOfBoundsException
+     */
+    private function updateFieldAce($property, $index, $field, $mask, $strategy = null)
+    {
+        if (0 === strlen($field)) {
+            throw new \InvalidArgumentException('$field cannot be empty.');
+        }
+
+        $aces = &$this->$property;
+        if (!isset($aces[$field][$index])) {
+            throw new \OutOfBoundsException(sprintf('The index "%d" does not exist.', $index));
+        }
+
+        $ace = $aces[$field][$index];
+        if ($mask !== $oldMask = $ace->getMask()) {
+            $this->onEntryPropertyChanged($ace, 'mask', $oldMask, $mask);
+            $ace->setMask($mask);
+        }
+        if (null !== $strategy && $strategy !== $oldStrategy = $ace->getStrategy()) {
+            $this->onEntryPropertyChanged($ace, 'strategy', $oldStrategy, $strategy);
+            $ace->setStrategy($strategy);
+        }
+    }
+
+    /**
+     * Called when a property of the ACL changes.
+     *
+     * @param string $name
+     * @param mixed  $oldValue
+     * @param mixed  $newValue
+     */
+    private function onPropertyChanged($name, $oldValue, $newValue)
+    {
+        foreach ($this->listeners as $listener) {
+            $listener->propertyChanged($this, $name, $oldValue, $newValue);
+        }
+    }
+
+    /**
+     * Called when a property of an ACE associated with this ACL changes.
+     *
+     * @param EntryInterface $entry
+     * @param string         $name
+     * @param mixed          $oldValue
+     * @param mixed          $newValue
+     */
+    private function onEntryPropertyChanged(EntryInterface $entry, $name, $oldValue, $newValue)
+    {
+        foreach ($this->listeners as $listener) {
+            $listener->propertyChanged($entry, $name, $oldValue, $newValue);
+        }
     }
 }

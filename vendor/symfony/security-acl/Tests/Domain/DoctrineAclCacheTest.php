@@ -31,15 +31,6 @@ class DoctrineAclCacheTest extends \PHPUnit_Framework_TestCase
         new DoctrineAclCache(new ArrayCache(), $this->getPermissionGrantingStrategy(), $empty);
     }
 
-    protected function getPermissionGrantingStrategy()
-    {
-        if (null === $this->permissionGrantingStrategy) {
-            $this->permissionGrantingStrategy = new PermissionGrantingStrategy();
-        }
-
-        return $this->permissionGrantingStrategy;
-    }
-
     public function getEmptyValue()
     {
         return array(
@@ -69,15 +60,6 @@ class DoctrineAclCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($aclWithParent->getParentAcl()->getId(), $cachedParentAcl->getId());
     }
 
-    protected function getCache($cacheDriver = null, $prefix = DoctrineAclCache::PREFIX)
-    {
-        if (null === $cacheDriver) {
-            $cacheDriver = new ArrayCache();
-        }
-
-        return new DoctrineAclCache($cacheDriver, $this->getPermissionGrantingStrategy(), $prefix);
-    }
-
     protected function getAcl($depth = 0)
     {
         static $id = 1;
@@ -97,5 +79,23 @@ class DoctrineAclCacheTest extends \PHPUnit_Framework_TestCase
         }
 
         return $acl;
+    }
+
+    protected function getPermissionGrantingStrategy()
+    {
+        if (null === $this->permissionGrantingStrategy) {
+            $this->permissionGrantingStrategy = new PermissionGrantingStrategy();
+        }
+
+        return $this->permissionGrantingStrategy;
+    }
+
+    protected function getCache($cacheDriver = null, $prefix = DoctrineAclCache::PREFIX)
+    {
+        if (null === $cacheDriver) {
+            $cacheDriver = new ArrayCache();
+        }
+
+        return new DoctrineAclCache($cacheDriver, $this->getPermissionGrantingStrategy(), $prefix);
     }
 }

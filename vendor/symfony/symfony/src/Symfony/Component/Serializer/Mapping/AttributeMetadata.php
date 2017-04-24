@@ -57,6 +57,16 @@ class AttributeMetadata implements AttributeMetadataInterface
     /**
      * {@inheritdoc}
      */
+    public function addGroup($group)
+    {
+        if (!in_array($group, $this->groups)) {
+            $this->groups[] = $group;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getGroups()
     {
         return $this->groups;
@@ -69,16 +79,6 @@ class AttributeMetadata implements AttributeMetadataInterface
     {
         foreach ($attributeMetadata->getGroups() as $group) {
             $this->addGroup($group);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addGroup($group)
-    {
-        if (!in_array($group, $this->groups)) {
-            $this->groups[] = $group;
         }
     }
 

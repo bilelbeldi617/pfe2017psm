@@ -20,6 +20,26 @@ use Symfony\Component\Validator\Validation;
  */
 class NotEqualToValidatorTest extends AbstractComparisonValidatorTestCase
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new NotEqualToValidator();
+    }
+
+    protected function createConstraint(array $options)
+    {
+        return new NotEqualTo($options);
+    }
+
+    protected function getErrorCode()
+    {
+        return NotEqualTo::IS_EQUAL_ERROR;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -48,27 +68,7 @@ class NotEqualToValidatorTest extends AbstractComparisonValidatorTestCase
             array(new \DateTime('2000-01-01'), 'Jan 1, 2000, 12:00 AM', new \DateTime('2000-01-01'), 'Jan 1, 2000, 12:00 AM', 'DateTime'),
             array(new \DateTime('2000-01-01'), 'Jan 1, 2000, 12:00 AM', '2000-01-01', 'Jan 1, 2000, 12:00 AM', 'DateTime'),
             array(new \DateTime('2000-01-01 UTC'), 'Jan 1, 2000, 12:00 AM', '2000-01-01 UTC', 'Jan 1, 2000, 12:00 AM', 'DateTime'),
-            array(new ComparisonTest_Class(5), '5', new ComparisonTest_Class(5), '5', __NAMESPACE__ . '\ComparisonTest_Class'),
+            array(new ComparisonTest_Class(5), '5', new ComparisonTest_Class(5), '5', __NAMESPACE__.'\ComparisonTest_Class'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new NotEqualToValidator();
-    }
-
-    protected function createConstraint(array $options)
-    {
-        return new NotEqualTo($options);
-    }
-
-    protected function getErrorCode()
-    {
-        return NotEqualTo::IS_EQUAL_ERROR;
     }
 }

@@ -47,7 +47,7 @@ class PropertyInfoPass implements CompilerPassInterface
     /**
      * Finds all services with the given tag name and order them by their priority.
      *
-     * @param string $tagName
+     * @param string           $tagName
      * @param ContainerBuilder $container
      *
      * @return array

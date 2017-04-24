@@ -82,14 +82,14 @@ class UuidValidator extends ConstraintValidator
         }
 
         if (!$constraint instanceof Uuid) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Uuid');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Uuid');
         }
 
         if (!is_scalar($value) && !(is_object($value) && method_exists($value, '__toString'))) {
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if ($constraint->strict) {
             $this->validateStrict($value, $constraint);
@@ -98,6 +98,105 @@ class UuidValidator extends ConstraintValidator
         }
 
         $this->validateLoose($value, $constraint);
+    }
+
+    private function validateLoose($value, Uuid $constraint)
+    {
+        // Error priority:
+        // 1. ERROR_INVALID_CHARACTERS
+        // 2. ERROR_INVALID_HYPHEN_PLACEMENT
+        // 3. ERROR_TOO_SHORT/ERROR_TOO_LONG
+
+        // Trim any wrapping characters like [] or {} used by some legacy systems
+        $trimmed = trim($value, '[]{}');
+
+        // Position of the next expected hyphen
+        $h = self::LOOSE_FIRST_HYPHEN_POSITION;
+
+        // Expected length
+        $l = self::LOOSE_MAX_LENGTH;
+
+        for ($i = 0; $i < $l; ++$i) {
+            // Check length
+            if (!isset($trimmed[$i])) {
+                if ($this->context instanceof ExecutionContextInterface) {
+                    $this->context->buildViolation($constraint->message)
+                        ->setParameter('{{ value }}', $this->formatValue($value))
+                        ->setCode(Uuid::TOO_SHORT_ERROR)
+                        ->addViolation();
+                } else {
+                    $this->buildViolation($constraint->message)
+                        ->setParameter('{{ value }}', $this->formatValue($value))
+                        ->setCode(Uuid::TOO_SHORT_ERROR)
+                        ->addViolation();
+                }
+
+                return;
+            }
+
+            // Hyphens must occur every fifth position
+            // xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx
+            //     ^    ^    ^    ^    ^    ^    ^
+            if ('-' === $trimmed[$i]) {
+                if ($i !== $h) {
+                    if ($this->context instanceof ExecutionContextInterface) {
+                        $this->context->buildViolation($constraint->message)
+                            ->setParameter('{{ value }}', $this->formatValue($value))
+                            ->setCode(Uuid::INVALID_HYPHEN_PLACEMENT_ERROR)
+                            ->addViolation();
+                    } else {
+                        $this->buildViolation($constraint->message)
+                            ->setParameter('{{ value }}', $this->formatValue($value))
+                            ->setCode(Uuid::INVALID_HYPHEN_PLACEMENT_ERROR)
+                            ->addViolation();
+                    }
+
+                    return;
+                }
+
+                $h += 5;
+
+                continue;
+            }
+
+            // Missing hyphens are ignored
+            if ($i === $h) {
+                $h += 4;
+                --$l;
+            }
+
+            // Check characters
+            if (!ctype_xdigit($trimmed[$i])) {
+                if ($this->context instanceof ExecutionContextInterface) {
+                    $this->context->buildViolation($constraint->message)
+                        ->setParameter('{{ value }}', $this->formatValue($value))
+                        ->setCode(Uuid::INVALID_CHARACTERS_ERROR)
+                        ->addViolation();
+                } else {
+                    $this->buildViolation($constraint->message)
+                        ->setParameter('{{ value }}', $this->formatValue($value))
+                        ->setCode(Uuid::INVALID_CHARACTERS_ERROR)
+                        ->addViolation();
+                }
+
+                return;
+            }
+        }
+
+        // Check length again
+        if (isset($trimmed[$i])) {
+            if ($this->context instanceof ExecutionContextInterface) {
+                $this->context->buildViolation($constraint->message)
+                    ->setParameter('{{ value }}', $this->formatValue($value))
+                    ->setCode(Uuid::TOO_LONG_ERROR)
+                    ->addViolation();
+            } else {
+                $this->buildViolation($constraint->message)
+                    ->setParameter('{{ value }}', $this->formatValue($value))
+                    ->setCode(Uuid::TOO_LONG_ERROR)
+                    ->addViolation();
+            }
+        }
     }
 
     private function validateStrict($value, Uuid $constraint)
@@ -238,105 +337,6 @@ class UuidValidator extends ConstraintValidator
                 $this->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $this->formatValue($value))
                     ->setCode(Uuid::INVALID_VARIANT_ERROR)
-                    ->addViolation();
-            }
-        }
-    }
-
-    private function validateLoose($value, Uuid $constraint)
-    {
-        // Error priority:
-        // 1. ERROR_INVALID_CHARACTERS
-        // 2. ERROR_INVALID_HYPHEN_PLACEMENT
-        // 3. ERROR_TOO_SHORT/ERROR_TOO_LONG
-
-        // Trim any wrapping characters like [] or {} used by some legacy systems
-        $trimmed = trim($value, '[]{}');
-
-        // Position of the next expected hyphen
-        $h = self::LOOSE_FIRST_HYPHEN_POSITION;
-
-        // Expected length
-        $l = self::LOOSE_MAX_LENGTH;
-
-        for ($i = 0; $i < $l; ++$i) {
-            // Check length
-            if (!isset($trimmed[$i])) {
-                if ($this->context instanceof ExecutionContextInterface) {
-                    $this->context->buildViolation($constraint->message)
-                        ->setParameter('{{ value }}', $this->formatValue($value))
-                        ->setCode(Uuid::TOO_SHORT_ERROR)
-                        ->addViolation();
-                } else {
-                    $this->buildViolation($constraint->message)
-                        ->setParameter('{{ value }}', $this->formatValue($value))
-                        ->setCode(Uuid::TOO_SHORT_ERROR)
-                        ->addViolation();
-                }
-
-                return;
-            }
-
-            // Hyphens must occur every fifth position
-            // xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx
-            //     ^    ^    ^    ^    ^    ^    ^
-            if ('-' === $trimmed[$i]) {
-                if ($i !== $h) {
-                    if ($this->context instanceof ExecutionContextInterface) {
-                        $this->context->buildViolation($constraint->message)
-                            ->setParameter('{{ value }}', $this->formatValue($value))
-                            ->setCode(Uuid::INVALID_HYPHEN_PLACEMENT_ERROR)
-                            ->addViolation();
-                    } else {
-                        $this->buildViolation($constraint->message)
-                            ->setParameter('{{ value }}', $this->formatValue($value))
-                            ->setCode(Uuid::INVALID_HYPHEN_PLACEMENT_ERROR)
-                            ->addViolation();
-                    }
-
-                    return;
-                }
-
-                $h += 5;
-
-                continue;
-            }
-
-            // Missing hyphens are ignored
-            if ($i === $h) {
-                $h += 4;
-                --$l;
-            }
-
-            // Check characters
-            if (!ctype_xdigit($trimmed[$i])) {
-                if ($this->context instanceof ExecutionContextInterface) {
-                    $this->context->buildViolation($constraint->message)
-                        ->setParameter('{{ value }}', $this->formatValue($value))
-                        ->setCode(Uuid::INVALID_CHARACTERS_ERROR)
-                        ->addViolation();
-                } else {
-                    $this->buildViolation($constraint->message)
-                        ->setParameter('{{ value }}', $this->formatValue($value))
-                        ->setCode(Uuid::INVALID_CHARACTERS_ERROR)
-                        ->addViolation();
-                }
-
-                return;
-            }
-        }
-
-        // Check length again
-        if (isset($trimmed[$i])) {
-            if ($this->context instanceof ExecutionContextInterface) {
-                $this->context->buildViolation($constraint->message)
-                    ->setParameter('{{ value }}', $this->formatValue($value))
-                    ->setCode(Uuid::TOO_LONG_ERROR)
-                    ->addViolation();
-            } else {
-                $this->buildViolation($constraint->message)
-                    ->setParameter('{{ value }}', $this->formatValue($value))
-                    ->setCode(Uuid::TOO_LONG_ERROR)
                     ->addViolation();
             }
         }

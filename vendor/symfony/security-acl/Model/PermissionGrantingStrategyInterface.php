@@ -22,9 +22,9 @@ interface PermissionGrantingStrategyInterface
      * Determines whether access to a domain object is to be granted.
      *
      * @param AclInterface $acl
-     * @param array $masks
-     * @param array $sids
-     * @param bool $administrativeMode
+     * @param array        $masks
+     * @param array        $sids
+     * @param bool         $administrativeMode
      *
      * @return bool
      */
@@ -34,10 +34,10 @@ interface PermissionGrantingStrategyInterface
      * Determines whether access to a domain object's field is to be granted.
      *
      * @param AclInterface $acl
-     * @param string $field
-     * @param array $masks
-     * @param array $sids
-     * @param bool $administrativeMode
+     * @param string       $field
+     * @param array        $masks
+     * @param array        $sids
+     * @param bool         $administrativeMode
      *
      * @return bool
      */

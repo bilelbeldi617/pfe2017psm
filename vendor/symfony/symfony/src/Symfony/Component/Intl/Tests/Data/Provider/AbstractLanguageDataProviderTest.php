@@ -822,6 +822,18 @@ abstract class AbstractLanguageDataProviderTest extends AbstractDataProviderTest
      */
     protected $dataProvider;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->dataProvider = new LanguageDataProvider(
+            $this->getDataDirectory().'/'.Intl::LANGUAGE_DIR,
+            $this->createEntryReader()
+        );
+    }
+
+    abstract protected function getDataDirectory();
+
     public function testGetLanguages()
     {
         $this->assertEquals(static::$languages, $this->dataProvider->getLanguages());
@@ -889,9 +901,7 @@ abstract class AbstractLanguageDataProviderTest extends AbstractDataProviderTest
     public function provideLanguagesWithAlpha3Equivalent()
     {
         return array_map(
-            function ($value) {
-                return array($value);
-            },
+            function ($value) { return array($value); },
             array_keys(static::$alpha2ToAlpha3)
         );
     }
@@ -907,9 +917,7 @@ abstract class AbstractLanguageDataProviderTest extends AbstractDataProviderTest
     public function provideLanguagesWithoutAlpha3Equivalent()
     {
         return array_map(
-            function ($value) {
-                return array($value);
-            },
+            function ($value) { return array($value); },
             array_diff(static::$languages, array_keys(static::$alpha2ToAlpha3))
         );
     }
@@ -922,16 +930,4 @@ abstract class AbstractLanguageDataProviderTest extends AbstractDataProviderTest
     {
         $this->dataProvider->getAlpha3Code($currency);
     }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->dataProvider = new LanguageDataProvider(
-            $this->getDataDirectory() . '/' . Intl::LANGUAGE_DIR,
-            $this->createEntryReader()
-        );
-    }
-
-    abstract protected function getDataDirectory();
 }

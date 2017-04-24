@@ -36,7 +36,7 @@ class UniqueEntityValidator extends ConstraintValidator
     }
 
     /**
-     * @param object $entity
+     * @param object     $entity
      * @param Constraint $constraint
      *
      * @throws UnexpectedTypeException
@@ -45,7 +45,7 @@ class UniqueEntityValidator extends ConstraintValidator
     public function validate($entity, Constraint $constraint)
     {
         if (!$constraint instanceof UniqueEntity) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\UniqueEntity');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UniqueEntity');
         }
 
         if (!is_array($constraint->fields) && !is_string($constraint->fields)) {
@@ -56,7 +56,7 @@ class UniqueEntityValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint->errorPath, 'string or null');
         }
 
-        $fields = (array)$constraint->fields;
+        $fields = (array) $constraint->fields;
 
         if (0 === count($fields)) {
             throw new ConstraintDefinitionException('At least one field has to be specified.');

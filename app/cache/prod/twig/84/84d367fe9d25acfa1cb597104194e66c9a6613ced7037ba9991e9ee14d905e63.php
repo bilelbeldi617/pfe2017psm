@@ -9,35 +9,8 @@ class __TwigTemplate_61c19c4289f02bb120f0a609f2b9fc3fd9af5b2ebe00e5b2438ec1cb26c
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "@Twig/Exception/traces_text.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(57 => 16, 51 => 15, 42 => 14, 38 => 13, 33 => 10, 26 => 5, 24 => 4, 19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "@Twig/Exception/traces_text.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\traces_text.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -85,5 +58,33 @@ class __TwigTemplate_61c19c4289f02bb120f0a609f2b9fc3fd9af5b2ebe00e5b2438ec1cb26c
     </div>
 </div>
 ";
+    }
+
+    public function getTemplateName()
+    {
+        return "@Twig/Exception/traces_text.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  57 => 16,  51 => 15,  42 => 14,  38 => 13,  33 => 10,  26 => 5,  24 => 4,  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "@Twig/Exception/traces_text.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\traces_text.html.twig");
     }
 }

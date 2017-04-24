@@ -39,10 +39,10 @@ class PropertyInfoExtractor implements PropertyInfoExtractorInterface
     private $accessExtractors;
 
     /**
-     * @param PropertyListExtractorInterface[] $listExtractors
-     * @param PropertyTypeExtractorInterface[] $typeExtractors
+     * @param PropertyListExtractorInterface[]        $listExtractors
+     * @param PropertyTypeExtractorInterface[]        $typeExtractors
      * @param PropertyDescriptionExtractorInterface[] $descriptionExtractors
-     * @param PropertyAccessExtractorInterface[] $accessExtractors
+     * @param PropertyAccessExtractorInterface[]      $accessExtractors
      */
     public function __construct(array $listExtractors = array(), array $typeExtractors = array(), array $descriptionExtractors = array(), array $accessExtractors = array())
     {
@@ -58,25 +58,6 @@ class PropertyInfoExtractor implements PropertyInfoExtractorInterface
     public function getProperties($class, array $context = array())
     {
         return $this->extract($this->listExtractors, 'getProperties', array($class, $context));
-    }
-
-    /**
-     * Iterates over registered extractors and return the first value found.
-     *
-     * @param array $extractors
-     * @param string $method
-     * @param array $arguments
-     *
-     * @return mixed
-     */
-    private function extract(array $extractors, $method, array $arguments)
-    {
-        foreach ($extractors as $extractor) {
-            $value = call_user_func_array(array($extractor, $method), $arguments);
-            if (null !== $value) {
-                return $value;
-            }
-        }
     }
 
     /**
@@ -117,5 +98,24 @@ class PropertyInfoExtractor implements PropertyInfoExtractorInterface
     public function isWritable($class, $property, array $context = array())
     {
         return $this->extract($this->accessExtractors, 'isWritable', array($class, $property, $context));
+    }
+
+    /**
+     * Iterates over registered extractors and return the first value found.
+     *
+     * @param array  $extractors
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    private function extract(array $extractors, $method, array $arguments)
+    {
+        foreach ($extractors as $extractor) {
+            $value = call_user_func_array(array($extractor, $method), $arguments);
+            if (null !== $value) {
+                return $value;
+            }
+        }
     }
 }

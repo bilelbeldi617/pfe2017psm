@@ -10,13 +10,13 @@
          syntaxCheck="false"
          bootstrap="tests/bootstrap.php"
 >
-
+         
     <testsuites>
         <testsuite name="JMS Serializer Test Suite">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
-
+    
     <groups>
         <exclude>
             <group>performance</group>

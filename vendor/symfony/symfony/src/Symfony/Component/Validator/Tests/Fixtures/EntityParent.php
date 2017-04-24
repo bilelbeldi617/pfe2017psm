@@ -16,12 +16,13 @@ use Symfony\Component\Validator\Constraints\NotNull;
 class EntityParent implements EntityInterfaceA
 {
     protected $firstName;
+    private $internal;
+    private $data = 'Data';
+
     /**
      * @NotNull
      */
     protected $other;
-    private $internal;
-    private $data = 'Data';
 
     public function getData()
     {

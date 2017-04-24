@@ -45,9 +45,9 @@ class ExceptionController
      * the exception page (when true). If it is not present, the "debug" value passed into the constructor will
      * be used.
      *
-     * @param Request $request The request
-     * @param FlattenException $exception A FlattenException instance
-     * @param DebugLoggerInterface $logger A DebugLoggerInterface instance
+     * @param Request              $request   The request
+     * @param FlattenException     $exception A FlattenException instance
+     * @param DebugLoggerInterface $logger    A DebugLoggerInterface instance
      *
      * @return Response
      *
@@ -61,7 +61,7 @@ class ExceptionController
         $code = $exception->getStatusCode();
 
         return new Response($this->twig->render(
-            (string)$this->findTemplate($request, $request->getRequestFormat(), $code, $showException),
+            (string) $this->findTemplate($request, $request->getRequestFormat(), $code, $showException),
             array(
                 'status_code' => $code,
                 'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
@@ -90,9 +90,9 @@ class ExceptionController
 
     /**
      * @param Request $request
-     * @param string $format
-     * @param int $code An HTTP response status code
-     * @param bool $showException
+     * @param string  $format
+     * @param int     $code          An HTTP response status code
+     * @param bool    $showException
      *
      * @return string
      */
@@ -126,7 +126,7 @@ class ExceptionController
     // to be removed when the minimum required version of Twig is >= 3.0
     protected function templateExists($template)
     {
-        $template = (string)$template;
+        $template = (string) $template;
 
         $loader = $this->twig->getLoader();
         if ($loader instanceof \Twig_ExistsLoaderInterface || method_exists($loader, 'exists')) {

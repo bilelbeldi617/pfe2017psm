@@ -39,21 +39,11 @@ class Grade
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get nomGrade
-     *
-     * @return string
-     */
-    public function getNomGrade()
-    {
-        return $this->nomGrade;
     }
 
     /**
@@ -70,13 +60,13 @@ class Grade
     }
 
     /**
-     * Get salaireGrade
+     * Get nomGrade
      *
-     * @return integer
+     * @return string 
      */
-    public function getSalaireGrade()
+    public function getNomGrade()
     {
-        return $this->salaireGrade;
+        return $this->nomGrade;
     }
 
     /**
@@ -90,5 +80,15 @@ class Grade
         $this->salaireGrade = $salaireGrade;
 
         return $this;
+    }
+
+    /**
+     * Get salaireGrade
+     *
+     * @return integer 
+     */
+    public function getSalaireGrade()
+    {
+        return $this->salaireGrade;
     }
 }

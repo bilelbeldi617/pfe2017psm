@@ -30,7 +30,7 @@ class StatsCommandTest extends CommandTestCase
         parent::setUp();
 
         $this->command = new StatsCommand();
-        $this->tester = $this->getTester($this->command);
+        $this->tester  = $this->getTester($this->command);
     }
 
     /**

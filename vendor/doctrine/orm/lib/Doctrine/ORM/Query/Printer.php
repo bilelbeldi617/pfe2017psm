@@ -70,20 +70,6 @@ class Printer
     }
 
     /**
-     * Prints text indented with spaces depending on current indentation level.
-     *
-     * @param string $str The text.
-     *
-     * @return void
-     */
-    public function println($str)
-    {
-        if (!$this->_silent) {
-            echo str_repeat('    ', $this->_indent), $str, "\n";
-        }
-    }
-
-    /**
      * Decreases indentation level by one and prints a closing parenthesis.
      *
      * This method is called after executing a production.
@@ -94,5 +80,19 @@ class Printer
     {
         $this->_indent--;
         $this->println(')');
+    }
+
+    /**
+     * Prints text indented with spaces depending on current indentation level.
+     *
+     * @param string $str The text.
+     *
+     * @return void
+     */
+    public function println($str)
+    {
+        if ( ! $this->_silent) {
+            echo str_repeat('    ', $this->_indent), $str, "\n";
+        }
     }
 }

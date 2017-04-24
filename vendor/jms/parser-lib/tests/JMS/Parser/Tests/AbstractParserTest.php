@@ -32,7 +32,7 @@ class AbstractParserTest extends \PHPUnit_Framework_TestCase
         $this->lexer = $lexer = new \JMS\Parser\SimpleLexer(
             '/([0-9]+)|\s+|(.)/',
             array(0 => 'T_UNKNOWN', 1 => 'T_INT', 100 => 'T_PLUS', 101 => 'T_MINUS'),
-            function ($value) {
+            function($value) {
                 if ('+' === $value) {
                     return array(AbstractParserTest::T_PLUS, $value);
                 }
@@ -43,7 +43,7 @@ class AbstractParserTest extends \PHPUnit_Framework_TestCase
                 // We would loose information on doubles here, but for this test it
                 // does not matter anyway.
                 if (is_numeric($value)) {
-                    return array(AbstractParserTest::T_INT, (integer)$value);
+                    return array(AbstractParserTest::T_INT, (integer) $value);
                 }
 
                 return AbstractParserTest::T_UNKNOWN;
@@ -51,10 +51,10 @@ class AbstractParserTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->parser = $parser = $this->getMockBuilder('JMS\Parser\AbstractParser')
-            ->setConstructorArgs(array($this->lexer))
-            ->getMockForAbstractClass();
+                            ->setConstructorArgs(array($this->lexer))
+                            ->getMockForAbstractClass();
 
-        $match = function ($type) use ($parser) {
+        $match = function($type) use ($parser) {
             $ref = new \ReflectionMethod($parser, 'match');
             $ref->setAccessible(true);
 
@@ -62,26 +62,26 @@ class AbstractParserTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->parser->expects($this->any())
-            ->method('parseInternal')
-            ->will($this->returnCallback(function () use ($lexer, $match) {
-                // Result :== Number ( ("+"|"-") Number )*
+                ->method('parseInternal')
+                ->will($this->returnCallback(function() use ($lexer, $match) {
+                    // Result :== Number ( ("+"|"-") Number )*
 
-                $result = $match(AbstractParserTest::T_INT);
-                while ($lexer->isNextAny(array(AbstractParserTest::T_PLUS, AbstractParserTest::T_MINUS))) {
-                    if ($lexer->isNext(AbstractParserTest::T_PLUS)) {
-                        $lexer->moveNext();
+                    $result = $match(AbstractParserTest::T_INT);
+                    while ($lexer->isNextAny(array(AbstractParserTest::T_PLUS, AbstractParserTest::T_MINUS))) {
+                        if ($lexer->isNext(AbstractParserTest::T_PLUS)) {
+                            $lexer->moveNext();
 
-                        $result += $match(AbstractParserTest::T_INT);
-                    } else if ($lexer->isNext(AbstractParserTest::T_MINUS)) {
-                        $lexer->moveNext();
+                            $result += $match(AbstractParserTest::T_INT);
+                        } else if ($lexer->isNext(AbstractParserTest::T_MINUS)) {
+                            $lexer->moveNext();
 
-                        $result -= $match(AbstractParserTest::T_INT);
-                    } else {
-                        throw new \LogicException('Previous ifs were exhaustive.');
+                            $result -= $match(AbstractParserTest::T_INT);
+                        } else {
+                            throw new \LogicException('Previous ifs were exhaustive.');
+                        }
                     }
-                }
 
-                return $result;
-            }));
+                    return $result;
+                }));
     }
 }

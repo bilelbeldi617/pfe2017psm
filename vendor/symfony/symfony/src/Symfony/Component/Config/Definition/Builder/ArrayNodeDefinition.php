@@ -58,6 +58,16 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     }
 
     /**
+     * Returns a builder to add children nodes.
+     *
+     * @return NodeBuilder
+     */
+    public function children()
+    {
+        return $this->getNodeBuilder();
+    }
+
+    /**
      * Sets a prototype for child nodes.
      *
      * @param string $type the type of node
@@ -70,17 +80,19 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     }
 
     /**
-     * Returns a node builder to be used to add children and prototype.
+     * Adds the default value if the node is not set in the configuration.
      *
-     * @return NodeBuilder The node builder
+     * This method is applicable to concrete nodes only (not to prototype nodes).
+     * If this function has been called and the node is not set during the finalization
+     * phase, it's default value will be derived from its children default values.
+     *
+     * @return $this
      */
-    protected function getNodeBuilder()
+    public function addDefaultsIfNotSet()
     {
-        if (null === $this->nodeBuilder) {
-            $this->nodeBuilder = new NodeBuilder();
-        }
+        $this->addDefaults = true;
 
-        return $this->nodeBuilder->setParent($this);
+        return $this;
     }
 
     /**
@@ -131,7 +143,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
      * Sets a normalization rule for XML configurations.
      *
      * @param string $singular The key to remap
-     * @param string $plural The plural of the key for irregular plurals
+     * @param string $plural   The plural of the key for irregular plurals
      *
      * @return $this
      */
@@ -165,8 +177,8 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
      *
      * This method is applicable to prototype nodes only.
      *
-     * @param string $name The name of the key
-     * @param bool $removeKeyItem Whether or not the key item should be removed
+     * @param string $name          The name of the key
+     * @param bool   $removeKeyItem Whether or not the key item should be removed
      *
      * @return $this
      */
@@ -215,42 +227,17 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             ->treatTrueLike(array('enabled' => true))
             ->treatNullLike(array('enabled' => true))
             ->beforeNormalization()
-            ->ifArray()
-            ->then(function ($v) {
-                $v['enabled'] = isset($v['enabled']) ? $v['enabled'] : true;
+                ->ifArray()
+                ->then(function ($v) {
+                    $v['enabled'] = isset($v['enabled']) ? $v['enabled'] : true;
 
-                return $v;
-            })
+                    return $v;
+                })
             ->end()
             ->children()
-            ->booleanNode('enabled')
-            ->defaultFalse();
-
-        return $this;
-    }
-
-    /**
-     * Returns a builder to add children nodes.
-     *
-     * @return NodeBuilder
-     */
-    public function children()
-    {
-        return $this->getNodeBuilder();
-    }
-
-    /**
-     * Adds the default value if the node is not set in the configuration.
-     *
-     * This method is applicable to concrete nodes only (not to prototype nodes).
-     * If this function has been called and the node is not set during the finalization
-     * phase, it's default value will be derived from its children default values.
-     *
-     * @return $this
-     */
-    public function addDefaultsIfNotSet()
-    {
-        $this->addDefaults = true;
+                ->booleanNode('enabled')
+                    ->defaultFalse()
+        ;
 
         return $this;
     }
@@ -270,8 +257,9 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             ->treatTrueLike(array('enabled' => true))
             ->treatNullLike(array('enabled' => true))
             ->children()
-            ->booleanNode('enabled')
-            ->defaultTrue();
+                ->booleanNode('enabled')
+                    ->defaultTrue()
+        ;
 
         return $this;
     }
@@ -318,7 +306,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
      */
     public function normalizeKeys($bool)
     {
-        $this->normalizeKeys = (bool)$bool;
+        $this->normalizeKeys = (bool) $bool;
 
         return $this;
     }
@@ -343,6 +331,20 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
         $this->children[$node->name] = $node->setParent($this);
 
         return $this;
+    }
+
+    /**
+     * Returns a node builder to be used to add children and prototype.
+     *
+     * @return NodeBuilder The node builder
+     */
+    protected function getNodeBuilder()
+    {
+        if (null === $this->nodeBuilder) {
+            $this->nodeBuilder = new NodeBuilder();
+        }
+
+        return $this->nodeBuilder->setParent($this);
     }
 
     /**

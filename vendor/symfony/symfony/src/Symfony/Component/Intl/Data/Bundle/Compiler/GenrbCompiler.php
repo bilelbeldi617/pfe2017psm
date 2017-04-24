@@ -30,7 +30,7 @@ class GenrbCompiler implements BundleCompilerInterface
     /**
      * Creates a new compiler based on the "genrb" executable.
      *
-     * @param string $genrb Optional. The path to the "genrb" executable
+     * @param string $genrb   Optional. The path to the "genrb" executable
      * @param string $envVars Optional. Environment variables to be loaded when
      *                        running "genrb".
      *
@@ -38,7 +38,7 @@ class GenrbCompiler implements BundleCompilerInterface
      */
     public function __construct($genrb = 'genrb', $envVars = '')
     {
-        exec('which ' . $genrb, $output, $status);
+        exec('which '.$genrb, $output, $status);
 
         if (0 !== $status) {
             throw new RuntimeException(sprintf(
@@ -47,7 +47,7 @@ class GenrbCompiler implements BundleCompilerInterface
             ));
         }
 
-        $this->genrb = ($envVars ? $envVars . ' ' : '') . $genrb;
+        $this->genrb = ($envVars ? $envVars.' ' : '').$genrb;
     }
 
     /**
@@ -59,7 +59,7 @@ class GenrbCompiler implements BundleCompilerInterface
             $sourcePath .= '/*.txt';
         }
 
-        exec($this->genrb . ' --quiet -e UTF-8 -d ' . $targetDir . ' ' . $sourcePath, $output, $status);
+        exec($this->genrb.' --quiet -e UTF-8 -d '.$targetDir.' '.$sourcePath, $output, $status);
 
         if ($status !== 0) {
             throw new RuntimeException(sprintf(

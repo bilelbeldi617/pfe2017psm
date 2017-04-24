@@ -49,6 +49,16 @@ class AppVariable
         $this->requestStack = $requestStack;
     }
 
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+    }
+
+    public function setDebug($debug)
+    {
+        $this->debug = (bool) $debug;
+    }
+
     /**
      * Returns the security context service.
      *
@@ -99,22 +109,6 @@ class AppVariable
     }
 
     /**
-     * Returns the current session.
-     *
-     * @return Session|null The session
-     */
-    public function getSession()
-    {
-        if (null === $this->requestStack && null === $this->container) {
-            throw new \RuntimeException('The "app.session" variable is not available.');
-        }
-
-        if ($request = $this->getRequest()) {
-            return $request->getSession();
-        }
-    }
-
-    /**
      * Returns the current request.
      *
      * @return Request|null The HTTP request object
@@ -133,6 +127,22 @@ class AppVariable
     }
 
     /**
+     * Returns the current session.
+     *
+     * @return Session|null The session
+     */
+    public function getSession()
+    {
+        if (null === $this->requestStack && null === $this->container) {
+            throw new \RuntimeException('The "app.session" variable is not available.');
+        }
+
+        if ($request = $this->getRequest()) {
+            return $request->getSession();
+        }
+    }
+
+    /**
      * Returns the current app environment.
      *
      * @return string The current environment string (e.g 'dev')
@@ -144,11 +154,6 @@ class AppVariable
         }
 
         return $this->environment;
-    }
-
-    public function setEnvironment($environment)
-    {
-        $this->environment = $environment;
     }
 
     /**
@@ -163,10 +168,5 @@ class AppVariable
         }
 
         return $this->debug;
-    }
-
-    public function setDebug($debug)
-    {
-        $this->debug = (bool)$debug;
     }
 }

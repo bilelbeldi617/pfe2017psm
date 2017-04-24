@@ -28,17 +28,17 @@ if (!class_exists('Symfony\Component\Form\Tests\Extension\Core\ChoiceList\Abstra
  */
 abstract class AbstractEntityChoiceListSingleAssociationToIntIdTest extends AbstractEntityChoiceListTest
 {
+    protected function getEntityClass()
+    {
+        return 'Symfony\Bridge\Doctrine\Tests\Fixtures\SingleAssociationToIntIdEntity';
+    }
+
     protected function getClassesMetadata()
     {
         return array(
             $this->em->getClassMetadata($this->getEntityClass()),
             $this->em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdNoToStringEntity'),
         );
-    }
-
-    protected function getEntityClass()
-    {
-        return 'Symfony\Bridge\Doctrine\Tests\Fixtures\SingleAssociationToIntIdEntity';
     }
 
     protected function createChoiceList()

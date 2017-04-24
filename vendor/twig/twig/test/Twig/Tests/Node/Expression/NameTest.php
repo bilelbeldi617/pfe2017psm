@@ -35,7 +35,7 @@ class Twig_Tests_Node_Expression_NameTest extends Twig_Test_NodeTestCase
         }
 
         return array(
-            array($node, "// line 1\n" . $output, $env),
+            array($node, "// line 1\n".$output, $env),
             array($node, $this->getVariableGetter('foo', 1), $env1),
             array($context, "// line 1\n\$context"),
         );

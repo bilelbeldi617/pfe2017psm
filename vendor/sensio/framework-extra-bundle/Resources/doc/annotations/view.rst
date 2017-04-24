@@ -36,7 +36,7 @@ array of parameters to pass to the view instead of a ``Response`` object.
 
 
 .. tip::
-If the action returns a ``Response`` object, the ``@Template``
+   If the action returns a ``Response`` object, the ``@Template`` 
    annotation is simply ignored.
 
 If the template is named after the controller and action names, which is the
@@ -69,7 +69,7 @@ case for the above example, you can even omit the annotation value::
 And if the only parameters to pass to the template are method arguments, you
 can use the ``vars`` attribute instead of returning an array. This is very
 useful in combination with the ``@ParamConverter`` :doc:`annotation
-    <converters>`::
+<converters>`::
 
     /**
      * @ParamConverter("post", class="SensioBlogBundle:Post")

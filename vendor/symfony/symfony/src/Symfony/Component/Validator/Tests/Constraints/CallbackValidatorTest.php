@@ -29,16 +29,16 @@ class CallbackValidatorTest_Class
 
 class CallbackValidatorTest_Object
 {
-    public static function validateStatic($object, ExecutionContextInterface $context)
+    public function validate(ExecutionContextInterface $context)
     {
-        $context->addViolation('Static message', array('{{ value }}' => 'baz'));
+        $context->addViolation('My message', array('{{ value }}' => 'foobar'));
 
         return false;
     }
 
-    public function validate(ExecutionContextInterface $context)
+    public static function validateStatic($object, ExecutionContextInterface $context)
     {
-        $context->addViolation('My message', array('{{ value }}' => 'foobar'));
+        $context->addViolation('Static message', array('{{ value }}' => 'baz'));
 
         return false;
     }
@@ -46,6 +46,16 @@ class CallbackValidatorTest_Object
 
 class CallbackValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new CallbackValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Callback());
@@ -141,7 +151,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     public function testArrayCallable()
     {
         $object = new CallbackValidatorTest_Object();
-        $constraint = new Callback(array(__CLASS__ . '_Class', 'validateCallback'));
+        $constraint = new Callback(array(__CLASS__.'_Class', 'validateCallback'));
 
         $this->validator->validate($object, $constraint);
 
@@ -152,7 +162,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
 
     public function testArrayCallableNullObject()
     {
-        $constraint = new Callback(array(__CLASS__ . '_Class', 'validateCallback'));
+        $constraint = new Callback(array(__CLASS__.'_Class', 'validateCallback'));
 
         $this->validator->validate(null, $constraint);
 
@@ -165,7 +175,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     {
         $object = new CallbackValidatorTest_Object();
         $constraint = new Callback(array(
-            'callback' => array(__CLASS__ . '_Class', 'validateCallback'),
+            'callback' => array(__CLASS__.'_Class', 'validateCallback'),
         ));
 
         $this->validator->validate($object, $constraint);
@@ -248,7 +258,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     {
         $object = new CallbackValidatorTest_Object();
         $constraint = new Callback(array(
-            array(__CLASS__ . '_Class', 'validateCallback'),
+            array(__CLASS__.'_Class', 'validateCallback'),
         ));
 
         $this->validator->validate($object, $constraint);
@@ -265,7 +275,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     {
         $object = new CallbackValidatorTest_Object();
         $constraint = new Callback(array(
-            'methods' => array(array(__CLASS__ . '_Class', 'validateCallback')),
+            'methods' => array(array(__CLASS__.'_Class', 'validateCallback')),
         ));
 
         $this->validator->validate($object, $constraint);
@@ -317,6 +327,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
         $this->assertEquals($targets, $constraint->getTargets());
     }
 
+    // Should succeed. Needed when defining constraints as annotations.
     public function testNoConstructorArguments()
     {
         new Callback();
@@ -329,22 +340,10 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
         $this->assertEquals(new Callback('validateStatic'), $constraint);
     }
 
-    // Should succeed. Needed when defining constraints as annotations.
-
     public function testAnnotationInvocationMultiValued()
     {
-        $constraint = new Callback(array('value' => array(__CLASS__ . '_Class', 'validateCallback')));
+        $constraint = new Callback(array('value' => array(__CLASS__.'_Class', 'validateCallback')));
 
-        $this->assertEquals(new Callback(array(__CLASS__ . '_Class', 'validateCallback')), $constraint);
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new CallbackValidator();
+        $this->assertEquals(new Callback(array(__CLASS__.'_Class', 'validateCallback')), $constraint);
     }
 }

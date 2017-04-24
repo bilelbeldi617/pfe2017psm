@@ -27,7 +27,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 /**
  * "TRIM" "(" [["LEADING" | "TRAILING" | "BOTH"] [char] "FROM"] StringPrimary ")"
  *
- *
+ * 
  * @link    www.doctrine-project.org
  * @since   2.0
  * @author  Guilherme Blanco <guilhermeblanco@hotmail.com>
@@ -67,36 +67,14 @@ class TrimFunction extends FunctionNode
      */
     public function getSql(SqlWalker $sqlWalker)
     {
-        $stringPrimary = $sqlWalker->walkStringPrimary($this->stringPrimary);
-        $platform = $sqlWalker->getConnection()->getDatabasePlatform();
-        $trimMode = $this->getTrimMode();
-        $trimChar = ($this->trimChar !== false)
+        $stringPrimary  = $sqlWalker->walkStringPrimary($this->stringPrimary);
+        $platform       = $sqlWalker->getConnection()->getDatabasePlatform();
+        $trimMode       = $this->getTrimMode();
+        $trimChar       = ($this->trimChar !== false)
             ? $sqlWalker->getConnection()->quote($this->trimChar)
             : false;
 
         return $platform->getTrimExpression($stringPrimary, $trimMode, $trimChar);
-    }
-
-    /**
-     * @param \Doctrine\ORM\Query\Parser $parser
-     *
-     * @return integer
-     */
-    private function getTrimMode()
-    {
-        if ($this->leading) {
-            return AbstractPlatform::TRIM_LEADING;
-        }
-
-        if ($this->trailing) {
-            return AbstractPlatform::TRIM_TRAILING;
-        }
-
-        if ($this->both) {
-            return AbstractPlatform::TRIM_BOTH;
-        }
-
-        return AbstractPlatform::TRIM_UNSPECIFIED;
     }
 
     /**
@@ -124,6 +102,28 @@ class TrimFunction extends FunctionNode
         $this->stringPrimary = $parser->StringPrimary();
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
+    }
+
+    /**
+     * @param \Doctrine\ORM\Query\Parser $parser
+     *
+     * @return integer
+     */
+    private function getTrimMode()
+    {
+        if ($this->leading) {
+            return AbstractPlatform::TRIM_LEADING;
+        }
+
+        if ($this->trailing) {
+            return AbstractPlatform::TRIM_TRAILING;
+        }
+
+        if ($this->both) {
+            return AbstractPlatform::TRIM_BOTH;
+        }
+
+        return AbstractPlatform::TRIM_UNSPECIFIED;
     }
 
     /**

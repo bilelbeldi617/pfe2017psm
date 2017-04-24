@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Validator;
 
-@trigger_error('The ' . __NAMESPACE__ . '\Validator class is deprecated since version 2.5 and will be removed in 3.0. Use the Symfony\Component\Validator\Validator\RecursiveValidator class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\Validator class is deprecated since version 2.5 and will be removed in 3.0. Use the Symfony\Component\Validator\Validator\RecursiveValidator class instead.', E_USER_DEPRECATED);
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -59,8 +59,7 @@ class Validator implements ValidatorInterface, Mapping\Factory\MetadataFactoryIn
         TranslatorInterface $translator,
         $translationDomain = 'validators',
         array $objectInitializers = array()
-    )
-    {
+    ) {
         $this->metadataFactory = $metadataFactory;
         $this->validatorFactory = $validatorFactory;
         $this->translator = $translator;
@@ -107,33 +106,6 @@ class Validator implements ValidatorInterface, Mapping\Factory\MetadataFactoryIn
     }
 
     /**
-     * @param mixed $root
-     *
-     * @return ValidationVisitor
-     */
-    private function createVisitor($root)
-    {
-        return new ValidationVisitor(
-            $root,
-            $this->metadataFactory,
-            $this->validatorFactory,
-            $this->translator,
-            $this->translationDomain,
-            $this->objectInitializers
-        );
-    }
-
-    /**
-     * @param null|string|string[] $groups
-     *
-     * @return string[]
-     */
-    private function resolveGroups($groups)
-    {
-        return $groups ? (array)$groups : array(Constraint::DEFAULT_GROUP);
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @throws ValidatorException If the metadata for the value does not support properties.
@@ -145,8 +117,8 @@ class Validator implements ValidatorInterface, Mapping\Factory\MetadataFactoryIn
 
         if (!$metadata instanceof PropertyMetadataContainerInterface) {
             $valueAsString = is_scalar($containingValue)
-                ? '"' . $containingValue . '"'
-                : 'the value of type ' . gettype($containingValue);
+                ? '"'.$containingValue.'"'
+                : 'the value of type '.gettype($containingValue);
 
             throw new ValidatorException(sprintf('The metadata for %s does not support properties.', $valueAsString));
         }
@@ -176,10 +148,10 @@ class Validator implements ValidatorInterface, Mapping\Factory\MetadataFactoryIn
 
         if (!$metadata instanceof PropertyMetadataContainerInterface) {
             $valueAsString = is_scalar($containingValue)
-                ? '"' . $containingValue . '"'
-                : 'the value of type ' . gettype($containingValue);
+                ? '"'.$containingValue.'"'
+                : 'the value of type '.gettype($containingValue);
 
-            throw new ValidatorException(sprintf('The metadata for ' . $valueAsString . ' does not support properties.'));
+            throw new ValidatorException(sprintf('The metadata for '.$valueAsString.' does not support properties.'));
         }
 
         // If $containingValue is passed as class name, take $value as root
@@ -234,5 +206,32 @@ class Validator implements ValidatorInterface, Mapping\Factory\MetadataFactoryIn
         }
 
         return $context->getViolations();
+    }
+
+    /**
+     * @param mixed $root
+     *
+     * @return ValidationVisitor
+     */
+    private function createVisitor($root)
+    {
+        return new ValidationVisitor(
+            $root,
+            $this->metadataFactory,
+            $this->validatorFactory,
+            $this->translator,
+            $this->translationDomain,
+            $this->objectInitializers
+        );
+    }
+
+    /**
+     * @param null|string|string[] $groups
+     *
+     * @return string[]
+     */
+    private function resolveGroups($groups)
+    {
+        return $groups ? (array) $groups : array(Constraint::DEFAULT_GROUP);
     }
 }

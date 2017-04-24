@@ -42,14 +42,6 @@ class ClassMetadataCollection
     }
 
     /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
      * @param string $path
      */
     public function setPath($path)
@@ -60,9 +52,9 @@ class ClassMetadataCollection
     /**
      * @return string
      */
-    public function getNamespace()
+    public function getPath()
     {
-        return $this->namespace;
+        return $this->path;
     }
 
     /**
@@ -71,5 +63,13 @@ class ClassMetadataCollection
     public function setNamespace($namespace)
     {
         $this->namespace = $namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->namespace;
     }
 }

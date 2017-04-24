@@ -23,8 +23,8 @@ interface UserPasswordEncoderInterface
     /**
      * Encodes the plain password.
      *
-     * @param UserInterface $user The user
-     * @param string $plainPassword The password to encode
+     * @param UserInterface $user          The user
+     * @param string        $plainPassword The password to encode
      *
      * @return string The encoded password
      */
@@ -32,7 +32,7 @@ interface UserPasswordEncoderInterface
 
     /**
      * @param UserInterface $user The user
-     * @param string $raw A raw password
+     * @param string        $raw  A raw password
      *
      * @return bool true if the password is valid, false otherwise
      */

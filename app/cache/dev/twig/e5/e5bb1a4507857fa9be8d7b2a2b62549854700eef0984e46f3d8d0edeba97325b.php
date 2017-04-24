@@ -9,18 +9,49 @@ class __TwigTemplate_8ed48b245a825a426543a53b05c62597f7031d64c89d186b87722102382
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_63b0c395ac800ead443a4b76928e96d6d5c4f9eb5f44f359638c6beba1c3fb7c = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_63b0c395ac800ead443a4b76928e96d6d5c4f9eb5f44f359638c6beba1c3fb7c->enter($__internal_63b0c395ac800ead443a4b76928e96d6d5c4f9eb5f44f359638c6beba1c3fb7c_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Framework/Form/choice_widget_options.html.php"));
+
+        // line 1
+        echo "<?php use Symfony\\Component\\Form\\ChoiceList\\View\\ChoiceGroupView;
+
+\$translatorHelper = \$view['translator']; // outside of the loop for performance reasons! ?>
+<?php \$formHelper = \$view['form']; ?>
+<?php foreach (\$choices as \$group_label => \$choice): ?>
+    <?php if (is_array(\$choice) || \$choice instanceof ChoiceGroupView): ?>
+        <optgroup label=\"<?php echo \$view->escape(false !== \$choice_translation_domain ? \$translatorHelper->trans(\$group_label, array(), \$choice_translation_domain) : \$group_label) ?>\">
+            <?php echo \$formHelper->block(\$form, 'choice_widget_options', array('choices' => \$choice)) ?>
+        </optgroup>
+    <?php else: ?>
+        <option value=\"<?php echo \$view->escape(\$choice->value) ?>\" <?php echo \$formHelper->block(\$form, 'choice_attributes', array('choice_attr' => \$choice->attr)) ?><?php if (\$is_selected(\$choice->value, \$value)): ?> selected=\"selected\"<?php endif?>><?php echo \$view->escape(false !== \$choice_translation_domain ? \$translatorHelper->trans(\$choice->label, array(), \$choice_translation_domain) : \$choice->label) ?></option>
+    <?php endif ?>
+<?php endforeach ?>
+";
+        
+        $__internal_63b0c395ac800ead443a4b76928e96d6d5c4f9eb5f44f359638c6beba1c3fb7c->leave($__internal_63b0c395ac800ead443a4b76928e96d6d5c4f9eb5f44f359638c6beba1c3fb7c_prof);
+
+    }
+
+    public function getTemplateName()
+    {
+        return "@Framework/Form/choice_widget_options.html.php";
     }
 
     public function getDebugInfo()
     {
-        return array(22 => 1,);
+        return array (  22 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -41,35 +72,5 @@ class __TwigTemplate_8ed48b245a825a426543a53b05c62597f7031d64c89d186b87722102382
     <?php endif ?>
 <?php endforeach ?>
 ", "@Framework/Form/choice_widget_options.html.php", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\FrameworkBundle\\Resources\\views\\Form\\choice_widget_options.html.php");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_3f3cfe51d02242c4e218c8c995047bb1b7d8b5bdd96758a549d471e02b8e5b11 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_3f3cfe51d02242c4e218c8c995047bb1b7d8b5bdd96758a549d471e02b8e5b11->enter($__internal_3f3cfe51d02242c4e218c8c995047bb1b7d8b5bdd96758a549d471e02b8e5b11_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Framework/Form/choice_widget_options.html.php"));
-
-        // line 1
-        echo "<?php use Symfony\\Component\\Form\\ChoiceList\\View\\ChoiceGroupView;
-
-\$translatorHelper = \$view['translator']; // outside of the loop for performance reasons! ?>
-<?php \$formHelper = \$view['form']; ?>
-<?php foreach (\$choices as \$group_label => \$choice): ?>
-    <?php if (is_array(\$choice) || \$choice instanceof ChoiceGroupView): ?>
-        <optgroup label=\"<?php echo \$view->escape(false !== \$choice_translation_domain ? \$translatorHelper->trans(\$group_label, array(), \$choice_translation_domain) : \$group_label) ?>\">
-            <?php echo \$formHelper->block(\$form, 'choice_widget_options', array('choices' => \$choice)) ?>
-        </optgroup>
-    <?php else: ?>
-        <option value=\"<?php echo \$view->escape(\$choice->value) ?>\" <?php echo \$formHelper->block(\$form, 'choice_attributes', array('choice_attr' => \$choice->attr)) ?><?php if (\$is_selected(\$choice->value, \$value)): ?> selected=\"selected\"<?php endif?>><?php echo \$view->escape(false !== \$choice_translation_domain ? \$translatorHelper->trans(\$choice->label, array(), \$choice_translation_domain) : \$choice->label) ?></option>
-    <?php endif ?>
-<?php endforeach ?>
-";
-
-        $__internal_3f3cfe51d02242c4e218c8c995047bb1b7d8b5bdd96758a549d471e02b8e5b11->leave($__internal_3f3cfe51d02242c4e218c8c995047bb1b7d8b5bdd96758a549d471e02b8e5b11_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@Framework/Form/choice_widget_options.html.php";
     }
 }

@@ -40,7 +40,7 @@ class DoctrineDataCollector extends DataCollector
     /**
      * Adds the stack logger for a connection.
      *
-     * @param string $name
+     * @param string     $name
      * @param DebugStack $logger
      */
     public function addLogger($name, DebugStack $logger)
@@ -63,6 +63,46 @@ class DoctrineDataCollector extends DataCollector
             'connections' => $this->connections,
             'managers' => $this->managers,
         );
+    }
+
+    public function getManagers()
+    {
+        return $this->data['managers'];
+    }
+
+    public function getConnections()
+    {
+        return $this->data['connections'];
+    }
+
+    public function getQueryCount()
+    {
+        return array_sum(array_map('count', $this->data['queries']));
+    }
+
+    public function getQueries()
+    {
+        return $this->data['queries'];
+    }
+
+    public function getTime()
+    {
+        $time = 0;
+        foreach ($this->data['queries'] as $queries) {
+            foreach ($queries as $query) {
+                $time += $query['executionMS'];
+            }
+        }
+
+        return $time;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'db';
     }
 
     private function sanitizeQueries($connectionName, $queries)
@@ -139,45 +179,5 @@ class DoctrineDataCollector extends DataCollector
         }
 
         return array($var, true);
-    }
-
-    public function getManagers()
-    {
-        return $this->data['managers'];
-    }
-
-    public function getConnections()
-    {
-        return $this->data['connections'];
-    }
-
-    public function getQueryCount()
-    {
-        return array_sum(array_map('count', $this->data['queries']));
-    }
-
-    public function getQueries()
-    {
-        return $this->data['queries'];
-    }
-
-    public function getTime()
-    {
-        $time = 0;
-        foreach ($this->data['queries'] as $queries) {
-            foreach ($queries as $query) {
-                $time += $query['executionMS'];
-            }
-        }
-
-        return $time;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'db';
     }
 }

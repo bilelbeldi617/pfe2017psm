@@ -52,7 +52,7 @@ class CheckExceptionOnInvalidReferenceBehaviorPass implements CompilerPassInterf
             } elseif ($argument instanceof Definition) {
                 $this->processDefinition($argument);
             } elseif ($argument instanceof Reference && ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE === $argument->getInvalidBehavior()) {
-                $destId = (string)$argument;
+                $destId = (string) $argument;
 
                 if (!$this->container->has($destId)) {
                     throw new ServiceNotFoundException($destId, $this->sourceId);

@@ -26,19 +26,19 @@ class Examen
      * @ORM\ManyToOne(targetEntity="Matiere")
      *
      */
-    private $matiere;
+    private $matiere ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Eleve")
      *
      */
-    private $eleve;
+    private $eleve ;
 
     /**
      * @ORM\ManyToOne(targetEntity="AnneeScolaire")
      *
      */
-    private $anneeScolaire;
+    private $anneeScolaire ;
 
 
     /**
@@ -52,6 +52,10 @@ class Examen
      * @ORM\Column(name="trimestre_examen", type="integer")
      */
     private $trimestreExamen;
+
+
+
+
 
 
     /**
@@ -151,10 +155,14 @@ class Examen
     }
 
 
+
+
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {

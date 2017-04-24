@@ -31,7 +31,7 @@ class RouteCollectionBuilderTest extends TestCase
         $originalRoute = new Route('/foo/path');
         $expectedCollection = new RouteCollection();
         $expectedCollection->add('one_test_route', $originalRoute);
-        $expectedCollection->addResource(new FileResource(__DIR__ . '/Fixtures/file_resource.yml'));
+        $expectedCollection->addResource(new FileResource(__DIR__.'/Fixtures/file_resource.yml'));
 
         $resolvedLoader
             ->expects($this->once())

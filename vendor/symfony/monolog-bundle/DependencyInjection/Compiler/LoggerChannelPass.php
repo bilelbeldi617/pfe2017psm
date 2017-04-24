@@ -46,7 +46,7 @@ class LoggerChannelPass implements CompilerPassInterface
                 $this->createLogger($resolvedChannel, $loggerId, $container);
 
                 foreach ($definition->getArguments() as $index => $argument) {
-                    if ($argument instanceof Reference && 'logger' === (string)$argument) {
+                    if ($argument instanceof Reference && 'logger' === (string) $argument) {
                         $definition->replaceArgument($index, $this->changeReference($argument, $loggerId));
                     }
                 }
@@ -54,7 +54,7 @@ class LoggerChannelPass implements CompilerPassInterface
                 $calls = $definition->getMethodCalls();
                 foreach ($calls as $i => $call) {
                     foreach ($call[1] as $index => $argument) {
-                        if ($argument instanceof Reference && 'logger' === (string)$argument) {
+                        if ($argument instanceof Reference && 'logger' === (string) $argument) {
                             $calls[$i][1][$index] = $this->changeReference($argument, $loggerId);
                         }
                     }
@@ -75,14 +75,32 @@ class LoggerChannelPass implements CompilerPassInterface
         foreach ($handlersToChannels as $handler => $channels) {
             foreach ($this->processChannels($channels) as $channel) {
                 try {
-                    $logger = $container->getDefinition($channel === 'app' ? 'monolog.logger' : 'monolog.logger.' . $channel);
+                    $logger = $container->getDefinition($channel === 'app' ? 'monolog.logger' : 'monolog.logger.'.$channel);
                 } catch (InvalidArgumentException $e) {
-                    $msg = 'Monolog configuration error: The logging channel "' . $channel . '" assigned to the "' . substr($handler, 16) . '" handler does not exist.';
+                    $msg = 'Monolog configuration error: The logging channel "'.$channel.'" assigned to the "'.substr($handler, 16).'" handler does not exist.';
                     throw new \InvalidArgumentException($msg, 0, $e);
                 }
                 $logger->addMethodCall('pushHandler', array(new Reference($handler)));
             }
         }
+    }
+
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
+    protected function processChannels($configuration)
+    {
+        if (null === $configuration) {
+            return $this->channels;
+        }
+
+        if ('inclusive' === $configuration['type']) {
+            return $configuration['elements'] ?: $this->channels;
+        }
+
+        return array_diff($this->channels, $configuration['elements']);
     }
 
     protected function createLogger($channel, $loggerId, ContainerBuilder $container)
@@ -99,7 +117,7 @@ class LoggerChannelPass implements CompilerPassInterface
      * Creates a copy of a reference and alters the service ID.
      *
      * @param Reference $reference
-     * @param string $serviceId
+     * @param string    $serviceId
      *
      * @return Reference
      */
@@ -111,23 +129,5 @@ class LoggerChannelPass implements CompilerPassInterface
         }
 
         return new Reference($serviceId, $reference->getInvalidBehavior());
-    }
-
-    protected function processChannels($configuration)
-    {
-        if (null === $configuration) {
-            return $this->channels;
-        }
-
-        if ('inclusive' === $configuration['type']) {
-            return $configuration['elements'] ?: $this->channels;
-        }
-
-        return array_diff($this->channels, $configuration['elements']);
-    }
-
-    public function getChannels()
-    {
-        return $this->channels;
     }
 }

@@ -26,16 +26,16 @@ abstract class TypeTestCase extends FormIntegrationTestCase
      */
     protected $dispatcher;
 
-    public static function assertDateTimeEquals(\DateTime $expected, \DateTime $actual)
-    {
-        self::assertEquals($expected->format('c'), $actual->format('c'));
-    }
-
     protected function setUp()
     {
         parent::setUp();
 
         $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
         $this->builder = new FormBuilder(null, null, $this->dispatcher, $this->factory);
+    }
+
+    public static function assertDateTimeEquals(\DateTime $expected, \DateTime $actual)
+    {
+        self::assertEquals($expected->format('c'), $actual->format('c'));
     }
 }

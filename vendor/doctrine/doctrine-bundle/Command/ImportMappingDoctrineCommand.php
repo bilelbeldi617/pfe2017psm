@@ -66,7 +66,7 @@ Use the <info>--force</info> option, if you want to override existing mapping fi
 
 <info>php %command.full_name% "MyCustomBundle" xml --force</info>
 EOT
-            );
+        );
     }
 
     /**
@@ -112,11 +112,11 @@ EOT
             $output->writeln(sprintf('Importing mapping information from "<info>%s</info>" entity manager', $emName));
             foreach ($metadata as $class) {
                 $className = $class->name;
-                $class->name = $bundle->getNamespace() . '\\Entity\\' . $className;
+                $class->name = $bundle->getNamespace().'\\Entity\\'.$className;
                 if ('annotation' === $type) {
-                    $path = $destPath . '/' . str_replace('\\', '.', $className) . '.php';
+                    $path = $destPath.'/'.str_replace('\\', '.', $className).'.php';
                 } else {
-                    $path = $destPath . '/' . str_replace('\\', '.', $className) . '.orm.' . $type;
+                    $path = $destPath.'/'.str_replace('\\', '.', $className).'.orm.'.$type;
                 }
                 $output->writeln(sprintf('  > writing <comment>%s</comment>', $path));
                 $code = $exporter->exportClassMetadata($class);

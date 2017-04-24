@@ -25,7 +25,7 @@ class ClassLoaderTest extends \Doctrine\Tests\DoctrineTestCase
     public function testClassExists()
     {
         $this->assertFalse(ClassLoader::classExists('ClassLoaderTest\ClassD'));
-        $badLoader = function ($className) {
+        $badLoader = function($className) {
             require __DIR__ . '/ClassLoaderTest/ClassD.php';
             return true;
         };
@@ -107,7 +107,7 @@ class ClassLoaderTest extends \Doctrine\Tests\DoctrineTestCase
 
     public function testSupportsTraitAutoloading()
     {
-        if (!function_exists('trait_exists')) {
+        if (! function_exists('trait_exists')) {
             $this->markTestSkipped('You need a PHP version that supports traits in order to run this test');
         }
 

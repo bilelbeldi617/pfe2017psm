@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 class Twig_Node_Expression_NullCoalesce extends Twig_Node_Expression_Conditional
 {
     public function __construct(Twig_NodeInterface $left, Twig_NodeInterface $right, $lineno)
@@ -38,7 +37,8 @@ class Twig_Node_Expression_NullCoalesce extends Twig_Node_Expression_Conditional
                 ->subcompile($this->getNode('expr2'))
                 ->raw(') ?? (')
                 ->subcompile($this->getNode('expr3'))
-                ->raw('))');
+                ->raw('))')
+            ;
         } else {
             parent::compile($compiler);
         }

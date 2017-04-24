@@ -98,37 +98,6 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
-    private function sortProperties()
-    {
-        switch ($this->accessorOrder) {
-            case self::ACCESSOR_ORDER_ALPHABETICAL:
-                ksort($this->propertyMetadata);
-                break;
-
-            case self::ACCESSOR_ORDER_CUSTOM:
-                $order = $this->customOrder;
-                uksort($this->propertyMetadata, function ($a, $b) use ($order) {
-                    $existsA = isset($order[$a]);
-                    $existsB = isset($order[$b]);
-
-                    if (!$existsA && !$existsB) {
-                        return 0;
-                    }
-
-                    if (!$existsA) {
-                        return 1;
-                    }
-
-                    if (!$existsB) {
-                        return -1;
-                    }
-
-                    return $order[$a] < $order[$b] ? -1 : 1;
-                });
-                break;
-        }
-    }
-
     public function addPropertyMetadata(BasePropertyMetadata $metadata)
     {
         parent::addPropertyMetadata($metadata);
@@ -162,7 +131,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function merge(MergeableInterface $object)
     {
-        if (!$object instanceof ClassMetadata) {
+        if ( ! $object instanceof ClassMetadata) {
             throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
         }
         parent::merge($object);
@@ -191,7 +160,7 @@ class ClassMetadata extends MergeableClassMetadata
             ));
         }
 
-        if ($this->discriminatorMap && !$this->reflection->isAbstract()) {
+        if ($this->discriminatorMap && ! $this->reflection->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
                 throw new \LogicException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
@@ -203,8 +172,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue = $typeValue;
 
             if (isset($this->propertyMetadata[$this->discriminatorFieldName])
-                && !$this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata
-            ) {
+                    && ! $this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata) {
                 throw new \LogicException(sprintf(
                     'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
                     $this->discriminatorFieldName,
@@ -231,7 +199,7 @@ class ClassMetadata extends MergeableClassMetadata
             throw new InvalidArgumentException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
         }
 
-        if ($prefix !== null) {
+        if ($prefix !== null ) {
             if (!is_string($prefix)) {
                 throw new InvalidArgumentException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
             }
@@ -284,8 +252,39 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue,
             $this->discriminatorMap,
             $parentStr
-            ) = unserialize($str);
+        ) = unserialize($str);
 
         parent::unserialize($parentStr);
+    }
+
+    private function sortProperties()
+    {
+        switch ($this->accessorOrder) {
+            case self::ACCESSOR_ORDER_ALPHABETICAL:
+                ksort($this->propertyMetadata);
+                break;
+
+            case self::ACCESSOR_ORDER_CUSTOM:
+                $order = $this->customOrder;
+                uksort($this->propertyMetadata, function($a, $b) use ($order) {
+                    $existsA = isset($order[$a]);
+                    $existsB = isset($order[$b]);
+
+                    if (!$existsA && !$existsB) {
+                        return 0;
+                    }
+
+                    if (!$existsA) {
+                        return 1;
+                    }
+
+                    if (!$existsB) {
+                        return -1;
+                    }
+
+                    return $order[$a] < $order[$b] ? -1 : 1;
+                });
+                break;
+        }
     }
 }

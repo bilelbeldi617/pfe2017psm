@@ -37,6 +37,12 @@ class TestSessionListenerTest extends TestCase
      */
     private $session;
 
+    protected function setUp()
+    {
+        $this->listener = $this->getMockForAbstractClass('Symfony\Component\HttpKernel\EventListener\TestSessionListener');
+        $this->session = $this->getSession();
+    }
+
     public function testShouldSaveMasterRequestSession()
     {
         $this->sessionHasBeenStarted();
@@ -45,44 +51,11 @@ class TestSessionListenerTest extends TestCase
         $this->filterResponse(new Request());
     }
 
-    private function sessionHasBeenStarted()
-    {
-        $this->session->expects($this->once())
-            ->method('isStarted')
-            ->will($this->returnValue(true));
-    }
-
-    private function sessionMustBeSaved()
-    {
-        $this->session->expects($this->once())
-            ->method('save');
-    }
-
-    private function filterResponse(Request $request, $type = HttpKernelInterface::MASTER_REQUEST)
-    {
-        $request->setSession($this->session);
-        $response = new Response();
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $event = new FilterResponseEvent($kernel, $request, $type, $response);
-
-        $this->listener->onKernelResponse($event);
-
-        $this->assertSame($response, $event->getResponse());
-
-        return $response;
-    }
-
     public function testShouldNotSaveSubRequestSession()
     {
         $this->sessionMustNotBeSaved();
 
         $this->filterResponse(new Request(), HttpKernelInterface::SUB_REQUEST);
-    }
-
-    private function sessionMustNotBeSaved()
-    {
-        $this->session->expects($this->never())
-            ->method('save');
     }
 
     public function testDoesNotDeleteCookieIfUsingSessionLifetime()
@@ -106,17 +79,44 @@ class TestSessionListenerTest extends TestCase
         $this->filterResponse(new Request());
     }
 
+    private function filterResponse(Request $request, $type = HttpKernelInterface::MASTER_REQUEST)
+    {
+        $request->setSession($this->session);
+        $response = new Response();
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $event = new FilterResponseEvent($kernel, $request, $type, $response);
+
+        $this->listener->onKernelResponse($event);
+
+        $this->assertSame($response, $event->getResponse());
+
+        return $response;
+    }
+
+    private function sessionMustNotBeSaved()
+    {
+        $this->session->expects($this->never())
+            ->method('save');
+    }
+
+    private function sessionMustBeSaved()
+    {
+        $this->session->expects($this->once())
+            ->method('save');
+    }
+
+    private function sessionHasBeenStarted()
+    {
+        $this->session->expects($this->once())
+            ->method('isStarted')
+            ->will($this->returnValue(true));
+    }
+
     private function sessionHasNotBeenStarted()
     {
         $this->session->expects($this->once())
             ->method('isStarted')
             ->will($this->returnValue(false));
-    }
-
-    protected function setUp()
-    {
-        $this->listener = $this->getMockForAbstractClass('Symfony\Component\HttpKernel\EventListener\TestSessionListener');
-        $this->session = $this->getSession();
     }
 
     private function getSession()

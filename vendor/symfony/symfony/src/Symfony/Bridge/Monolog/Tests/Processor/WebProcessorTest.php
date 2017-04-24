@@ -34,6 +34,40 @@ class WebProcessorTest extends TestCase
         $this->assertEquals($server['HTTP_REFERER'], $record['extra']['referrer']);
     }
 
+    public function testUseRequestClientIp()
+    {
+        Request::setTrustedProxies(array('192.168.0.1'));
+        list($event, $server) = $this->createRequestEvent(array('X_FORWARDED_FOR' => '192.168.0.2'));
+
+        $processor = new WebProcessor();
+        $processor->onKernelRequest($event);
+        $record = $processor($this->getRecord());
+
+        $this->assertCount(5, $record['extra']);
+        $this->assertEquals($server['REQUEST_URI'], $record['extra']['url']);
+        $this->assertEquals($server['X_FORWARDED_FOR'], $record['extra']['ip']);
+        $this->assertEquals($server['REQUEST_METHOD'], $record['extra']['http_method']);
+        $this->assertEquals($server['SERVER_NAME'], $record['extra']['server']);
+        $this->assertEquals($server['HTTP_REFERER'], $record['extra']['referrer']);
+    }
+
+    public function testCanBeConstructedWithExtraFields()
+    {
+        if (!$this->isExtraFieldsSupported()) {
+            $this->markTestSkipped('WebProcessor of the installed Monolog version does not support $extraFields parameter');
+        }
+
+        list($event, $server) = $this->createRequestEvent();
+
+        $processor = new WebProcessor(array('url', 'referrer'));
+        $processor->onKernelRequest($event);
+        $record = $processor($this->getRecord());
+
+        $this->assertCount(2, $record['extra']);
+        $this->assertEquals($server['REQUEST_URI'], $record['extra']['url']);
+        $this->assertEquals($server['HTTP_REFERER'], $record['extra']['referrer']);
+    }
+
     /**
      * @return array
      */
@@ -68,7 +102,7 @@ class WebProcessorTest extends TestCase
     }
 
     /**
-     * @param int $level
+     * @param int    $level
      * @param string $message
      *
      * @return array Record
@@ -84,40 +118,6 @@ class WebProcessorTest extends TestCase
             'datetime' => new \DateTime(),
             'extra' => array(),
         );
-    }
-
-    public function testUseRequestClientIp()
-    {
-        Request::setTrustedProxies(array('192.168.0.1'));
-        list($event, $server) = $this->createRequestEvent(array('X_FORWARDED_FOR' => '192.168.0.2'));
-
-        $processor = new WebProcessor();
-        $processor->onKernelRequest($event);
-        $record = $processor($this->getRecord());
-
-        $this->assertCount(5, $record['extra']);
-        $this->assertEquals($server['REQUEST_URI'], $record['extra']['url']);
-        $this->assertEquals($server['X_FORWARDED_FOR'], $record['extra']['ip']);
-        $this->assertEquals($server['REQUEST_METHOD'], $record['extra']['http_method']);
-        $this->assertEquals($server['SERVER_NAME'], $record['extra']['server']);
-        $this->assertEquals($server['HTTP_REFERER'], $record['extra']['referrer']);
-    }
-
-    public function testCanBeConstructedWithExtraFields()
-    {
-        if (!$this->isExtraFieldsSupported()) {
-            $this->markTestSkipped('WebProcessor of the installed Monolog version does not support $extraFields parameter');
-        }
-
-        list($event, $server) = $this->createRequestEvent();
-
-        $processor = new WebProcessor(array('url', 'referrer'));
-        $processor->onKernelRequest($event);
-        $record = $processor($this->getRecord());
-
-        $this->assertCount(2, $record['extra']);
-        $this->assertEquals($server['REQUEST_URI'], $record['extra']['url']);
-        $this->assertEquals($server['HTTP_REFERER'], $record['extra']['referrer']);
     }
 
     private function isExtraFieldsSupported()

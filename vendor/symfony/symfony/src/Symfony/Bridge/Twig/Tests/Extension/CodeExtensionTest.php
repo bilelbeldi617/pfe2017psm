@@ -24,11 +24,6 @@ class CodeExtensionTest extends TestCase
         $this->assertEquals($expected, $this->getExtension()->formatFile(__FILE__, 25));
     }
 
-    protected function getExtension()
-    {
-        return new CodeExtension('txmt://open?url=file://%f&line=%l', '/root', 'UTF-8');
-    }
-
     /**
      * @dataProvider getClassNameProvider
      */
@@ -66,5 +61,10 @@ class CodeExtensionTest extends TestCase
     public function testGetName()
     {
         $this->assertEquals('code', $this->getExtension()->getName());
+    }
+
+    protected function getExtension()
+    {
+        return new CodeExtension('txmt://open?url=file://%f&line=%l', '/root', 'UTF-8');
     }
 }

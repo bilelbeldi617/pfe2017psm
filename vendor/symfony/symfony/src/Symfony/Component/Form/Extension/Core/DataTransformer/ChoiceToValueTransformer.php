@@ -34,7 +34,7 @@ class ChoiceToValueTransformer implements DataTransformerInterface
 
     public function transform($choice)
     {
-        return (string)current($this->choiceList->getValuesForChoices(array($choice)));
+        return (string) current($this->choiceList->getValuesForChoices(array($choice)));
     }
 
     public function reverseTransform($value)
@@ -43,7 +43,7 @@ class ChoiceToValueTransformer implements DataTransformerInterface
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        $choices = $this->choiceList->getChoicesForValues(array((string)$value));
+        $choices = $this->choiceList->getChoicesForValues(array((string) $value));
 
         if (1 !== count($choices)) {
             if (null === $value || '' === $value) {

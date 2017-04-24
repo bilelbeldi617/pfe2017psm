@@ -17,11 +17,23 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "@WebProfiler/Profiler/layout.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 3
     public function block_page_title($context, array $blocks = array())
     {
         echo "Security";
     }
 
+    // line 5
     public function block_toolbar($context, array $blocks = array())
     {
         // line 6
@@ -78,9 +90,9 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
                 <b>Authenticated</b>
                 <span class=\"sf-toolbar-status sf-toolbar-status-";
             // line 27
-            echo(((isset($context["is_authenticated"]) ? $context["is_authenticated"] : null)) ? ("green") : ("red"));
+            echo (((isset($context["is_authenticated"]) ? $context["is_authenticated"] : null)) ? ("green") : ("red"));
             echo "\">";
-            echo(((isset($context["is_authenticated"]) ? $context["is_authenticated"] : null)) ? ("Yes") : ("No"));
+            echo (((isset($context["is_authenticated"]) ? $context["is_authenticated"] : null)) ? ("Yes") : ("No"));
             echo "</span>
             </div>
 
@@ -137,13 +149,12 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
 ";
     }
 
-    // line 3
-
+    // line 56
     public function block_menu($context, array $blocks = array())
     {
         // line 57
         echo "    <span class=\"label ";
-        echo(((!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "enabled", array()) || !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "tokenClass", array()))) ? ("disabled") : (""));
+        echo ((( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "enabled", array()) ||  !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "tokenClass", array()))) ? ("disabled") : (""));
         echo "\">
         <span class=\"icon\">";
         // line 58
@@ -154,8 +165,7 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
 ";
     }
 
-    // line 5
-
+    // line 63
     public function block_panel($context, array $blocks = array())
     {
         // line 64
@@ -201,7 +211,7 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
 
                         ";
             // line 92
-            if ((!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "authenticated", array()) && twig_test_empty($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "roles", array())))) {
+            if (( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "authenticated", array()) && twig_test_empty($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "roles", array())))) {
                 // line 93
                 echo "                            <p class=\"help\">User is not authenticated probably because they have no roles.</p>
                         ";
@@ -243,8 +253,7 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
         </table>
     ";
         } elseif ($this->getAttribute(        // line 113
-            (isset($context["collector"]) ? $context["collector"] : null), "enabled", array())
-        ) {
+(isset($context["collector"]) ? $context["collector"] : null), "enabled", array())) {
             // line 114
             echo "        <div class=\"empty\">
             <p>There is no security token.</p>
@@ -259,14 +268,10 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
         }
     }
 
-    // line 56
-
     public function getTemplateName()
     {
         return "@Security/Collector/security.html.twig";
     }
-
-    // line 63
 
     public function isTraitable()
     {
@@ -275,13 +280,13 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
 
     public function getDebugInfo()
     {
-        return array(264 => 118, 258 => 114, 256 => 113, 252 => 111, 246 => 108, 242 => 106, 240 => 105, 237 => 104, 231 => 101, 227 => 99, 225 => 98, 220 => 95, 216 => 93, 214 => 92, 209 => 90, 190 => 74, 182 => 69, 178 => 67, 176 => 66, 172 => 64, 169 => 63, 161 => 58, 156 => 57, 153 => 56, 147 => 53, 144 => 52, 141 => 51, 135 => 47, 129 => 43, 126 => 42, 120 => 39, 116 => 37, 113 => 36, 107 => 33, 103 => 31, 101 => 30, 93 => 27, 85 => 22, 81 => 20, 78 => 19, 76 => 18, 73 => 17, 68 => 15, 63 => 14, 61 => 13, 58 => 12, 55 => 11, 52 => 10, 49 => 9, 46 => 8, 43 => 7, 40 => 6, 37 => 5, 31 => 3, 11 => 1,);
+        return array (  264 => 118,  258 => 114,  256 => 113,  252 => 111,  246 => 108,  242 => 106,  240 => 105,  237 => 104,  231 => 101,  227 => 99,  225 => 98,  220 => 95,  216 => 93,  214 => 92,  209 => 90,  190 => 74,  182 => 69,  178 => 67,  176 => 66,  172 => 64,  169 => 63,  161 => 58,  156 => 57,  153 => 56,  147 => 53,  144 => 52,  141 => 51,  135 => 47,  129 => 43,  126 => 42,  120 => 39,  116 => 37,  113 => 36,  107 => 33,  103 => 31,  101 => 30,  93 => 27,  85 => 22,  81 => 20,  78 => 19,  76 => 18,  73 => 17,  68 => 15,  63 => 14,  61 => 13,  58 => 12,  55 => 11,  52 => 10,  49 => 9,  46 => 8,  43 => 7,  40 => 6,  37 => 5,  31 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -289,15 +294,5 @@ class __TwigTemplate_cb3df7a6ed0c972bf473cc14f1b8607da7e77c6265483581c59252fd91d
     public function getSourceContext()
     {
         return new Twig_Source("", "@Security/Collector/security.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\SecurityBundle\\Resources\\views\\Collector\\security.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "@WebProfiler/Profiler/layout.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

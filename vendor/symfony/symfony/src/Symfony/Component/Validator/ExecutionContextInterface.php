@@ -91,11 +91,11 @@ interface ExecutionContextInterface
      *
      * Note: the parameters $invalidValue, $plural and $code are deprecated since version 2.5 and will be removed in 3.0.
      *
-     * @param string $message The error message
-     * @param array $params The parameters substituted in the error message
-     * @param mixed $invalidValue The invalid, validated value
-     * @param int|null $plural The number to use to pluralize of the message
-     * @param int|null $code The violation code
+     * @param string   $message      The error message
+     * @param array    $params       The parameters substituted in the error message
+     * @param mixed    $invalidValue The invalid, validated value
+     * @param int|null $plural       The number to use to pluralize of the message
+     * @param int|null $code         The violation code
      */
     public function addViolation($message, array $params = array(), $invalidValue = null, $plural = null, $code = null);
 
@@ -103,12 +103,12 @@ interface ExecutionContextInterface
      * Adds a violation at the validation graph node with the given property
      * path relative to the current property path.
      *
-     * @param string $subPath The relative property path for the violation
-     * @param string $message The error message
-     * @param array $parameters The parameters substituted in the error message
-     * @param mixed $invalidValue The invalid, validated value
-     * @param int|null $plural The number to use to pluralize of the message
-     * @param int|null $code The violation code
+     * @param string   $subPath      The relative property path for the violation
+     * @param string   $message      The error message
+     * @param array    $parameters   The parameters substituted in the error message
+     * @param mixed    $invalidValue The invalid, validated value
+     * @param int|null $plural       The number to use to pluralize of the message
+     * @param int|null $code         The violation code
      *
      * @deprecated since version 2.5, to be removed in 3.0.
      *             Use {@link Context\ExecutionContextInterface::buildViolation()}
@@ -145,14 +145,14 @@ interface ExecutionContextInterface
      * Any violations generated during the validation will be added to the
      * violation list that you can access with {@link getViolations}.
      *
-     * @param mixed $value The value to validate
-     * @param string $subPath The path to append to the context's property path
-     * @param null|string|string[] $groups The groups to validate in. If you don't pass any
+     * @param mixed                $value    The value to validate
+     * @param string               $subPath  The path to append to the context's property path
+     * @param null|string|string[] $groups   The groups to validate in. If you don't pass any
      *                                       groups here, the current group of the context
      *                                       will be used.
-     * @param bool $traverse Whether to traverse the value if it is an array
+     * @param bool                 $traverse Whether to traverse the value if it is an array
      *                                       or an instance of <tt>\Traversable</tt>.
-     * @param bool $deep Whether to traverse the value recursively if
+     * @param bool                 $deep     Whether to traverse the value recursively if
      *                                       it is a collection of collections.
      *
      * @deprecated since version 2.5, to be removed in 3.0.
@@ -181,10 +181,10 @@ interface ExecutionContextInterface
      * $context->validate($address->street, new NotNull(), 'street');
      * </pre>
      *
-     * @param mixed $value The value to validate
+     * @param mixed                   $value       The value to validate
      * @param Constraint|Constraint[] $constraints The constraint(s) to validate against
-     * @param string $subPath The path to append to the context's property path
-     * @param null|string|string[] $groups The groups to validate in. If you don't pass any
+     * @param string                  $subPath     The path to append to the context's property path
+     * @param null|string|string[]    $groups      The groups to validate in. If you don't pass any
      *                                             groups here, the current group of the context
      *                                             will be used.
      *

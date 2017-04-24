@@ -19,7 +19,7 @@ class YamlFrameworkExtensionTest extends FrameworkExtensionTest
 {
     protected function loadFromFile(ContainerBuilder $container, $file)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/yml'));
-        $loader->load($file . '.yml');
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/yml'));
+        $loader->load($file.'.yml');
     }
 }

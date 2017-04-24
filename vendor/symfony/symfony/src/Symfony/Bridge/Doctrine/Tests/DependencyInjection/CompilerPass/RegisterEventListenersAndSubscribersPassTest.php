@@ -34,32 +34,6 @@ class RegisterEventListenersAndSubscribersPassTest extends TestCase
         $this->process($container);
     }
 
-    private function createBuilder($multipleConnections = false)
-    {
-        $container = new ContainerBuilder();
-
-        $connections = array('default' => 'doctrine.dbal.default_connection');
-
-        $container->register('doctrine.dbal.default_connection.event_manager', 'stdClass');
-        $container->register('doctrine.dbal.default_connection', 'stdClass');
-
-        if ($multipleConnections) {
-            $container->register('doctrine.dbal.second_connection.event_manager', 'stdClass');
-            $container->register('doctrine.dbal.second_connection', 'stdClass');
-            $connections['second'] = 'doctrine.dbal.second_connection';
-        }
-
-        $container->setParameter('doctrine.connections', $connections);
-
-        return $container;
-    }
-
-    private function process(ContainerBuilder $container)
-    {
-        $pass = new RegisterEventListenersAndSubscribersPass('doctrine.connections', 'doctrine.dbal.%s_connection.event_manager', 'doctrine');
-        $pass->process($container);
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -88,38 +62,20 @@ class RegisterEventListenersAndSubscribersPassTest extends TestCase
             ))
             ->addTag('doctrine.event_listener', array(
                 'event' => 'bar',
-            ));
+            ))
+        ;
         $container
             ->register('b', 'stdClass')
             ->addTag('doctrine.event_listener', array(
                 'event' => 'foo',
-            ));
+            ))
+        ;
 
         $this->process($container);
         $this->assertEquals(array('b', 'a'), $this->getServiceOrder($container, 'addEventListener'));
 
         $calls = $container->getDefinition('doctrine.dbal.default_connection.event_manager')->getMethodCalls();
         $this->assertEquals(array('foo', 'bar'), $calls[1][1][0]);
-    }
-
-    private function getServiceOrder(ContainerBuilder $container, $method)
-    {
-        $order = array();
-        foreach ($container->getDefinition('doctrine.dbal.default_connection.event_manager')->getMethodCalls() as $call) {
-            list($name, $arguments) = $call;
-            if ($method !== $name) {
-                continue;
-            }
-
-            if ('addEventListener' === $name) {
-                $order[] = (string)$arguments[1];
-                continue;
-            }
-
-            $order[] = (string)$arguments[0];
-        }
-
-        return $order;
     }
 
     public function testProcessEventListenersWithMultipleConnections()
@@ -130,7 +86,8 @@ class RegisterEventListenersAndSubscribersPassTest extends TestCase
             ->register('a', 'stdClass')
             ->addTag('doctrine.event_listener', array(
                 'event' => 'onFlush',
-            ));
+            ))
+        ;
         $this->process($container);
 
         $callsDefault = $container->getDefinition('doctrine.dbal.default_connection.event_manager')->getMethodCalls();
@@ -148,27 +105,32 @@ class RegisterEventListenersAndSubscribersPassTest extends TestCase
 
         $container
             ->register('a', 'stdClass')
-            ->addTag('doctrine.event_subscriber');
+            ->addTag('doctrine.event_subscriber')
+        ;
         $container
             ->register('b', 'stdClass')
             ->addTag('doctrine.event_subscriber', array(
                 'priority' => 5,
-            ));
+            ))
+        ;
         $container
             ->register('c', 'stdClass')
             ->addTag('doctrine.event_subscriber', array(
                 'priority' => 10,
-            ));
+            ))
+        ;
         $container
             ->register('d', 'stdClass')
             ->addTag('doctrine.event_subscriber', array(
                 'priority' => 10,
-            ));
+            ))
+        ;
         $container
             ->register('e', 'stdClass')
             ->addTag('doctrine.event_subscriber', array(
                 'priority' => 10,
-            ));
+            ))
+        ;
 
         $this->process($container);
         $serviceOrder = $this->getServiceOrder($container, 'addEventSubscriber');
@@ -187,5 +149,51 @@ class RegisterEventListenersAndSubscribersPassTest extends TestCase
         $this->assertEquals(array(), $container->getDefinition('doctrine.dbal.default_connection.event_manager')->getMethodCalls());
 
         $this->assertEquals(array(), $container->getDefinition('doctrine.dbal.second_connection.event_manager')->getMethodCalls());
+    }
+
+    private function process(ContainerBuilder $container)
+    {
+        $pass = new RegisterEventListenersAndSubscribersPass('doctrine.connections', 'doctrine.dbal.%s_connection.event_manager', 'doctrine');
+        $pass->process($container);
+    }
+
+    private function getServiceOrder(ContainerBuilder $container, $method)
+    {
+        $order = array();
+        foreach ($container->getDefinition('doctrine.dbal.default_connection.event_manager')->getMethodCalls() as $call) {
+            list($name, $arguments) = $call;
+            if ($method !== $name) {
+                continue;
+            }
+
+            if ('addEventListener' === $name) {
+                $order[] = (string) $arguments[1];
+                continue;
+            }
+
+            $order[] = (string) $arguments[0];
+        }
+
+        return $order;
+    }
+
+    private function createBuilder($multipleConnections = false)
+    {
+        $container = new ContainerBuilder();
+
+        $connections = array('default' => 'doctrine.dbal.default_connection');
+
+        $container->register('doctrine.dbal.default_connection.event_manager', 'stdClass');
+        $container->register('doctrine.dbal.default_connection', 'stdClass');
+
+        if ($multipleConnections) {
+            $container->register('doctrine.dbal.second_connection.event_manager', 'stdClass');
+            $container->register('doctrine.dbal.second_connection', 'stdClass');
+            $connections['second'] = 'doctrine.dbal.second_connection';
+        }
+
+        $container->setParameter('doctrine.connections', $connections);
+
+        return $container;
     }
 }

@@ -29,30 +29,6 @@ class HttpKernelExtensionTest extends TestCase
         $this->renderTemplate($renderer);
     }
 
-    protected function getFragmentHandler($return)
-    {
-        $strategy = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Fragment\\FragmentRendererInterface')->getMock();
-        $strategy->expects($this->once())->method('getName')->will($this->returnValue('inline'));
-        $strategy->expects($this->once())->method('render')->will($return);
-
-        $context = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\RequestStack')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $context->expects($this->any())->method('getCurrentRequest')->will($this->returnValue(Request::create('/')));
-
-        return new FragmentHandler($context, array($strategy), false);
-    }
-
-    protected function renderTemplate(FragmentHandler $renderer, $template = '{{ render("foo") }}')
-    {
-        $loader = new \Twig_Loader_Array(array('index' => $template));
-        $twig = new \Twig_Environment($loader, array('debug' => true, 'cache' => false));
-        $twig->addExtension(new HttpKernelExtension($renderer));
-
-        return $twig->render('index');
-    }
-
     public function testRenderFragment()
     {
         $renderer = $this->getFragmentHandler($this->returnValue(new Response('html')));
@@ -66,7 +42,8 @@ class HttpKernelExtensionTest extends TestCase
     {
         $context = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\RequestStack')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
         $renderer = new FragmentHandler($context);
 
         if (method_exists($this, 'expectException')) {
@@ -77,5 +54,30 @@ class HttpKernelExtensionTest extends TestCase
         }
 
         $renderer->render('/foo');
+    }
+
+    protected function getFragmentHandler($return)
+    {
+        $strategy = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Fragment\\FragmentRendererInterface')->getMock();
+        $strategy->expects($this->once())->method('getName')->will($this->returnValue('inline'));
+        $strategy->expects($this->once())->method('render')->will($return);
+
+        $context = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\RequestStack')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $context->expects($this->any())->method('getCurrentRequest')->will($this->returnValue(Request::create('/')));
+
+        return new FragmentHandler($context, array($strategy), false);
+    }
+
+    protected function renderTemplate(FragmentHandler $renderer, $template = '{{ render("foo") }}')
+    {
+        $loader = new \Twig_Loader_Array(array('index' => $template));
+        $twig = new \Twig_Environment($loader, array('debug' => true, 'cache' => false));
+        $twig->addExtension(new HttpKernelExtension($renderer));
+
+        return $twig->render('index');
     }
 }

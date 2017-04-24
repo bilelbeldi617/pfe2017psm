@@ -20,8 +20,8 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class Generator
 {
-    private static $output;
     private $skeletonDirs;
+    private static $output;
 
     /**
      * Sets an array of directories to look for templates.
@@ -34,54 +34,6 @@ class Generator
     public function setSkeletonDirs($skeletonDirs)
     {
         $this->skeletonDirs = is_array($skeletonDirs) ? $skeletonDirs : array($skeletonDirs);
-    }
-
-    protected function renderFile($template, $target, $parameters)
-    {
-        self::mkdir(dirname($target));
-
-        return self::dump($target, $this->render($template, $parameters));
-    }
-
-    /**
-     * @internal
-     */
-    public static function mkdir($dir, $mode = 0777, $recursive = true)
-    {
-        if (!is_dir($dir)) {
-            mkdir($dir, $mode, $recursive);
-            self::writeln(sprintf('  <fg=green>created</> %s', self::relativizePath($dir)));
-        }
-    }
-
-    private static function writeln($message)
-    {
-        if (null === self::$output) {
-            self::$output = new ConsoleOutput();
-        }
-
-        self::$output->writeln($message);
-    }
-
-    private static function relativizePath($absolutePath)
-    {
-        $relativePath = str_replace(getcwd(), '.', $absolutePath);
-
-        return is_dir($absolutePath) ? rtrim($relativePath, '/') . '/' : $relativePath;
-    }
-
-    /**
-     * @internal
-     */
-    public static function dump($filename, $content)
-    {
-        if (file_exists($filename)) {
-            self::writeln(sprintf('  <fg=yellow>updated</> %s', self::relativizePath($filename)));
-        } else {
-            self::writeln(sprintf('  <fg=green>created</> %s', self::relativizePath($filename)));
-        }
-
-        return file_put_contents($filename, $content);
     }
 
     protected function render($template, $parameters)
@@ -104,5 +56,53 @@ class Generator
             'strict_variables' => true,
             'autoescape' => false,
         ));
+    }
+
+    protected function renderFile($template, $target, $parameters)
+    {
+        self::mkdir(dirname($target));
+
+        return self::dump($target, $this->render($template, $parameters));
+    }
+
+    /**
+     * @internal
+     */
+    public static function mkdir($dir, $mode = 0777, $recursive = true)
+    {
+        if (!is_dir($dir)) {
+            mkdir($dir, $mode, $recursive);
+            self::writeln(sprintf('  <fg=green>created</> %s', self::relativizePath($dir)));
+        }
+    }
+
+    /**
+     * @internal
+     */
+    public static function dump($filename, $content)
+    {
+        if (file_exists($filename)) {
+            self::writeln(sprintf('  <fg=yellow>updated</> %s', self::relativizePath($filename)));
+        } else {
+            self::writeln(sprintf('  <fg=green>created</> %s', self::relativizePath($filename)));
+        }
+
+        return file_put_contents($filename, $content);
+    }
+
+    private static function writeln($message)
+    {
+        if (null === self::$output) {
+            self::$output = new ConsoleOutput();
+        }
+
+        self::$output->writeln($message);
+    }
+
+    private static function relativizePath($absolutePath)
+    {
+        $relativePath = str_replace(getcwd(), '.', $absolutePath);
+
+        return is_dir($absolutePath) ? rtrim($relativePath, '/').'/' : $relativePath;
     }
 }

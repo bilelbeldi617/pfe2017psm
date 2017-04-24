@@ -35,28 +35,6 @@ class DateTimeParamConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->converter->supports($config));
     }
 
-    public function createConfiguration($class = null, $name = null)
-    {
-        $config = $this
-            ->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter')
-            ->setMethods(array('getClass', 'getAliasName', 'getOptions', 'getName', 'allowArray', 'isOptional'))
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        if ($name !== null) {
-            $config->expects($this->any())
-                ->method('getName')
-                ->will($this->returnValue($name));
-        }
-        if ($class !== null) {
-            $config->expects($this->any())
-                ->method('getClass')
-                ->will($this->returnValue($class));
-        }
-
-        return $config;
-    }
-
     public function testApply()
     {
         $request = new Request(array(), array(), array('start' => '2012-07-21 00:00:00'));
@@ -97,5 +75,27 @@ class DateTimeParamConverterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->converter->apply($request, $config));
         $this->assertNull($request->attributes->get('start'));
+    }
+
+    public function createConfiguration($class = null, $name = null)
+    {
+        $config = $this
+            ->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter')
+            ->setMethods(array('getClass', 'getAliasName', 'getOptions', 'getName', 'allowArray', 'isOptional'))
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        if ($name !== null) {
+            $config->expects($this->any())
+                   ->method('getName')
+                   ->will($this->returnValue($name));
+        }
+        if ($class !== null) {
+            $config->expects($this->any())
+                   ->method('getClass')
+                   ->will($this->returnValue($class));
+        }
+
+        return $config;
     }
 }

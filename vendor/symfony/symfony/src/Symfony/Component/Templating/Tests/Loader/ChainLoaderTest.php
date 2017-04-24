@@ -21,6 +21,13 @@ class ChainLoaderTest extends TestCase
     protected $loader1;
     protected $loader2;
 
+    protected function setUp()
+    {
+        $fixturesPath = realpath(__DIR__.'/../Fixtures/');
+        $this->loader1 = new FilesystemLoader($fixturesPath.'/null/%name%');
+        $this->loader2 = new FilesystemLoader($fixturesPath.'/templates/%name%');
+    }
+
     public function testConstructor()
     {
         $loader = new ProjectTemplateLoader1(array($this->loader1, $this->loader2));
@@ -44,13 +51,6 @@ class ChainLoaderTest extends TestCase
             $loader->load(new TemplateReference('foo.php', 'php')),
             '->load() returns a FileStorage if the template exists'
         );
-    }
-
-    protected function setUp()
-    {
-        $fixturesPath = realpath(__DIR__ . '/../Fixtures/');
-        $this->loader1 = new FilesystemLoader($fixturesPath . '/null/%name%');
-        $this->loader2 = new FilesystemLoader($fixturesPath . '/templates/%name%');
     }
 }
 

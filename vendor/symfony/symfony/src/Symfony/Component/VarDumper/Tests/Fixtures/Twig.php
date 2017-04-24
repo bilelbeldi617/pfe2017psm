@@ -1,7 +1,6 @@
 <?php
 
 /* foo.twig */
-
 class __TwigTemplate_VarDumperFixture_u75a09 extends Twig_Template
 {
     private $filename;
@@ -14,6 +13,12 @@ class __TwigTemplate_VarDumperFixture_u75a09 extends Twig_Template
         $this->parent = false;
         $this->blocks = array();
         $this->filename = $filename;
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        // line 2
+        throw new \Exception('Foobar');
     }
 
     public function getTemplateName()
@@ -29,11 +34,5 @@ class __TwigTemplate_VarDumperFixture_u75a09 extends Twig_Template
     public function getSourceContext()
     {
         return new Twig_Source("   foo bar\n     twig source\n\n", 'foo.twig', false === $this->filename ? null : ($this->filename ?: 'bar.twig'));
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        // line 2
-        throw new \Exception('Foobar');
     }
 }

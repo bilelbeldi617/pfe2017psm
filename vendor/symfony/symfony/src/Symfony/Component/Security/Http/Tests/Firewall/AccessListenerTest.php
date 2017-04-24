@@ -28,26 +28,30 @@ class AccessListenerTest extends TestCase
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(array('foo' => 'bar'), null)));
+            ->will($this->returnValue(array(array('foo' => 'bar'), null)))
+        ;
 
         $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
         $token
             ->expects($this->any())
             ->method('isAuthenticated')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
         $tokenStorage
             ->expects($this->any())
             ->method('getToken')
-            ->will($this->returnValue($token));
+            ->will($this->returnValue($token))
+        ;
 
         $accessDecisionManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface')->getMock();
         $accessDecisionManager
             ->expects($this->once())
             ->method('decide')
             ->with($this->equalTo($token), $this->equalTo(array('foo' => 'bar')), $this->equalTo($request))
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $listener = new AccessListener(
             $tokenStorage,
@@ -60,7 +64,8 @@ class AccessListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
 
         $listener->handle($event);
     }
@@ -74,43 +79,50 @@ class AccessListenerTest extends TestCase
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(array('foo' => 'bar'), null)));
+            ->will($this->returnValue(array(array('foo' => 'bar'), null)))
+        ;
 
         $notAuthenticatedToken = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
         $notAuthenticatedToken
             ->expects($this->any())
             ->method('isAuthenticated')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $authenticatedToken = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
         $authenticatedToken
             ->expects($this->any())
             ->method('isAuthenticated')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $authManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface')->getMock();
         $authManager
             ->expects($this->once())
             ->method('authenticate')
             ->with($this->equalTo($notAuthenticatedToken))
-            ->will($this->returnValue($authenticatedToken));
+            ->will($this->returnValue($authenticatedToken))
+        ;
 
         $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
         $tokenStorage
             ->expects($this->any())
             ->method('getToken')
-            ->will($this->returnValue($notAuthenticatedToken));
+            ->will($this->returnValue($notAuthenticatedToken))
+        ;
         $tokenStorage
             ->expects($this->once())
             ->method('setToken')
-            ->with($this->equalTo($authenticatedToken));
+            ->with($this->equalTo($authenticatedToken))
+        ;
 
         $accessDecisionManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface')->getMock();
         $accessDecisionManager
             ->expects($this->once())
             ->method('decide')
             ->with($this->equalTo($authenticatedToken), $this->equalTo(array('foo' => 'bar')), $this->equalTo($request))
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $listener = new AccessListener(
             $tokenStorage,
@@ -123,7 +135,8 @@ class AccessListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
 
         $listener->handle($event);
     }
@@ -137,18 +150,21 @@ class AccessListenerTest extends TestCase
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(null, null)));
+            ->will($this->returnValue(array(null, null)))
+        ;
 
         $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
         $token
             ->expects($this->never())
-            ->method('isAuthenticated');
+            ->method('isAuthenticated')
+        ;
 
         $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
         $tokenStorage
             ->expects($this->any())
             ->method('getToken')
-            ->will($this->returnValue($token));
+            ->will($this->returnValue($token))
+        ;
 
         $listener = new AccessListener(
             $tokenStorage,
@@ -161,7 +177,8 @@ class AccessListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
 
         $listener->handle($event);
     }
@@ -175,7 +192,8 @@ class AccessListenerTest extends TestCase
         $tokenStorage
             ->expects($this->any())
             ->method('getToken')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $listener = new AccessListener(
             $tokenStorage,

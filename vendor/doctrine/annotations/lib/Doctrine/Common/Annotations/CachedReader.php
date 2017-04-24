@@ -58,28 +58,14 @@ final class CachedReader implements Reader
      * Constructor.
      *
      * @param Reader $reader
-     * @param Cache $cache
-     * @param bool $debug
+     * @param Cache  $cache
+     * @param bool   $debug
      */
     public function __construct(Reader $reader, Cache $cache, $debug = false)
     {
         $this->delegate = $reader;
         $this->cache = $cache;
-        $this->debug = (boolean)$debug;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getClassAnnotation(\ReflectionClass $class, $annotationName)
-    {
-        foreach ($this->getClassAnnotations($class) as $annot) {
-            if ($annot instanceof $annotationName) {
-                return $annot;
-            }
-        }
-
-        return null;
+        $this->debug = (boolean) $debug;
     }
 
     /**
@@ -102,57 +88,37 @@ final class CachedReader implements Reader
     }
 
     /**
-     * Fetches a value from the cache.
-     *
-     * @param string $rawCacheKey The cache key.
-     * @param \ReflectionClass $class The related class.
-     *
-     * @return mixed The cached value or false when the value is not in cache.
+     * {@inheritDoc}
      */
-    private function fetchFromCache($rawCacheKey, \ReflectionClass $class)
+    public function getClassAnnotation(\ReflectionClass $class, $annotationName)
     {
-        $cacheKey = $rawCacheKey . self::$CACHE_SALT;
-        if (($data = $this->cache->fetch($cacheKey)) !== false) {
-            if (!$this->debug || $this->isCacheFresh($cacheKey, $class)) {
-                return $data;
+        foreach ($this->getClassAnnotations($class) as $annot) {
+            if ($annot instanceof $annotationName) {
+                return $annot;
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * Checks if the cache is fresh.
-     *
-     * @param string $cacheKey
-     * @param \ReflectionClass $class
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    private function isCacheFresh($cacheKey, \ReflectionClass $class)
+    public function getPropertyAnnotations(\ReflectionProperty $property)
     {
-        if (false === $filename = $class->getFilename()) {
-            return true;
+        $class = $property->getDeclaringClass();
+        $cacheKey = $class->getName().'$'.$property->getName();
+
+        if (isset($this->loadedAnnotations[$cacheKey])) {
+            return $this->loadedAnnotations[$cacheKey];
         }
 
-        return $this->cache->fetch('[C]' . $cacheKey) >= filemtime($filename);
-    }
-
-    /**
-     * Saves a value to the cache.
-     *
-     * @param string $rawCacheKey The cache key.
-     * @param mixed $value The value.
-     *
-     * @return void
-     */
-    private function saveToCache($rawCacheKey, $value)
-    {
-        $cacheKey = $rawCacheKey . self::$CACHE_SALT;
-        $this->cache->save($cacheKey, $value);
-        if ($this->debug) {
-            $this->cache->save('[C]' . $cacheKey, time());
+        if (false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
+            $annots = $this->delegate->getPropertyAnnotations($property);
+            $this->saveToCache($cacheKey, $annots);
         }
+
+        return $this->loadedAnnotations[$cacheKey] = $annots;
     }
 
     /**
@@ -172,17 +138,17 @@ final class CachedReader implements Reader
     /**
      * {@inheritDoc}
      */
-    public function getPropertyAnnotations(\ReflectionProperty $property)
+    public function getMethodAnnotations(\ReflectionMethod $method)
     {
-        $class = $property->getDeclaringClass();
-        $cacheKey = $class->getName() . '$' . $property->getName();
+        $class = $method->getDeclaringClass();
+        $cacheKey = $class->getName().'#'.$method->getName();
 
         if (isset($this->loadedAnnotations[$cacheKey])) {
             return $this->loadedAnnotations[$cacheKey];
         }
 
         if (false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
-            $annots = $this->delegate->getPropertyAnnotations($property);
+            $annots = $this->delegate->getMethodAnnotations($method);
             $this->saveToCache($cacheKey, $annots);
         }
 
@@ -204,26 +170,6 @@ final class CachedReader implements Reader
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getMethodAnnotations(\ReflectionMethod $method)
-    {
-        $class = $method->getDeclaringClass();
-        $cacheKey = $class->getName() . '#' . $method->getName();
-
-        if (isset($this->loadedAnnotations[$cacheKey])) {
-            return $this->loadedAnnotations[$cacheKey];
-        }
-
-        if (false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
-            $annots = $this->delegate->getMethodAnnotations($method);
-            $this->saveToCache($cacheKey, $annots);
-        }
-
-        return $this->loadedAnnotations[$cacheKey] = $annots;
-    }
-
-    /**
      * Clears loaded annotations.
      *
      * @return void
@@ -231,5 +177,59 @@ final class CachedReader implements Reader
     public function clearLoadedAnnotations()
     {
         $this->loadedAnnotations = array();
+    }
+
+    /**
+     * Fetches a value from the cache.
+     *
+     * @param string           $rawCacheKey The cache key.
+     * @param \ReflectionClass $class       The related class.
+     *
+     * @return mixed The cached value or false when the value is not in cache.
+     */
+    private function fetchFromCache($rawCacheKey, \ReflectionClass $class)
+    {
+        $cacheKey = $rawCacheKey . self::$CACHE_SALT;
+        if (($data = $this->cache->fetch($cacheKey)) !== false) {
+            if (!$this->debug || $this->isCacheFresh($cacheKey, $class)) {
+                return $data;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Saves a value to the cache.
+     *
+     * @param string $rawCacheKey The cache key.
+     * @param mixed  $value       The value.
+     *
+     * @return void
+     */
+    private function saveToCache($rawCacheKey, $value)
+    {
+        $cacheKey = $rawCacheKey . self::$CACHE_SALT;
+        $this->cache->save($cacheKey, $value);
+        if ($this->debug) {
+            $this->cache->save('[C]'.$cacheKey, time());
+        }
+    }
+
+    /**
+     * Checks if the cache is fresh.
+     *
+     * @param string           $cacheKey
+     * @param \ReflectionClass $class
+     *
+     * @return boolean
+     */
+    private function isCacheFresh($cacheKey, \ReflectionClass $class)
+    {
+        if (false === $filename = $class->getFilename()) {
+            return true;
+        }
+
+        return $this->cache->fetch('[C]'.$cacheKey) >= filemtime($filename);
     }
 }

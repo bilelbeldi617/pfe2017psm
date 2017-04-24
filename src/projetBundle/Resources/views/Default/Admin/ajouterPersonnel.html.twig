@@ -5,26 +5,26 @@
 
     {% block script %}
         <script language="JavaScript">
-            $("document").ready(function () {
-                var matriculeRandom = Math.floor(Math.random() * 99999999);
+            $("document").ready(function(){
+               var matriculeRandom = Math.floor(Math.random()*99999999);
                 $("#matriculePersonnel").val(matriculeRandom);
-                $("#formAjouterPersonnel").submit(function () {
+                $("#formAjouterPersonnel").submit(function(){
                     console.log($("#formAjouterPersonnel").serialize());
                     $.ajax({
-                        url: "{{ path('ajouterPersonnelAJAX') }}",
+                       url: "{{ path('ajouterPersonnelAJAX') }}",
                         method: "POST",
                         data: $("#formAjouterPersonnel").serialize(),
-                        success: function (response) {
+                        success: function(response){
                             console.log(response);
                             response = JSON.parse(response);
-                            if (response.status == "inserted") {
+                            if(response.status == "inserted"){
                                 var message = "<div class='alert alert-success'>Ajout avec success</div>";
-                            } else {
+                            }else{
                                 var message = "<div class='alert alert-danger'>Echec de l'ajout</div>";
                             }
                             $("#messageContainer").html(message);
                         },
-                        error: function (erreur) {
+                        error : function(erreur){
                             console.log(erreur);
                         }
                     });
@@ -48,7 +48,7 @@
                                     {% for p in postes %}
                                         <option value="{{ p.id }}">{{ p.titrePoste }}</option>
                                     {% endfor %}
-                                </select></td>
+                            </select></td>
                         </tr>
                         <tr>
                             <td>Matricule</td>
@@ -79,7 +79,7 @@
                             <td><input type="email" name="emailPersonnel" id="emailPersonnel"></td>
                         </tr>
                         <tr>
-                            <td><input type="submit" value="Ajouter" id="btnSubmit" class="btn btn-primary"></td>
+                            <td><input type="submit" value="Ajouter" id="btnSubmit" class="btn btn-primary"> </td>
                             <td><input type="reset" value="Vider" class="btn btn-danger"></td>
                         </tr>
                     </table>

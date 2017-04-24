@@ -58,7 +58,7 @@ class ClassMetadataFactoryTest extends DoctrineTestCase
     {
         $metadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $cache = new ArrayCache();
-        $cache->save(__NAMESPACE__ . '\ChildEntity$CLASSMETADATA', $metadata);
+        $cache->save(__NAMESPACE__. '\ChildEntity$CLASSMETADATA', $metadata);
 
         $this->cmf->setCacheDriver($cache);
 
@@ -73,7 +73,7 @@ class ClassMetadataFactoryTest extends DoctrineTestCase
 
         $loadedMetadata = $this->cmf->getMetadataFor(__NAMESPACE__ . '\ChildEntity');
 
-        $this->assertSame($loadedMetadata, $cache->fetch(__NAMESPACE__ . '\ChildEntity$CLASSMETADATA'));
+        $this->assertSame($loadedMetadata, $cache->fetch(__NAMESPACE__. '\ChildEntity$CLASSMETADATA'));
     }
 
     public function testGetAliasedMetadata()
@@ -146,11 +146,6 @@ class TestClassMetadataFactory extends AbstractClassMetadataFactory
         $this->metadata = $metadata;
     }
 
-    public function isTransient($class)
-    {
-        return true;
-    }
-
     protected function doLoadMetadata($class, $parent, $rootEntityFound, array $nonSuperclassParents)
     {
 
@@ -175,7 +170,6 @@ class TestClassMetadataFactory extends AbstractClassMetadataFactory
     {
         return $this->driver;
     }
-
     protected function wakeupReflection(ClassMetadata $class, ReflectionService $reflService)
     {
     }
@@ -191,11 +185,16 @@ class TestClassMetadataFactory extends AbstractClassMetadataFactory
 
     protected function onNotFoundMetadata($className)
     {
-        if (!$fallback = $this->fallbackCallback) {
+        if (! $fallback = $this->fallbackCallback) {
             return null;
         }
 
         return $fallback();
+    }
+
+    public function isTransient($class)
+    {
+        return true;
     }
 }
 

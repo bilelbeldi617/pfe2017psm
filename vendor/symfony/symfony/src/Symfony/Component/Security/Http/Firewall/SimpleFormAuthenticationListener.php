@@ -42,19 +42,19 @@ class SimpleFormAuthenticationListener extends AbstractAuthenticationListener
     /**
      * Constructor.
      *
-     * @param TokenStorageInterface $tokenStorage A TokenStorageInterface instance
-     * @param AuthenticationManagerInterface $authenticationManager An AuthenticationManagerInterface instance
+     * @param TokenStorageInterface                  $tokenStorage          A TokenStorageInterface instance
+     * @param AuthenticationManagerInterface         $authenticationManager An AuthenticationManagerInterface instance
      * @param SessionAuthenticationStrategyInterface $sessionStrategy
-     * @param HttpUtils $httpUtils An HttpUtilsInterface instance
-     * @param string $providerKey
-     * @param AuthenticationSuccessHandlerInterface $successHandler
-     * @param AuthenticationFailureHandlerInterface $failureHandler
-     * @param array $options An array of options for the processing of a
+     * @param HttpUtils                              $httpUtils             An HttpUtilsInterface instance
+     * @param string                                 $providerKey
+     * @param AuthenticationSuccessHandlerInterface  $successHandler
+     * @param AuthenticationFailureHandlerInterface  $failureHandler
+     * @param array                                  $options               An array of options for the processing of a
      *                                                                      successful, or failed authentication attempt
-     * @param LoggerInterface $logger A LoggerInterface instance
-     * @param EventDispatcherInterface $dispatcher An EventDispatcherInterface instance
-     * @param CsrfTokenManagerInterface $csrfTokenManager A CsrfTokenManagerInterface instance
-     * @param SimpleFormAuthenticatorInterface $simpleAuthenticator A SimpleFormAuthenticatorInterface instance
+     * @param LoggerInterface                        $logger                A LoggerInterface instance
+     * @param EventDispatcherInterface               $dispatcher            An EventDispatcherInterface instance
+     * @param CsrfTokenManagerInterface              $csrfTokenManager      A CsrfTokenManagerInterface instance
+     * @param SimpleFormAuthenticatorInterface       $simpleAuthenticator   A SimpleFormAuthenticatorInterface instance
      *
      * @throws \InvalidArgumentException In case no simple authenticator is provided
      * @throws InvalidArgumentException  In case an invalid CSRF token manager is passed
@@ -76,7 +76,7 @@ class SimpleFormAuthenticationListener extends AbstractAuthenticationListener
                 throw new \InvalidArgumentException(sprintf('You should only define an option for one of "intention" or "csrf_token_id" for the "%s". Use the "csrf_token_id" as it replaces "intention".', __CLASS__));
             }
 
-            @trigger_error('The "intention" option for the ' . __CLASS__ . ' is deprecated since version 2.8 and will be removed in 3.0. Use the "csrf_token_id" option instead.', E_USER_DEPRECATED);
+            @trigger_error('The "intention" option for the '.__CLASS__.' is deprecated since version 2.8 and will be removed in 3.0. Use the "csrf_token_id" option instead.', E_USER_DEPRECATED);
 
             $options['csrf_token_id'] = $options['intention'];
         }

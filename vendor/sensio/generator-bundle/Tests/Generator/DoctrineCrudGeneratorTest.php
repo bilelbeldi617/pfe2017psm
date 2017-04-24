@@ -29,17 +29,17 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/post/edit.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
         $files = array(
             'Resources/config/routing/post.xml',
         );
         foreach ($files as $file) {
-            $this->assertFalse(file_exists($this->tmpDir . '/' . $file), sprintf('%s has not been generated', $file));
+            $this->assertFalse(file_exists($this->tmpDir.'/'.$file), sprintf('%s has not been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
         $strings = array(
             'namespace Foo\BarBundle\Controller;',
             'public function indexAction',
@@ -50,33 +50,6 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
         foreach ($strings as $string) {
             $this->assertContains($string, $content);
         }
-    }
-
-    protected function getGenerator()
-    {
-        $generator = new DoctrineCrudGenerator($this->filesystem, $this->tmpDir);
-        $generator->setSkeletonDirs(__DIR__ . '/../../Resources/skeleton');
-
-        return $generator;
-    }
-
-    protected function getBundle()
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
-        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
-        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
-
-        return $bundle;
-    }
-
-    public function getMetadata()
-    {
-        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
-        $metadata->identifier = array('id');
-        $metadata->fieldMappings = array('title' => array('type' => 'string'));
-
-        return $metadata;
     }
 
     public function testGenerateXml()
@@ -91,7 +64,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/post/show.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
         $files = array(
@@ -100,10 +73,10 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/post/edit.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertFalse(file_exists($this->tmpDir . '/' . $file), sprintf('%s has not been generated', $file));
+            $this->assertFalse(file_exists($this->tmpDir.'/'.$file), sprintf('%s has not been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
         $strings = array(
             'namespace Foo\BarBundle\Controller;',
             'public function indexAction',
@@ -113,7 +86,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             $this->assertContains($string, $content);
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
         $strings = array(
             'public function newAction',
             'public function editAction',
@@ -137,7 +110,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/post/edit.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
         $files = array(
@@ -145,10 +118,10 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/config/routing/post.xml',
         );
         foreach ($files as $file) {
-            $this->assertFalse(file_exists($this->tmpDir . '/' . $file), sprintf('%s has not been generated', $file));
+            $this->assertFalse(file_exists($this->tmpDir.'/'.$file), sprintf('%s has not been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
         $strings = array(
             'namespace Foo\BarBundle\Controller;',
             'public function indexAction',
@@ -173,7 +146,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/post/show.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
         $files = array(
@@ -183,10 +156,10 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/post/edit.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertFalse(file_exists($this->tmpDir . '/' . $file), sprintf('%s has not been generated', $file));
+            $this->assertFalse(file_exists($this->tmpDir.'/'.$file), sprintf('%s has not been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
         $strings = array(
             'namespace Foo\BarBundle\Controller;',
             'public function indexAction',
@@ -199,7 +172,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             $this->assertContains($string, $content);
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
         $strings = array(
             'public function newAction',
             'public function editAction',
@@ -222,10 +195,10 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'Resources/views/blog/post/edit.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/Blog/PostController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/Blog/PostController.php');
         $strings = array(
             'namespace Foo\BarBundle\Controller\Blog;',
             '@Route("/blog_post")', // Controller level
@@ -283,5 +256,32 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             array('/{foo}/foo/{bar}/bar/', 'foo_bar'),
             array('/{foo}/foo/{bar}/bar//', 'foo_bar'),
         );
+    }
+
+    protected function getGenerator()
+    {
+        $generator = new DoctrineCrudGenerator($this->filesystem, $this->tmpDir);
+        $generator->setSkeletonDirs(__DIR__.'/../../Resources/skeleton');
+
+        return $generator;
+    }
+
+    protected function getBundle()
+    {
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
+        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
+        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
+
+        return $bundle;
+    }
+
+    public function getMetadata()
+    {
+        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
+        $metadata->identifier = array('id');
+        $metadata->fieldMappings = array('title' => array('type' => 'string'));
+
+        return $metadata;
     }
 }

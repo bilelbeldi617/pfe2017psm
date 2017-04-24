@@ -40,6 +40,37 @@ class LegacyExecutionContextTest extends TestCase
      */
     private $context;
 
+    protected function setUp()
+    {
+        $this->visitor = $this->getMockBuilder('Symfony\Component\Validator\ValidationVisitor')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->violations = new ConstraintViolationList();
+        $this->metadata = $this->getMockBuilder('Symfony\Component\Validator\MetadataInterface')->getMock();
+        $this->metadataFactory = $this->getMockBuilder('Symfony\Component\Validator\MetadataFactoryInterface')->getMock();
+        $this->globalContext = $this->getMockBuilder('Symfony\Component\Validator\GlobalExecutionContextInterface')->getMock();
+        $this->globalContext->expects($this->any())
+            ->method('getRoot')
+            ->will($this->returnValue('Root'));
+        $this->globalContext->expects($this->any())
+            ->method('getViolations')
+            ->will($this->returnValue($this->violations));
+        $this->globalContext->expects($this->any())
+            ->method('getVisitor')
+            ->will($this->returnValue($this->visitor));
+        $this->globalContext->expects($this->any())
+            ->method('getMetadataFactory')
+            ->will($this->returnValue($this->metadataFactory));
+        $this->translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
+        $this->context = new ExecutionContext($this->globalContext, $this->translator, self::TRANS_DOMAIN, $this->metadata, 'currentValue', 'Group', 'foo.bar');
+    }
+
+    protected function tearDown()
+    {
+        $this->globalContext = null;
+        $this->context = null;
+    }
+
     public function testInit()
     {
         $this->assertCount(0, $this->context->getViolations());
@@ -295,37 +326,6 @@ class LegacyExecutionContextTest extends TestCase
         }
 
         $this->assertEquals($expectedViolationPaths, $violationPaths);
-    }
-
-    protected function setUp()
-    {
-        $this->visitor = $this->getMockBuilder('Symfony\Component\Validator\ValidationVisitor')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->violations = new ConstraintViolationList();
-        $this->metadata = $this->getMockBuilder('Symfony\Component\Validator\MetadataInterface')->getMock();
-        $this->metadataFactory = $this->getMockBuilder('Symfony\Component\Validator\MetadataFactoryInterface')->getMock();
-        $this->globalContext = $this->getMockBuilder('Symfony\Component\Validator\GlobalExecutionContextInterface')->getMock();
-        $this->globalContext->expects($this->any())
-            ->method('getRoot')
-            ->will($this->returnValue('Root'));
-        $this->globalContext->expects($this->any())
-            ->method('getViolations')
-            ->will($this->returnValue($this->violations));
-        $this->globalContext->expects($this->any())
-            ->method('getVisitor')
-            ->will($this->returnValue($this->visitor));
-        $this->globalContext->expects($this->any())
-            ->method('getMetadataFactory')
-            ->will($this->returnValue($this->metadataFactory));
-        $this->translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
-        $this->context = new ExecutionContext($this->globalContext, $this->translator, self::TRANS_DOMAIN, $this->metadata, 'currentValue', 'Group', 'foo.bar');
-    }
-
-    protected function tearDown()
-    {
-        $this->globalContext = null;
-        $this->context = null;
     }
 }
 

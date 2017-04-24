@@ -50,7 +50,7 @@ class ObjectWithXmlRootNamespace
      * @Type("string")
      */
     private $author;
-
+    
     /**
      * @Type("string")
      * @XmlAttribute

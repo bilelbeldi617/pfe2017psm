@@ -18,169 +18,173 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @Route("/Admin", name="adminController")
  */
+
+
 class forAdminController extends Controller
 {
+
+    function SecurityManager(){
+        $user = $this->getRequest()->getSession()->get('user') ;
+        if ($user==null)
+            return false ; else return true ;
+    }
+
 
     /**
      * @Route("/affecterManuellement", name="affecterManuellement")
      */
-    public function affecterManuellementAction(Request $request)
-    {
+    public function affecterManuellementAction(Request $request){
         $session = $request->getSession();
         $annee = $session->get("anneeScolaireCourante");
 
         $eleves = $this->getDoctrine()->getManager()->getRepository("projetBundle:Eleve")->findAll();
-        $listEleves = array();
-        foreach ($eleves as $e) {
-            $mawjoud = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findOneBy(array("eleve" => $e, "anneeScolaire" => $annee));
-            if ($mawjoud == null) {
+        $listEleves =  array() ;
+        foreach ($eleves as $e){
+            $mawjoud = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findOneBy(array("eleve"=>$e, "anneeScolaire"=>$annee));
+            if($mawjoud == null){
 
 
-                $eleve = new Eleve();
-                $eleve->setParent($e->getParent());
-                $eleve->setPrenomEleve($e->getPrenomEleve());
-                $eleve->setNomEleve($e->getNomEleve());
-                $eleve->setMatriculeEleve($e->getMatriculeEleve());
-                $eleve->setNiveauEleve($e->getNiveauEleve());
-                $dateNaissance = new \DateTime("now");
-                $dateNaissance = $e->getDateNaissanceEleve();
+
+            $eleve = new Eleve() ;
+            $eleve->setParent($e->getParent()) ;
+            $eleve->setPrenomEleve($e->getPrenomEleve()) ;
+            $eleve->setNomEleve($e->getNomEleve()) ;
+            $eleve->setMatriculeEleve($e->getMatriculeEleve()) ;
+            $eleve->setNiveauEleve($e->getNiveauEleve());
+            $dateNaissance = new \DateTime("now");
+            $dateNaissance = $e->getDateNaissanceEleve();
                 $eleve->setSexeEleve($e->getSexeEleve());
 
-                $eleve->setDateNaissanceEleve($dateNaissance->format("d-m-Y"));
+            $eleve->setDateNaissanceEleve($dateNaissance->format("d-m-Y")) ;
 
-                $listEleves[] = $eleve;
+            $listEleves[]=$eleve ;
 
             }
         }
 
 
-        return $this->render("@projet/Default/Admin/affecterManuellement.html.twig", array("listEleves" => $listEleves));
+
+
+
+        return $this->render("@projet/Default/Admin/affecterManuellement.html.twig", array("listEleves"=>$listEleves));
     }
 
     /**
      * @Route("/affecterAutomatiquement", name="affecterAutomatiquement")
      */
-    public function affecterAutomatiquementAction(Request $request)
-    {
+    public function affecterAutomatiquementAction(Request $request){
         return $this->render("@projet/Default/Admin/AffecterAutomatiquement.html.twig");
     }
+
 
     /**
      * @Route("/payer", name="payer")
      */
-    public function payerAction(Request $request)
-    {
+    public function payerAction(Request $request){
 
         $id = $request->get("idPaiement");
         $paiement = new Paiement();
-        $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $id));
+        $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$id));
         $tranche = new Tranche();
-        $tranche = $this->getDoctrine()->getRepository("projetBundle:Tranche")->findOneBy(array("paiement" => $paiement));
-        if ($tranche != null) {
-            if ($tranche->getMontantTranche() == $paiement->getTotalePaiement() / 2) {
+        $tranche = $this->getDoctrine()->getRepository("projetBundle:Tranche")->findOneBy(array("paiement"=>$paiement));
+        if($tranche != null){
+            if($tranche->getMontantTranche() == $paiement->getTotalePaiement() /2){
 
-                return $this->render("@projet/Default/Admin/payer.html.twig", array("paiement" => $paiement, "typePaiement" => "tranches"));
+                return $this->render("@projet/Default/Admin/payer.html.twig", array("paiement"=>$paiement, "typePaiement"=>"tranches"));
             }
-        } else {
-            return $this->render("@projet/Default/Admin/payer.html.twig", array("paiement" => $paiement));
+        }else{
+            return $this->render("@projet/Default/Admin/payer.html.twig", array("paiement"=>$paiement));
         }
 
 
-        return $this->render("@projet/Default/Admin/payer.html.twig", array("paiement" => $paiement));
+        return $this->render("@projet/Default/Admin/payer.html.twig", array("paiement"=>$paiement));
     }
 
     /**
      * @Route("/consulterPaiements", name="consulterPaiements")
      */
-    public function consulterPaiementsAction(Request $request)
-    {
+    public function consulterPaiementsAction(Request $request){
 
         $id = $request->get("idParent");
         $parent = new ParentEleve();
-        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id" => $id));
-        $eleves = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("parent" => $parent));
+        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id"=>$id));
+        $eleves = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("parent"=>$parent));
         $listPaiements = array();
-        foreach ($eleves as $e) {
+        foreach($eleves as $e){
             $paiement = new Paiement();
-            $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findBy(array("eleve" => $e));
-            foreach ($paiement as $p) {
+            $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findBy(array("eleve"=>$e));
+            foreach($paiement as $p){
                 $listPaiements[] = $p;
             }
         }
 
-        return $this->render("@projet/Default/Admin/consulterPaiements.html.twig", array("listPaiements" => $listPaiements));
+        return $this->render("@projet/Default/Admin/consulterPaiements.html.twig", array("listPaiements"=>$listPaiements));
     }
 
     /**
      * @Route("/listerParents", name="listerParents")
      */
-    public function listerParentsAction()
-    {
+    public function listerParentsAction(){
         $parents = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findAll();
         $listParent = array();
-        foreach ($parents as $p) {
+        foreach($parents as $p){
             $listParent[] = $p;
         }
 
-        return $this->render("@projet/Default/Admin/listerParents.html.twig", array("listParent" => $listParent));
+        return $this->render("@projet/Default/Admin/listerParents.html.twig", array("listParent"=>$listParent));
     }
 
     /**
      * @Route("/affecter", name="affecter")
      */
-    public function affecterAction(Request $request)
-    {
+    public function affecterAction(Request $request){
         $matricule = $request->get("matEleve");
         $eleve = new Eleve();
-        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve" => $matricule));
-        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe" => $eleve->getNiveauEleve()));
+        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve"=>$matricule));
+        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe"=>$eleve->getNiveauEleve()));
 
         $listGroupes = array();
 
-        foreach ($groupes as $g) {
-            $gr = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findBy(array("groupe" => $g->getId()));
+        foreach($groupes as $g){
+            $gr = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findBy(array("groupe"=>$g->getId()));
             $nbrEleves = count($gr);
             $g->setNombreEleve($nbrEleves);
             $listGroupes[] = $g;
         }
 
-        return $this->render("@projet/Default/Admin/affecter.html.twig", array("eleve" => $eleve, "listGroupes" => $listGroupes));
+        return $this->render("@projet/Default/Admin/affecter.html.twig", array("eleve"=>$eleve, "listGroupes"=>$listGroupes));
     }
+
 
     /**
      * @Route("/", name="dashAdmin")
      */
     public function indexAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
-            return $this->redirect($this->generateUrl("login"));
+      if(!$this->SecurityManager()){
+          return $this->redirect($this->generateUrl("login"));
 
-        } else {
-
+      }else{
+            
             return $this->render('projetBundle:Default/Admin:index.html.twig');
-        }
+      }
     }
 
-    function SecurityManager()
-    {
-        $user = $this->getRequest()->getSession()->get('user');
-        if ($user == null)
-            return false; else return true;
-    }
+
 
     /**
      * @Route("/ajouterEleve", name="ajouterEleve")
      */
     public function listerEleveAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
-            $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
-            $parents = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findAll();
+        }else{
+               $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll() ;
+               $parents = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findAll() ;
             $frais = $this->getDoctrine()->getRepository("projetBundle:Frais")->findAll();
-            return $this->render("@projet/Default/Admin/ajouterEleve.html.twig", array("groupes" => $groupes, "parents" => $parents, "frais" => $frais));
+            return $this->render("@projet/Default/Admin/ajouterEleve.html.twig", array("groupes"=>$groupes, "parents"=>$parents, "frais"=>$frais)) ;
 
         }
     }
@@ -191,13 +195,13 @@ class forAdminController extends Controller
      */
     public function ajouterEleveAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
-            $annees = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll();
-            $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
-            return $this->render("@projet/Default/Admin/listerEleve.html.twig", array("groupes" => $groupes, "annees" => $annees));
+        }else{
+            $annees = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll() ;
+            $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll() ;
+             return $this->render("@projet/Default/Admin/listerEleve.html.twig", array("groupes"=>$groupes, "annees"=>$annees)) ;
 
         }
     }
@@ -207,13 +211,13 @@ class forAdminController extends Controller
      */
     public function ajouterEnseignantAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll() ;
             $grades = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
-            return $this->render("@projet/Default/Admin/ajouterEnseignant.html.twig", array("grades" => $grades));
+            return $this->render("@projet/Default/Admin/ajouterEnseignant.html.twig", array("grades"=>$grades)) ;
 
         }
     }
@@ -224,13 +228,13 @@ class forAdminController extends Controller
      */
     public function listerEnseignantAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             $grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
 
-            return $this->render("@projet/Default/Admin/listerEnseignant.html.twig", array("grades" => $grade));
+            return $this->render("@projet/Default/Admin/listerEnseignant.html.twig", array("grades"=>$grade)) ;
 
         }
     }
@@ -241,14 +245,14 @@ class forAdminController extends Controller
      */
     public function creerGroupeAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
 
             $annees = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll();
 
-            return $this->render("@projet/Default/Admin/creerGroupe.html.twig", array("annees" => $annees));
+            return $this->render("@projet/Default/Admin/creerGroupe.html.twig", array("annees"=>$annees)) ;
 
         }
     }
@@ -259,19 +263,20 @@ class forAdminController extends Controller
      */
     public function listerGroupeAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
             $annees = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll();
 
 
-            return $this->render("@projet/Default/Admin/listerGroupe.html.twig", array("groupes" => $groupes, "annees" => $annees));
+            return $this->render("@projet/Default/Admin/listerGroupe.html.twig", array("groupes"=>$groupes, "annees"=>$annees)) ;
 
         }
     }
+
 
 
     /**
@@ -279,25 +284,25 @@ class forAdminController extends Controller
      */
     public function affecterEleveAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
             $nbrElevesList = array();
-            for ($i = 0; $i < 6; $i++) {
-                $eleves = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("niveauEleve" => $i + 1, "groupe" => null));
+            for($i=0;$i<6;$i++){
+                $eleves = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("niveauEleve"=>$i+1, "groupe"=>null));
                 $nbr = count($eleves);
                 $nbrElevesList[] = $nbr;
             }
             $nbrGroupeList = array();
-            for ($j = 0; $j < 6; $j++) {
+            for($j=0;$j<6;$j++){
                 //echo $nbrElevesList[$j];
                 //die;
                 $nbrGroupe = 0;
-                $nbrGroupe = $nbrElevesList[$j] / 30;
-                if ($nbrElevesList[$j] % 30 > $nbrGroupe * 5) {
+                $nbrGroupe = $nbrElevesList[$j] /30;
+                if($nbrElevesList[$j] % 30 > $nbrGroupe*5){
                     $nbrGroupe++;
                 }
 
@@ -305,8 +310,8 @@ class forAdminController extends Controller
             }
 
             $nbrGroupeCreeList = array();
-            for ($i = 1; $i < 7; $i++) {
-                $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe" => $i));
+            for($i=1;$i<7;$i++){
+                $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe"=>$i));
                 $nbrGroupeCree = count($groupes);
                 $nbrGroupeCreeList[] = $nbrGroupeCree;
             }
@@ -314,7 +319,8 @@ class forAdminController extends Controller
             $niveaux = array(1, 2, 3, 4, 5, 6);
 
 
-            return $this->render("@projet/Default/Admin/affecterEleve.html.twig", array("niveaux" => $niveaux, "nbrEleves" => $nbrElevesList, "nbrGroupes" => $nbrGroupeList, "nbrGroupeCree" => $nbrGroupeCreeList));
+
+            return $this->render("@projet/Default/Admin/affecterEleve.html.twig", array("niveaux"=>$niveaux,"nbrEleves"=>$nbrElevesList, "nbrGroupes"=>$nbrGroupeList, "nbrGroupeCree"=>$nbrGroupeCreeList)) ;
 
         }
     }
@@ -323,35 +329,34 @@ class forAdminController extends Controller
     /**
      * @Route("/genererBulletins", name="genererBulletins")
      */
-    public function genererBulletinAction(Request $request)
-    {
+    public function genererBulletinAction(Request $request){
         $matricule = $request->get("matEleve");
         //echo $matricule;
 
-        $e = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve" => $matricule));
+        $e = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve"=>$matricule));
         //echo $e->getNomEleve();
-        $examens = $this->getDoctrine()->getRepository("projetBundle:Examen")->findBy(array("eleve" => $e));
-        if ($examens == null) {
-            return $this->render("@projet/Default/Admin/afficherBulletin.html.twig", array("message" => "Cet élève n'a passé aucun examen !"));
+        $examens = $this->getDoctrine()->getRepository("projetBundle:Examen")->findBy(array("eleve"=>$e));
+        if ($examens==null){
+            return $this->render("@projet/Default/Admin/afficherBulletin.html.twig", array("message"=>"Cet élève n'a passé aucun examen !"));
 
         }
         $idGroupe = $e->getGroupe();
-        $matiere = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("groupe" => $idGroupe));
+        $matiere = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("groupe"=>$idGroupe));
         $listResult = array();
         $note = array();
         $moyenneGenerale = 0;
-        foreach ($matiere as $mat) {
+        foreach($matiere as $mat){
             $result = new Resultat();
-            $notes = $this->getDoctrine()->getRepository("projetBundle:Examen")->findBy(array("matiere" => $mat, "eleve" => $e));
+            $notes = $this->getDoctrine()->getRepository("projetBundle:Examen")->findBy(array("matiere"=>$mat, "eleve"=>$e));
             $somme = 0;
 
-            foreach ($notes as $n) {
+            foreach($notes as $n){
                 $note[] = $n->getNoteExamen();
                 $result->setNote($note);
-                $somme += $n->getNoteExamen();
+                $somme+=$n->getNoteExamen();
             }
-            $moyenne = $somme / count($notes);
-            $moyenneGenerale += $moyenne;
+            $moyenne = $somme/count($notes);
+            $moyenneGenerale+= $moyenne;
             $result->setMoyenne($moyenne);
             $result->setNomEnseignant($mat->getEnseignant());
             $result->setMatiere($mat->getLibelleMatiere());
@@ -359,9 +364,9 @@ class forAdminController extends Controller
             $note = null;
 
         }
-        $nomPrenomEleve = $e->getNomEleve() . " " . $e->getPrenomEleve();
+               $nomPrenomEleve = $e->getNomEleve()." ".$e->getPrenomEleve() ;
 
-        return $this->render("@projet/Default/Admin/afficherBulletin.html.twig", array("matriculeEleve" => $matricule, "nomPrenomEleve" => $nomPrenomEleve, "resultat" => $listResult, "moyenneGenerale" => $moyenneGenerale / count($matiere)));
+        return $this->render("@projet/Default/Admin/afficherBulletin.html.twig", array("matriculeEleve"=> $matricule,"nomPrenomEleve"=>$nomPrenomEleve,"resultat"=>$listResult, "moyenneGenerale"=>$moyenneGenerale/count($matiere)));
 
     }
 
@@ -370,14 +375,14 @@ class forAdminController extends Controller
      */
     public function creerEmploiAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
 
-            return $this->render("@projet/Default/Admin/creerEmploi.html.twig");
+            return $this->render("@projet/Default/Admin/creerEmploi.html.twig") ;
 
         }
     }
@@ -388,20 +393,20 @@ class forAdminController extends Controller
      */
     public function genererBulletinGroupeAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             $idGroupe = $request->get("idGroupe");
-            $listEleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("groupe" => $idGroupe));
-            $listResultGroupe = array();
-            foreach ($listEleve as $e) {
+            $listEleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("groupe"=>$idGroupe));
+            $listResultGroupe = array() ;
+            foreach($listEleve as $e) {
 
                 //echo $e->getNomEleve();
                 $examens = $this->getDoctrine()->getRepository("projetBundle:Examen")->findBy(array("eleve" => $e));
                 if ($examens == null) {
 
-                    $listResultGroupe[] = null;
+                    $listResultGroupe[]=null ;
 
                 } else {
                     $idGroupe = $e->getGroupe();
@@ -433,16 +438,17 @@ class forAdminController extends Controller
                     $resultGroupe = new ResultatGroupe();
                     $resultGroupe->setEleve($e);
                     $resultGroupe->setListResultat($listResult);
-                    $resultGroupe->setMoyenneGeneral($moyenneGenerale / count($notes));
+                    $resultGroupe->setMoyenneGeneral($moyenneGenerale/count($notes)) ;
                     $listResultGroupe[] = $resultGroupe;
 
                 }
             }
-            return $this->render("@projet/Default/Admin/afficherBulletinGroupe.html.twig", array("listResultat" => $listResultGroupe));
+        return $this->render("@projet/Default/Admin/afficherBulletinGroupe.html.twig", array("listResultat"=>$listResultGroupe));
 
 
         }
     }
+
 
 
     /**
@@ -450,17 +456,21 @@ class forAdminController extends Controller
      */
     public function listerEmploisAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
 
-            return $this->render("@projet/Default/Admin/listerEmploi.html.twig");
+            return $this->render("@projet/Default/Admin/listerEmploi.html.twig") ;
 
         }
     }
+
+
+
+
 
 
     /**
@@ -468,14 +478,14 @@ class forAdminController extends Controller
      */
     public function annoncerJoursAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
 
-            return $this->render("@projet/Default/Admin/annoncerJours.html.twig");
+            return $this->render("@projet/Default/Admin/annoncerJours.html.twig") ;
 
         }
     }
@@ -486,18 +496,20 @@ class forAdminController extends Controller
      */
     public function ajouterPersonnelAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
             $postes = $this->getDoctrine()->getRepository("projetBundle:Poste")->findAll();
 
-            return $this->render("@projet/Default/Admin/ajouterPersonnel.html.twig", array("postes" => $postes));
+            return $this->render("@projet/Default/Admin/ajouterPersonnel.html.twig", array("postes"=>$postes)) ;
 
         }
     }
+
+
 
 
     /**
@@ -505,18 +517,22 @@ class forAdminController extends Controller
      */
     public function listerPersonnelsAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
             $postes = $this->getDoctrine()->getRepository("projetBundle:Poste")->findAll();
 
-            return $this->render("@projet/Default/Admin/listerPersonnels.html.twig", array("postes" => $postes));
+            return $this->render("@projet/Default/Admin/listerPersonnels.html.twig", array("postes"=>$postes)) ;
 
         }
     }
+
+
+
+
 
 
 }

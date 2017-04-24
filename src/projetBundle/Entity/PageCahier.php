@@ -22,6 +22,7 @@ class PageCahier
     private $id;
 
 
+
     /**
      * @var datetime
      *
@@ -34,14 +35,15 @@ class PageCahier
      * @ORM\ManyToOne(targetEntity="Matiere")
      *
      */
-    private $matiere;
+    private $matiere ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Groupe")
      * @ORM\JoinColumn(name="cahier", referencedColumnName="id")
      *
      */
-    private $cahier;
+    private $cahier ;
+
 
 
     /**
@@ -104,7 +106,7 @@ class PageCahier
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {

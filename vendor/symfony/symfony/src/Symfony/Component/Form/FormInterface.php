@@ -43,9 +43,9 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
     /**
      * Adds or replaces a child to the form.
      *
-     * @param FormInterface|string|int $child The FormInterface instance or the name of the child
-     * @param string|null $type The child's type, if a name was passed
-     * @param array $options The child's options, if a name was passed
+     * @param FormInterface|string|int $child   The FormInterface instance or the name of the child
+     * @param string|null              $type    The child's type, if a name was passed
+     * @param array                    $options The child's options, if a name was passed
      *
      * @return self
      *
@@ -96,7 +96,7 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
     /**
      * Returns the errors of this form.
      *
-     * @param bool $deep Whether to include errors of child forms as well
+     * @param bool $deep    Whether to include errors of child forms as well
      * @param bool $flatten Whether to flatten the list of errors in case
      *                      $deep is set to true
      *
@@ -270,7 +270,7 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
      * Submits data to the form, transforms and validates it.
      *
      * @param null|string|array $submittedData The submitted data
-     * @param bool $clearMissing Whether to set fields to NULL
+     * @param bool              $clearMissing  Whether to set fields to NULL
      *                                         when they are missing in the
      *                                         submitted data.
      *

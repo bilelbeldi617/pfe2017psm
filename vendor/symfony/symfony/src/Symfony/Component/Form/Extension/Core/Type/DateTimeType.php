@@ -163,8 +163,9 @@ class DateTimeType extends AbstractType
                         'time' => $timeParts,
                     )),
                 )))
-                ->add('date', __NAMESPACE__ . '\DateType', $dateOptions)
-                ->add('time', __NAMESPACE__ . '\TimeType', $timeOptions);
+                ->add('date', __NAMESPACE__.'\DateType', $dateOptions)
+                ->add('time', __NAMESPACE__.'\TimeType', $timeOptions)
+            ;
         }
 
         if ('string' === $options['input']) {

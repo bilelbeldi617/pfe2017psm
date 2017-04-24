@@ -25,7 +25,7 @@ class MinuteTransformer extends Transformer
      */
     public function format(\DateTime $dateTime, $length)
     {
-        $minuteOfHour = (int)$dateTime->format('i');
+        $minuteOfHour = (int) $dateTime->format('i');
 
         return $this->padLeft($minuteOfHour, $length);
     }
@@ -35,7 +35,7 @@ class MinuteTransformer extends Transformer
      */
     public function getReverseMatchingRegExp($length)
     {
-        return 1 === $length ? '\d{1,2}' : '\d{' . $length . '}';
+        return 1 === $length ? '\d{1,2}' : '\d{'.$length.'}';
     }
 
     /**
@@ -44,7 +44,7 @@ class MinuteTransformer extends Transformer
     public function extractDateOptions($matched, $length)
     {
         return array(
-            'minute' => (int)$matched,
+            'minute' => (int) $matched,
         );
     }
 }

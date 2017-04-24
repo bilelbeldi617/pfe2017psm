@@ -30,6 +30,82 @@ class TranslationDebugCommandTest extends TestCase
         $this->assertRegExp('/missing/', $tester->getDisplay());
     }
 
+    public function testDebugUnusedMessages()
+    {
+        $tester = $this->createCommandTester($this->getContainer(array(), array('foo' => 'foo')));
+        $tester->execute(array('locale' => 'en', 'bundle' => 'foo'));
+
+        $this->assertRegExp('/unused/', $tester->getDisplay());
+    }
+
+    public function testDebugFallbackMessages()
+    {
+        $tester = $this->createCommandTester($this->getContainer(array(), array('foo' => 'foo')));
+        $tester->execute(array('locale' => 'fr', 'bundle' => 'foo'));
+
+        $this->assertRegExp('/fallback/', $tester->getDisplay());
+    }
+
+    public function testNoDefinedMessages()
+    {
+        $tester = $this->createCommandTester($this->getContainer());
+        $tester->execute(array('locale' => 'fr', 'bundle' => 'test'));
+
+        $this->assertRegExp('/No defined or extracted messages for locale "fr"/', $tester->getDisplay());
+    }
+
+    public function testDebugDefaultDirectory()
+    {
+        $tester = $this->createCommandTester($this->getContainer(array('foo' => 'foo'), array('bar' => 'bar')));
+        $tester->execute(array('locale' => 'en'));
+
+        $this->assertRegExp('/missing/', $tester->getDisplay());
+        $this->assertRegExp('/unused/', $tester->getDisplay());
+    }
+
+    public function testDebugCustomDirectory()
+    {
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
+        $kernel->expects($this->once())
+            ->method('getBundle')
+            ->with($this->equalTo($this->translationDir))
+            ->willThrowException(new \InvalidArgumentException());
+
+        $tester = $this->createCommandTester($this->getContainer(array('foo' => 'foo'), array('bar' => 'bar'), $kernel));
+        $tester->execute(array('locale' => 'en', 'bundle' => $this->translationDir));
+
+        $this->assertRegExp('/missing/', $tester->getDisplay());
+        $this->assertRegExp('/unused/', $tester->getDisplay());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testDebugInvalidDirectory()
+    {
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
+        $kernel->expects($this->once())
+            ->method('getBundle')
+            ->with($this->equalTo('dir'))
+            ->will($this->throwException(new \InvalidArgumentException()));
+
+        $tester = $this->createCommandTester($this->getContainer(array(), array(), $kernel));
+        $tester->execute(array('locale' => 'en', 'bundle' => 'dir'));
+    }
+
+    protected function setUp()
+    {
+        $this->fs = new Filesystem();
+        $this->translationDir = sys_get_temp_dir().'/'.uniqid('sf2_translation', true);
+        $this->fs->mkdir($this->translationDir.'/Resources/translations');
+        $this->fs->mkdir($this->translationDir.'/Resources/views');
+    }
+
+    protected function tearDown()
+    {
+        $this->fs->remove($this->translationDir);
+    }
+
     /**
      * @return CommandTester
      */
@@ -111,84 +187,9 @@ class TranslationDebugCommandTest extends TestCase
         $bundle
             ->expects($this->any())
             ->method('getPath')
-            ->will($this->returnValue($path));
+            ->will($this->returnValue($path))
+        ;
 
         return $bundle;
-    }
-
-    public function testDebugUnusedMessages()
-    {
-        $tester = $this->createCommandTester($this->getContainer(array(), array('foo' => 'foo')));
-        $tester->execute(array('locale' => 'en', 'bundle' => 'foo'));
-
-        $this->assertRegExp('/unused/', $tester->getDisplay());
-    }
-
-    public function testDebugFallbackMessages()
-    {
-        $tester = $this->createCommandTester($this->getContainer(array(), array('foo' => 'foo')));
-        $tester->execute(array('locale' => 'fr', 'bundle' => 'foo'));
-
-        $this->assertRegExp('/fallback/', $tester->getDisplay());
-    }
-
-    public function testNoDefinedMessages()
-    {
-        $tester = $this->createCommandTester($this->getContainer());
-        $tester->execute(array('locale' => 'fr', 'bundle' => 'test'));
-
-        $this->assertRegExp('/No defined or extracted messages for locale "fr"/', $tester->getDisplay());
-    }
-
-    public function testDebugDefaultDirectory()
-    {
-        $tester = $this->createCommandTester($this->getContainer(array('foo' => 'foo'), array('bar' => 'bar')));
-        $tester->execute(array('locale' => 'en'));
-
-        $this->assertRegExp('/missing/', $tester->getDisplay());
-        $this->assertRegExp('/unused/', $tester->getDisplay());
-    }
-
-    public function testDebugCustomDirectory()
-    {
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
-        $kernel->expects($this->once())
-            ->method('getBundle')
-            ->with($this->equalTo($this->translationDir))
-            ->willThrowException(new \InvalidArgumentException());
-
-        $tester = $this->createCommandTester($this->getContainer(array('foo' => 'foo'), array('bar' => 'bar'), $kernel));
-        $tester->execute(array('locale' => 'en', 'bundle' => $this->translationDir));
-
-        $this->assertRegExp('/missing/', $tester->getDisplay());
-        $this->assertRegExp('/unused/', $tester->getDisplay());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testDebugInvalidDirectory()
-    {
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
-        $kernel->expects($this->once())
-            ->method('getBundle')
-            ->with($this->equalTo('dir'))
-            ->will($this->throwException(new \InvalidArgumentException()));
-
-        $tester = $this->createCommandTester($this->getContainer(array(), array(), $kernel));
-        $tester->execute(array('locale' => 'en', 'bundle' => 'dir'));
-    }
-
-    protected function setUp()
-    {
-        $this->fs = new Filesystem();
-        $this->translationDir = sys_get_temp_dir() . '/' . uniqid('sf2_translation', true);
-        $this->fs->mkdir($this->translationDir . '/Resources/translations');
-        $this->fs->mkdir($this->translationDir . '/Resources/views');
-    }
-
-    protected function tearDown()
-    {
-        $this->fs->remove($this->translationDir);
     }
 }

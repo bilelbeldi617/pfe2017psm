@@ -29,8 +29,8 @@ class ChoiceQuestion extends Question
      * Constructor.
      *
      * @param string $question The question to ask to the user
-     * @param array $choices The list of available choices
-     * @param mixed $default The default answer to return
+     * @param array  $choices  The list of available choices
+     * @param mixed  $default  The default answer to return
      */
     public function __construct($question, array $choices, $default = null)
     {
@@ -39,6 +39,84 @@ class ChoiceQuestion extends Question
         $this->choices = $choices;
         $this->setValidator($this->getDefaultValidator());
         $this->setAutocompleterValues($choices);
+    }
+
+    /**
+     * Returns available choices.
+     *
+     * @return array
+     */
+    public function getChoices()
+    {
+        return $this->choices;
+    }
+
+    /**
+     * Sets multiselect option.
+     *
+     * When multiselect is set to true, multiple choices can be answered.
+     *
+     * @param bool $multiselect
+     *
+     * @return $this
+     */
+    public function setMultiselect($multiselect)
+    {
+        $this->multiselect = $multiselect;
+        $this->setValidator($this->getDefaultValidator());
+
+        return $this;
+    }
+
+    /**
+     * Returns whether the choices are multiselect.
+     *
+     * @return bool
+     */
+    public function isMultiselect()
+    {
+        return $this->multiselect;
+    }
+
+    /**
+     * Gets the prompt for choices.
+     *
+     * @return string
+     */
+    public function getPrompt()
+    {
+        return $this->prompt;
+    }
+
+    /**
+     * Sets the prompt for choices.
+     *
+     * @param string $prompt
+     *
+     * @return $this
+     */
+    public function setPrompt($prompt)
+    {
+        $this->prompt = $prompt;
+
+        return $this;
+    }
+
+    /**
+     * Sets the error message for invalid values.
+     *
+     * The error message has a string placeholder (%s) for the invalid value.
+     *
+     * @param string $errorMessage
+     *
+     * @return $this
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+        $this->setValidator($this->getDefaultValidator());
+
+        return $this;
     }
 
     /**
@@ -96,7 +174,7 @@ class ChoiceQuestion extends Question
                     throw new InvalidArgumentException(sprintf($errorMessage, $value));
                 }
 
-                $multiselectChoices[] = (string)$result;
+                $multiselectChoices[] = (string) $result;
             }
 
             if ($multiselect) {
@@ -105,83 +183,5 @@ class ChoiceQuestion extends Question
 
             return current($multiselectChoices);
         };
-    }
-
-    /**
-     * Returns available choices.
-     *
-     * @return array
-     */
-    public function getChoices()
-    {
-        return $this->choices;
-    }
-
-    /**
-     * Returns whether the choices are multiselect.
-     *
-     * @return bool
-     */
-    public function isMultiselect()
-    {
-        return $this->multiselect;
-    }
-
-    /**
-     * Sets multiselect option.
-     *
-     * When multiselect is set to true, multiple choices can be answered.
-     *
-     * @param bool $multiselect
-     *
-     * @return $this
-     */
-    public function setMultiselect($multiselect)
-    {
-        $this->multiselect = $multiselect;
-        $this->setValidator($this->getDefaultValidator());
-
-        return $this;
-    }
-
-    /**
-     * Gets the prompt for choices.
-     *
-     * @return string
-     */
-    public function getPrompt()
-    {
-        return $this->prompt;
-    }
-
-    /**
-     * Sets the prompt for choices.
-     *
-     * @param string $prompt
-     *
-     * @return $this
-     */
-    public function setPrompt($prompt)
-    {
-        $this->prompt = $prompt;
-
-        return $this;
-    }
-
-    /**
-     * Sets the error message for invalid values.
-     *
-     * The error message has a string placeholder (%s) for the invalid value.
-     *
-     * @param string $errorMessage
-     *
-     * @return $this
-     */
-    public function setErrorMessage($errorMessage)
-    {
-        $this->errorMessage = $errorMessage;
-        $this->setValidator($this->getDefaultValidator());
-
-        return $this;
     }
 }

@@ -38,6 +38,19 @@ EOF;
         return $str;
     }
 
+    private function dumpChildren($parent, Twig_Profiler_Profile $profile, &$data)
+    {
+        foreach ($profile as $p) {
+            if ($p->isTemplate()) {
+                $name = $p->getTemplate();
+            } else {
+                $name = sprintf('%s::%s(%s)', $p->getTemplate(), $p->getType(), $p->getName());
+            }
+            $this->dumpProfile(sprintf('%s==>%s', $parent, $name), $p, $data);
+            $this->dumpChildren($name, $p, $data);
+        }
+    }
+
     private function dumpProfile($edge, Twig_Profiler_Profile $profile, &$data)
     {
         if (isset($data[$edge])) {
@@ -52,19 +65,6 @@ EOF;
                 'mu' => $profile->getMemoryUsage(),
                 'pmu' => $profile->getPeakMemoryUsage(),
             );
-        }
-    }
-
-    private function dumpChildren($parent, Twig_Profiler_Profile $profile, &$data)
-    {
-        foreach ($profile as $p) {
-            if ($p->isTemplate()) {
-                $name = $p->getTemplate();
-            } else {
-                $name = sprintf('%s::%s(%s)', $p->getTemplate(), $p->getType(), $p->getName());
-            }
-            $this->dumpProfile(sprintf('%s==>%s', $parent, $name), $p, $data);
-            $this->dumpChildren($name, $p, $data);
         }
     }
 }

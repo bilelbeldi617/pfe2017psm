@@ -28,7 +28,7 @@ class DynamicAsseticHelper extends AsseticHelper
      * Constructor.
      *
      * @param RouterHelper $routerHelper The router helper
-     * @param AssetFactory $factory The asset factory
+     * @param AssetFactory $factory      The asset factory
      */
     public function __construct(RouterHelper $routerHelper, AssetFactory $factory)
     {
@@ -40,7 +40,7 @@ class DynamicAsseticHelper extends AsseticHelper
     protected function getAssetUrl(AssetInterface $asset, $options = array())
     {
         return !method_exists($this->routerHelper, 'path')
-            ? $this->routerHelper->generate('_assetic_' . $options['name'])
-            : $this->routerHelper->path('_assetic_' . $options['name']);
+            ? $this->routerHelper->generate('_assetic_'.$options['name'])
+            : $this->routerHelper->path('_assetic_'.$options['name']);
     }
 }

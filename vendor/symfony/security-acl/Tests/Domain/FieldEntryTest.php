@@ -22,6 +22,24 @@ class FieldEntryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $ace->getField());
     }
 
+    public function testSerializeUnserialize()
+    {
+        $ace = $this->getAce();
+
+        $serialized = serialize($ace);
+        $uAce = unserialize($serialized);
+
+        $this->assertNull($uAce->getAcl());
+        $this->assertInstanceOf('Symfony\Component\Security\Acl\Model\SecurityIdentityInterface', $uAce->getSecurityIdentity());
+        $this->assertEquals($ace->getId(), $uAce->getId());
+        $this->assertEquals($ace->getField(), $uAce->getField());
+        $this->assertEquals($ace->getMask(), $uAce->getMask());
+        $this->assertEquals($ace->getStrategy(), $uAce->getStrategy());
+        $this->assertEquals($ace->isGranting(), $uAce->isGranting());
+        $this->assertEquals($ace->isAuditSuccess(), $uAce->isAuditSuccess());
+        $this->assertEquals($ace->isAuditFailure(), $uAce->isAuditFailure());
+    }
+
     protected function getAce($acl = null, $sid = null)
     {
         if (null === $acl) {
@@ -52,23 +70,5 @@ class FieldEntryTest extends \PHPUnit_Framework_TestCase
     protected function getSid()
     {
         return $this->getMock('Symfony\Component\Security\Acl\Model\SecurityIdentityInterface');
-    }
-
-    public function testSerializeUnserialize()
-    {
-        $ace = $this->getAce();
-
-        $serialized = serialize($ace);
-        $uAce = unserialize($serialized);
-
-        $this->assertNull($uAce->getAcl());
-        $this->assertInstanceOf('Symfony\Component\Security\Acl\Model\SecurityIdentityInterface', $uAce->getSecurityIdentity());
-        $this->assertEquals($ace->getId(), $uAce->getId());
-        $this->assertEquals($ace->getField(), $uAce->getField());
-        $this->assertEquals($ace->getMask(), $uAce->getMask());
-        $this->assertEquals($ace->getStrategy(), $uAce->getStrategy());
-        $this->assertEquals($ace->isGranting(), $uAce->isGranting());
-        $this->assertEquals($ace->isAuditSuccess(), $uAce->isAuditSuccess());
-        $this->assertEquals($ace->isAuditFailure(), $uAce->isAuditFailure());
     }
 }

@@ -9,30 +9,8 @@ class __TwigTemplate_7d05d7620a86ffbec2832833ca2327ceb94d16170d5eeb61f0af571dede
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "@Framework/Form/widget_attributes.html.php";
-    }
-
-    public function getDebugInfo()
-    {
-        return array(19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "@Framework/Form/widget_attributes.html.php", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\FrameworkBundle\\Resources\\views\\Form\\widget_attributes.html.php");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -52,5 +30,28 @@ class __TwigTemplate_7d05d7620a86ffbec2832833ca2327ceb94d16170d5eeb61f0af571dede
 <?php endif ?>
 <?php endforeach ?>
 ";
+    }
+
+    public function getTemplateName()
+    {
+        return "@Framework/Form/widget_attributes.html.php";
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "@Framework/Form/widget_attributes.html.php", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\FrameworkBundle\\Resources\\views\\Form\\widget_attributes.html.php");
     }
 }

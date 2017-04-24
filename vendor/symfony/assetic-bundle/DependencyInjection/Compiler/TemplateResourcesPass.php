@@ -49,10 +49,10 @@ class TemplateResourcesPass implements CompilerPassInterface
     protected function setBundleDirectoryResources(ContainerBuilder $container, $engine, $bundleDirName, $bundleName)
     {
         $container->setDefinition(
-            'assetic.' . $engine . '_directory_resource.' . $bundleName,
+            'assetic.'.$engine.'_directory_resource.'.$bundleName,
             new DirectoryResourceDefinition($bundleName, $engine, array(
-                $container->getParameter('kernel.root_dir') . '/Resources/' . $bundleName . '/views',
-                $bundleDirName . '/Resources/views',
+                $container->getParameter('kernel.root_dir').'/Resources/'.$bundleName.'/views',
+                $bundleDirName.'/Resources/views',
             ))
         );
     }
@@ -60,8 +60,8 @@ class TemplateResourcesPass implements CompilerPassInterface
     protected function setAppDirectoryResources(ContainerBuilder $container, $engine)
     {
         $container->setDefinition(
-            'assetic.' . $engine . '_directory_resource.kernel',
-            new DirectoryResourceDefinition('', $engine, array($container->getParameter('kernel.root_dir') . '/Resources/views'))
+            'assetic.'.$engine.'_directory_resource.kernel',
+            new DirectoryResourceDefinition('', $engine, array($container->getParameter('kernel.root_dir').'/Resources/views'))
         );
     }
 }

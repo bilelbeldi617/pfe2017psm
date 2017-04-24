@@ -24,10 +24,10 @@ class ControllerGeneratorTest extends GeneratorTest
             'Tests/Controller/WelcomeControllerTest.php',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/WelcomeController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/WelcomeController.php');
         $strings = array(
             'namespace Foo\\BarBundle\\Controller',
             'class WelcomeController',
@@ -36,7 +36,7 @@ class ControllerGeneratorTest extends GeneratorTest
             $this->assertContains($string, $content);
         }
 
-        $content = file_get_contents($this->tmpDir . '/Tests/Controller/WelcomeControllerTest.php');
+        $content = file_get_contents($this->tmpDir.'/Tests/Controller/WelcomeControllerTest.php');
         $strings = array(
             'namespace Foo\\BarBundle\\Tests\\Controller',
             'class WelcomeControllerTest',
@@ -44,24 +44,6 @@ class ControllerGeneratorTest extends GeneratorTest
         foreach ($strings as $string) {
             $this->assertContains($string, $content);
         }
-    }
-
-    protected function getGenerator()
-    {
-        $generator = new ControllerGenerator($this->filesystem);
-        $generator->setSkeletonDirs(__DIR__ . '/../../Resources/skeleton');
-
-        return $generator;
-    }
-
-    protected function getBundle()
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
-        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
-        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
-
-        return $bundle;
     }
 
     public function testGenerateActions()
@@ -89,10 +71,10 @@ class ControllerGeneratorTest extends GeneratorTest
             'Resources/views/Page/pages_list.html.twig',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), sprintf('%s has been generated', $file));
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), sprintf('%s has been generated', $file));
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PageController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PageController.php');
         $strings = array(
             'public function showPageAction($id, $slug)',
             'public function getListOfPagesAction($max_count)',
@@ -122,18 +104,36 @@ class ControllerGeneratorTest extends GeneratorTest
             'Resources/config/routing.yml',
         );
         foreach ($files as $file) {
-            $this->assertTrue(file_exists($this->tmpDir . '/' . $file), $file . ' has been generated');
+            $this->assertTrue(file_exists($this->tmpDir.'/'.$file), $file.' has been generated');
         }
 
-        $content = file_get_contents($this->tmpDir . '/Controller/PageController.php');
+        $content = file_get_contents($this->tmpDir.'/Controller/PageController.php');
         $this->assertNotContains('@Route()', $content, 'Routing is done via a yml file');
 
         $this->assertContains("return \$this->render('FooBarBundle:Page:showPage.html.php', array(", $content, 'Controller renders template');
 
-        $content = file_get_contents($this->tmpDir . '/Resources/views/Page/showPage.html.php');
-        $this->assertContains($this->getBundle()->getName() . ':Page:showPage', $content);
+        $content = file_get_contents($this->tmpDir.'/Resources/views/Page/showPage.html.php');
+        $this->assertContains($this->getBundle()->getName().':Page:showPage', $content);
 
-        $content = file_get_contents($this->tmpDir . '/Resources/config/routing.yml');
+        $content = file_get_contents($this->tmpDir.'/Resources/config/routing.yml');
         $this->assertContains("show_page:\n    path:     /{slug}\n    defaults: { _controller: FooBarBundle:Page:showPage }", $content);
+    }
+
+    protected function getGenerator()
+    {
+        $generator = new ControllerGenerator($this->filesystem);
+        $generator->setSkeletonDirs(__DIR__.'/../../Resources/skeleton');
+
+        return $generator;
+    }
+
+    protected function getBundle()
+    {
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
+        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
+        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
+
+        return $bundle;
     }
 }

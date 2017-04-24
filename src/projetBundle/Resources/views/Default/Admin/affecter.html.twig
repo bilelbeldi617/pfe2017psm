@@ -5,42 +5,40 @@
 
 {% block script %}
     <script language="JavaScript">
-        $("document").ready(function () {
-            $("#formAffecter").submit(function () {
-                $("#message").html("");
+        $("document").ready(function(){
+           $("#formAffecter").submit(function(){
+               $("#message").html("");
 
-                var countChecked = 0;
-                $.each($(".radio"), function (i, item) {
-                    if (item.checked) {
-                        countChecked++;
-                    }
-                });
+               var countChecked=0 ;
+               $.each($(".radio"), function(i, item){
+                  if(item.checked){countChecked++;}
+               }) ;
 
-                if (countChecked == 0) {
-                    var message = "<div class='alert alert-danger'>Il faut selectionner un groupe!!</div>"
-                    $("#message").html(message);
-                } else {
-                    $.ajax({
-                        url: "{{ path('affecterUnEleve') }}",
-                        method: "GET",
-                        data: $("#formAffecter").serialize(),
-                        success: function (response) {
-                            response = JSON.parse(response);
-                            console.log(response);
-                            var message = "<div class='alert alert-success'>Affecté!</div>"
-                            $("#message").html(message);
-                            setTimeout(function () {
+                   if(countChecked==0){
+                       var message = "<div class='alert alert-danger'>Il faut selectionner un groupe!!</div>"
+                       $("#message").html(message);
+                   }else {
+                       $.ajax({
+                           url: "{{ path('affecterUnEleve') }}",
+                           method: "GET",
+                           data: $("#formAffecter").serialize(),
+                           success: function (response) {
+                               response = JSON.parse(response);
+                               console.log(response);
+                               var message = "<div class='alert alert-success'>Affecté!</div>"
+                               $("#message").html(message);
+                               setTimeout(function () {
 
-                                window.location.assign("{{ path('listerEleves') }}");
-                            }, 1000);
+                                   window.location.assign("{{ path('listerEleves') }}");
+                               }, 1000);
 
-                        }
-                    });
-                }
-            });
+                           }
+                       });
+                   }
+           }) ;
         });
     </script>
-{% endblock %}
+    {% endblock %}
 
 {% block mainContent %}
     <hr class="hr-4">
@@ -49,31 +47,29 @@
 
         </div>
         {% if listGroupes == null %}
-            <center>
-                <div class="alert alert-danger">Aucun groupe dans le niveau de cet élève!</div>
-            </center>
+            <center><div class="alert alert-danger">Aucun groupe dans le niveau de cet élève!</div> </center>
             <center><h3><a href="{{ path('creerGroupe') }}">Créer un groupe ici</a></h3></center>
-        {% else %}
-            <center><h3>Eleve : {{ eleve.prenomEleve }} {{ eleve.nomEleve }}</h3></center>
-            <form id="formAffecter" action="#" onsubmit="return false">
-                <input type="text" value="{{ eleve.id }}" style="display: none" name="idEleve">
-                <table class="table table-bordered" width="80%">
-                    <tr class="table-header">
-                        <td>Groupe</td>
-                        <td>Nombre d'eleve</td>
-                        <td>Affecter</td>
-                    </tr>
-                    {% for g in listGroupes %}
-                        <tr>
-                            <td>{{ g.nomGroupe }} {{ g.numGroupe }}</td>
-                            <td>{{ g.nombreEleve }}</td>
-                            <td><input type="radio" value="{{ g.id }}" class="radio" name="idGroupe" id="idGroupe"></td>
-                        </tr>
-                    {% endfor %}
+            {% else %}
+        <center><h3>Eleve : {{ eleve.prenomEleve }} {{ eleve.nomEleve }}</h3></center>
+        <form id="formAffecter" action="#" onsubmit="return false">
+        <input type="text" value="{{ eleve.id }}" style="display: none" name="idEleve">
+        <table class="table table-bordered" width="80%">
+            <tr class="table-header">
+                <td>Groupe</td>
+                <td>Nombre d'eleve</td>
+                <td>Affecter</td>
+            </tr>
+            {% for g in listGroupes %}
+                <tr>
+                    <td>{{ g.nomGroupe }} {{ g.numGroupe }}</td>
+                    <td>{{ g.nombreEleve }}</td>
+                    <td><input type="radio" value="{{ g.id }}" class="radio" name="idGroupe" id="idGroupe"> </td>
+                </tr>
+            {% endfor %}
 
-                </table>
-                <center><input type="submit" value="affecter" class="btn btn-primary"></center>
-            </form>
+        </table>
+            <center><input type="submit" value="affecter" class="btn btn-primary"></center>
+        </form>
         {% endif %}
     </div>
 {% endblock %}

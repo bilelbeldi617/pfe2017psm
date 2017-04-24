@@ -22,6 +22,8 @@ class Frais
     private $id;
 
 
+
+
     /**
      * @var string
      *
@@ -40,21 +42,11 @@ class Frais
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get typeFrais
-     *
-     * @return string
-     */
-    public function getTypeFrais()
-    {
-        return $this->typeFrais;
     }
 
     /**
@@ -71,13 +63,13 @@ class Frais
     }
 
     /**
-     * Get montantFrais
+     * Get typeFrais
      *
-     * @return integer
+     * @return string 
      */
-    public function getMontantFrais()
+    public function getTypeFrais()
     {
-        return $this->montantFrais;
+        return $this->typeFrais;
     }
 
     /**
@@ -91,5 +83,15 @@ class Frais
         $this->montantFrais = $montantFrais;
 
         return $this;
+    }
+
+    /**
+     * Get montantFrais
+     *
+     * @return integer 
+     */
+    public function getMontantFrais()
+    {
+        return $this->montantFrais;
     }
 }

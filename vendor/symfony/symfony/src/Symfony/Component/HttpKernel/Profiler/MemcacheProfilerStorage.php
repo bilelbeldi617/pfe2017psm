@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\HttpKernel\Profiler;
 
-@trigger_error('The ' . __NAMESPACE__ . '\MemcacheProfilerStorage class is deprecated since Symfony 2.8 and will be removed in 3.0. Use FileProfilerStorage instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\MemcacheProfilerStorage class is deprecated since Symfony 2.8 and will be removed in 3.0. Use FileProfilerStorage instead.', E_USER_DEPRECATED);
 
 /**
  * Memcache Profiler Storage.
@@ -27,14 +27,6 @@ class MemcacheProfilerStorage extends BaseMemcacheProfilerStorage
      * @var \Memcache
      */
     private $memcache;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getValue($key)
-    {
-        return $this->getMemcache()->get($key);
-    }
 
     /**
      * Internal convenience method that returns the instance of the Memcache.
@@ -75,6 +67,14 @@ class MemcacheProfilerStorage extends BaseMemcacheProfilerStorage
     /**
      * {@inheritdoc}
      */
+    protected function getValue($key)
+    {
+        return $this->getMemcache()->get($key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function setValue($key, $value, $expiration = 0)
     {
         return $this->getMemcache()->set($key, $value, false, time() + $expiration);
@@ -107,6 +107,6 @@ class MemcacheProfilerStorage extends BaseMemcacheProfilerStorage
         // simulate append in Memcache <3.0
         $content = $memcache->get($key);
 
-        return $memcache->set($key, $content . $value, false, $expiration);
+        return $memcache->set($key, $content.$value, false, $expiration);
     }
 }

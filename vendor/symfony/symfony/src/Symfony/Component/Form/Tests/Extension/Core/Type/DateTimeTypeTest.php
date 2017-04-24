@@ -17,6 +17,13 @@ class DateTimeTypeTest extends BaseTypeTest
 {
     const TESTED_TYPE = 'Symfony\Component\Form\Extension\Core\Type\DateTimeType';
 
+    protected function setUp()
+    {
+        \Locale::setDefault('en');
+
+        parent::setUp();
+    }
+
     /**
      * @group legacy
      */
@@ -187,14 +194,14 @@ class DateTimeTypeTest extends BaseTypeTest
 
         $form->submit(array(
             'date' => array(
-                'day' => (int)$dateTime->format('d'),
-                'month' => (int)$dateTime->format('m'),
-                'year' => (int)$dateTime->format('Y'),
+                'day' => (int) $dateTime->format('d'),
+                'month' => (int) $dateTime->format('m'),
+                'year' => (int) $dateTime->format('Y'),
             ),
             'time' => array(
-                'hour' => (int)$dateTime->format('H'),
-                'minute' => (int)$dateTime->format('i'),
-                'second' => (int)$dateTime->format('s'),
+                'hour' => (int) $dateTime->format('H'),
+                'minute' => (int) $dateTime->format('i'),
+                'second' => (int) $dateTime->format('s'),
             ),
         ));
 
@@ -607,12 +614,5 @@ class DateTimeTypeTest extends BaseTypeTest
         $this->assertNull($form->getData());
         $this->assertNull($form->getNormData());
         $this->assertSame('', $form->getViewData());
-    }
-
-    protected function setUp()
-    {
-        \Locale::setDefault('en');
-
-        parent::setUp();
     }
 }

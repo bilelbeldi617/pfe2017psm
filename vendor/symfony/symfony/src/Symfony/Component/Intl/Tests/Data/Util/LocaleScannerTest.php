@@ -32,6 +32,35 @@ class LocaleScannerTest extends TestCase
      */
     private $scanner;
 
+    protected function setUp()
+    {
+        $this->directory = sys_get_temp_dir().'/LocaleScannerTest/'.mt_rand(1000, 9999);
+        $this->filesystem = new Filesystem();
+        $this->scanner = new LocaleScanner();
+
+        $this->filesystem->mkdir($this->directory);
+
+        $this->filesystem->touch($this->directory.'/en.txt');
+        $this->filesystem->touch($this->directory.'/en_alias.txt');
+        $this->filesystem->touch($this->directory.'/de.txt');
+        $this->filesystem->touch($this->directory.'/de_alias.txt');
+        $this->filesystem->touch($this->directory.'/fr.txt');
+        $this->filesystem->touch($this->directory.'/fr_alias.txt');
+        $this->filesystem->touch($this->directory.'/root.txt');
+        $this->filesystem->touch($this->directory.'/supplementalData.txt');
+        $this->filesystem->touch($this->directory.'/supplementaldata.txt');
+        $this->filesystem->touch($this->directory.'/meta.txt');
+
+        file_put_contents($this->directory.'/en_alias.txt', 'en_alias{"%%ALIAS"{"en"}}');
+        file_put_contents($this->directory.'/de_alias.txt', 'de_alias{"%%ALIAS"{"de"}}');
+        file_put_contents($this->directory.'/fr_alias.txt', 'fr_alias{"%%ALIAS"{"fr"}}');
+    }
+
+    protected function tearDown()
+    {
+        $this->filesystem->remove($this->directory);
+    }
+
     public function testScanLocales()
     {
         $sortedLocales = array('de', 'de_alias', 'en', 'en_alias', 'fr', 'fr_alias');
@@ -44,34 +73,5 @@ class LocaleScannerTest extends TestCase
         $sortedAliases = array('de_alias' => 'de', 'en_alias' => 'en', 'fr_alias' => 'fr');
 
         $this->assertSame($sortedAliases, $this->scanner->scanAliases($this->directory));
-    }
-
-    protected function setUp()
-    {
-        $this->directory = sys_get_temp_dir() . '/LocaleScannerTest/' . mt_rand(1000, 9999);
-        $this->filesystem = new Filesystem();
-        $this->scanner = new LocaleScanner();
-
-        $this->filesystem->mkdir($this->directory);
-
-        $this->filesystem->touch($this->directory . '/en.txt');
-        $this->filesystem->touch($this->directory . '/en_alias.txt');
-        $this->filesystem->touch($this->directory . '/de.txt');
-        $this->filesystem->touch($this->directory . '/de_alias.txt');
-        $this->filesystem->touch($this->directory . '/fr.txt');
-        $this->filesystem->touch($this->directory . '/fr_alias.txt');
-        $this->filesystem->touch($this->directory . '/root.txt');
-        $this->filesystem->touch($this->directory . '/supplementalData.txt');
-        $this->filesystem->touch($this->directory . '/supplementaldata.txt');
-        $this->filesystem->touch($this->directory . '/meta.txt');
-
-        file_put_contents($this->directory . '/en_alias.txt', 'en_alias{"%%ALIAS"{"en"}}');
-        file_put_contents($this->directory . '/de_alias.txt', 'de_alias{"%%ALIAS"{"de"}}');
-        file_put_contents($this->directory . '/fr_alias.txt', 'fr_alias{"%%ALIAS"{"fr"}}');
-    }
-
-    protected function tearDown()
-    {
-        $this->filesystem->remove($this->directory);
     }
 }

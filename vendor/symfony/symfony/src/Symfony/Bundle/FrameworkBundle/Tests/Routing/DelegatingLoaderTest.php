@@ -13,6 +13,13 @@ class DelegatingLoaderTest extends TestCase
     /** @var ControllerNameParser */
     private $controllerNameParser;
 
+    protected function setUp()
+    {
+        $this->controllerNameParser = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     /**
      * @group legacy
      */
@@ -35,12 +42,5 @@ class DelegatingLoaderTest extends TestCase
     {
         new DelegatingLoader($this->controllerNameParser, new LoaderResolver());
         $this->assertTrue(true, '__construct() takes a ControllerNameParser and LoaderResolverInterface respectively as its first and second argument.');
-    }
-
-    protected function setUp()
-    {
-        $this->controllerNameParser = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser')
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

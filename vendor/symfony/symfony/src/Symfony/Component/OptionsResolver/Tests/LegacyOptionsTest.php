@@ -25,6 +25,11 @@ class LegacyOptionsTest extends TestCase
      */
     private $options;
 
+    protected function setUp()
+    {
+        $this->options = new OptionsResolver();
+    }
+
     public function testSetLazyOption()
     {
         $test = $this;
@@ -141,7 +146,7 @@ class LegacyOptionsTest extends TestCase
         $this->options->set('foo', 'bar');
 
         $this->options->setNormalizer('foo', function (Options $options, $value) {
-            return 'normalized[' . $value . ']';
+            return 'normalized['.$value.']';
         });
 
         $this->assertEquals(array('foo' => 'normalized[bar]'), $this->options->resolve());
@@ -329,10 +334,5 @@ class LegacyOptionsTest extends TestCase
 
         $this->options->clear();
         $this->assertEmpty($this->options->resolve());
-    }
-
-    protected function setUp()
-    {
-        $this->options = new OptionsResolver();
     }
 }

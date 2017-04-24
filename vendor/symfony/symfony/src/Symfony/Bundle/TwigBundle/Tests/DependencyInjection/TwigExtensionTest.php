@@ -41,80 +41,6 @@ class TwigExtensionTest extends TestCase
         $this->assertContains('MyBundle:Form:my_theme.html.twig', $container->getParameter('twig.form.resources'));
     }
 
-    private function createContainer()
-    {
-        $container = new ContainerBuilder(new ParameterBag(array(
-            'kernel.cache_dir' => __DIR__,
-            'kernel.root_dir' => __DIR__ . '/Fixtures',
-            'kernel.charset' => 'UTF-8',
-            'kernel.debug' => false,
-            'kernel.bundles' => array(
-                'TwigBundle' => 'Symfony\\Bundle\\TwigBundle\\TwigBundle',
-                'ChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildTwigBundle\\ChildTwigBundle',
-                'ChildChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildTwigBundle\\ChildChildTwigBundle',
-                'ChildChildChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildTwigBundle\\ChildChildChildTwigBundle',
-                'ChildChildChildChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildChildTwigBundle\\ChildChildChildChildTwigBundle',
-            ),
-            'kernel.bundles_metadata' => array(
-                'ChildChildChildChildTwigBundle' => array(
-                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildChildTwigBundle\\ChildChildChildChildTwigBundle',
-                    'parent' => 'ChildChildChildTwigBundle',
-                    'path' => __DIR__ . '/Fixtures/Bundle/ChildChildChildChildTwigBundle',
-                ),
-                'TwigBundle' => array(
-                    'namespace' => 'Symfony\\Bundle\\TwigBundle',
-                    'parent' => null,
-                    'path' => realpath(__DIR__ . '/../..'),
-                ),
-                'ChildTwigBundle' => array(
-                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildTwigBundle\\ChildTwigBundle',
-                    'parent' => 'TwigBundle',
-                    'path' => __DIR__ . '/Fixtures/Bundle/ChildTwigBundle',
-                ),
-                'ChildChildChildTwigBundle' => array(
-                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildTwigBundle\\ChildChildChildTwigBundle',
-                    'parent' => 'ChildChildTwigBundle',
-                    'path' => __DIR__ . '/Fixtures/Bundle/ChildChildChildTwigBundle',
-                ),
-                'ChildChildTwigBundle' => array(
-                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildTwigBundle\\ChildChildTwigBundle',
-                    'parent' => 'ChildTwigBundle',
-                    'path' => __DIR__ . '/Fixtures/Bundle/ChildChildTwigBundle',
-                ),
-            ),
-        )));
-
-        return $container;
-    }
-
-    private function loadFromFile(ContainerBuilder $container, $file, $format)
-    {
-        $locator = new FileLocator(__DIR__ . '/Fixtures/' . $format);
-
-        switch ($format) {
-            case 'php':
-                $loader = new PhpFileLoader($container, $locator);
-                break;
-            case 'xml':
-                $loader = new XmlFileLoader($container, $locator);
-                break;
-            case 'yml':
-                $loader = new YamlFileLoader($container, $locator);
-                break;
-            default:
-                throw new \InvalidArgumentException(sprintf('Unsupported format: %s', $format));
-        }
-
-        $loader->load($file . '.' . $format);
-    }
-
-    private function compileContainer(ContainerBuilder $container)
-    {
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->compile();
-    }
-
     /**
      * @dataProvider getFormats
      * @group legacy
@@ -275,23 +201,23 @@ class TwigExtensionTest extends TestCase
             array('namespaced_path1', 'namespace1'),
             array('namespaced_path2', 'namespace2'),
             array('namespaced_path3', 'namespace3'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildChildChildChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildChildChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'ChildChildChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'Twig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'Twig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildTwigBundle/Resources/views', 'Twig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildTwigBundle/Resources/views', 'Twig'),
-            array(__DIR__ . '/Fixtures/Resources/TwigBundle/views', 'Twig'),
-            array(realpath(__DIR__ . '/../..') . '/Resources/views', 'Twig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'ChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildTwigBundle/Resources/views', 'ChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildTwigBundle/Resources/views', 'ChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'ChildChildTwig'),
-            array(__DIR__ . '/Fixtures/Bundle/ChildChildTwigBundle/Resources/views', 'ChildChildTwig'),
-            array(__DIR__ . '/Fixtures/Resources/views'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildChildChildChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildChildChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'ChildChildChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'Twig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'Twig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildTwigBundle/Resources/views', 'Twig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildTwigBundle/Resources/views', 'Twig'),
+            array(__DIR__.'/Fixtures/Resources/TwigBundle/views', 'Twig'),
+            array(realpath(__DIR__.'/../..').'/Resources/views', 'Twig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'ChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildTwigBundle/Resources/views', 'ChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildTwigBundle/Resources/views', 'ChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildChildTwigBundle/Resources/views', 'ChildChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildChildTwigBundle/Resources/views', 'ChildChildTwig'),
+            array(__DIR__.'/Fixtures/Bundle/ChildChildTwigBundle/Resources/views', 'ChildChildTwig'),
+            array(__DIR__.'/Fixtures/Resources/views'),
         ), $paths);
     }
 
@@ -333,5 +259,79 @@ class TwigExtensionTest extends TestCase
             'only-debug-enabled' => array(true, false, false),
             'debug-and-stopwatch-disabled' => array(false, false, false),
         );
+    }
+
+    private function createContainer()
+    {
+        $container = new ContainerBuilder(new ParameterBag(array(
+            'kernel.cache_dir' => __DIR__,
+            'kernel.root_dir' => __DIR__.'/Fixtures',
+            'kernel.charset' => 'UTF-8',
+            'kernel.debug' => false,
+            'kernel.bundles' => array(
+                'TwigBundle' => 'Symfony\\Bundle\\TwigBundle\\TwigBundle',
+                'ChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildTwigBundle\\ChildTwigBundle',
+                'ChildChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildTwigBundle\\ChildChildTwigBundle',
+                'ChildChildChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildTwigBundle\\ChildChildChildTwigBundle',
+                'ChildChildChildChildTwigBundle' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildChildTwigBundle\\ChildChildChildChildTwigBundle',
+            ),
+            'kernel.bundles_metadata' => array(
+                'ChildChildChildChildTwigBundle' => array(
+                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildChildTwigBundle\\ChildChildChildChildTwigBundle',
+                    'parent' => 'ChildChildChildTwigBundle',
+                    'path' => __DIR__.'/Fixtures/Bundle/ChildChildChildChildTwigBundle',
+                ),
+                'TwigBundle' => array(
+                    'namespace' => 'Symfony\\Bundle\\TwigBundle',
+                    'parent' => null,
+                    'path' => realpath(__DIR__.'/../..'),
+                ),
+                'ChildTwigBundle' => array(
+                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildTwigBundle\\ChildTwigBundle',
+                    'parent' => 'TwigBundle',
+                    'path' => __DIR__.'/Fixtures/Bundle/ChildTwigBundle',
+                ),
+                'ChildChildChildTwigBundle' => array(
+                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildChildTwigBundle\\ChildChildChildTwigBundle',
+                    'parent' => 'ChildChildTwigBundle',
+                    'path' => __DIR__.'/Fixtures/Bundle/ChildChildChildTwigBundle',
+                ),
+                'ChildChildTwigBundle' => array(
+                    'namespace' => 'Symfony\\Bundle\\TwigBundle\\Tests\\DependencyInjection\\Fixtures\\Bundle\\ChildChildTwigBundle\\ChildChildTwigBundle',
+                    'parent' => 'ChildTwigBundle',
+                    'path' => __DIR__.'/Fixtures/Bundle/ChildChildTwigBundle',
+                ),
+            ),
+        )));
+
+        return $container;
+    }
+
+    private function compileContainer(ContainerBuilder $container)
+    {
+        $container->getCompilerPassConfig()->setOptimizationPasses(array());
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->compile();
+    }
+
+    private function loadFromFile(ContainerBuilder $container, $file, $format)
+    {
+        $locator = new FileLocator(__DIR__.'/Fixtures/'.$format);
+
+        switch ($format) {
+            case 'php':
+                $loader = new PhpFileLoader($container, $locator);
+                break;
+            case 'xml':
+                $loader = new XmlFileLoader($container, $locator);
+                break;
+            case 'yml':
+                $loader = new YamlFileLoader($container, $locator);
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Unsupported format: %s', $format));
+        }
+
+        $loader->load($file.'.'.$format);
     }
 }

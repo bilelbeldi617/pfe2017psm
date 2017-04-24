@@ -205,6 +205,40 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return $this->config->getName();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPropertyPath()
+    {
+        if (null !== $this->config->getPropertyPath()) {
+            return $this->config->getPropertyPath();
+        }
+
+        if (null === $this->getName() || '' === $this->getName()) {
+            return;
+        }
+
+        $parent = $this->parent;
+
+        while ($parent && $parent->getConfig()->getInheritData()) {
+            $parent = $parent->getParent();
+        }
+
+        if ($parent && null === $parent->getConfig()->getDataClass()) {
+            return new PropertyPath('['.$this->getName().']');
+        }
+
+        return new PropertyPath($this->getName());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isRequired()
     {
         if (null === $this->parent || $this->parent->isRequired()) {
@@ -217,9 +251,13 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function isDisabled()
     {
-        return $this->parent;
+        if (null === $this->parent || !$this->parent->isDisabled()) {
+            return $this->config->getDisabled();
+        }
+
+        return true;
     }
 
     /**
@@ -243,6 +281,14 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * {@inheritdoc}
      */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getRoot()
     {
         return $this->parent ? $this->parent->getRoot() : $this;
@@ -254,26 +300,6 @@ class Form implements \IteratorAggregate, FormInterface
     public function isRoot()
     {
         return null === $this->parent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getData()
-    {
-        if ($this->config->getInheritData()) {
-            if (!$this->parent) {
-                throw new RuntimeException('The form is configured to inherit its parent\'s data, but does not have a parent.');
-            }
-
-            return $this->parent->getData();
-        }
-
-        if (!$this->defaultDataSet) {
-            $this->setData($this->config->getData());
-        }
-
-        return $this->modelData;
     }
 
     /**
@@ -319,7 +345,7 @@ class Form implements \IteratorAggregate, FormInterface
 
         // Treat data as strings unless a value transformer exists
         if (!$this->config->getViewTransformers() && !$this->config->getModelTransformers() && is_scalar($modelData)) {
-            $modelData = (string)$modelData;
+            $modelData = (string) $modelData;
         }
 
         // Synchronize representations - must not change the content!
@@ -332,15 +358,15 @@ class Form implements \IteratorAggregate, FormInterface
 
             if (null !== $dataClass && !$viewData instanceof $dataClass) {
                 $actualType = is_object($viewData)
-                    ? 'an instance of class ' . get_class($viewData)
-                    : 'a(n) ' . gettype($viewData);
+                    ? 'an instance of class '.get_class($viewData)
+                    : 'a(n) '.gettype($viewData);
 
                 throw new LogicException(
-                    'The form\'s view data is expected to be an instance of class ' .
-                    $dataClass . ', but is ' . $actualType . '. You can avoid this error ' .
-                    'by setting the "data_class" option to null or by adding a view ' .
-                    'transformer that transforms ' . $actualType . ' to an instance of ' .
-                    $dataClass . '.'
+                    'The form\'s view data is expected to be an instance of class '.
+                    $dataClass.', but is '.$actualType.'. You can avoid this error '.
+                    'by setting the "data_class" option to null or by adding a view '.
+                    'transformer that transforms '.$actualType.' to an instance of '.
+                    $dataClass.'.'
                 );
             }
         }
@@ -369,98 +395,23 @@ class Form implements \IteratorAggregate, FormInterface
     }
 
     /**
-     * Normalizes the value if a normalization transformer is set.
-     *
-     * @param mixed $value The value to transform
-     *
-     * @return mixed
-     *
-     * @throws TransformationFailedException If the value cannot be transformed to "normalized" format
-     */
-    private function modelToNorm($value)
-    {
-        try {
-            foreach ($this->config->getModelTransformers() as $transformer) {
-                $value = $transformer->transform($value);
-            }
-        } catch (TransformationFailedException $exception) {
-            throw new TransformationFailedException(
-                'Unable to transform value for property path "' . $this->getPropertyPath() . '": ' . $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
-        }
-
-        return $value;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function getPropertyPath()
+    public function getData()
     {
-        if (null !== $this->config->getPropertyPath()) {
-            return $this->config->getPropertyPath();
-        }
-
-        if (null === $this->getName() || '' === $this->getName()) {
-            return;
-        }
-
-        $parent = $this->parent;
-
-        while ($parent && $parent->getConfig()->getInheritData()) {
-            $parent = $parent->getParent();
-        }
-
-        if ($parent && null === $parent->getConfig()->getDataClass()) {
-            return new PropertyPath('[' . $this->getName() . ']');
-        }
-
-        return new PropertyPath($this->getName());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->config->getName();
-    }
-
-    /**
-     * Transforms the value if a value transformer is set.
-     *
-     * @param mixed $value The value to transform
-     *
-     * @return mixed
-     *
-     * @throws TransformationFailedException If the value cannot be transformed to "view" format
-     */
-    private function normToView($value)
-    {
-        // Scalar values should  be converted to strings to
-        // facilitate differentiation between empty ("") and zero (0).
-        // Only do this for simple forms, as the resulting value in
-        // compound forms is passed to the data mapper and thus should
-        // not be converted to a string before.
-        if (!$this->config->getViewTransformers() && !$this->config->getCompound()) {
-            return null === $value || is_scalar($value) ? (string)$value : $value;
-        }
-
-        try {
-            foreach ($this->config->getViewTransformers() as $transformer) {
-                $value = $transformer->transform($value);
+        if ($this->config->getInheritData()) {
+            if (!$this->parent) {
+                throw new RuntimeException('The form is configured to inherit its parent\'s data, but does not have a parent.');
             }
-        } catch (TransformationFailedException $exception) {
-            throw new TransformationFailedException(
-                'Unable to transform value for property path "' . $this->getPropertyPath() . '": ' . $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
+
+            return $this->parent->getData();
         }
 
-        return $value;
+        if (!$this->defaultDataSet) {
+            $this->setData($this->config->getData());
+        }
+
+        return $this->modelData;
     }
 
     /**
@@ -481,6 +432,26 @@ class Form implements \IteratorAggregate, FormInterface
         }
 
         return $this->normData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getViewData()
+    {
+        if ($this->config->getInheritData()) {
+            if (!$this->parent) {
+                throw new RuntimeException('The form is configured to inherit its parent\'s data, but does not have a parent.');
+            }
+
+            return $this->parent->getViewData();
+        }
+
+        if (!$this->defaultDataSet) {
+            $this->setData($this->config->getData());
+        }
+
+        return $this->viewData;
     }
 
     /**
@@ -521,29 +492,12 @@ class Form implements \IteratorAggregate, FormInterface
     }
 
     /**
-     * Alias of {@link submit()}.
-     *
-     * @deprecated since version 2.3, to be removed in 3.0.
-     *             Use {@link submit()} instead.
-     */
-    public function bind($submittedData)
-    {
-        // This method is deprecated for Request too, but the error is
-        // triggered in Form::submit() method.
-        if (!$submittedData instanceof Request) {
-            @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the ' . __CLASS__ . '::submit method instead.', E_USER_DEPRECATED);
-        }
-
-        return $this->submit($submittedData);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function submit($submittedData, $clearMissing = true)
     {
         if ($submittedData instanceof Request) {
-            @trigger_error('Passing a Symfony\Component\HttpFoundation\Request object to the ' . __CLASS__ . '::bind and ' . __METHOD__ . ' methods is deprecated since 2.3 and will be removed in 3.0. Use the ' . __CLASS__ . '::handleRequest method instead. If you want to test whether the form was submitted separately, you can use the ' . __CLASS__ . '::isSubmitted method.', E_USER_DEPRECATED);
+            @trigger_error('Passing a Symfony\Component\HttpFoundation\Request object to the '.__CLASS__.'::bind and '.__METHOD__.' methods is deprecated since 2.3 and will be removed in 3.0. Use the '.__CLASS__.'::handleRequest method instead. If you want to test whether the form was submitted separately, you can use the '.__CLASS__.'::isSubmitted method.', E_USER_DEPRECATED);
         }
 
         if ($this->submitted) {
@@ -576,7 +530,7 @@ class Form implements \IteratorAggregate, FormInterface
         if (false === $submittedData) {
             $submittedData = null;
         } elseif (is_scalar($submittedData)) {
-            $submittedData = (string)$submittedData;
+            $submittedData = (string) $submittedData;
         }
 
         $dispatcher = $this->config->getEventDispatcher();
@@ -710,75 +664,20 @@ class Form implements \IteratorAggregate, FormInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Alias of {@link submit()}.
+     *
+     * @deprecated since version 2.3, to be removed in 3.0.
+     *             Use {@link submit()} instead.
      */
-    public function isDisabled()
+    public function bind($submittedData)
     {
-        if (null === $this->parent || !$this->parent->isDisabled()) {
-            return $this->config->getDisabled();
+        // This method is deprecated for Request too, but the error is
+        // triggered in Form::submit() method.
+        if (!$submittedData instanceof Request) {
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the '.__CLASS__.'::submit method instead.', E_USER_DEPRECATED);
         }
 
-        return true;
-    }
-
-    /**
-     * Reverse transforms a value if a value transformer is set.
-     *
-     * @param string $value The value to reverse transform
-     *
-     * @return mixed
-     *
-     * @throws TransformationFailedException If the value cannot be transformed to "normalized" format
-     */
-    private function viewToNorm($value)
-    {
-        $transformers = $this->config->getViewTransformers();
-
-        if (!$transformers) {
-            return '' === $value ? null : $value;
-        }
-
-        try {
-            for ($i = count($transformers) - 1; $i >= 0; --$i) {
-                $value = $transformers[$i]->reverseTransform($value);
-            }
-        } catch (TransformationFailedException $exception) {
-            throw new TransformationFailedException(
-                'Unable to reverse value for property path "' . $this->getPropertyPath() . '": ' . $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
-        }
-
-        return $value;
-    }
-
-    /**
-     * Reverse transforms a value if a normalization transformer is set.
-     *
-     * @param string $value The value to reverse transform
-     *
-     * @return mixed
-     *
-     * @throws TransformationFailedException If the value cannot be transformed to "model" format
-     */
-    private function normToModel($value)
-    {
-        try {
-            $transformers = $this->config->getModelTransformers();
-
-            for ($i = count($transformers) - 1; $i >= 0; --$i) {
-                $value = $transformers[$i]->reverseTransform($value);
-            }
-        } catch (TransformationFailedException $exception) {
-            throw new TransformationFailedException(
-                'Unable to reverse value for property path "' . $this->getPropertyPath() . '": ' . $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
-        }
-
-        return $value;
+        return $this->submit($submittedData);
     }
 
     /**
@@ -815,7 +714,7 @@ class Form implements \IteratorAggregate, FormInterface
      */
     public function isBound()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the ' . __CLASS__ . '::isSubmitted method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the '.__CLASS__.'::isSubmitted method instead.', E_USER_DEPRECATED);
 
         return $this->submitted;
     }
@@ -871,6 +770,23 @@ class Form implements \IteratorAggregate, FormInterface
     }
 
     /**
+     * Returns the button that was used to submit the form.
+     *
+     * @return Button|null The clicked button or NULL if the form was not
+     *                     submitted
+     */
+    public function getClickedButton()
+    {
+        if ($this->clickedButton) {
+            return $this->clickedButton;
+        }
+
+        if ($this->parent && method_exists($this->parent, 'getClickedButton')) {
+            return $this->parent->getClickedButton();
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getErrors($deep = false, $flatten = true)
@@ -905,23 +821,6 @@ class Form implements \IteratorAggregate, FormInterface
     }
 
     /**
-     * Returns the button that was used to submit the form.
-     *
-     * @return Button|null The clicked button or NULL if the form was not
-     *                     submitted
-     */
-    public function getClickedButton()
-    {
-        if ($this->clickedButton) {
-            return $this->clickedButton;
-        }
-
-        if ($this->parent && method_exists($this->parent, 'getClickedButton')) {
-            return $this->parent->getClickedButton();
-        }
-    }
-
-    /**
      * Returns a string representation of all form errors (including children errors).
      *
      * This method should only be used to help debug a form.
@@ -935,24 +834,9 @@ class Form implements \IteratorAggregate, FormInterface
      */
     public function getErrorsAsString($level = 0)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use (string) Form::getErrors(true, false) instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use (string) Form::getErrors(true, false) instead.', E_USER_DEPRECATED);
 
-        return self::indent((string)$this->getErrors(true, false), $level);
-    }
-
-    /**
-     * Utility function for indenting multi-line strings.
-     *
-     * @param string $string The string
-     * @param int $level The number of spaces to use for indentation
-     *
-     * @return string The indented string
-     */
-    private static function indent($string, $level)
-    {
-        $indentation = str_repeat(' ', $level);
-
-        return rtrim($indentation . str_replace("\n", "\n" . $indentation, $string), ' ');
+        return self::indent((string) $this->getErrors(true, false), $level);
     }
 
     /**
@@ -961,68 +845,6 @@ class Form implements \IteratorAggregate, FormInterface
     public function all()
     {
         return iterator_to_array($this->children);
-    }
-
-    /**
-     * Returns whether a child with the given name exists (implements the \ArrayAccess interface).
-     *
-     * @param string $name The name of the child
-     *
-     * @return bool
-     */
-    public function offsetExists($name)
-    {
-        return $this->has($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function has($name)
-    {
-        return isset($this->children[$name]);
-    }
-
-    /**
-     * Returns the child with the given name (implements the \ArrayAccess interface).
-     *
-     * @param string $name The name of the child
-     *
-     * @return FormInterface The child form
-     *
-     * @throws \OutOfBoundsException If the named child does not exist.
-     */
-    public function offsetGet($name)
-    {
-        return $this->get($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get($name)
-    {
-        if (isset($this->children[$name])) {
-            return $this->children[$name];
-        }
-
-        throw new OutOfBoundsException(sprintf('Child "%s" does not exist.', $name));
-    }
-
-    /**
-     * Adds a child to the form (implements the \ArrayAccess interface).
-     *
-     * @param string $name Ignored. The name of the child is used
-     * @param FormInterface $child The child to be added
-     *
-     * @throws AlreadySubmittedException If the form has already been submitted.
-     * @throws LogicException            When trying to add a child to a non-compound form.
-     *
-     * @see self::add()
-     */
-    public function offsetSet($name, $child)
-    {
-        $this->add($child);
     }
 
     /**
@@ -1084,7 +906,7 @@ class Form implements \IteratorAggregate, FormInterface
             }
         } elseif ($child->getConfig()->getAutoInitialize()) {
             throw new RuntimeException(sprintf(
-                'Automatic initialization is only supported on root forms. You ' .
+                'Automatic initialization is only supported on root forms. You '.
                 'should set the "auto_initialize" option to false on the field "%s".',
                 $child->getName()
             ));
@@ -1106,38 +928,6 @@ class Form implements \IteratorAggregate, FormInterface
     /**
      * {@inheritdoc}
      */
-    public function getViewData()
-    {
-        if ($this->config->getInheritData()) {
-            if (!$this->parent) {
-                throw new RuntimeException('The form is configured to inherit its parent\'s data, but does not have a parent.');
-            }
-
-            return $this->parent->getViewData();
-        }
-
-        if (!$this->defaultDataSet) {
-            $this->setData($this->config->getData());
-        }
-
-        return $this->viewData;
-    }
-
-    /**
-     * Removes the child with the given name from the form (implements the \ArrayAccess interface).
-     *
-     * @param string $name The name of the child to remove
-     *
-     * @throws AlreadySubmittedException If the form has already been submitted.
-     */
-    public function offsetUnset($name)
-    {
-        $this->remove($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function remove($name)
     {
         if ($this->submitted) {
@@ -1153,6 +943,80 @@ class Form implements \IteratorAggregate, FormInterface
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has($name)
+    {
+        return isset($this->children[$name]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($name)
+    {
+        if (isset($this->children[$name])) {
+            return $this->children[$name];
+        }
+
+        throw new OutOfBoundsException(sprintf('Child "%s" does not exist.', $name));
+    }
+
+    /**
+     * Returns whether a child with the given name exists (implements the \ArrayAccess interface).
+     *
+     * @param string $name The name of the child
+     *
+     * @return bool
+     */
+    public function offsetExists($name)
+    {
+        return $this->has($name);
+    }
+
+    /**
+     * Returns the child with the given name (implements the \ArrayAccess interface).
+     *
+     * @param string $name The name of the child
+     *
+     * @return FormInterface The child form
+     *
+     * @throws \OutOfBoundsException If the named child does not exist.
+     */
+    public function offsetGet($name)
+    {
+        return $this->get($name);
+    }
+
+    /**
+     * Adds a child to the form (implements the \ArrayAccess interface).
+     *
+     * @param string        $name  Ignored. The name of the child is used
+     * @param FormInterface $child The child to be added
+     *
+     * @throws AlreadySubmittedException If the form has already been submitted.
+     * @throws LogicException            When trying to add a child to a non-compound form.
+     *
+     * @see self::add()
+     */
+    public function offsetSet($name, $child)
+    {
+        $this->add($child);
+    }
+
+    /**
+     * Removes the child with the given name from the form (implements the \ArrayAccess interface).
+     *
+     * @param string $name The name of the child to remove
+     *
+     * @throws AlreadySubmittedException If the form has already been submitted.
+     */
+    public function offsetUnset($name)
+    {
+        $this->remove($name);
     }
 
     /**
@@ -1201,5 +1065,141 @@ class Form implements \IteratorAggregate, FormInterface
         $type->finishView($view, $this, $options);
 
         return $view;
+    }
+
+    /**
+     * Normalizes the value if a normalization transformer is set.
+     *
+     * @param mixed $value The value to transform
+     *
+     * @return mixed
+     *
+     * @throws TransformationFailedException If the value cannot be transformed to "normalized" format
+     */
+    private function modelToNorm($value)
+    {
+        try {
+            foreach ($this->config->getModelTransformers() as $transformer) {
+                $value = $transformer->transform($value);
+            }
+        } catch (TransformationFailedException $exception) {
+            throw new TransformationFailedException(
+                'Unable to transform value for property path "'.$this->getPropertyPath().'": '.$exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Reverse transforms a value if a normalization transformer is set.
+     *
+     * @param string $value The value to reverse transform
+     *
+     * @return mixed
+     *
+     * @throws TransformationFailedException If the value cannot be transformed to "model" format
+     */
+    private function normToModel($value)
+    {
+        try {
+            $transformers = $this->config->getModelTransformers();
+
+            for ($i = count($transformers) - 1; $i >= 0; --$i) {
+                $value = $transformers[$i]->reverseTransform($value);
+            }
+        } catch (TransformationFailedException $exception) {
+            throw new TransformationFailedException(
+                'Unable to reverse value for property path "'.$this->getPropertyPath().'": '.$exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Transforms the value if a value transformer is set.
+     *
+     * @param mixed $value The value to transform
+     *
+     * @return mixed
+     *
+     * @throws TransformationFailedException If the value cannot be transformed to "view" format
+     */
+    private function normToView($value)
+    {
+        // Scalar values should  be converted to strings to
+        // facilitate differentiation between empty ("") and zero (0).
+        // Only do this for simple forms, as the resulting value in
+        // compound forms is passed to the data mapper and thus should
+        // not be converted to a string before.
+        if (!$this->config->getViewTransformers() && !$this->config->getCompound()) {
+            return null === $value || is_scalar($value) ? (string) $value : $value;
+        }
+
+        try {
+            foreach ($this->config->getViewTransformers() as $transformer) {
+                $value = $transformer->transform($value);
+            }
+        } catch (TransformationFailedException $exception) {
+            throw new TransformationFailedException(
+                'Unable to transform value for property path "'.$this->getPropertyPath().'": '.$exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Reverse transforms a value if a value transformer is set.
+     *
+     * @param string $value The value to reverse transform
+     *
+     * @return mixed
+     *
+     * @throws TransformationFailedException If the value cannot be transformed to "normalized" format
+     */
+    private function viewToNorm($value)
+    {
+        $transformers = $this->config->getViewTransformers();
+
+        if (!$transformers) {
+            return '' === $value ? null : $value;
+        }
+
+        try {
+            for ($i = count($transformers) - 1; $i >= 0; --$i) {
+                $value = $transformers[$i]->reverseTransform($value);
+            }
+        } catch (TransformationFailedException $exception) {
+            throw new TransformationFailedException(
+                'Unable to reverse value for property path "'.$this->getPropertyPath().'": '.$exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Utility function for indenting multi-line strings.
+     *
+     * @param string $string The string
+     * @param int    $level  The number of spaces to use for indentation
+     *
+     * @return string The indented string
+     */
+    private static function indent($string, $level)
+    {
+        $indentation = str_repeat(' ', $level);
+
+        return rtrim($indentation.str_replace("\n", "\n".$indentation, $string), ' ');
     }
 }

@@ -37,27 +37,6 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array_values($this->bundles)));
     }
 
-    protected function getBundle($name, $namespace, $parent = null)
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle
-            ->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($name));
-
-        $bundle
-            ->expects($this->any())
-            ->method('getNamespace')
-            ->will($this->returnValue($namespace));
-
-        $bundle
-            ->expects($this->any())
-            ->method('getParent')
-            ->will($this->returnValue($parent));
-
-        return $bundle;
-    }
-
     public function testGuessTemplateName()
     {
         $this->kernel
@@ -70,7 +49,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             'indexAction',
         ), new Request());
 
-        $this->assertEquals('FooBundle:Foo:index.html.twig', (string)$templateReference);
+        $this->assertEquals('FooBundle:Foo:index.html.twig', (string) $templateReference);
     }
 
     public function testGuessTemplateNameWithParentBundle()
@@ -87,7 +66,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             'indexAction',
         ), new Request());
 
-        $this->assertEquals('FooBundle:Bar:index.html.twig', (string)$templateReference);
+        $this->assertEquals('FooBundle:Bar:index.html.twig', (string) $templateReference);
     }
 
     public function testGuessTemplateNameWithCascadingParentBundle()
@@ -110,7 +89,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             'indexAction',
         ), new Request());
 
-        $this->assertEquals('FooBundle:FooBar:index.html.twig', (string)$templateReference);
+        $this->assertEquals('FooBundle:FooBar:index.html.twig', (string) $templateReference);
     }
 
     public function testGuessTemplateWithoutBundle()
@@ -121,7 +100,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             'indexAction',
         ), new Request());
 
-        $this->assertEquals(':OutOfBundle:index.html.twig', (string)$templateReference);
+        $this->assertEquals(':OutOfBundle:index.html.twig', (string) $templateReference);
     }
 
     /**
@@ -136,7 +115,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             '__invoke',
         ), new Request());
 
-        $this->assertEquals('FooBundle::Foo.html.twig', (string)$templateReference);
+        $this->assertEquals('FooBundle::Foo.html.twig', (string) $templateReference);
     }
 
     /**
@@ -151,7 +130,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             'indexAction',
         ), new Request());
 
-        $this->assertEquals('FooBundle:Foo:index.html.twig', (string)$templateReference);
+        $this->assertEquals('FooBundle:Foo:index.html.twig', (string) $templateReference);
     }
 
     /**
@@ -166,7 +145,7 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             'fooBar',
         ), new Request());
 
-        $this->assertEquals('FooBundle:Foo:fooBar.html.twig', (string)$templateReference);
+        $this->assertEquals('FooBundle:Foo:fooBar.html.twig', (string) $templateReference);
     }
 
     public function controllerProvider()
@@ -203,5 +182,26 @@ class TemplateGuesserTest extends \PHPUnit_Framework_TestCase
             new Fixture\FooBundle\Controller\FooController(),
             new Request()
         );
+    }
+
+    protected function getBundle($name, $namespace, $parent = null)
+    {
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle
+            ->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($name));
+
+        $bundle
+            ->expects($this->any())
+            ->method('getNamespace')
+            ->will($this->returnValue($namespace));
+
+        $bundle
+            ->expects($this->any())
+            ->method('getParent')
+            ->will($this->returnValue($parent));
+
+        return $bundle;
     }
 }

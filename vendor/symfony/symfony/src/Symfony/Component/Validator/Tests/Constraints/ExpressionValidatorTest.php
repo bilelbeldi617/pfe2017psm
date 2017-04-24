@@ -19,6 +19,16 @@ use Symfony\Component\Validator\Validation;
 
 class ExpressionValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new ExpressionValidator(PropertyAccess::createPropertyAccessor());
+    }
+
     public function testExpressionIsEvaluatedWithNullValue()
     {
         $constraint = new Expression(array(
@@ -230,15 +240,5 @@ class ExpressionValidatorTest extends AbstractConstraintValidatorTest
         $validator->validate(null, $constraint);
 
         $this->assertTrue($used, 'Failed asserting that custom ExpressionLanguage instance is used.');
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new ExpressionValidator(PropertyAccess::createPropertyAccessor());
     }
 }

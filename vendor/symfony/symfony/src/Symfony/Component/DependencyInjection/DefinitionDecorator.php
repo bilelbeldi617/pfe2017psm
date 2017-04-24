@@ -188,8 +188,8 @@ class DefinitionDecorator extends Definition
      */
     public function getArgument($index)
     {
-        if (array_key_exists('index_' . $index, $this->arguments)) {
-            return $this->arguments['index_' . $index];
+        if (array_key_exists('index_'.$index, $this->arguments)) {
+            return $this->arguments['index_'.$index];
         }
 
         $lastIndex = count(array_filter(array_keys($this->arguments), 'is_int')) - 1;
@@ -209,7 +209,7 @@ class DefinitionDecorator extends Definition
      * certain conventions when you want to overwrite the arguments of the
      * parent definition, otherwise your arguments will only be appended.
      *
-     * @param int $index
+     * @param int   $index
      * @param mixed $value
      *
      * @return $this
@@ -222,7 +222,7 @@ class DefinitionDecorator extends Definition
             throw new InvalidArgumentException('$index must be an integer.');
         }
 
-        $this->arguments['index_' . $index] = $value;
+        $this->arguments['index_'.$index] = $value;
 
         return $this;
     }

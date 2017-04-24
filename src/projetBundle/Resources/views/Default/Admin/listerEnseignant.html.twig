@@ -5,8 +5,8 @@
 
     {% block script %}
         <script language="JavaScript">
-            $("document").ready(function () {
-                $("#btnLister").click(function () {
+            $("document").ready(function(){
+                $("#btnLister").click(function(){
                     var idGrade = $("#gradeList").val();
                     var tableau = "<table border='1' class='table table-bordered' id='enseignantTable'><tr><th>Matricule</th><th>Nom</th><th>Prenom</th><th>CIN</th><th>Adresse</th><th>E-mail</th><th>NumTel</th></tr></table>";
                     $("#mySpinner").fadeIn("slow");
@@ -14,20 +14,20 @@
                     $("#alertVide").slideUp("fast");
 
                     $.ajax({
-                        url: "{{ path('ListerEnseignantAJAX') }}",
-                        method: "GET",
-                        data: {"idGrade": idGrade},
-                        success: function (response) {
-                            var lines = "";
+                        url :"{{ path('ListerEnseignantAJAX') }}",
+                        method : "GET",
+                        data :{"idGrade" : idGrade},
+                        success : function(response){
+                            var lines ="";
                             console.log(response);
                             response = JSON.parse(response);
                             console.log(response.listEnseignant);
-                            if (response.listEnseignant.length == 0) {
+                            if(response.listEnseignant.length == 0){
                                 $("#alertVide").slideDown("fast");
                                 $("#tableContainer").slideUp("fast");
-                            } else {
-                                $.each(response.listEnseignant, function (i, item) {
-                                    lines += "<tr><td>" + item.matricule_enseignant + "</td><td>" + item.nom_enseignant + "</td><td>" + item.prenom_enseignant + "</td><td>" + item.cin_enseignant + "</td><td>" + item.adresse_enseignant + "</td><td>" + item.email_enseignant + "</td><td>" + item.num_tel_enseignant + "</td></tr>";
+                            }else{
+                                $.each(response.listEnseignant, function(i , item){
+                                    lines+="<tr><td>"+item.matricule_enseignant+"</td><td>"+item.nom_enseignant+"</td><td>"+item.prenom_enseignant+"</td><td>"+item.cin_enseignant+"</td><td>"+item.adresse_enseignant+"</td><td>"+item.email_enseignant+"</td><td>"+item.num_tel_enseignant+"</td></tr>";
                                 });
                                 $("#tableBody").html(lines);
                                 $("#tableEnseignant").dataTable();
@@ -55,11 +55,8 @@
             </div>
             <hr class="hr-2">
             <div class="row">
-                <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner"
-                           style="display: none"></i></center>
-                <div class="alert alert-warning" id="alertVide" style="display: none">Aucun enseignant n'appartient a
-                    cet grade!
-                </div>
+                <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner" style="display: none"></i></center>
+                <div class="alert alert-warning" id="alertVide" style="display: none">Aucun enseignant n'appartient a cet grade!</div>
                 <div id="tableContainer" style="display: none">
                     <table id="tableEnseignant" class="display" cellspacing="0" width="80%">
                         <thead>
@@ -74,15 +71,15 @@
                         </tr>
                         </thead>
                         <tfoot>
-                        <tr>
-                            <th>Matricule</th>
-                            <th>Nom</th>
-                            <th>Prenom</th>
-                            <th>Cin</th>
-                            <th>Adresse</th>
-                            <th>Email</th>
-                            <th>Numéro de téléphone</th>
-                        </tr>
+                            <tr>
+                                <th>Matricule</th>
+                                <th>Nom</th>
+                                <th>Prenom</th>
+                                <th>Cin</th>
+                                <th>Adresse</th>
+                                <th>Email</th>
+                                <th>Numéro de téléphone</th>
+                            </tr>
                         </tfoot>
                         <tbody id="tableBody">
 

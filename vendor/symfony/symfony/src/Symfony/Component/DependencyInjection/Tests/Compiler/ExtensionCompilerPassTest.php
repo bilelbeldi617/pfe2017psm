@@ -22,6 +22,12 @@ class ExtensionCompilerPassTest extends TestCase
     private $container;
     private $pass;
 
+    protected function setUp()
+    {
+        $this->container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->getMock();
+        $this->pass = new ExtensionCompilerPass();
+    }
+
     public function testProcess()
     {
         $extension1 = $this->createExtensionMock(true);
@@ -33,23 +39,18 @@ class ExtensionCompilerPassTest extends TestCase
 
         $this->container->expects($this->any())
             ->method('getExtensions')
-            ->will($this->returnValue(array($extension1, $extension2, $extension3, $extension4)));
+            ->will($this->returnValue(array($extension1, $extension2, $extension3, $extension4)))
+        ;
 
         $this->pass->process($this->container);
     }
 
     private function createExtensionMock($hasInlineCompile)
     {
-        return $this->getMockBuilder('Symfony\Component\DependencyInjection\\' . (
+        return $this->getMockBuilder('Symfony\Component\DependencyInjection\\'.(
             $hasInlineCompile
-                ? 'Compiler\CompilerPassInterface'
-                : 'Extension\ExtensionInterface'
-            ))->getMock();
-    }
-
-    protected function setUp()
-    {
-        $this->container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->getMock();
-        $this->pass = new ExtensionCompilerPass();
+            ? 'Compiler\CompilerPassInterface'
+            : 'Extension\ExtensionInterface'
+        ))->getMock();
     }
 }

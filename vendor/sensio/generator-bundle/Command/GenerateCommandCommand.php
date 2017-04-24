@@ -58,7 +58,8 @@ APP_PATH/Resources/SensioGeneratorBundle/skeleton/command</info>
 You can check https://github.com/sensio/SensioGeneratorBundle/tree/master/Resources/skeleton
 in order to know the file structure of the skeleton.
 EOT
-            );
+            )
+        ;
     }
 
     public function interact(InputInterface $input, OutputInterface $output)
@@ -115,7 +116,7 @@ EOT
             $question = new Question($questionHelper->getQuestion('Command name', $name), $name);
             $question->setValidator(function ($answer) {
                 if (empty($answer)) {
-                    throw new \RuntimeException('The command name cannot be empty.');
+                   throw new \RuntimeException('The command name cannot be empty.');
                 }
 
                 return $answer;

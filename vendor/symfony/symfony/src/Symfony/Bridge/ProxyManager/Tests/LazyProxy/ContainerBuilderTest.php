@@ -11,7 +11,7 @@
 
 namespace Symfony\Bridge\ProxyManager\Tests\LazyProxy;
 
-require_once __DIR__ . '/Fixtures/includes/foo.php';
+require_once __DIR__.'/Fixtures/includes/foo.php';
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\ProxyManager\LazyProxy\Instantiator\RuntimeInstantiator;
@@ -31,7 +31,7 @@ class ContainerBuilderTest extends TestCase
 
         $builder->setProxyInstantiator(new RuntimeInstantiator());
 
-        $builder->register('foo1', 'ProxyManagerBridgeFooClass')->setFile(__DIR__ . '/Fixtures/includes/foo.php');
+        $builder->register('foo1', 'ProxyManagerBridgeFooClass')->setFile(__DIR__.'/Fixtures/includes/foo.php');
         $builder->getDefinition('foo1')->setLazy(true);
 
         $builder->compile();

@@ -59,7 +59,7 @@ class SecurityExtension extends Extension
         $config = $this->processConfiguration($mainConfig, $configs);
 
         // load services
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('security.xml');
         $loader->load('security_listeners.xml');
         $loader->load('security_rememberme.xml');
@@ -81,7 +81,8 @@ class SecurityExtension extends Extension
             ->getDefinition('security.access.decision_manager')
             ->addArgument($config['access_decision_manager']['strategy'])
             ->addArgument($config['access_decision_manager']['allow_if_all_abstain'])
-            ->addArgument($config['access_decision_manager']['allow_if_equal_granted_denied']);
+            ->addArgument($config['access_decision_manager']['allow_if_equal_granted_denied'])
+        ;
         $container->setParameter('security.access.always_authenticate_before_granting', $config['always_authenticate_before_granting']);
         $container->setParameter('security.authentication.hide_user_not_found', $config['hide_user_not_found']);
 
@@ -113,10 +114,97 @@ class SecurityExtension extends Extension
         ));
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    private function aclLoad($config, ContainerBuilder $container)
     {
-        // first assemble the factories
-        return new MainConfiguration($this->factories, $this->userProviderFactories);
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('security_acl.xml');
+
+        if (isset($config['cache']['id'])) {
+            $container->setAlias('security.acl.cache', $config['cache']['id']);
+        }
+        $container->getDefinition('security.acl.voter.basic_permissions')->addArgument($config['voter']['allow_if_object_identity_unavailable']);
+
+        // custom ACL provider
+        if (isset($config['provider'])) {
+            $container->setAlias('security.acl.provider', $config['provider']);
+
+            return;
+        }
+
+        $this->configureDbalAclProvider($config, $container, $loader);
+    }
+
+    private function configureDbalAclProvider(array $config, ContainerBuilder $container, $loader)
+    {
+        $loader->load('security_acl_dbal.xml');
+
+        if (null !== $config['connection']) {
+            $container->setAlias('security.acl.dbal.connection', sprintf('doctrine.dbal.%s_connection', $config['connection']));
+        }
+
+        $container
+            ->getDefinition('security.acl.dbal.schema_listener')
+            ->addTag('doctrine.event_listener', array(
+                'connection' => $config['connection'],
+                'event' => 'postGenerateSchema',
+                'lazy' => true,
+            ))
+        ;
+
+        $container->getDefinition('security.acl.cache.doctrine')->addArgument($config['cache']['prefix']);
+
+        $container->setParameter('security.acl.dbal.class_table_name', $config['tables']['class']);
+        $container->setParameter('security.acl.dbal.entry_table_name', $config['tables']['entry']);
+        $container->setParameter('security.acl.dbal.oid_table_name', $config['tables']['object_identity']);
+        $container->setParameter('security.acl.dbal.oid_ancestors_table_name', $config['tables']['object_identity_ancestors']);
+        $container->setParameter('security.acl.dbal.sid_table_name', $config['tables']['security_identity']);
+    }
+
+    /**
+     * Loads the web configuration.
+     *
+     * @param array            $config    An array of configuration settings
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     */
+    private function createRoleHierarchy($config, ContainerBuilder $container)
+    {
+        if (!isset($config['role_hierarchy']) || 0 === count($config['role_hierarchy'])) {
+            $container->removeDefinition('security.access.role_hierarchy_voter');
+
+            return;
+        }
+
+        $container->setParameter('security.role_hierarchy.roles', $config['role_hierarchy']);
+        $container->removeDefinition('security.access.simple_role_voter');
+    }
+
+    private function createAuthorization($config, ContainerBuilder $container)
+    {
+        if (!$config['access_control']) {
+            return;
+        }
+
+        $this->addClassesToCompile(array(
+            'Symfony\\Component\\Security\\Http\\AccessMap',
+        ));
+
+        foreach ($config['access_control'] as $access) {
+            $matcher = $this->createRequestMatcher(
+                $container,
+                $access['path'],
+                $access['host'],
+                $access['methods'],
+                $access['ips']
+            );
+
+            $attributes = $access['roles'];
+            if ($access['allow_if']) {
+                $attributes[] = $this->createExpression($container, $access['allow_if']);
+            }
+
+            $container->getDefinition('security.access_map')
+                      ->addMethodCall('add', array($matcher, $attributes, $access['requires_channel']));
+        }
     }
 
     private function createFirewalls($config, ContainerBuilder $container)
@@ -144,11 +232,12 @@ class SecurityExtension extends Extension
         foreach ($firewalls as $name => $firewall) {
             list($matcher, $listeners, $exceptionListener) = $this->createFirewall($container, $name, $firewall, $authenticationProviders, $providerIds);
 
-            $contextId = 'security.firewall.map.context.' . $name;
+            $contextId = 'security.firewall.map.context.'.$name;
             $context = $container->setDefinition($contextId, new DefinitionDecorator('security.firewall.context'));
             $context
                 ->replaceArgument(0, $listeners)
-                ->replaceArgument(1, $exceptionListener);
+                ->replaceArgument(1, $exceptionListener)
+            ;
             $map[$contextId] = $matcher;
         }
         $mapDef->replaceArgument(1, $map);
@@ -159,62 +248,8 @@ class SecurityExtension extends Extension
         }, array_values(array_unique($authenticationProviders)));
         $container
             ->getDefinition('security.authentication.manager')
-            ->replaceArgument(0, $authenticationProviders);
-    }
-
-    private function createUserProviders($config, ContainerBuilder $container)
-    {
-        $providerIds = array();
-        foreach ($config['providers'] as $name => $provider) {
-            $id = $this->createUserDaoProvider($name, $provider, $container);
-            $providerIds[] = $id;
-        }
-
-        return $providerIds;
-    }
-
-    private function createUserDaoProvider($name, $provider, ContainerBuilder $container)
-    {
-        $name = $this->getUserProviderId(strtolower($name));
-
-        // Doctrine Entity and In-memory DAO provider are managed by factories
-        foreach ($this->userProviderFactories as $factory) {
-            $key = str_replace('-', '_', $factory->getKey());
-
-            if (!empty($provider[$key])) {
-                $factory->create($container, $name, $provider[$key]);
-
-                return $name;
-            }
-        }
-
-        // Existing DAO service provider
-        if (isset($provider['id'])) {
-            $container->setAlias($name, new Alias($provider['id'], false));
-
-            return $provider['id'];
-        }
-
-        // Chain provider
-        if (isset($provider['chain'])) {
-            $providers = array();
-            foreach ($provider['chain']['providers'] as $providerName) {
-                $providers[] = new Reference($this->getUserProviderId(strtolower($providerName)));
-            }
-
-            $container
-                ->setDefinition($name, new DefinitionDecorator('security.user.provider.chain'))
-                ->addArgument($providers);
-
-            return $name;
-        }
-
-        throw new InvalidConfigurationException(sprintf('Unable to create definition for "%s" user provider', $name));
-    }
-
-    private function getUserProviderId($name)
-    {
-        return 'security.user.provider.concrete.' . $name;
+            ->replaceArgument(0, $authenticationProviders)
+        ;
     }
 
     private function createFirewall(ContainerBuilder $container, $id, $firewall, &$authenticationProviders, $providerIds)
@@ -260,7 +295,7 @@ class SecurityExtension extends Extension
 
         // Logout listener
         if (isset($firewall['logout'])) {
-            $listenerId = 'security.logout_listener.' . $id;
+            $listenerId = 'security.logout_listener.'.$id;
             $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.logout_listener'));
             $listener->replaceArgument(3, array(
                 'csrf_parameter' => $firewall['logout']['csrf_parameter'],
@@ -273,7 +308,7 @@ class SecurityExtension extends Extension
             if (isset($firewall['logout']['success_handler'])) {
                 $logoutSuccessHandlerId = $firewall['logout']['success_handler'];
             } else {
-                $logoutSuccessHandlerId = 'security.logout.success_handler.' . $id;
+                $logoutSuccessHandlerId = 'security.logout.success_handler.'.$id;
                 $logoutSuccessHandler = $container->setDefinition($logoutSuccessHandlerId, new DefinitionDecorator('security.logout.success_handler'));
                 $logoutSuccessHandler->replaceArgument(1, $firewall['logout']['target']);
             }
@@ -291,7 +326,7 @@ class SecurityExtension extends Extension
 
             // add cookie logout handler
             if (count($firewall['logout']['delete_cookies']) > 0) {
-                $cookieHandlerId = 'security.logout.handler.cookie_clearing.' . $id;
+                $cookieHandlerId = 'security.logout.handler.cookie_clearing.'.$id;
                 $cookieHandler = $container->setDefinition($cookieHandlerId, new DefinitionDecorator('security.logout.handler.cookie_clearing'));
                 $cookieHandler->addArgument($firewall['logout']['delete_cookies']);
 
@@ -312,7 +347,8 @@ class SecurityExtension extends Extension
                     $firewall['logout']['csrf_token_id'],
                     $firewall['logout']['csrf_parameter'],
                     isset($firewall['logout']['csrf_token_generator']) ? new Reference($firewall['logout']['csrf_token_generator']) : null,
-                ));
+                ))
+            ;
         }
 
         // Determine default entry point
@@ -334,36 +370,9 @@ class SecurityExtension extends Extension
         // Exception listener
         $exceptionListener = new Reference($this->createExceptionListener($container, $firewall, $id, $configuredEntryPoint ?: $defaultEntryPoint, $firewall['stateless']));
 
-        $container->setAlias(new Alias('security.user_checker.' . $id, false), $firewall['user_checker']);
+        $container->setAlias(new Alias('security.user_checker.'.$id, false), $firewall['user_checker']);
 
         return array($matcher, $listeners, $exceptionListener);
-    }
-
-    private function createRequestMatcher($container, $path = null, $host = null, $methods = array(), $ip = null, array $attributes = array())
-    {
-        if ($methods) {
-            $methods = array_map('strtoupper', (array)$methods);
-        }
-
-        $serialized = serialize(array($path, $host, $methods, $ip, $attributes));
-        $id = 'security.request_matcher.' . md5($serialized) . sha1($serialized);
-
-        if (isset($this->requestMatchers[$id])) {
-            return $this->requestMatchers[$id];
-        }
-
-        // only add arguments that are necessary
-        $arguments = array($path, $host, $methods, $ip, $attributes);
-        while (count($arguments) > 0 && !end($arguments)) {
-            array_pop($arguments);
-        }
-
-        $container
-            ->register($id, '%security.matcher.class%')
-            ->setPublic(false)
-            ->setArguments($arguments);
-
-        return $this->requestMatchers[$id] = new Reference($id);
     }
 
     private function createContextListener($container, $contextKey)
@@ -372,7 +381,7 @@ class SecurityExtension extends Extension
             return $this->contextListeners[$contextKey];
         }
 
-        $listenerId = 'security.context_listener.' . count($this->contextListeners);
+        $listenerId = 'security.context_listener.'.count($this->contextListeners);
         $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.context_listener'));
         $listener->replaceArgument(2, $contextKey);
 
@@ -402,17 +411,19 @@ class SecurityExtension extends Extension
 
         // Anonymous
         if (isset($firewall['anonymous'])) {
-            $listenerId = 'security.authentication.listener.anonymous.' . $id;
+            $listenerId = 'security.authentication.listener.anonymous.'.$id;
             $container
                 ->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.anonymous'))
-                ->replaceArgument(1, $firewall['anonymous']['secret']);
+                ->replaceArgument(1, $firewall['anonymous']['secret'])
+            ;
 
             $listeners[] = new Reference($listenerId);
 
-            $providerId = 'security.authentication.provider.anonymous.' . $id;
+            $providerId = 'security.authentication.provider.anonymous.'.$id;
             $container
                 ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.anonymous'))
-                ->replaceArgument(0, $firewall['anonymous']['secret']);
+                ->replaceArgument(0, $firewall['anonymous']['secret'])
+            ;
 
             $authenticationProviders[] = $providerId;
             $hasListeners = true;
@@ -425,117 +436,6 @@ class SecurityExtension extends Extension
         return array($listeners, $defaultEntryPoint);
     }
 
-    private function createSwitchUserListener($container, $id, $config, $defaultProvider)
-    {
-        $userProvider = isset($config['provider']) ? $this->getUserProviderId($config['provider']) : $defaultProvider;
-
-        $switchUserListenerId = 'security.authentication.switchuser_listener.' . $id;
-        $listener = $container->setDefinition($switchUserListenerId, new DefinitionDecorator('security.authentication.switchuser_listener'));
-        $listener->replaceArgument(1, new Reference($userProvider));
-        $listener->replaceArgument(2, new Reference('security.user_checker.' . $id));
-        $listener->replaceArgument(3, $id);
-        $listener->replaceArgument(6, $config['parameter']);
-        $listener->replaceArgument(7, $config['role']);
-
-        return $switchUserListenerId;
-    }
-
-    // Parses user providers and returns an array of their ids
-
-    private function createExceptionListener($container, $config, $id, $defaultEntryPoint, $stateless)
-    {
-        $exceptionListenerId = 'security.exception_listener.' . $id;
-        $listener = $container->setDefinition($exceptionListenerId, new DefinitionDecorator('security.exception_listener'));
-        $listener->replaceArgument(3, $id);
-        $listener->replaceArgument(4, null === $defaultEntryPoint ? null : new Reference($defaultEntryPoint));
-        $listener->replaceArgument(8, $stateless);
-
-        // access denied handler setup
-        if (isset($config['access_denied_handler'])) {
-            $listener->replaceArgument(6, new Reference($config['access_denied_handler']));
-        } elseif (isset($config['access_denied_url'])) {
-            $listener->replaceArgument(5, $config['access_denied_url']);
-        }
-
-        return $exceptionListenerId;
-    }
-
-    // Parses a <provider> tag and returns the id for the related user provider service
-
-    private function createAuthorization($config, ContainerBuilder $container)
-    {
-        if (!$config['access_control']) {
-            return;
-        }
-
-        $this->addClassesToCompile(array(
-            'Symfony\\Component\\Security\\Http\\AccessMap',
-        ));
-
-        foreach ($config['access_control'] as $access) {
-            $matcher = $this->createRequestMatcher(
-                $container,
-                $access['path'],
-                $access['host'],
-                $access['methods'],
-                $access['ips']
-            );
-
-            $attributes = $access['roles'];
-            if ($access['allow_if']) {
-                $attributes[] = $this->createExpression($container, $access['allow_if']);
-            }
-
-            $container->getDefinition('security.access_map')
-                ->addMethodCall('add', array($matcher, $attributes, $access['requires_channel']));
-        }
-    }
-
-    private function createExpression($container, $expression)
-    {
-        if (isset($this->expressions[$id = 'security.expression.' . sha1($expression)])) {
-            return $this->expressions[$id];
-        }
-
-        $container
-            ->register($id, 'Symfony\Component\ExpressionLanguage\SerializedParsedExpression')
-            ->setPublic(false)
-            ->addArgument($expression)
-            ->addArgument(serialize($this->getExpressionLanguage()->parse($expression, array('token', 'user', 'object', 'roles', 'request', 'trust_resolver'))->getNodes()));
-
-        return $this->expressions[$id] = new Reference($id);
-    }
-
-    private function getExpressionLanguage()
-    {
-        if (null === $this->expressionLanguage) {
-            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
-                throw new \RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
-            }
-            $this->expressionLanguage = new ExpressionLanguage();
-        }
-
-        return $this->expressionLanguage;
-    }
-
-    /**
-     * Loads the web configuration.
-     *
-     * @param array $config An array of configuration settings
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     */
-    private function createRoleHierarchy($config, ContainerBuilder $container)
-    {
-        if (!isset($config['role_hierarchy']) || 0 === count($config['role_hierarchy'])) {
-            $container->removeDefinition('security.access.role_hierarchy_voter');
-
-            return;
-        }
-
-        $container->setParameter('security.role_hierarchy.roles', $config['role_hierarchy']);
-        $container->removeDefinition('security.access.simple_role_voter');
-    }
-
     private function createEncoders($encoders, ContainerBuilder $container)
     {
         $encoderMap = array();
@@ -545,7 +445,8 @@ class SecurityExtension extends Extension
 
         $container
             ->getDefinition('security.encoder_factory.generic')
-            ->setArguments(array($encoderMap));
+            ->setArguments(array($encoderMap))
+        ;
     }
 
     private function createEncoder($config, ContainerBuilder $container)
@@ -597,49 +498,138 @@ class SecurityExtension extends Extension
         );
     }
 
-    private function aclLoad($config, ContainerBuilder $container)
+    // Parses user providers and returns an array of their ids
+    private function createUserProviders($config, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('security_acl.xml');
-
-        if (isset($config['cache']['id'])) {
-            $container->setAlias('security.acl.cache', $config['cache']['id']);
-        }
-        $container->getDefinition('security.acl.voter.basic_permissions')->addArgument($config['voter']['allow_if_object_identity_unavailable']);
-
-        // custom ACL provider
-        if (isset($config['provider'])) {
-            $container->setAlias('security.acl.provider', $config['provider']);
-
-            return;
+        $providerIds = array();
+        foreach ($config['providers'] as $name => $provider) {
+            $id = $this->createUserDaoProvider($name, $provider, $container);
+            $providerIds[] = $id;
         }
 
-        $this->configureDbalAclProvider($config, $container, $loader);
+        return $providerIds;
     }
 
-    private function configureDbalAclProvider(array $config, ContainerBuilder $container, $loader)
+    // Parses a <provider> tag and returns the id for the related user provider service
+    private function createUserDaoProvider($name, $provider, ContainerBuilder $container)
     {
-        $loader->load('security_acl_dbal.xml');
+        $name = $this->getUserProviderId(strtolower($name));
 
-        if (null !== $config['connection']) {
-            $container->setAlias('security.acl.dbal.connection', sprintf('doctrine.dbal.%s_connection', $config['connection']));
+        // Doctrine Entity and In-memory DAO provider are managed by factories
+        foreach ($this->userProviderFactories as $factory) {
+            $key = str_replace('-', '_', $factory->getKey());
+
+            if (!empty($provider[$key])) {
+                $factory->create($container, $name, $provider[$key]);
+
+                return $name;
+            }
+        }
+
+        // Existing DAO service provider
+        if (isset($provider['id'])) {
+            $container->setAlias($name, new Alias($provider['id'], false));
+
+            return $provider['id'];
+        }
+
+        // Chain provider
+        if (isset($provider['chain'])) {
+            $providers = array();
+            foreach ($provider['chain']['providers'] as $providerName) {
+                $providers[] = new Reference($this->getUserProviderId(strtolower($providerName)));
+            }
+
+            $container
+                ->setDefinition($name, new DefinitionDecorator('security.user.provider.chain'))
+                ->addArgument($providers);
+
+            return $name;
+        }
+
+        throw new InvalidConfigurationException(sprintf('Unable to create definition for "%s" user provider', $name));
+    }
+
+    private function getUserProviderId($name)
+    {
+        return 'security.user.provider.concrete.'.$name;
+    }
+
+    private function createExceptionListener($container, $config, $id, $defaultEntryPoint, $stateless)
+    {
+        $exceptionListenerId = 'security.exception_listener.'.$id;
+        $listener = $container->setDefinition($exceptionListenerId, new DefinitionDecorator('security.exception_listener'));
+        $listener->replaceArgument(3, $id);
+        $listener->replaceArgument(4, null === $defaultEntryPoint ? null : new Reference($defaultEntryPoint));
+        $listener->replaceArgument(8, $stateless);
+
+        // access denied handler setup
+        if (isset($config['access_denied_handler'])) {
+            $listener->replaceArgument(6, new Reference($config['access_denied_handler']));
+        } elseif (isset($config['access_denied_url'])) {
+            $listener->replaceArgument(5, $config['access_denied_url']);
+        }
+
+        return $exceptionListenerId;
+    }
+
+    private function createSwitchUserListener($container, $id, $config, $defaultProvider)
+    {
+        $userProvider = isset($config['provider']) ? $this->getUserProviderId($config['provider']) : $defaultProvider;
+
+        $switchUserListenerId = 'security.authentication.switchuser_listener.'.$id;
+        $listener = $container->setDefinition($switchUserListenerId, new DefinitionDecorator('security.authentication.switchuser_listener'));
+        $listener->replaceArgument(1, new Reference($userProvider));
+        $listener->replaceArgument(2, new Reference('security.user_checker.'.$id));
+        $listener->replaceArgument(3, $id);
+        $listener->replaceArgument(6, $config['parameter']);
+        $listener->replaceArgument(7, $config['role']);
+
+        return $switchUserListenerId;
+    }
+
+    private function createExpression($container, $expression)
+    {
+        if (isset($this->expressions[$id = 'security.expression.'.sha1($expression)])) {
+            return $this->expressions[$id];
         }
 
         $container
-            ->getDefinition('security.acl.dbal.schema_listener')
-            ->addTag('doctrine.event_listener', array(
-                'connection' => $config['connection'],
-                'event' => 'postGenerateSchema',
-                'lazy' => true,
-            ));
+            ->register($id, 'Symfony\Component\ExpressionLanguage\SerializedParsedExpression')
+            ->setPublic(false)
+            ->addArgument($expression)
+            ->addArgument(serialize($this->getExpressionLanguage()->parse($expression, array('token', 'user', 'object', 'roles', 'request', 'trust_resolver'))->getNodes()))
+        ;
 
-        $container->getDefinition('security.acl.cache.doctrine')->addArgument($config['cache']['prefix']);
+        return $this->expressions[$id] = new Reference($id);
+    }
 
-        $container->setParameter('security.acl.dbal.class_table_name', $config['tables']['class']);
-        $container->setParameter('security.acl.dbal.entry_table_name', $config['tables']['entry']);
-        $container->setParameter('security.acl.dbal.oid_table_name', $config['tables']['object_identity']);
-        $container->setParameter('security.acl.dbal.oid_ancestors_table_name', $config['tables']['object_identity_ancestors']);
-        $container->setParameter('security.acl.dbal.sid_table_name', $config['tables']['security_identity']);
+    private function createRequestMatcher($container, $path = null, $host = null, $methods = array(), $ip = null, array $attributes = array())
+    {
+        if ($methods) {
+            $methods = array_map('strtoupper', (array) $methods);
+        }
+
+        $serialized = serialize(array($path, $host, $methods, $ip, $attributes));
+        $id = 'security.request_matcher.'.md5($serialized).sha1($serialized);
+
+        if (isset($this->requestMatchers[$id])) {
+            return $this->requestMatchers[$id];
+        }
+
+        // only add arguments that are necessary
+        $arguments = array($path, $host, $methods, $ip, $attributes);
+        while (count($arguments) > 0 && !end($arguments)) {
+            array_pop($arguments);
+        }
+
+        $container
+            ->register($id, '%security.matcher.class%')
+            ->setPublic(false)
+            ->setArguments($arguments)
+        ;
+
+        return $this->requestMatchers[$id] = new Reference($id);
     }
 
     public function addSecurityListenerFactory(SecurityFactoryInterface $factory)
@@ -659,11 +649,29 @@ class SecurityExtension extends Extension
      */
     public function getXsdValidationBasePath()
     {
-        return __DIR__ . '/../Resources/config/schema';
+        return __DIR__.'/../Resources/config/schema';
     }
 
     public function getNamespace()
     {
         return 'http://symfony.com/schema/dic/security';
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        // first assemble the factories
+        return new MainConfiguration($this->factories, $this->userProviderFactories);
+    }
+
+    private function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage) {
+            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+                throw new \RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
+            }
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
     }
 }

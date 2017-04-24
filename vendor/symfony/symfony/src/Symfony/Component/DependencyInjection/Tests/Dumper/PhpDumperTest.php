@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Variable;
 use Symfony\Component\ExpressionLanguage\Expression;
 
-require_once __DIR__ . '/../Fixtures/includes/classes.php';
+require_once __DIR__.'/../Fixtures/includes/classes.php';
 
 class PhpDumperTest extends TestCase
 {
@@ -29,15 +29,15 @@ class PhpDumperTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = realpath(__DIR__ . '/../Fixtures/');
+        self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
     }
 
     public function testDump()
     {
         $dumper = new PhpDumper(new ContainerBuilder());
 
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services1.php', $dumper->dump(), '->dump() dumps an empty container as an empty PHP class');
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services1-1.php', $dumper->dump(array('class' => 'Container', 'base_class' => 'AbstractContainer', 'namespace' => 'Symfony\Component\DependencyInjection\Dump')), '->dump() takes a class and a base_class options');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services1.php', $dumper->dump(), '->dump() dumps an empty container as an empty PHP class');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services1-1.php', $dumper->dump(array('class' => 'Container', 'base_class' => 'AbstractContainer', 'namespace' => 'Symfony\Component\DependencyInjection\Dump')), '->dump() takes a class and a base_class options');
     }
 
     public function testDumpOptimizationString()
@@ -65,7 +65,7 @@ class PhpDumperTest extends TestCase
         $container->compile();
 
         $dumper = new PhpDumper($container);
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services10.php', $dumper->dump(), '->dump() dumps an empty container as an empty PHP class');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services10.php', $dumper->dump(), '->dump() dumps an empty container as an empty PHP class');
     }
 
     public function testDumpRelativeDir()
@@ -77,14 +77,14 @@ class PhpDumperTest extends TestCase
 
         $container = new ContainerBuilder();
         $container->setDefinition('test', $definition);
-        $container->setParameter('foo', 'wiz' . dirname(__DIR__));
+        $container->setParameter('foo', 'wiz'.dirname(__DIR__));
         $container->setParameter('bar', __DIR__);
         $container->setParameter('baz', '%bar%/PhpDumperTest.php');
         $container->setParameter('buz', dirname(dirname(__DIR__)));
         $container->compile();
 
         $dumper = new PhpDumper($container);
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services12.php', $dumper->dump(array('file' => __FILE__)), '->dump() dumps __DIR__ relative strings');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services12.php', $dumper->dump(array('file' => __FILE__)), '->dump() dumps __DIR__ relative strings');
     }
 
     /**
@@ -109,23 +109,23 @@ class PhpDumperTest extends TestCase
 
     public function testAddParameters()
     {
-        $container = include self::$fixturesPath . '/containers/container8.php';
+        $container = include self::$fixturesPath.'/containers/container8.php';
         $dumper = new PhpDumper($container);
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services8.php', $dumper->dump(), '->dump() dumps parameters');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services8.php', $dumper->dump(), '->dump() dumps parameters');
     }
 
     public function testAddService()
     {
         // without compilation
-        $container = include self::$fixturesPath . '/containers/container9.php';
+        $container = include self::$fixturesPath.'/containers/container9.php';
         $dumper = new PhpDumper($container);
-        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath . '/php/services9.php')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath.'/php/services9.php')), $dumper->dump(), '->dump() dumps services');
 
         // with compilation
-        $container = include self::$fixturesPath . '/containers/container9.php';
+        $container = include self::$fixturesPath.'/containers/container9.php';
         $container->compile();
         $dumper = new PhpDumper($container);
-        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath . '/php/services9_compiled.php')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath.'/php/services9_compiled.php')), $dumper->dump(), '->dump() dumps services');
 
         $dumper = new PhpDumper($container = new ContainerBuilder());
         $container->register('foo', 'FooClass')->addArgument(new \stdClass());
@@ -143,17 +143,17 @@ class PhpDumperTest extends TestCase
      */
     public function testLegacySynchronizedServices()
     {
-        $container = include self::$fixturesPath . '/containers/container20.php';
+        $container = include self::$fixturesPath.'/containers/container20.php';
         $dumper = new PhpDumper($container);
-        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath . '/php/services20.php')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath.'/php/services20.php')), $dumper->dump(), '->dump() dumps services');
     }
 
     public function testServicesWithAnonymousFactories()
     {
-        $container = include self::$fixturesPath . '/containers/container19.php';
+        $container = include self::$fixturesPath.'/containers/container19.php';
         $dumper = new PhpDumper($container);
 
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services19.php', $dumper->dump(), '->dump() dumps services with anonymous factories');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services19.php', $dumper->dump(), '->dump() dumps services with anonymous factories');
     }
 
     /**
@@ -195,10 +195,10 @@ class PhpDumperTest extends TestCase
 
     public function testAliases()
     {
-        $container = include self::$fixturesPath . '/containers/container9.php';
+        $container = include self::$fixturesPath.'/containers/container9.php';
         $container->compile();
         $dumper = new PhpDumper($container);
-        eval('?>' . $dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Aliases')));
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Aliases')));
 
         $container = new \Symfony_DI_PhpDumper_Test_Aliases();
         $container->set('foo', $foo = new \stdClass());
@@ -213,7 +213,7 @@ class PhpDumperTest extends TestCase
         $container->compile();
 
         $dumper = new PhpDumper($container);
-        eval('?>' . $dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Frozen_No_Aliases')));
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Frozen_No_Aliases')));
 
         $container = new \Symfony_DI_PhpDumper_Test_Frozen_No_Aliases();
         $this->assertFalse($container->has('foo'));
@@ -221,8 +221,8 @@ class PhpDumperTest extends TestCase
 
     public function testOverrideServiceWhenUsingADumpedContainer()
     {
-        require_once self::$fixturesPath . '/php/services9.php';
-        require_once self::$fixturesPath . '/includes/foo.php';
+        require_once self::$fixturesPath.'/php/services9.php';
+        require_once self::$fixturesPath.'/includes/foo.php';
 
         $container = new \ProjectServiceContainer();
         $container->set('bar', $bar = new \stdClass());
@@ -233,9 +233,9 @@ class PhpDumperTest extends TestCase
 
     public function testOverrideServiceWhenUsingADumpedContainerAndServiceIsUsedFromAnotherOne()
     {
-        require_once self::$fixturesPath . '/php/services9.php';
-        require_once self::$fixturesPath . '/includes/foo.php';
-        require_once self::$fixturesPath . '/includes/classes.php';
+        require_once self::$fixturesPath.'/php/services9.php';
+        require_once self::$fixturesPath.'/includes/foo.php';
+        require_once self::$fixturesPath.'/includes/classes.php';
 
         $container = new \ProjectServiceContainer();
         $container->set('bar', $bar = new \stdClass());
@@ -260,10 +260,10 @@ class PhpDumperTest extends TestCase
 
     public function testDumpAutowireData()
     {
-        $container = include self::$fixturesPath . '/containers/container24.php';
+        $container = include self::$fixturesPath.'/containers/container24.php';
         $dumper = new PhpDumper($container);
 
-        $this->assertEquals(file_get_contents(self::$fixturesPath . '/php/services24.php'), $dumper->dump());
+        $this->assertEquals(file_get_contents(self::$fixturesPath.'/php/services24.php'), $dumper->dump());
     }
 
     public function testInlinedDefinitionReferencingServiceContainer()
@@ -274,12 +274,12 @@ class PhpDumperTest extends TestCase
         $container->compile();
 
         $dumper = new PhpDumper($container);
-        $this->assertStringEqualsFile(self::$fixturesPath . '/php/services13.php', $dumper->dump(), '->dump() dumps inline definitions which reference service_container');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services13.php', $dumper->dump(), '->dump() dumps inline definitions which reference service_container');
     }
 
     public function testInitializePropertiesBeforeMethodCalls()
     {
-        require_once self::$fixturesPath . '/includes/classes.php';
+        require_once self::$fixturesPath.'/includes/classes.php';
 
         $container = new ContainerBuilder();
         $container->register('foo', 'stdClass');
@@ -290,7 +290,7 @@ class PhpDumperTest extends TestCase
         $container->compile();
 
         $dumper = new PhpDumper($container);
-        eval('?>' . $dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Properties_Before_Method_Calls')));
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Properties_Before_Method_Calls')));
 
         $container = new \Symfony_DI_PhpDumper_Test_Properties_Before_Method_Calls();
         $this->assertTrue($container->get('bar')->callPassed(), '->dump() initializes properties before method calls');

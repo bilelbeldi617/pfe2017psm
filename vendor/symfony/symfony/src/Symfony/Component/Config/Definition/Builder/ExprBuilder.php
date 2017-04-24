@@ -21,9 +21,9 @@ use Symfony\Component\Config\Definition\Exception\UnsetKeyException;
  */
 class ExprBuilder
 {
+    protected $node;
     public $ifPart;
     public $thenPart;
-    protected $node;
 
     /**
      * Constructor.
@@ -36,28 +36,6 @@ class ExprBuilder
     }
 
     /**
-     * Builds the expressions.
-     *
-     * @param ExprBuilder[] $expressions An array of ExprBuilder instances to build
-     *
-     * @return array
-     */
-    public static function buildExpressions(array $expressions)
-    {
-        foreach ($expressions as $k => $expr) {
-            if ($expr instanceof self) {
-                $if = $expr->ifPart;
-                $then = $expr->thenPart;
-                $expressions[$k] = function ($v) use ($if, $then) {
-                    return $if($v) ? $then($v) : $v;
-                };
-            }
-        }
-
-        return $expressions;
-    }
-
-    /**
      * Marks the expression as being always used.
      *
      * @param \Closure $then
@@ -66,9 +44,7 @@ class ExprBuilder
      */
     public function always(\Closure $then = null)
     {
-        $this->ifPart = function ($v) {
-            return true;
-        };
+        $this->ifPart = function ($v) { return true; };
 
         if (null !== $then) {
             $this->thenPart = $then;
@@ -89,9 +65,7 @@ class ExprBuilder
     public function ifTrue(\Closure $closure = null)
     {
         if (null === $closure) {
-            $closure = function ($v) {
-                return true === $v;
-            };
+            $closure = function ($v) { return true === $v; };
         }
 
         $this->ifPart = $closure;
@@ -106,9 +80,7 @@ class ExprBuilder
      */
     public function ifString()
     {
-        $this->ifPart = function ($v) {
-            return is_string($v);
-        };
+        $this->ifPart = function ($v) { return is_string($v); };
 
         return $this;
     }
@@ -120,9 +92,7 @@ class ExprBuilder
      */
     public function ifNull()
     {
-        $this->ifPart = function ($v) {
-            return null === $v;
-        };
+        $this->ifPart = function ($v) { return null === $v; };
 
         return $this;
     }
@@ -134,9 +104,7 @@ class ExprBuilder
      */
     public function ifArray()
     {
-        $this->ifPart = function ($v) {
-            return is_array($v);
-        };
+        $this->ifPart = function ($v) { return is_array($v); };
 
         return $this;
     }
@@ -150,9 +118,7 @@ class ExprBuilder
      */
     public function ifInArray(array $array)
     {
-        $this->ifPart = function ($v) use ($array) {
-            return in_array($v, $array, true);
-        };
+        $this->ifPart = function ($v) use ($array) { return in_array($v, $array, true); };
 
         return $this;
     }
@@ -166,9 +132,7 @@ class ExprBuilder
      */
     public function ifNotInArray(array $array)
     {
-        $this->ifPart = function ($v) use ($array) {
-            return !in_array($v, $array, true);
-        };
+        $this->ifPart = function ($v) use ($array) { return !in_array($v, $array, true); };
 
         return $this;
     }
@@ -194,9 +158,7 @@ class ExprBuilder
      */
     public function thenEmptyArray()
     {
-        $this->thenPart = function ($v) {
-            return array();
-        };
+        $this->thenPart = function ($v) { return array(); };
 
         return $this;
     }
@@ -214,9 +176,7 @@ class ExprBuilder
      */
     public function thenInvalid($message)
     {
-        $this->thenPart = function ($v) use ($message) {
-            throw new \InvalidArgumentException(sprintf($message, json_encode($v)));
-        };
+        $this->thenPart = function ($v) use ($message) {throw new \InvalidArgumentException(sprintf($message, json_encode($v))); };
 
         return $this;
     }
@@ -230,9 +190,7 @@ class ExprBuilder
      */
     public function thenUnset()
     {
-        $this->thenPart = function ($v) {
-            throw new UnsetKeyException('Unsetting key');
-        };
+        $this->thenPart = function ($v) { throw new UnsetKeyException('Unsetting key'); };
 
         return $this;
     }
@@ -254,5 +212,27 @@ class ExprBuilder
         }
 
         return $this->node;
+    }
+
+    /**
+     * Builds the expressions.
+     *
+     * @param ExprBuilder[] $expressions An array of ExprBuilder instances to build
+     *
+     * @return array
+     */
+    public static function buildExpressions(array $expressions)
+    {
+        foreach ($expressions as $k => $expr) {
+            if ($expr instanceof self) {
+                $if = $expr->ifPart;
+                $then = $expr->thenPart;
+                $expressions[$k] = function ($v) use ($if, $then) {
+                    return $if($v) ? $then($v) : $v;
+                };
+            }
+        }
+
+        return $expressions;
     }
 }

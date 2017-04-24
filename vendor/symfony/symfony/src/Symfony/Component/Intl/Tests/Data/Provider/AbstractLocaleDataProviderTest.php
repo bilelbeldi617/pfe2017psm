@@ -25,6 +25,18 @@ abstract class AbstractLocaleDataProviderTest extends AbstractDataProviderTest
      */
     protected $dataProvider;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->dataProvider = new LocaleDataProvider(
+            $this->getDataDirectory().'/'.Intl::LOCALE_DIR,
+            $this->createEntryReader()
+        );
+    }
+
+    abstract protected function getDataDirectory();
+
     public function testGetLocales()
     {
         $this->assertSame($this->getLocales(), $this->dataProvider->getLocales());
@@ -93,16 +105,4 @@ abstract class AbstractLocaleDataProviderTest extends AbstractDataProviderTest
             $this->assertSame($name, $this->dataProvider->getName($locale));
         }
     }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->dataProvider = new LocaleDataProvider(
-            $this->getDataDirectory() . '/' . Intl::LOCALE_DIR,
-            $this->createEntryReader()
-        );
-    }
-
-    abstract protected function getDataDirectory();
 }

@@ -71,6 +71,31 @@ class DoctrineChoiceLoaderTest extends TestCase
      */
     private $obj3;
 
+    protected function setUp()
+    {
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface')->getMock();
+        $this->om = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')->getMock();
+        $this->repository = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $this->class = 'stdClass';
+        $this->idReader = $this->getMockBuilder('Symfony\Bridge\Doctrine\Form\ChoiceList\IdReader')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->objectLoader = $this->getMockBuilder('Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface')->getMock();
+        $this->obj1 = (object) array('name' => 'A');
+        $this->obj2 = (object) array('name' => 'B');
+        $this->obj3 = (object) array('name' => 'C');
+
+        $this->om->expects($this->any())
+            ->method('getRepository')
+            ->with($this->class)
+            ->willReturn($this->repository);
+
+        $this->om->expects($this->any())
+            ->method('getClassMetadata')
+            ->with($this->class)
+            ->willReturn(new ClassMetadata($this->class));
+    }
+
     public function testLoadChoiceList()
     {
         $loader = new DoctrineChoiceLoader(
@@ -82,8 +107,7 @@ class DoctrineChoiceLoaderTest extends TestCase
 
         $choices = array($this->obj1, $this->obj2, $this->obj3);
         $choiceList = new ArrayChoiceList(array());
-        $value = function () {
-        };
+        $value = function () {};
 
         $this->repository->expects($this->once())
             ->method('findAll')
@@ -216,9 +240,7 @@ class DoctrineChoiceLoaderTest extends TestCase
         );
 
         $choices = array($this->obj1, $this->obj2, $this->obj3);
-        $value = function (\stdClass $object) {
-            return $object->name;
-        };
+        $value = function (\stdClass $object) { return $object->name; };
         $choiceList = new ArrayChoiceList($choices, $value);
 
         $this->idReader->expects($this->any())
@@ -359,7 +381,7 @@ class DoctrineChoiceLoaderTest extends TestCase
         $this->assertSame(
             array(4 => $this->obj3, 7 => $this->obj2),
             $loader->loadChoicesForValues(array(4 => '3', 7 => '2')
-            ));
+        ));
     }
 
     public function testLoadChoicesForValuesLoadsAllIfSingleIntIdAndValueGiven()
@@ -372,9 +394,7 @@ class DoctrineChoiceLoaderTest extends TestCase
         );
 
         $choices = array($this->obj1, $this->obj2, $this->obj3);
-        $value = function (\stdClass $object) {
-            return $object->name;
-        };
+        $value = function (\stdClass $object) { return $object->name; };
         $choiceList = new ArrayChoiceList($choices, $value);
 
         $this->idReader->expects($this->any())
@@ -436,30 +456,5 @@ class DoctrineChoiceLoaderTest extends TestCase
             ));
 
         $this->assertSame(array($this->obj2), $loader->loadChoicesForValues(array('2'), $value));
-    }
-
-    protected function setUp()
-    {
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface')->getMock();
-        $this->om = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')->getMock();
-        $this->repository = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
-        $this->class = 'stdClass';
-        $this->idReader = $this->getMockBuilder('Symfony\Bridge\Doctrine\Form\ChoiceList\IdReader')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->objectLoader = $this->getMockBuilder('Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface')->getMock();
-        $this->obj1 = (object)array('name' => 'A');
-        $this->obj2 = (object)array('name' => 'B');
-        $this->obj3 = (object)array('name' => 'C');
-
-        $this->om->expects($this->any())
-            ->method('getRepository')
-            ->with($this->class)
-            ->willReturn($this->repository);
-
-        $this->om->expects($this->any())
-            ->method('getClassMetadata')
-            ->with($this->class)
-            ->willReturn(new ClassMetadata($this->class));
     }
 }

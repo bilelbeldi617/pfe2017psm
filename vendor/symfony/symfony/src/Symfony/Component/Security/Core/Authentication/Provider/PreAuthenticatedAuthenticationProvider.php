@@ -37,8 +37,8 @@ class PreAuthenticatedAuthenticationProvider implements AuthenticationProviderIn
      * Constructor.
      *
      * @param UserProviderInterface $userProvider An UserProviderInterface instance
-     * @param UserCheckerInterface $userChecker An UserCheckerInterface instance
-     * @param string $providerKey The provider key
+     * @param UserCheckerInterface  $userChecker  An UserCheckerInterface instance
+     * @param string                $providerKey  The provider key
      */
     public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey)
     {

@@ -47,7 +47,7 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
         }
 
         foreach ($container->getAliases() as $id => $alias) {
-            $aliasId = (string)$alias;
+            $aliasId = (string) $alias;
             if ($aliasId !== $defId = $this->getDefinitionId($aliasId)) {
                 $container->setAlias($id, new Alias($defId, $alias->isPublic()));
             }
@@ -67,7 +67,7 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
             if (is_array($argument)) {
                 $arguments[$k] = $this->processArguments($argument);
             } elseif ($argument instanceof Reference) {
-                $defId = $this->getDefinitionId($id = (string)$argument);
+                $defId = $this->getDefinitionId($id = (string) $argument);
 
                 if ($defId !== $id) {
                     $arguments[$k] = new Reference($defId, $argument->getInvalidBehavior(), $argument->isStrict(false));
@@ -76,6 +76,30 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
         }
 
         return $arguments;
+    }
+
+    private function processFactoryService($factoryService)
+    {
+        if (null === $factoryService) {
+            return;
+        }
+
+        return $this->getDefinitionId($factoryService);
+    }
+
+    private function processFactory($factory)
+    {
+        if (null === $factory || !is_array($factory) || !$factory[0] instanceof Reference) {
+            return $factory;
+        }
+
+        $defId = $this->getDefinitionId($id = (string) $factory[0]);
+
+        if ($defId !== $id) {
+            $factory[0] = new Reference($defId, $factory[0]->getInvalidBehavior(), $factory[0]->isStrict(false));
+        }
+
+        return $factory;
     }
 
     /**
@@ -93,33 +117,9 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
                 throw new ServiceCircularReferenceException($id, array_keys($seen));
             }
             $seen[$id] = true;
-            $id = (string)$this->container->getAlias($id);
+            $id = (string) $this->container->getAlias($id);
         }
 
         return $id;
-    }
-
-    private function processFactory($factory)
-    {
-        if (null === $factory || !is_array($factory) || !$factory[0] instanceof Reference) {
-            return $factory;
-        }
-
-        $defId = $this->getDefinitionId($id = (string)$factory[0]);
-
-        if ($defId !== $id) {
-            $factory[0] = new Reference($defId, $factory[0]->getInvalidBehavior(), $factory[0]->isStrict(false));
-        }
-
-        return $factory;
-    }
-
-    private function processFactoryService($factoryService)
-    {
-        if (null === $factoryService) {
-            return;
-        }
-
-        return $this->getDefinitionId($factoryService);
     }
 }

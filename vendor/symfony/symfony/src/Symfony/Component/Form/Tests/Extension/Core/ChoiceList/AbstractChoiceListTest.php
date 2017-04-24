@@ -125,6 +125,36 @@ abstract class AbstractChoiceListTest extends TestCase
      */
     protected $label4;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->list = $this->createChoiceList();
+
+        $this->choices = $this->getChoices();
+        $this->indices = $this->getIndices();
+        $this->values = $this->getValues();
+        $this->labels = $this->getLabels();
+
+        // allow access to the individual entries without relying on their indices
+        reset($this->choices);
+        reset($this->indices);
+        reset($this->values);
+        reset($this->labels);
+
+        for ($i = 1; $i <= 4; ++$i) {
+            $this->{'choice'.$i} = current($this->choices);
+            $this->{'index'.$i} = current($this->indices);
+            $this->{'value'.$i} = current($this->values);
+            $this->{'label'.$i} = current($this->labels);
+
+            next($this->choices);
+            next($this->indices);
+            next($this->values);
+            next($this->labels);
+        }
+    }
+
     public function testGetChoices()
     {
         $this->assertSame($this->choices, $this->list->getChoices());
@@ -219,12 +249,11 @@ abstract class AbstractChoiceListTest extends TestCase
         $this->assertSame(array($this->choice1, $this->choice2), $this->list->getChoicesForValues($values));
     }
 
+    // https://github.com/symfony/symfony/issues/3446
     public function testGetChoicesForValuesEmpty()
     {
         $this->assertSame(array(), $this->list->getChoicesForValues(array()));
     }
-
-    // https://github.com/symfony/symfony/issues/3446
 
     public function testGetValuesForChoices()
     {
@@ -255,36 +284,6 @@ abstract class AbstractChoiceListTest extends TestCase
         $this->assertSame(array(), $this->list->getValuesForChoices(array()));
     }
 
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->list = $this->createChoiceList();
-
-        $this->choices = $this->getChoices();
-        $this->indices = $this->getIndices();
-        $this->values = $this->getValues();
-        $this->labels = $this->getLabels();
-
-        // allow access to the individual entries without relying on their indices
-        reset($this->choices);
-        reset($this->indices);
-        reset($this->values);
-        reset($this->labels);
-
-        for ($i = 1; $i <= 4; ++$i) {
-            $this->{'choice' . $i} = current($this->choices);
-            $this->{'index' . $i} = current($this->indices);
-            $this->{'value' . $i} = current($this->values);
-            $this->{'label' . $i} = current($this->labels);
-
-            next($this->choices);
-            next($this->indices);
-            next($this->values);
-            next($this->labels);
-        }
-    }
-
     /**
      * @return \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface
      */
@@ -292,9 +291,9 @@ abstract class AbstractChoiceListTest extends TestCase
 
     abstract protected function getChoices();
 
-    abstract protected function getIndices();
+    abstract protected function getLabels();
 
     abstract protected function getValues();
 
-    abstract protected function getLabels();
+    abstract protected function getIndices();
 }

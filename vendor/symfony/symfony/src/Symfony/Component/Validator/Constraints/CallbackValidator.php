@@ -29,12 +29,12 @@ class CallbackValidator extends ConstraintValidator
     public function validate($object, Constraint $constraint)
     {
         if (!$constraint instanceof Callback) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Callback');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Callback');
         }
 
         if (null !== $constraint->callback && null !== $constraint->methods) {
             throw new ConstraintDefinitionException(
-                'The Callback constraint supports either the option "callback" ' .
+                'The Callback constraint supports either the option "callback" '.
                 'or "methods", but not both at the same time.'
             );
         }

@@ -63,6 +63,15 @@ abstract class AbstractType implements FormTypeInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        // As of Symfony 2.8, the name defaults to the fully-qualified class name
+        return get_class($this);
+    }
+
+    /**
      * Returns the prefix of the template block name for this type.
      *
      * The block prefixes default to the underscored short class name with
@@ -77,15 +86,6 @@ abstract class AbstractType implements FormTypeInterface
 
         // For BC: Use the name as block prefix if one is set
         return $name !== $fqcn ? $name : StringUtil::fqcnToBlockPrefix($fqcn);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        // As of Symfony 2.8, the name defaults to the fully-qualified class name
-        return get_class($this);
     }
 
     /**

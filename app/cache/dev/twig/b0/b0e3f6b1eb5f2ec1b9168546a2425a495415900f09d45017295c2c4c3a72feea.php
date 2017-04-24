@@ -9,106 +9,14 @@ class __TwigTemplate_01f4008ff3e32e958a17e51e74809607eea1d3e351009fe7e9e6843228a
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(123 => 64, 86 => 30, 82 => 29, 78 => 28, 73 => 26, 69 => 25, 65 => 24, 53 => 15, 49 => 14, 45 => 12, 35 => 6, 33 => 5, 27 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<div id=\"sfwdt{{ token }}\" class=\"sf-toolbar\" style=\"display: none\"></div>
-{{ include('@WebProfiler/Profiler/base_js.html.twig') }}
-<script>/*<![CDATA[*/
-    (function () {
-        {% if 'top' == position %}
-            var sfwdt = document.getElementById('sfwdt{{ token }}');
-            document.body.insertBefore(
-                document.body.removeChild(sfwdt),
-                document.body.firstChild
-            );
-        {% endif %}
-
-        Sfjs.load(
-            'sfwdt{{ token }}',
-            '{{ path(\"_wdt\", { \"token\": token }) }}',
-            function(xhr, el) {
-                el.style.display = -1 !== xhr.responseText.indexOf('sf-toolbarreset') ? 'block' : 'none';
-
-                if (el.style.display == 'none') {
-                    return;
-                }
-
-                if (Sfjs.getPreference('toolbar/displayState') == 'none') {
-                    document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'none';
-                    document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'none';
-                    document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'block';
-                } else {
-                    document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'block';
-                    document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'block';
-                    document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'none';
-                }
-
-                Sfjs.renderAjaxRequests();
-
-                /* Handle toolbar-info position */
-                var toolbarBlocks = document.querySelectorAll('.sf-toolbar-block');
-                for (var i = 0; i < toolbarBlocks.length; i += 1) {
-                    toolbarBlocks[i].onmouseover = function () {
-                        var toolbarInfo = this.querySelectorAll('.sf-toolbar-info')[0];
-                        var pageWidth = document.body.clientWidth;
-                        var elementWidth = toolbarInfo.offsetWidth;
-                        var leftValue = (elementWidth + this.offsetLeft) - pageWidth;
-                        var rightValue = (elementWidth + (pageWidth - this.offsetLeft)) - pageWidth;
-
-                        /* Reset right and left value, useful on window resize */
-                        toolbarInfo.style.right = '';
-                        toolbarInfo.style.left = '';
-
-                        if (elementWidth > pageWidth) {
-                            toolbarInfo.style.left = 0;
-                        }
-                        else if (leftValue > 0 && rightValue > 0) {
-                            toolbarInfo.style.right = (rightValue * -1) + 'px';
-                        } else if (leftValue < 0) {
-                            toolbarInfo.style.left = 0;
-                        } else {
-                            toolbarInfo.style.right = '0px';
-                        }
-                    };
-                }
-            },
-            function(xhr) {
-                if (xhr.status !== 0) {
-                    confirm('An error occurred while loading the web debug toolbar (' + xhr.status + ': ' + xhr.statusText + ').\\n\\nDo you want to open the profiler?') && (window.location = '{{ path(\"_profiler\", { \"token\": token }) }}');
-                }
-            },
-            {'maxTries': 5}
+        $this->blocks = array(
         );
-    })();
-/*]]>*/</script>
-", "@WebProfiler/Profiler/toolbar_js.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Profiler\\toolbar_js.html.twig");
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_d71cc4478db6344568346ad5cf0dc6bb18a9f72bfb53c6c56622c27bcf925b4e = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d71cc4478db6344568346ad5cf0dc6bb18a9f72bfb53c6c56622c27bcf925b4e->enter($__internal_d71cc4478db6344568346ad5cf0dc6bb18a9f72bfb53c6c56622c27bcf925b4e_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/toolbar_js.html.twig"));
+        $__internal_59d95241996021244bae53dc89f65cb60ffc879f60675ae96abb5a07b4703868 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_59d95241996021244bae53dc89f65cb60ffc879f60675ae96abb5a07b4703868->enter($__internal_59d95241996021244bae53dc89f65cb60ffc879f60675ae96abb5a07b4703868_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/toolbar_js.html.twig"));
 
         // line 1
         echo "<div id=\"sfwdt";
@@ -221,13 +129,106 @@ class __TwigTemplate_01f4008ff3e32e958a17e51e74809607eea1d3e351009fe7e9e6843228a
     })();
 /*]]>*/</script>
 ";
-
-        $__internal_d71cc4478db6344568346ad5cf0dc6bb18a9f72bfb53c6c56622c27bcf925b4e->leave($__internal_d71cc4478db6344568346ad5cf0dc6bb18a9f72bfb53c6c56622c27bcf925b4e_prof);
+        
+        $__internal_59d95241996021244bae53dc89f65cb60ffc879f60675ae96abb5a07b4703868->leave($__internal_59d95241996021244bae53dc89f65cb60ffc879f60675ae96abb5a07b4703868_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@WebProfiler/Profiler/toolbar_js.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  123 => 64,  86 => 30,  82 => 29,  78 => 28,  73 => 26,  69 => 25,  65 => 24,  53 => 15,  49 => 14,  45 => 12,  35 => 6,  33 => 5,  27 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<div id=\"sfwdt{{ token }}\" class=\"sf-toolbar\" style=\"display: none\"></div>
+{{ include('@WebProfiler/Profiler/base_js.html.twig') }}
+<script>/*<![CDATA[*/
+    (function () {
+        {% if 'top' == position %}
+            var sfwdt = document.getElementById('sfwdt{{ token }}');
+            document.body.insertBefore(
+                document.body.removeChild(sfwdt),
+                document.body.firstChild
+            );
+        {% endif %}
+
+        Sfjs.load(
+            'sfwdt{{ token }}',
+            '{{ path(\"_wdt\", { \"token\": token }) }}',
+            function(xhr, el) {
+                el.style.display = -1 !== xhr.responseText.indexOf('sf-toolbarreset') ? 'block' : 'none';
+
+                if (el.style.display == 'none') {
+                    return;
+                }
+
+                if (Sfjs.getPreference('toolbar/displayState') == 'none') {
+                    document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'none';
+                    document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'none';
+                    document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'block';
+                } else {
+                    document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'block';
+                    document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'block';
+                    document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'none';
+                }
+
+                Sfjs.renderAjaxRequests();
+
+                /* Handle toolbar-info position */
+                var toolbarBlocks = document.querySelectorAll('.sf-toolbar-block');
+                for (var i = 0; i < toolbarBlocks.length; i += 1) {
+                    toolbarBlocks[i].onmouseover = function () {
+                        var toolbarInfo = this.querySelectorAll('.sf-toolbar-info')[0];
+                        var pageWidth = document.body.clientWidth;
+                        var elementWidth = toolbarInfo.offsetWidth;
+                        var leftValue = (elementWidth + this.offsetLeft) - pageWidth;
+                        var rightValue = (elementWidth + (pageWidth - this.offsetLeft)) - pageWidth;
+
+                        /* Reset right and left value, useful on window resize */
+                        toolbarInfo.style.right = '';
+                        toolbarInfo.style.left = '';
+
+                        if (elementWidth > pageWidth) {
+                            toolbarInfo.style.left = 0;
+                        }
+                        else if (leftValue > 0 && rightValue > 0) {
+                            toolbarInfo.style.right = (rightValue * -1) + 'px';
+                        } else if (leftValue < 0) {
+                            toolbarInfo.style.left = 0;
+                        } else {
+                            toolbarInfo.style.right = '0px';
+                        }
+                    };
+                }
+            },
+            function(xhr) {
+                if (xhr.status !== 0) {
+                    confirm('An error occurred while loading the web debug toolbar (' + xhr.status + ': ' + xhr.statusText + ').\\n\\nDo you want to open the profiler?') && (window.location = '{{ path(\"_profiler\", { \"token\": token }) }}');
+                }
+            },
+            {'maxTries': 5}
+        );
+    })();
+/*]]>*/</script>
+", "@WebProfiler/Profiler/toolbar_js.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Profiler\\toolbar_js.html.twig");
     }
 }

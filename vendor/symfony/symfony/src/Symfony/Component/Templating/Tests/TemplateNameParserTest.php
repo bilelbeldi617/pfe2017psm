@@ -19,6 +19,16 @@ class TemplateNameParserTest extends TestCase
 {
     protected $parser;
 
+    protected function setUp()
+    {
+        $this->parser = new TemplateNameParser();
+    }
+
+    protected function tearDown()
+    {
+        $this->parser = null;
+    }
+
     /**
      * @dataProvider getLogicalNameToTemplateProvider
      */
@@ -37,15 +47,5 @@ class TemplateNameParserTest extends TestCase
             array('name.engine', new TemplateReference('name.engine', 'engine')),
             array('name', new TemplateReference('name')),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->parser = new TemplateNameParser();
-    }
-
-    protected function tearDown()
-    {
-        $this->parser = null;
     }
 }

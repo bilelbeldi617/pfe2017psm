@@ -93,14 +93,14 @@ class CheckReferenceValidityPass implements CompilerPassInterface
             if (is_array($argument)) {
                 $this->validateReferences($argument);
             } elseif ($argument instanceof Reference) {
-                $targetDefinition = $this->getDefinition((string)$argument);
+                $targetDefinition = $this->getDefinition((string) $argument);
 
                 if (null !== $targetDefinition && $targetDefinition->isAbstract()) {
                     throw new RuntimeException(sprintf(
                         'The definition "%s" has a reference to an abstract definition "%s". '
-                        . 'Abstract definitions cannot be the target of references.',
-                        $this->currentId,
-                        $argument
+                       .'Abstract definitions cannot be the target of references.',
+                       $this->currentId,
+                       $argument
                     ));
                 }
 
@@ -110,25 +110,9 @@ class CheckReferenceValidityPass implements CompilerPassInterface
     }
 
     /**
-     * Returns the Definition given an id.
-     *
-     * @param string $id Definition identifier
-     *
-     * @return Definition
-     */
-    private function getDefinition($id)
-    {
-        if (!$this->container->hasDefinition($id)) {
-            return;
-        }
-
-        return $this->container->getDefinition($id);
-    }
-
-    /**
      * Validates the scope of a single Reference.
      *
-     * @param Reference $reference
+     * @param Reference  $reference
      * @param Definition $definition
      *
      * @throws ScopeWideningInjectionException when the definition references a service of a narrower scope
@@ -152,7 +136,7 @@ class CheckReferenceValidityPass implements CompilerPassInterface
             return;
         }
 
-        $id = (string)$reference;
+        $id = (string) $reference;
 
         if (in_array($scope, $this->currentScopeChildren, true)) {
             throw new ScopeWideningInjectionException($this->currentId, $this->currentScope, $id, $scope);
@@ -161,5 +145,21 @@ class CheckReferenceValidityPass implements CompilerPassInterface
         if (!in_array($scope, $this->currentScopeAncestors, true)) {
             throw new ScopeCrossingInjectionException($this->currentId, $this->currentScope, $id, $scope);
         }
+    }
+
+    /**
+     * Returns the Definition given an id.
+     *
+     * @param string $id Definition identifier
+     *
+     * @return Definition
+     */
+    private function getDefinition($id)
+    {
+        if (!$this->container->hasDefinition($id)) {
+            return;
+        }
+
+        return $this->container->getDefinition($id);
     }
 }

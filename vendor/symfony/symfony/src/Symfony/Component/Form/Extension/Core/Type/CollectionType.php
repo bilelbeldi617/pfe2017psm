@@ -29,7 +29,7 @@ class CollectionType extends AbstractType
         if ($options['allow_add'] && $options['prototype']) {
             $prototypeOptions = array_replace(array(
                 'required' => $options['required'],
-                'label' => $options['prototype_name'] . 'label__',
+                'label' => $options['prototype_name'].'label__',
             ), $options['entry_options']);
 
             if (null !== $options['prototype_data']) {
@@ -106,7 +106,7 @@ class CollectionType extends AbstractType
                 return $options['type'];
             }
 
-            return __NAMESPACE__ . '\TextType';
+            return __NAMESPACE__.'\TextType';
         };
         $entryOptions = function (Options $options) {
             if (1 === count($options['options']) && isset($options['block_name'])) {

@@ -1,7 +1,6 @@
 <?php
 
 /* DoctrineBundle:Collector:explain.html.twig */
-
 class __TwigTemplate_8ea0bb18d12dc86d9a69cab5d54d31278a91ec6d4705dd886ab02a1c08a04cab extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,35 +9,8 @@ class __TwigTemplate_8ea0bb18d12dc86d9a69cab5d54d31278a91ec6d4705dd886ab02a1c08a
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "DoctrineBundle:Collector:explain.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(94 => 27, 86 => 25, 82 => 24, 80 => 23, 78 => 22, 73 => 19, 66 => 17, 57 => 15, 53 => 14, 50 => 13, 46 => 12, 41 => 9, 32 => 7, 28 => 6, 23 => 3, 21 => 2, 19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "DoctrineBundle:Collector:explain.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\doctrine\\doctrine-bundle/Resources/views/Collector/explain.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -122,5 +94,33 @@ class __TwigTemplate_8ea0bb18d12dc86d9a69cab5d54d31278a91ec6d4705dd886ab02a1c08a
             echo "</pre>
 ";
         }
+    }
+
+    public function getTemplateName()
+    {
+        return "DoctrineBundle:Collector:explain.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  94 => 27,  86 => 25,  82 => 24,  80 => 23,  78 => 22,  73 => 19,  66 => 17,  57 => 15,  53 => 14,  50 => 13,  46 => 12,  41 => 9,  32 => 7,  28 => 6,  23 => 3,  21 => 2,  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "DoctrineBundle:Collector:explain.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\doctrine\\doctrine-bundle/Resources/views/Collector/explain.html.twig");
     }
 }

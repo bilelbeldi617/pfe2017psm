@@ -27,19 +27,11 @@ class Jour
      * @ORM\JoinColumn(name="emploi", referencedColumnName="id")
      *
      */
-    private $emploi;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom_jour", type="string", length=50)
-     */
-    private $nomJour;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="horaire", type="string", length=50)
-     */
-    private $horaire;
+    private $emploi ;
+
+
+
+
 
     /**
      * @return mixed
@@ -90,6 +82,21 @@ class Jour
     }
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_jour", type="string", length=50)
+     */
+    private $nomJour;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="horaire", type="string", length=50)
+     */
+    private $horaire;
+
+
+    /**
      * Get id
      *
      * @return integer
@@ -97,16 +104,6 @@ class Jour
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get nomJour
-     *
-     * @return string
-     */
-    public function getNomJour()
-    {
-        return $this->nomJour;
     }
 
     /**
@@ -123,13 +120,13 @@ class Jour
     }
 
     /**
-     * Get horaire
+     * Get nomJour
      *
      * @return string
      */
-    public function getHoraire()
+    public function getNomJour()
     {
-        return $this->horaire;
+        return $this->nomJour;
     }
 
     /**
@@ -143,5 +140,15 @@ class Jour
         $this->horaire = $horaire;
 
         return $this;
+    }
+
+    /**
+     * Get horaire
+     *
+     * @return string
+     */
+    public function getHoraire()
+    {
+        return $this->horaire;
     }
 }

@@ -20,34 +20,9 @@ class Paiement
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    /**
-     * @ORM\ManyToOne(targetEntity="AnneeScolaire")
-     *
-     */
-    private $anneeScolaire;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="etat_paiement", type="string", length=50)
-     */
-    private $etatPaiement;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="totale_paiement", type="integer")
-     */
-    private $totalePaiement;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="frais_paiement", type="string", length=255)
-     */
-    private $fraisPaiement;
-    /**
-     * @ORM\ManyToOne(targetEntity="Eleve", cascade={"remove"})
-     *
-     */
-    private $eleve;
+
+
+
 
     /**
      * @return mixed
@@ -64,6 +39,40 @@ class Paiement
     {
         $this->anneeScolaire = $anneeScolaire;
     }
+
+
+
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AnneeScolaire")
+     *
+     */
+    private $anneeScolaire ;
+
+
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etat_paiement", type="string", length=50)
+     */
+    private $etatPaiement;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="totale_paiement", type="integer")
+     */
+    private $totalePaiement;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="frais_paiement", type="string", length=255)
+     */
+    private $fraisPaiement;
 
     /**
      * @return string
@@ -97,6 +106,16 @@ class Paiement
         $this->totalePaiement = $totalePaiement;
     }
 
+
+
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Eleve", cascade={"remove"})
+     *
+     */
+    private $eleve ;
+
     /**
      * @return mixed
      */
@@ -117,21 +136,11 @@ class Paiement
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get etatPaiement
-     *
-     * @return string
-     */
-    public function getEtatPaiement()
-    {
-        return $this->etatPaiement;
     }
 
     /**
@@ -145,5 +154,15 @@ class Paiement
         $this->etatPaiement = $etatPaiement;
 
         return $this;
+    }
+
+    /**
+     * Get etatPaiement
+     *
+     * @return string 
+     */
+    public function getEtatPaiement()
+    {
+        return $this->etatPaiement;
     }
 }

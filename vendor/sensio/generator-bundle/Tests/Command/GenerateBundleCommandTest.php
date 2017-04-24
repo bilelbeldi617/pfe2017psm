@@ -28,42 +28,19 @@ class GenerateBundleCommandTest extends GenerateCommandTest
 
         // not shared? the tests should be at the root of the project
         if (!$shared) {
-            $bundle->setTestsDirectory($container->getParameter('kernel.root_dir') . '/../tests/' . $bundleName);
+            $bundle->setTestsDirectory($container->getParameter('kernel.root_dir').'/../tests/'.$bundleName);
         }
 
         $generator = $this->getGenerator();
         $generator
             ->expects($this->once())
             ->method('generateBundle')
-            ->with($bundle);
+            ->with($bundle)
+        ;
 
         $tester = new CommandTester($command = $this->getCommand($generator, $container));
         $this->setInputs($tester, $command, $input);
         $tester->execute($options);
-    }
-
-    protected function getGenerator()
-    {
-        // get a noop generator
-        return $this
-            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Generator\BundleGenerator')
-            ->disableOriginalConstructor()
-            ->setMethods(array('generateBundle'))
-            ->getMock();
-    }
-
-    protected function getCommand($generator, $container)
-    {
-        $command = $this
-            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Command\GenerateBundleCommand')
-            ->setMethods(array('checkAutoloader', 'updateKernel', 'updateRouting'))
-            ->getMock();
-
-        $command->setContainer($container);
-        $command->setHelperSet($this->getHelperSet());
-        $command->setGenerator($generator);
-
-        return $command;
     }
 
     public function getInteractiveCommandData()
@@ -75,7 +52,7 @@ class GenerateBundleCommandTest extends GenerateCommandTest
                 array('--shared' => true, '--dir' => $tmp, '--format' => 'annotation'),
                 // shared, namespace, bundle name, directory, format
                 "\nFoo/BarBundle\n\n\n\n",
-                array('Foo\BarBundle', 'FooBarBundle', $tmp . '/', 'annotation', true),
+                array('Foo\BarBundle', 'FooBarBundle', $tmp.'/', 'annotation', true),
             ),
             array(
                 array(),
@@ -87,7 +64,7 @@ class GenerateBundleCommandTest extends GenerateCommandTest
                 array('--shared' => true, '--dir' => $tmp, '--format' => 'yml', '--bundle-name' => 'BarBundle'),
                 // shared, namespace, bundle name, directory, format
                 "\nFoo/BarBundle\n\n\n\n",
-                array('Foo\BarBundle', 'BarBundle', $tmp . '/', 'yml', true),
+                array('Foo\BarBundle', 'BarBundle', $tmp.'/', 'yml', true),
             ),
             array(
                 array(),
@@ -110,14 +87,15 @@ class GenerateBundleCommandTest extends GenerateCommandTest
 
         // not shared? the tests should be at the root of the project
         if (!$shared) {
-            $bundle->setTestsDirectory($container->getParameter('kernel.root_dir') . '/../tests/' . $bundleName);
+            $bundle->setTestsDirectory($container->getParameter('kernel.root_dir').'/../tests/'.$bundleName);
         }
 
         $generator = $this->getGenerator();
         $generator
             ->expects($this->once())
             ->method('generateBundle')
-            ->with($bundle);
+            ->with($bundle)
+        ;
 
         $tester = new CommandTester($this->getCommand($generator, $container));
         $tester->execute($options, array('interactive' => false));
@@ -130,16 +108,42 @@ class GenerateBundleCommandTest extends GenerateCommandTest
         return array(
             array(
                 array('--shared' => true, '--dir' => $tmp, '--namespace' => 'Foo/BarBundle'),
-                array('Foo\BarBundle', 'FooBarBundle', $tmp . '/', 'annotation', true),
+                array('Foo\BarBundle', 'FooBarBundle', $tmp.'/', 'annotation', true),
             ),
             array(
                 array('--shared' => true, '--dir' => $tmp, '--namespace' => 'Foo/BarBundle', '--format' => 'yml', '--bundle-name' => 'BarBundle'),
-                array('Foo\BarBundle', 'BarBundle', $tmp . '/', 'yml', true),
+                array('Foo\BarBundle', 'BarBundle', $tmp.'/', 'yml', true),
             ),
             array(
                 array('--dir' => $tmp, '--namespace' => 'BazBundle', '--format' => 'yml', '--bundle-name' => 'BazBundle'),
-                array('BazBundle', 'BazBundle', $tmp . '/', 'yml', false),
+                array('BazBundle', 'BazBundle', $tmp.'/', 'yml', false),
             ),
         );
+    }
+
+    protected function getCommand($generator, $container)
+    {
+        $command = $this
+            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Command\GenerateBundleCommand')
+            ->setMethods(array('checkAutoloader', 'updateKernel', 'updateRouting'))
+            ->getMock()
+        ;
+
+        $command->setContainer($container);
+        $command->setHelperSet($this->getHelperSet());
+        $command->setGenerator($generator);
+
+        return $command;
+    }
+
+    protected function getGenerator()
+    {
+        // get a noop generator
+        return $this
+            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Generator\BundleGenerator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('generateBundle'))
+            ->getMock()
+        ;
     }
 }

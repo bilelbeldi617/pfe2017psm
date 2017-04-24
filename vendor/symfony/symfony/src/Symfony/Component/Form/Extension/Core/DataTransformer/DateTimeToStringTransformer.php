@@ -54,10 +54,10 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @see \DateTime::format() for supported formats
      *
-     * @param string $inputTimezone The name of the input timezone
+     * @param string $inputTimezone  The name of the input timezone
      * @param string $outputTimezone The name of the output timezone
-     * @param string $format The date format
-     * @param bool $parseUsingPipe Whether to parse by appending a pipe "|" to the parse format
+     * @param string $format         The date format
+     * @param bool   $parseUsingPipe Whether to parse by appending a pipe "|" to the parse format
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */
@@ -155,16 +155,16 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
 
                 // Check which of the date parts are present in the pattern
                 preg_match(
-                    '/(' .
-                    '(?P<day>[djDl])|' .
-                    '(?P<month>[FMmn])|' .
-                    '(?P<year>[Yy])|' .
-                    '(?P<hour>[ghGH])|' .
-                    '(?P<minute>i)|' .
-                    '(?P<second>s)|' .
-                    '(?P<dayofyear>z)|' .
-                    '(?P<timestamp>U)|' .
-                    '[^djDlFMmnYyghGHiszU]' .
+                    '/('.
+                    '(?P<day>[djDl])|'.
+                    '(?P<month>[FMmn])|'.
+                    '(?P<year>[Yy])|'.
+                    '(?P<hour>[ghGH])|'.
+                    '(?P<minute>i)|'.
+                    '(?P<second>s)|'.
+                    '(?P<dayofyear>z)|'.
+                    '(?P<timestamp>U)|'.
+                    '[^djDlFMmnYyghGHiszU]'.
                     ')*/',
                     $this->parseFormat,
                     $matches

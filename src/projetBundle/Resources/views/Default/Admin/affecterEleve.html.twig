@@ -1,27 +1,32 @@
 {% extends "::baseForAdmin.html.twig" %}
 {% block script %}
     <script language="javascript">
-        function affecterEleves(niveau) {
+          function affecterEleves(niveau){
 
-            console.log(niveau);
-            $("#buttonClicked" + niveau).fadeToggle();
-            $("#mySpinner" + niveau).fadeToggle();
-            $.ajax({
-                url: "{{ path('affecter') }}",
-                method: "GET",
-                data: {"niveau": niveau},
-                success: function (response) {
-                    if (response.result = "affected") {
-                        $("#checked" + niveau).fadeToggle();
-                        $("#mySpinner" + niveau).fadeToggle();
-                    }
-                }
-
-
-            });
+              console.log(niveau) ;
+              $("#buttonClicked"+niveau).fadeToggle() ;
+              $("#mySpinner"+niveau).fadeToggle() ;
+              $.ajax({
+                  url : "{{ path('affecter') }}",
+                  method:"GET",
+                  data : {"niveau":niveau},
+                  success: function(response){
+                      if (response.result="affected"){
+                          $("#checked"+niveau).fadeToggle() ;
+                          $("#mySpinner"+niveau).fadeToggle() ;
+                      }
+                  }
 
 
-        }
+              });
+
+
+
+
+
+
+
+          }
 
 
     </script>
@@ -48,16 +53,12 @@
                         <td>{{ nbrGroupes[n-1] }}</td>
                         <td>{{ nbrGroupeCree[n-1] }}</td>
                         {% if nbrGroupes[n-1] == nbrGroupeCree[n-1] and  nbrGroupes[n-1] != 0 and nbrGroupeCree[n-1] != 0 %}
-                            <td>
-                                <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner{{ n }}"
-                                           style="display: none"></i></center>
-                                <center><i class="ace-icon fa fa-check green bigger-300" id="checked{{ n }}"
-                                           style="display: none"></i></center>
-                                <input id="buttonClicked{{ n }}" type="button" value="Affecter"
-                                       onclick="affecterEleves({{ n }})" class="btn btn-primary"></td>
+                            <td><center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner{{ n }}" style="display: none"></i></center>
+                                <center><i class="ace-icon fa fa-check green bigger-300" id="checked{{ n }}" style="display: none"></i></center>
+                                <input id="buttonClicked{{ n }}" type="button" value="Affecter" onclick="affecterEleves({{ n }})" class="btn btn-primary"></td>
 
                         {% else %}
-                            <td><input type="button" value="Affecter" class="btn btn-primary" disabled></td>
+                        <td><input type="button" value="Affecter" class="btn btn-primary" disabled> </td>
                         {% endif %}
                     </tr>
                 {% endfor %}

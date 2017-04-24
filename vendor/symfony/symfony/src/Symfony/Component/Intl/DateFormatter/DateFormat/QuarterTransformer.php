@@ -25,14 +25,14 @@ class QuarterTransformer extends Transformer
      */
     public function format(\DateTime $dateTime, $length)
     {
-        $month = (int)$dateTime->format('n');
-        $quarter = (int)floor(($month - 1) / 3) + 1;
+        $month = (int) $dateTime->format('n');
+        $quarter = (int) floor(($month - 1) / 3) + 1;
         switch ($length) {
             case 1:
             case 2:
                 return $this->padLeft($quarter, $length);
             case 3:
-                return 'Q' . $quarter;
+                return 'Q'.$quarter;
             default:
                 $map = array(1 => '1st quarter', 2 => '2nd quarter', 3 => '3rd quarter', 4 => '4th quarter');
 
@@ -48,7 +48,7 @@ class QuarterTransformer extends Transformer
         switch ($length) {
             case 1:
             case 2:
-                return '\d{' . $length . '}';
+                return '\d{'.$length.'}';
             case 3:
                 return 'Q\d';
             default:

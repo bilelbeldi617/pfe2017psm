@@ -75,9 +75,19 @@ abstract class Twig_Template implements Twig_TemplateInterface
      */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return '';
+    }
+
+    /**
+     * Returns information about the original template source code.
+     *
+     * @return Twig_Source
+     */
+    public function getSourceContext()
+    {
+        return new Twig_Source('', $this->getTemplateName());
     }
 
     /**
@@ -85,61 +95,9 @@ abstract class Twig_Template implements Twig_TemplateInterface
      */
     public function getEnvironment()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.20 and will be removed in 2.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.20 and will be removed in 2.0.', E_USER_DEPRECATED);
 
         return $this->env;
-    }
-
-    public function isTraitable()
-    {
-        return true;
-    }
-
-    /**
-     * Renders a parent block.
-     *
-     * This method is for internal use only and should never be called
-     * directly.
-     *
-     * @param string $name The block name to render from the parent
-     * @param array $context The context
-     * @param array $blocks The current set of blocks
-     *
-     * @return string The rendered block
-     *
-     * @internal
-     */
-    public function renderParentBlock($name, array $context, array $blocks = array())
-    {
-        ob_start();
-        $this->displayParentBlock($name, $context, $blocks);
-
-        return ob_get_clean();
-    }
-
-    /**
-     * Displays a parent block.
-     *
-     * This method is for internal use only and should never be called
-     * directly.
-     *
-     * @param string $name The block name to display from the parent
-     * @param array $context The context
-     * @param array $blocks The current set of blocks
-     *
-     * @internal
-     */
-    public function displayParentBlock($name, array $context, array $blocks = array())
-    {
-        $name = (string)$name;
-
-        if (isset($this->traits[$name])) {
-            $this->traits[$name][0]->displayBlock($name, $context, $blocks, false);
-        } elseif (false !== $parent = $this->getParent($context)) {
-            $parent->displayBlock($name, $context, $blocks, false);
-        } else {
-            throw new Twig_Error_Runtime(sprintf('The template has no parent and no traits defining the "%s" block.', $name), -1, $this->getSourceContext());
-        }
     }
 
     /**
@@ -189,72 +147,34 @@ abstract class Twig_Template implements Twig_TemplateInterface
         return false;
     }
 
-    protected function loadTemplate($template, $templateName = null, $line = null, $index = null)
+    public function isTraitable()
     {
-        try {
-            if (is_array($template)) {
-                return $this->env->resolveTemplate($template);
-            }
-
-            if ($template instanceof self) {
-                return $template;
-            }
-
-            if ($template instanceof Twig_TemplateWrapper) {
-                return $template;
-            }
-
-            return $this->env->loadTemplate($template, $index);
-        } catch (Twig_Error $e) {
-            if (!$e->getSourceContext()) {
-                $e->setSourceContext($templateName ? new Twig_Source('', $templateName) : $this->getSourceContext());
-            }
-
-            if ($e->getTemplateLine()) {
-                throw $e;
-            }
-
-            if (!$line) {
-                $e->guess();
-            } else {
-                $e->setTemplateLine($line);
-            }
-
-            throw $e;
-        }
+        return true;
     }
 
     /**
-     * Returns information about the original template source code.
-     *
-     * @return Twig_Source
-     */
-    public function getSourceContext()
-    {
-        return new Twig_Source('', $this->getTemplateName());
-    }
-
-    /**
-     * Renders a block.
+     * Displays a parent block.
      *
      * This method is for internal use only and should never be called
      * directly.
      *
-     * @param string $name The block name to render
-     * @param array $context The context
-     * @param array $blocks The current set of blocks
-     * @param bool $useBlocks Whether to use the current set of blocks
-     *
-     * @return string The rendered block
+     * @param string $name    The block name to display from the parent
+     * @param array  $context The context
+     * @param array  $blocks  The current set of blocks
      *
      * @internal
      */
-    public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    public function displayParentBlock($name, array $context, array $blocks = array())
     {
-        ob_start();
-        $this->displayBlock($name, $context, $blocks, $useBlocks);
+        $name = (string) $name;
 
-        return ob_get_clean();
+        if (isset($this->traits[$name])) {
+            $this->traits[$name][0]->displayBlock($name, $context, $blocks, false);
+        } elseif (false !== $parent = $this->getParent($context)) {
+            $parent->displayBlock($name, $context, $blocks, false);
+        } else {
+            throw new Twig_Error_Runtime(sprintf('The template has no parent and no traits defining the "%s" block.', $name), -1, $this->getSourceContext());
+        }
     }
 
     /**
@@ -263,16 +183,16 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * This method is for internal use only and should never be called
      * directly.
      *
-     * @param string $name The block name to display
-     * @param array $context The context
-     * @param array $blocks The current set of blocks
-     * @param bool $useBlocks Whether to use the current set of blocks
+     * @param string $name      The block name to display
+     * @param array  $context   The context
+     * @param array  $blocks    The current set of blocks
+     * @param bool   $useBlocks Whether to use the current set of blocks
      *
      * @internal
      */
     public function displayBlock($name, array $context, array $blocks = array(), $useBlocks = true)
     {
-        $name = (string)$name;
+        $name = (string) $name;
 
         if ($useBlocks && isset($blocks[$name])) {
             $template = $blocks[$name][0];
@@ -317,14 +237,59 @@ abstract class Twig_Template implements Twig_TemplateInterface
     }
 
     /**
+     * Renders a parent block.
+     *
+     * This method is for internal use only and should never be called
+     * directly.
+     *
+     * @param string $name    The block name to render from the parent
+     * @param array  $context The context
+     * @param array  $blocks  The current set of blocks
+     *
+     * @return string The rendered block
+     *
+     * @internal
+     */
+    public function renderParentBlock($name, array $context, array $blocks = array())
+    {
+        ob_start();
+        $this->displayParentBlock($name, $context, $blocks);
+
+        return ob_get_clean();
+    }
+
+    /**
+     * Renders a block.
+     *
+     * This method is for internal use only and should never be called
+     * directly.
+     *
+     * @param string $name      The block name to render
+     * @param array  $context   The context
+     * @param array  $blocks    The current set of blocks
+     * @param bool   $useBlocks Whether to use the current set of blocks
+     *
+     * @return string The rendered block
+     *
+     * @internal
+     */
+    public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    {
+        ob_start();
+        $this->displayBlock($name, $context, $blocks, $useBlocks);
+
+        return ob_get_clean();
+    }
+
+    /**
      * Returns whether a block exists or not in the current context of the template.
      *
      * This method checks blocks defined in the current template
      * or defined in "used" traits or defined in parent templates.
      *
-     * @param string $name The block name
-     * @param array $context The context
-     * @param array $blocks The current set of blocks
+     * @param string $name    The block name
+     * @param array  $context The context
+     * @param array  $blocks  The current set of blocks
      *
      * @return bool true if the block exists, false otherwise
      *
@@ -333,9 +298,9 @@ abstract class Twig_Template implements Twig_TemplateInterface
     public function hasBlock($name, array $context = null, array $blocks = array())
     {
         if (null === $context) {
-            @trigger_error('The ' . __METHOD__ . ' method is internal and should never be called; calling it directly is deprecated since version 1.28 and won\'t be possible anymore in 2.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method is internal and should never be called; calling it directly is deprecated since version 1.28 and won\'t be possible anymore in 2.0.', E_USER_DEPRECATED);
 
-            return isset($this->blocks[(string)$name]);
+            return isset($this->blocks[(string) $name]);
         }
 
         if (isset($blocks[$name])) {
@@ -360,7 +325,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * or defined in "used" traits or defined in parent templates.
      *
      * @param array $context The context
-     * @param array $blocks The current set of blocks
+     * @param array $blocks  The current set of blocks
      *
      * @return array An array of block names
      *
@@ -369,7 +334,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
     public function getBlockNames(array $context = null, array $blocks = array())
     {
         if (null === $context) {
-            @trigger_error('The ' . __METHOD__ . ' method is internal and should never be called; calling it directly is deprecated since version 1.28 and won\'t be possible anymore in 2.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method is internal and should never be called; calling it directly is deprecated since version 1.28 and won\'t be possible anymore in 2.0.', E_USER_DEPRECATED);
 
             return array_keys($this->blocks);
         }
@@ -381,6 +346,41 @@ abstract class Twig_Template implements Twig_TemplateInterface
         }
 
         return array_unique($names);
+    }
+
+    protected function loadTemplate($template, $templateName = null, $line = null, $index = null)
+    {
+        try {
+            if (is_array($template)) {
+                return $this->env->resolveTemplate($template);
+            }
+
+            if ($template instanceof self) {
+                return $template;
+            }
+
+            if ($template instanceof Twig_TemplateWrapper) {
+                return $template;
+            }
+
+            return $this->env->loadTemplate($template, $index);
+        } catch (Twig_Error $e) {
+            if (!$e->getSourceContext()) {
+                $e->setSourceContext($templateName ? new Twig_Source('', $templateName) : $this->getSourceContext());
+            }
+
+            if ($e->getTemplateLine()) {
+                throw $e;
+            }
+
+            if (!$line) {
+                $e->guess();
+            } else {
+                $e->setTemplateLine($line);
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -396,6 +396,11 @@ abstract class Twig_Template implements Twig_TemplateInterface
     public function getBlocks()
     {
         return $this->blocks;
+    }
+
+    public function display(array $context, array $blocks = array())
+    {
+        $this->displayWithErrorHandling($this->env->mergeGlobals($context), array_merge($this->blocks, $blocks));
     }
 
     public function render(array $context)
@@ -419,11 +424,6 @@ abstract class Twig_Template implements Twig_TemplateInterface
         }
 
         return ob_get_clean();
-    }
-
-    public function display(array $context, array $blocks = array())
-    {
-        $this->displayWithErrorHandling($this->env->mergeGlobals($context), array_merge($this->blocks, $blocks));
     }
 
     protected function displayWithErrorHandling(array $context, array $blocks = array())
@@ -452,7 +452,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * Auto-generated method to display the template with the given context.
      *
      * @param array $context An array of parameters to pass to the template
-     * @param array $blocks An array of blocks to pass to the template
+     * @param array $blocks  An array of blocks to pass to the template
      */
     abstract protected function doDisplay(array $context, array $blocks = array());
 
@@ -467,9 +467,9 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * access for versions of PHP before 5.4. This is not a way to override
      * the way to get a variable value.
      *
-     * @param array $context The context
-     * @param string $item The variable to return from the context
-     * @param bool $ignoreStrictCheck Whether to ignore the strict variable check or not
+     * @param array  $context           The context
+     * @param string $item              The variable to return from the context
+     * @param bool   $ignoreStrictCheck Whether to ignore the strict variable check or not
      *
      * @return mixed The content of the context variable
      *
@@ -493,12 +493,12 @@ abstract class Twig_Template implements Twig_TemplateInterface
     /**
      * Returns the attribute value for a given array/object.
      *
-     * @param mixed $object The object or array from where to get the item
-     * @param mixed $item The item to get from the array or object
-     * @param array $arguments An array of arguments to pass if the item is an object method
-     * @param string $type The type of attribute (@see Twig_Template constants)
-     * @param bool $isDefinedTest Whether this is only a defined check
-     * @param bool $ignoreStrictCheck Whether to ignore the strict attribute check or not
+     * @param mixed  $object            The object or array from where to get the item
+     * @param mixed  $item              The item to get from the array or object
+     * @param array  $arguments         An array of arguments to pass if the item is an object method
+     * @param string $type              The type of attribute (@see Twig_Template constants)
+     * @param bool   $isDefinedTest     Whether this is only a defined check
+     * @param bool   $ignoreStrictCheck Whether to ignore the strict attribute check or not
      *
      * @return mixed The attribute value, or a Boolean when $isDefinedTest is true, or null when the attribute is not set and $ignoreStrictCheck is true
      *
@@ -510,7 +510,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
     {
         // array
         if (self::METHOD_CALL !== $type) {
-            $arrayItem = is_bool($item) || is_float($item) ? (int)$item : $item;
+            $arrayItem = is_bool($item) || is_float($item) ? (int) $item : $item;
 
             if ((is_array($object) && (isset($object[$arrayItem]) || array_key_exists($arrayItem, $object)))
                 || ($object instanceof ArrayAccess && isset($object[$arrayItem]))
@@ -577,7 +577,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
 
         // object property
         if (self::METHOD_CALL !== $type && !$object instanceof self) { // Twig_Template does not have public properties, and we don't want to allow access to internal ones
-            if (isset($object->$item) || array_key_exists((string)$item, $object)) {
+            if (isset($object->$item) || array_key_exists((string) $item, $object)) {
                 if ($isDefinedTest) {
                     return true;
                 }

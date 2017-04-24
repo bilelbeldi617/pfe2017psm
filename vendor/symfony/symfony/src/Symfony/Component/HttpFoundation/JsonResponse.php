@@ -34,8 +34,8 @@ class JsonResponse extends Response
     /**
      * Constructor.
      *
-     * @param mixed $data The response data
-     * @param int $status The response status code
+     * @param mixed $data    The response data
+     * @param int   $status  The response status code
      * @param array $headers An array of response headers
      */
     public function __construct($data = null, $status = 200, $headers = array())
@@ -47,6 +47,60 @@ class JsonResponse extends Response
         }
 
         $this->setData($data);
+    }
+
+    /**
+     * Factory method for chainability.
+     *
+     * Example:
+     *
+     *     return JsonResponse::create($data, 200)
+     *         ->setSharedMaxAge(300);
+     *
+     * @param mixed $data    The json response data
+     * @param int   $status  The response status code
+     * @param array $headers An array of response headers
+     *
+     * @return static
+     */
+    public static function create($data = null, $status = 200, $headers = array())
+    {
+        return new static($data, $status, $headers);
+    }
+
+    /**
+     * Sets the JSONP callback.
+     *
+     * @param string|null $callback The JSONP callback or null to use none
+     *
+     * @return $this
+     *
+     * @throws \InvalidArgumentException When the callback name is not valid
+     */
+    public function setCallback($callback = null)
+    {
+        if (null !== $callback) {
+            // partially token from http://www.geekality.net/2011/08/03/valid-javascript-identifier/
+            // partially token from https://github.com/willdurand/JsonpCallbackValidator
+            //      JsonpCallbackValidator is released under the MIT License. See https://github.com/willdurand/JsonpCallbackValidator/blob/v1.1.0/LICENSE for details.
+            //      (c) William Durand <william.durand1@gmail.com>
+            $pattern = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*(?:\[(?:"(?:\\\.|[^"\\\])*"|\'(?:\\\.|[^\'\\\])*\'|\d+)\])*?$/u';
+            $reserved = array(
+                'break', 'do', 'instanceof', 'typeof', 'case', 'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue', 'for', 'switch', 'while',
+                'debugger', 'function', 'this', 'with', 'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum', 'extends', 'super',  'const', 'export',
+                'import', 'implements', 'let', 'private', 'public', 'yield', 'interface', 'package', 'protected', 'static', 'null', 'true', 'false',
+            );
+            $parts = explode('.', $callback);
+            foreach ($parts as $part) {
+                if (!preg_match($pattern, $part) || in_array($part, $reserved, true)) {
+                    throw new \InvalidArgumentException('The callback name is not valid.');
+                }
+            }
+        }
+
+        $this->callback = $callback;
+
+        return $this->update();
     }
 
     /**
@@ -71,9 +125,7 @@ class JsonResponse extends Response
                     // PHP 5.3 triggers annoying warnings for some
                     // types that can't be serialized as JSON (INF, resources, etc.)
                     // but doesn't provide the JsonSerializable interface.
-                    set_error_handler(function () {
-                        return false;
-                    });
+                    set_error_handler(function () { return false; });
                     $data = @json_encode($data, $this->encodingOptions);
                 } else {
                     // PHP 5.4 and up wrap exceptions thrown by JsonSerializable
@@ -118,6 +170,30 @@ class JsonResponse extends Response
     }
 
     /**
+     * Returns options used while encoding data to JSON.
+     *
+     * @return int
+     */
+    public function getEncodingOptions()
+    {
+        return $this->encodingOptions;
+    }
+
+    /**
+     * Sets options used while encoding data to JSON.
+     *
+     * @param int $encodingOptions
+     *
+     * @return $this
+     */
+    public function setEncodingOptions($encodingOptions)
+    {
+        $this->encodingOptions = (int) $encodingOptions;
+
+        return $this->setData(json_decode($this->data));
+    }
+
+    /**
      * Updates the content and headers according to the JSON data and callback.
      *
      * @return $this
@@ -138,83 +214,5 @@ class JsonResponse extends Response
         }
 
         return $this->setContent($this->data);
-    }
-
-    /**
-     * Factory method for chainability.
-     *
-     * Example:
-     *
-     *     return JsonResponse::create($data, 200)
-     *         ->setSharedMaxAge(300);
-     *
-     * @param mixed $data The json response data
-     * @param int $status The response status code
-     * @param array $headers An array of response headers
-     *
-     * @return static
-     */
-    public static function create($data = null, $status = 200, $headers = array())
-    {
-        return new static($data, $status, $headers);
-    }
-
-    /**
-     * Sets the JSONP callback.
-     *
-     * @param string|null $callback The JSONP callback or null to use none
-     *
-     * @return $this
-     *
-     * @throws \InvalidArgumentException When the callback name is not valid
-     */
-    public function setCallback($callback = null)
-    {
-        if (null !== $callback) {
-            // partially token from http://www.geekality.net/2011/08/03/valid-javascript-identifier/
-            // partially token from https://github.com/willdurand/JsonpCallbackValidator
-            //      JsonpCallbackValidator is released under the MIT License. See https://github.com/willdurand/JsonpCallbackValidator/blob/v1.1.0/LICENSE for details.
-            //      (c) William Durand <william.durand1@gmail.com>
-            $pattern = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*(?:\[(?:"(?:\\\.|[^"\\\])*"|\'(?:\\\.|[^\'\\\])*\'|\d+)\])*?$/u';
-            $reserved = array(
-                'break', 'do', 'instanceof', 'typeof', 'case', 'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue', 'for', 'switch', 'while',
-                'debugger', 'function', 'this', 'with', 'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum', 'extends', 'super', 'const', 'export',
-                'import', 'implements', 'let', 'private', 'public', 'yield', 'interface', 'package', 'protected', 'static', 'null', 'true', 'false',
-            );
-            $parts = explode('.', $callback);
-            foreach ($parts as $part) {
-                if (!preg_match($pattern, $part) || in_array($part, $reserved, true)) {
-                    throw new \InvalidArgumentException('The callback name is not valid.');
-                }
-            }
-        }
-
-        $this->callback = $callback;
-
-        return $this->update();
-    }
-
-    /**
-     * Returns options used while encoding data to JSON.
-     *
-     * @return int
-     */
-    public function getEncodingOptions()
-    {
-        return $this->encodingOptions;
-    }
-
-    /**
-     * Sets options used while encoding data to JSON.
-     *
-     * @param int $encodingOptions
-     *
-     * @return $this
-     */
-    public function setEncodingOptions($encodingOptions)
-    {
-        $this->encodingOptions = (int)$encodingOptions;
-
-        return $this->setData(json_decode($this->data));
     }
 }

@@ -20,31 +20,34 @@ use Symfony\Component\Serializer\Exception\UnexpectedValueException;
  */
 class JsonDecode implements DecoderInterface
 {
-    protected $serializer;
     /**
      * Specifies if the returned result should be an associative array or a nested stdClass object hierarchy.
      *
      * @var bool
      */
     private $associative;
+
     /**
      * Specifies the recursion depth.
      *
      * @var int
      */
     private $recursionDepth;
+
     private $lastError = JSON_ERROR_NONE;
+
+    protected $serializer;
 
     /**
      * Constructs a new JsonDecode instance.
      *
      * @param bool $associative True to return the result associative array, false for a nested stdClass hierarchy
-     * @param int $depth Specifies the recursion depth
+     * @param int  $depth       Specifies the recursion depth
      */
     public function __construct($associative = false, $depth = 512)
     {
         $this->associative = $associative;
-        $this->recursionDepth = (int)$depth;
+        $this->recursionDepth = (int) $depth;
     }
 
     /**
@@ -58,7 +61,7 @@ class JsonDecode implements DecoderInterface
      */
     public function getLastError()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Catch the exception raised by the decode() method instead to get the last JSON decoding error.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Catch the exception raised by the decode() method instead to get the last JSON decoding error.', E_USER_DEPRECATED);
 
         return $this->lastError;
     }
@@ -66,9 +69,9 @@ class JsonDecode implements DecoderInterface
     /**
      * Decodes data.
      *
-     * @param string $data The encoded JSON string to decode
-     * @param string $format Must be set to JsonEncoder::FORMAT
-     * @param array $context An optional set of options for the JSON decoder; see below
+     * @param string $data    The encoded JSON string to decode
+     * @param string $format  Must be set to JsonEncoder::FORMAT
+     * @param array  $context An optional set of options for the JSON decoder; see below
      *
      * The $context array is a simple key=>value array, with the following supported keys:
      *
@@ -112,6 +115,14 @@ class JsonDecode implements DecoderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function supportsDecoding($format)
+    {
+        return JsonEncoder::FORMAT === $format;
+    }
+
+    /**
      * Merges the default options of the Json Decoder with the passed context.
      *
      * @param array $context
@@ -127,13 +138,5 @@ class JsonDecode implements DecoderInterface
         );
 
         return array_merge($defaultOptions, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDecoding($format)
-    {
-        return JsonEncoder::FORMAT === $format;
     }
 }

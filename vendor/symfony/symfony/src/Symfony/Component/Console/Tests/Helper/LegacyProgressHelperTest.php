@@ -21,8 +21,6 @@ use Symfony\Component\Console\Output\StreamOutput;
  */
 class LegacyProgressHelperTest extends TestCase
 {
-    protected $lastMessagesLength;
-
     public function testAdvance()
     {
         $progress = new ProgressHelper();
@@ -31,24 +29,6 @@ class LegacyProgressHelperTest extends TestCase
 
         rewind($output->getStream());
         $this->assertEquals($this->generateOutput('    1 [->--------------------------]'), stream_get_contents($output->getStream()));
-    }
-
-    protected function getOutputStream($decorated = true)
-    {
-        return new StreamOutput(fopen('php://memory', 'r+', false), StreamOutput::VERBOSITY_NORMAL, $decorated);
-    }
-
-    protected function generateOutput($expected)
-    {
-        $expectedout = $expected;
-
-        if ($this->lastMessagesLength !== null) {
-            $expectedout = str_pad($expected, $this->lastMessagesLength, "\x20", STR_PAD_RIGHT);
-        }
-
-        $this->lastMessagesLength = strlen($expectedout);
-
-        return "\x0D" . $expectedout;
     }
 
     public function testAdvanceWithStep()
@@ -69,7 +49,7 @@ class LegacyProgressHelperTest extends TestCase
         $progress->advance(2);
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('    3 [--->------------------------]') . $this->generateOutput('    5 [----->----------------------]'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('    3 [--->------------------------]').$this->generateOutput('    5 [----->----------------------]'), stream_get_contents($output->getStream()));
     }
 
     public function testCustomizations()
@@ -96,7 +76,7 @@ class LegacyProgressHelperTest extends TestCase
         $progress->advance();
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('  0/50 [>---------------------------]   0%') . $this->generateOutput('  1/50 [>---------------------------]   2%') . $this->generateOutput('  2/50 [=>--------------------------]   4%'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('  0/50 [>---------------------------]   0%').$this->generateOutput('  1/50 [>---------------------------]   2%').$this->generateOutput('  2/50 [=>--------------------------]   4%'), stream_get_contents($output->getStream()));
     }
 
     public function testOverwriteWithShorterLine()
@@ -113,8 +93,8 @@ class LegacyProgressHelperTest extends TestCase
 
         rewind($output->getStream());
         $this->assertEquals(
-            $this->generateOutput('  0/50 [>---------------------------]   0%') .
-            $this->generateOutput('  1/50 [>---------------------------]   2%') .
+            $this->generateOutput('  0/50 [>---------------------------]   0%').
+            $this->generateOutput('  1/50 [>---------------------------]   2%').
             $this->generateOutput('  2/50 [=>--------------------------]     '),
             stream_get_contents($output->getStream())
         );
@@ -131,9 +111,9 @@ class LegacyProgressHelperTest extends TestCase
 
         rewind($output->getStream());
         $this->assertEquals(
-            $this->generateOutput('  0/50 [>---------------------------]   0%') .
-            $this->generateOutput('  1/50 [>---------------------------]   2%') .
-            $this->generateOutput(' 15/50 [========>-------------------]  30%') .
+            $this->generateOutput('  0/50 [>---------------------------]   0%').
+            $this->generateOutput('  1/50 [>---------------------------]   2%').
+            $this->generateOutput(' 15/50 [========>-------------------]  30%').
             $this->generateOutput(' 25/50 [==============>-------------]  50%'),
             stream_get_contents($output->getStream())
         );
@@ -165,7 +145,7 @@ class LegacyProgressHelperTest extends TestCase
     {
         $progress = $this->getMockBuilder('Symfony\Component\Console\Helper\ProgressHelper')->setMethods(array('display'))->getMock();
         $progress->expects($this->exactly(4))
-            ->method('display');
+                 ->method('display');
 
         $progress->setRedrawFrequency(2);
 
@@ -196,7 +176,7 @@ class LegacyProgressHelperTest extends TestCase
 
         rewind($output->getStream());
         $this->assertEquals(
-            $this->generateOutput(' 25/50 [==============>-------------]  50%') . $this->generateOutput(''),
+            $this->generateOutput(' 25/50 [==============>-------------]  50%').$this->generateOutput(''),
             stream_get_contents($output->getStream())
         );
     }
@@ -210,7 +190,7 @@ class LegacyProgressHelperTest extends TestCase
         $progress->advance();
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('   0/200 [>---------------------------]   0%') . $this->generateOutput(' 199/200 [===========================>]  99%') . $this->generateOutput(' 200/200 [============================] 100%'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('   0/200 [>---------------------------]   0%').$this->generateOutput(' 199/200 [===========================>]  99%').$this->generateOutput(' 200/200 [============================] 100%'), stream_get_contents($output->getStream()));
     }
 
     public function testNonDecoratedOutput()
@@ -221,5 +201,25 @@ class LegacyProgressHelperTest extends TestCase
 
         rewind($output->getStream());
         $this->assertEquals('', stream_get_contents($output->getStream()));
+    }
+
+    protected function getOutputStream($decorated = true)
+    {
+        return new StreamOutput(fopen('php://memory', 'r+', false), StreamOutput::VERBOSITY_NORMAL, $decorated);
+    }
+
+    protected $lastMessagesLength;
+
+    protected function generateOutput($expected)
+    {
+        $expectedout = $expected;
+
+        if ($this->lastMessagesLength !== null) {
+            $expectedout = str_pad($expected, $this->lastMessagesLength, "\x20", STR_PAD_RIGHT);
+        }
+
+        $this->lastMessagesLength = strlen($expectedout);
+
+        return "\x0D".$expectedout;
     }
 }

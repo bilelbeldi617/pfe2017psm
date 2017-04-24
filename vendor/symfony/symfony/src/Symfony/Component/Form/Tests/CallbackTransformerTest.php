@@ -19,12 +19,8 @@ class CallbackTransformerTest extends TestCase
     public function testTransform()
     {
         $transformer = new CallbackTransformer(
-            function ($value) {
-                return $value . ' has been transformed';
-            },
-            function ($value) {
-                return $value . ' has reversely been transformed';
-            }
+            function ($value) { return $value.' has been transformed'; },
+            function ($value) { return $value.' has reversely been transformed'; }
         );
 
         $this->assertEquals('foo has been transformed', $transformer->transform('foo'));
@@ -44,10 +40,8 @@ class CallbackTransformerTest extends TestCase
     public function invalidCallbacksProvider()
     {
         return array(
-            array(null, function () {
-            }),
-            array(function () {
-            }, null),
+            array(null, function () {}),
+            array(function () {}, null),
         );
     }
 }

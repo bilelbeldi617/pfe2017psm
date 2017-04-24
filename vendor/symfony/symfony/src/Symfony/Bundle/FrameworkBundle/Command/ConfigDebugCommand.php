@@ -49,7 +49,8 @@ Either the extension alias or bundle name can be used:
   <info>php %command.full_name% FrameworkBundle</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

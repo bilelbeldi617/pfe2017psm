@@ -51,7 +51,8 @@ class BinaryNode extends Node
                 ->compile($this->nodes['right'])
                 ->raw(', ')
                 ->compile($this->nodes['left'])
-                ->raw(')');
+                ->raw(')')
+            ;
 
             return;
         }
@@ -62,7 +63,8 @@ class BinaryNode extends Node
                 ->compile($this->nodes['left'])
                 ->raw(', ')
                 ->compile($this->nodes['right'])
-                ->raw(')');
+                ->raw(')')
+            ;
 
             return;
         }
@@ -78,7 +80,8 @@ class BinaryNode extends Node
             ->raw($operator)
             ->raw(' ')
             ->compile($this->nodes['right'])
-            ->raw(')');
+            ->raw(')')
+        ;
     }
 
     public function evaluate($functions, $values)
@@ -140,7 +143,7 @@ class BinaryNode extends Node
             case '-':
                 return $left - $right;
             case '~':
-                return $left . $right;
+                return $left.$right;
             case '*':
                 return $left * $right;
             case '/':

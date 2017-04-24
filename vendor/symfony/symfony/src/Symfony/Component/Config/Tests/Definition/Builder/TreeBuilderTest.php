@@ -15,9 +15,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Tests\Definition\Builder\NodeBuilder as CustomNodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
-require __DIR__ . '/../../Fixtures/Builder/NodeBuilder.php';
-require __DIR__ . '/../../Fixtures/Builder/BarNodeDefinition.php';
-require __DIR__ . '/../../Fixtures/Builder/VariableNodeDefinition.php';
+require __DIR__.'/../../Fixtures/Builder/NodeBuilder.php';
+require __DIR__.'/../../Fixtures/Builder/BarNodeDefinition.php';
+require __DIR__.'/../../Fixtures/Builder/VariableNodeDefinition.php';
 
 class TreeBuilderTest extends TestCase
 {
@@ -79,15 +79,15 @@ class TreeBuilderTest extends TestCase
 
         $builder->root('propagation')
             ->children()
-            ->setNodeClass('extended', 'Symfony\Component\Config\Tests\Definition\Builder\VariableNodeDefinition')
-            ->node('foo', 'extended')->end()
-            ->arrayNode('child')
-            ->children()
-            ->node('foo', 'extended')
+                ->setNodeClass('extended', 'Symfony\Component\Config\Tests\Definition\Builder\VariableNodeDefinition')
+                ->node('foo', 'extended')->end()
+                ->arrayNode('child')
+                    ->children()
+                        ->node('foo', 'extended')
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end();
+        ->end();
     }
 
     public function testDefinitionInfoGetsTransferredToNode()
@@ -96,9 +96,9 @@ class TreeBuilderTest extends TestCase
 
         $builder->root('test')->info('root info')
             ->children()
-            ->node('child', 'variable')->info('child info')->defaultValue('default')
+                ->node('child', 'variable')->info('child info')->defaultValue('default')
             ->end()
-            ->end();
+        ->end();
 
         $tree = $builder->buildTree();
         $children = $tree->getChildren();
@@ -114,9 +114,9 @@ class TreeBuilderTest extends TestCase
         $builder->root('test')
             ->example(array('key' => 'value'))
             ->children()
-            ->node('child', 'variable')->info('child info')->defaultValue('default')->example('example')
+                ->node('child', 'variable')->info('child info')->defaultValue('default')->example('example')
             ->end()
-            ->end();
+        ->end();
 
         $tree = $builder->buildTree();
         $children = $tree->getChildren();

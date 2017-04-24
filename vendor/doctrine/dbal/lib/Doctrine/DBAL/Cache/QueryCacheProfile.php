@@ -46,8 +46,8 @@ class QueryCacheProfile
     private $cacheKey;
 
     /**
-     * @param integer $lifetime
-     * @param string|null $cacheKey
+     * @param integer                           $lifetime
+     * @param string|null                       $cacheKey
      * @param \Doctrine\Common\Cache\Cache|null $resultCache
      */
     public function __construct($lifetime = 0, $cacheKey = null, Cache $resultCache = null)
@@ -66,31 +66,11 @@ class QueryCacheProfile
     }
 
     /**
-     * @param \Doctrine\Common\Cache\Cache $cache
-     *
-     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
-     */
-    public function setResultCacheDriver(Cache $cache)
-    {
-        return new QueryCacheProfile($this->lifetime, $this->cacheKey, $cache);
-    }
-
-    /**
      * @return integer
      */
     public function getLifetime()
     {
         return $this->lifetime;
-    }
-
-    /**
-     * @param integer $lifetime
-     *
-     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
-     */
-    public function setLifetime($lifetime)
-    {
-        return new QueryCacheProfile($lifetime, $this->cacheKey, $this->resultCacheDriver);
     }
 
     /**
@@ -108,21 +88,11 @@ class QueryCacheProfile
     }
 
     /**
-     * @param string|null $cacheKey
-     *
-     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
-     */
-    public function setCacheKey($cacheKey)
-    {
-        return new QueryCacheProfile($this->lifetime, $cacheKey, $this->resultCacheDriver);
-    }
-
-    /**
      * Generates the real cache key from query, params and types.
      *
      * @param string $query
-     * @param array $params
-     * @param array $types
+     * @param array  $params
+     * @param array  $types
      *
      * @return array
      */
@@ -137,5 +107,35 @@ class QueryCacheProfile
         }
 
         return array($cacheKey, $realCacheKey);
+    }
+
+    /**
+     * @param \Doctrine\Common\Cache\Cache $cache
+     *
+     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
+     */
+    public function setResultCacheDriver(Cache $cache)
+    {
+        return new QueryCacheProfile($this->lifetime, $this->cacheKey, $cache);
+    }
+
+    /**
+     * @param string|null $cacheKey
+     *
+     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
+     */
+    public function setCacheKey($cacheKey)
+    {
+        return new QueryCacheProfile($this->lifetime, $cacheKey, $this->resultCacheDriver);
+    }
+
+    /**
+     * @param integer $lifetime
+     *
+     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
+     */
+    public function setLifetime($lifetime)
+    {
+        return new QueryCacheProfile($lifetime, $this->cacheKey, $this->resultCacheDriver);
     }
 }

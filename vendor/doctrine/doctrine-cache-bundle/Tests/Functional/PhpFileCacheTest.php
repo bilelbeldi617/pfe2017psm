@@ -32,7 +32,7 @@ class PhpFileCacheTest extends BaseCacheTest
     protected function createCacheDriver()
     {
         $container = $this->compileContainer('php_file');
-        $cache = $container->get('doctrine_cache.providers.my_phpfile_cache');
+        $cache     = $container->get('doctrine_cache.providers.my_phpfile_cache');
 
         return $cache;
     }

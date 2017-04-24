@@ -29,7 +29,7 @@ class Package implements PackageInterface
      * Constructor.
      *
      * @param string $version The package version
-     * @param string $format The format used to apply the version
+     * @param string $format  The format used to apply the version
      */
     public function __construct($version = null, $format = '')
     {
@@ -60,7 +60,7 @@ class Package implements PackageInterface
     /**
      * Applies version to the supplied path.
      *
-     * @param string $path A path
+     * @param string           $path    A path
      * @param string|bool|null $version A specific version
      *
      * @return string The versionized path
@@ -75,7 +75,7 @@ class Package implements PackageInterface
         $versionized = sprintf($this->format, ltrim($path, '/'), $version);
 
         if ($path && '/' == $path[0]) {
-            $versionized = '/' . $versionized;
+            $versionized = '/'.$versionized;
         }
 
         return $versionized;

@@ -35,7 +35,7 @@ class ControllerTest extends TestCase
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $kernel->expects($this->once())->method('handle')->will($this->returnCallback(function (Request $request) {
-            return new Response($request->getRequestFormat() . '--' . $request->getLocale());
+            return new Response($request->getRequestFormat().'--'.$request->getLocale());
         }));
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
@@ -58,35 +58,6 @@ class ControllerTest extends TestCase
         $controller->setContainer($this->getContainerWithTokenStorage($token));
 
         $this->assertSame($controller->getUser(), $user);
-    }
-
-    /**
-     * @param $token
-     *
-     * @return ContainerInterface
-     */
-    private function getContainerWithTokenStorage($token = null)
-    {
-        $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage')->getMock();
-        $tokenStorage
-            ->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue($token));
-
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
-        $container
-            ->expects($this->once())
-            ->method('has')
-            ->with('security.token_storage')
-            ->will($this->returnValue(true));
-
-        $container
-            ->expects($this->once())
-            ->method('get')
-            ->with('security.token_storage')
-            ->will($this->returnValue($tokenStorage));
-
-        return $container;
     }
 
     public function testGetUserAnonymousUserConvertedToNull()
@@ -124,6 +95,35 @@ class ControllerTest extends TestCase
         $controller->setContainer($container);
 
         $controller->getUser();
+    }
+
+    /**
+     * @param $token
+     *
+     * @return ContainerInterface
+     */
+    private function getContainerWithTokenStorage($token = null)
+    {
+        $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage')->getMock();
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->will($this->returnValue($token));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
+        $container
+            ->expects($this->once())
+            ->method('has')
+            ->with('security.token_storage')
+            ->will($this->returnValue(true));
+
+        $container
+            ->expects($this->once())
+            ->method('get')
+            ->with('security.token_storage')
+            ->will($this->returnValue($tokenStorage));
+
+        return $container;
     }
 
     public function testIsGranted()

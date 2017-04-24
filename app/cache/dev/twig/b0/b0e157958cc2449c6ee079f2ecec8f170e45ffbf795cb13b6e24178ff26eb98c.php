@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:error.json.twig */
-
 class __TwigTemplate_89945e129fbb4092bb80bad345613ad3bb098a71e1a7d06367c18ed7e18be3f6 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,7 +9,27 @@ class __TwigTemplate_89945e129fbb4092bb80bad345613ad3bb098a71e1a7d06367c18ed7e18
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_b5a54bc3d19b6f9bf666db684b778e96c51c5bec191e9a2ec69cc6e6e48db6c0 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_b5a54bc3d19b6f9bf666db684b778e96c51c5bec191e9a2ec69cc6e6e48db6c0->enter($__internal_b5a54bc3d19b6f9bf666db684b778e96c51c5bec191e9a2ec69cc6e6e48db6c0_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:error.json.twig"));
+
+        // line 1
+        echo twig_jsonencode_filter(array("error" => array("code" => (isset($context["status_code"]) ? $context["status_code"] : $this->getContext($context, "status_code")), "message" => (isset($context["status_text"]) ? $context["status_text"] : $this->getContext($context, "status_text")))));
+        echo "
+";
+        
+        $__internal_b5a54bc3d19b6f9bf666db684b778e96c51c5bec191e9a2ec69cc6e6e48db6c0->leave($__internal_b5a54bc3d19b6f9bf666db684b778e96c51c5bec191e9a2ec69cc6e6e48db6c0_prof);
+
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle:Exception:error.json.twig";
     }
 
     public function isTraitable()
@@ -20,13 +39,13 @@ class __TwigTemplate_89945e129fbb4092bb80bad345613ad3bb098a71e1a7d06367c18ed7e18
 
     public function getDebugInfo()
     {
-        return array(22 => 1,);
+        return array (  22 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -35,24 +54,5 @@ class __TwigTemplate_89945e129fbb4092bb80bad345613ad3bb098a71e1a7d06367c18ed7e18
     {
         return new Twig_Source("{{ { 'error': { 'code': status_code, 'message': status_text } }|json_encode|raw }}
 ", "TwigBundle:Exception:error.json.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/error.json.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_f18c1150f040a910af5a4ba8e7113a7479b79c0db7dd6f5055171e2f8a41a138 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_f18c1150f040a910af5a4ba8e7113a7479b79c0db7dd6f5055171e2f8a41a138->enter($__internal_f18c1150f040a910af5a4ba8e7113a7479b79c0db7dd6f5055171e2f8a41a138_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:error.json.twig"));
-
-        // line 1
-        echo twig_jsonencode_filter(array("error" => array("code" => (isset($context["status_code"]) ? $context["status_code"] : $this->getContext($context, "status_code")), "message" => (isset($context["status_text"]) ? $context["status_text"] : $this->getContext($context, "status_text")))));
-        echo "
-";
-
-        $__internal_f18c1150f040a910af5a4ba8e7113a7479b79c0db7dd6f5055171e2f8a41a138->leave($__internal_f18c1150f040a910af5a4ba8e7113a7479b79c0db7dd6f5055171e2f8a41a138_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "TwigBundle:Exception:error.json.twig";
     }
 }

@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Finder\Expression;
 
-@trigger_error('The ' . __NAMESPACE__ . '\Regex class is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\Regex class is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
@@ -55,46 +55,6 @@ class Regex implements ValueInterface
     private $endJoker;
 
     /**
-     * @param string $pattern
-     * @param string $options
-     * @param string $delimiter
-     */
-    public function __construct($pattern, $options = '', $delimiter = null)
-    {
-        if (null !== $delimiter) {
-            // removes delimiter escaping
-            $pattern = str_replace('\\' . $delimiter, $delimiter, $pattern);
-        }
-
-        $this->parsePattern($pattern);
-        $this->options = $options;
-    }
-
-    /**
-     * @param string $pattern
-     */
-    private function parsePattern($pattern)
-    {
-        if ($this->startFlag = self::START_FLAG === substr($pattern, 0, 1)) {
-            $pattern = substr($pattern, 1);
-        }
-
-        if ($this->startJoker = self::JOKER === substr($pattern, 0, 2)) {
-            $pattern = substr($pattern, 2);
-        }
-
-        if ($this->endFlag = (self::END_FLAG === substr($pattern, -1) && self::ESCAPING !== substr($pattern, -2, -1))) {
-            $pattern = substr($pattern, 0, -1);
-        }
-
-        if ($this->endJoker = (self::JOKER === substr($pattern, -2) && self::ESCAPING !== substr($pattern, -3, -2))) {
-            $pattern = substr($pattern, 0, -2);
-        }
-
-        $this->pattern = $pattern;
-    }
-
-    /**
      * @param string $expr
      *
      * @return self
@@ -120,6 +80,22 @@ class Regex implements ValueInterface
     }
 
     /**
+     * @param string $pattern
+     * @param string $options
+     * @param string $delimiter
+     */
+    public function __construct($pattern, $options = '', $delimiter = null)
+    {
+        if (null !== $delimiter) {
+            // removes delimiter escaping
+            $pattern = str_replace('\\'.$delimiter, $delimiter, $pattern);
+        }
+
+        $this->parsePattern($pattern);
+        $this->options = $options;
+    }
+
+    /**
      * @return string
      */
     public function __toString()
@@ -133,9 +109,9 @@ class Regex implements ValueInterface
     public function render()
     {
         return self::BOUNDARY
-            . $this->renderPattern()
-            . self::BOUNDARY
-            . $this->options;
+            .$this->renderPattern()
+            .self::BOUNDARY
+            .$this->options;
     }
 
     /**
@@ -144,10 +120,10 @@ class Regex implements ValueInterface
     public function renderPattern()
     {
         return ($this->startFlag ? self::START_FLAG : '')
-            . ($this->startJoker ? self::JOKER : '')
-            . str_replace(self::BOUNDARY, '\\' . self::BOUNDARY, $this->pattern)
-            . ($this->endJoker ? self::JOKER : '')
-            . ($this->endFlag ? self::END_FLAG : '');
+            .($this->startJoker ? self::JOKER : '')
+            .str_replace(self::BOUNDARY, '\\'.self::BOUNDARY, $this->pattern)
+            .($this->endJoker ? self::JOKER : '')
+            .($this->endFlag ? self::END_FLAG : '');
     }
 
     /**
@@ -156,16 +132,6 @@ class Regex implements ValueInterface
     public function isCaseSensitive()
     {
         return !$this->hasOption('i');
-    }
-
-    /**
-     * @param string $option
-     *
-     * @return bool
-     */
-    public function hasOption($option)
-    {
-        return false !== strpos($this->options, $option);
     }
 
     /**
@@ -181,7 +147,7 @@ class Regex implements ValueInterface
      */
     public function prepend($expr)
     {
-        $this->pattern = $expr . $this->pattern;
+        $this->pattern = $expr.$this->pattern;
 
         return $this;
     }
@@ -194,6 +160,16 @@ class Regex implements ValueInterface
         $this->pattern .= $expr;
 
         return $this;
+    }
+
+    /**
+     * @param string $option
+     *
+     * @return bool
+     */
+    public function hasOption($option)
+    {
+        return false !== strpos($this->options, $option);
     }
 
     /**
@@ -249,7 +225,7 @@ class Regex implements ValueInterface
      */
     public function setEndFlag($endFlag)
     {
-        $this->endFlag = (bool)$endFlag;
+        $this->endFlag = (bool) $endFlag;
 
         return $this;
     }
@@ -289,7 +265,7 @@ class Regex implements ValueInterface
      */
     public function setEndJoker($endJoker)
     {
-        $this->endJoker = (bool)$endJoker;
+        $this->endJoker = (bool) $endJoker;
 
         return $this;
     }
@@ -319,5 +295,29 @@ class Regex implements ValueInterface
         $this->pattern = preg_replace_callback('~[\\\\]*\\.~', $replace, $this->pattern);
 
         return $this;
+    }
+
+    /**
+     * @param string $pattern
+     */
+    private function parsePattern($pattern)
+    {
+        if ($this->startFlag = self::START_FLAG === substr($pattern, 0, 1)) {
+            $pattern = substr($pattern, 1);
+        }
+
+        if ($this->startJoker = self::JOKER === substr($pattern, 0, 2)) {
+            $pattern = substr($pattern, 2);
+        }
+
+        if ($this->endFlag = (self::END_FLAG === substr($pattern, -1) && self::ESCAPING !== substr($pattern, -2, -1))) {
+            $pattern = substr($pattern, 0, -1);
+        }
+
+        if ($this->endJoker = (self::JOKER === substr($pattern, -2) && self::ESCAPING !== substr($pattern, -3, -2))) {
+            $pattern = substr($pattern, 0, -2);
+        }
+
+        $this->pattern = $pattern;
     }
 }

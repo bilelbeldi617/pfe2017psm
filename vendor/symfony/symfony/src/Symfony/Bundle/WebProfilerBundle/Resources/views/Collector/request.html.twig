@@ -6,11 +6,11 @@
             {% set link = collector.controller.file|file_link(collector.controller.line) %}
             {% if link %}<a href="{{ link }}" title="{{ collector.controller.file }}">{% else %}<span>{% endif %}
 
-            {{ collector.controller.class|abbr_class|striptags }}
+                {{ collector.controller.class|abbr_class|striptags }}
 
-            {%- if collector.controller.method -%}
-                &nbsp;::&nbsp;{{ collector.controller.method }}
-            {%- endif -%}
+                {%- if collector.controller.method -%}
+                    &nbsp;::&nbsp;{{ collector.controller.method }}
+                {%- endif -%}
 
             {% if link %}</a>{% else %}</span>{% endif %}
         {% else %}
@@ -190,37 +190,37 @@
         </div>
 
         {% if profile.parent %}
-            <div class="tab">
-                <h3 class="tab-title">Parent Request</h3>
+        <div class="tab">
+            <h3 class="tab-title">Parent Request</h3>
 
-                <div class="tab-content">
-                    <h3>
-                        <a href="{{ path('_profiler', { token: profile.parent.token }) }}">Return to parent request</a>
-                        <small>(token = {{ profile.parent.token }})</small>
-                    </h3>
+            <div class="tab-content">
+                <h3>
+                    <a href="{{ path('_profiler', { token: profile.parent.token }) }}">Return to parent request</a>
+                    <small>(token = {{ profile.parent.token }})</small>
+                </h3>
 
-                    {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: profile.parent.getcollector('request').requestattributes }, with_context = false) }}
-                </div>
+                {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: profile.parent.getcollector('request').requestattributes }, with_context = false) }}
             </div>
+        </div>
         {% endif %}
 
         {% if profile.children|length %}
-            <div class="tab">
-                <h3 class="tab-title">Sub Requests <span class="badge">{{ profile.children|length }}</span></h3>
+        <div class="tab">
+            <h3 class="tab-title">Sub Requests <span class="badge">{{ profile.children|length }}</span></h3>
 
-                <div class="tab-content">
-                    {% for child in profile.children %}
-                        <h3>
-                            <a href="{{ path('_profiler', { token: child.token }) }}">
-                                {{- child.getcollector('request').requestattributes.get('_controller') -}}
-                            </a>
-                            <small>(token = {{ child.token }})</small>
-                        </h3>
+            <div class="tab-content">
+                {% for child in profile.children %}
+                    <h3>
+                        <a href="{{ path('_profiler', { token: child.token }) }}">
+                            {{- child.getcollector('request').requestattributes.get('_controller') -}}
+                        </a>
+                        <small>(token = {{ child.token }})</small>
+                    </h3>
 
-                        {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: child.getcollector('request').requestattributes }, with_context = false) }}
-                    {% endfor %}
-                </div>
+                    {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: child.getcollector('request').requestattributes }, with_context = false) }}
+                {% endfor %}
             </div>
+        </div>
         {% endif %}
     </div>
 {% endblock %}

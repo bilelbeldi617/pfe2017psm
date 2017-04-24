@@ -25,7 +25,8 @@ class ResolveInvalidReferencesPassTest extends TestCase
         $def = $container
             ->register('foo')
             ->setArguments(array(new Reference('bar', ContainerInterface::NULL_ON_INVALID_REFERENCE)))
-            ->addMethodCall('foo', array(new Reference('moo', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)));
+            ->addMethodCall('foo', array(new Reference('moo', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)))
+        ;
 
         $this->process($container);
 
@@ -34,23 +35,18 @@ class ResolveInvalidReferencesPassTest extends TestCase
         $this->assertCount(0, $def->getMethodCalls());
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new ResolveInvalidReferencesPass();
-        $pass->process($container);
-    }
-
     public function testProcessIgnoreNonExistentServices()
     {
         $container = new ContainerBuilder();
         $def = $container
             ->register('foo')
-            ->setArguments(array(new Reference('bar')));
+            ->setArguments(array(new Reference('bar')))
+        ;
 
         $this->process($container);
 
         $arguments = $def->getArguments();
-        $this->assertEquals('bar', (string)$arguments[0]);
+        $this->assertEquals('bar', (string) $arguments[0]);
     }
 
     public function testProcessRemovesPropertiesOnInvalid()
@@ -58,7 +54,8 @@ class ResolveInvalidReferencesPassTest extends TestCase
         $container = new ContainerBuilder();
         $def = $container
             ->register('foo')
-            ->setProperty('foo', new Reference('bar', ContainerInterface::IGNORE_ON_INVALID_REFERENCE));
+            ->setProperty('foo', new Reference('bar', ContainerInterface::IGNORE_ON_INVALID_REFERENCE))
+        ;
 
         $this->process($container);
 
@@ -74,10 +71,17 @@ class ResolveInvalidReferencesPassTest extends TestCase
         $container->register('bar');
         $def = $container
             ->register('foo')
-            ->addArgument(new Reference('bar', ContainerInterface::NULL_ON_INVALID_REFERENCE, false));
+            ->addArgument(new Reference('bar', ContainerInterface::NULL_ON_INVALID_REFERENCE, false))
+        ;
 
         $this->process($container);
 
         $this->assertFalse($def->getArgument(0)->isStrict());
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new ResolveInvalidReferencesPass();
+        $pass->process($container);
     }
 }

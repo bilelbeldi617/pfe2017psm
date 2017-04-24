@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 
-<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns="http://symfony.com/schema/dic/services"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
         <parameter key="assetic.filter.uglifycss.class">Assetic\Filter\UglifyCssFilter</parameter>
@@ -17,24 +17,14 @@
 
     <services>
         <service id="assetic.filter.uglifycss" class="%assetic.filter.uglifycss.class%">
-            <tag name="assetic.filter" alias="uglifycss"/>
+            <tag name="assetic.filter" alias="uglifycss" />
             <argument>%assetic.filter.uglifycss.bin%</argument>
             <argument>%assetic.filter.uglifycss.node%</argument>
-            <call method="setTimeout">
-                <argument>%assetic.filter.uglifycss.timeout%</argument>
-            </call>
-            <call method="setNodePaths">
-                <argument>%assetic.filter.uglifycss.node_paths%</argument>
-            </call>
-            <call method="setExpandVars">
-                <argument>%assetic.filter.uglifycss.expand_vars%</argument>
-            </call>
-            <call method="setUglyComments">
-                <argument>%assetic.filter.uglifycss.ugly_comments%</argument>
-            </call>
-            <call method="setCuteComments">
-                <argument>%assetic.filter.uglifycss.cute_comments%</argument>
-            </call>
+            <call method="setTimeout"><argument>%assetic.filter.uglifycss.timeout%</argument></call>
+            <call method="setNodePaths"><argument>%assetic.filter.uglifycss.node_paths%</argument></call>
+            <call method="setExpandVars"><argument>%assetic.filter.uglifycss.expand_vars%</argument></call>
+            <call method="setUglyComments"><argument>%assetic.filter.uglifycss.ugly_comments%</argument></call>
+            <call method="setCuteComments"><argument>%assetic.filter.uglifycss.cute_comments%</argument></call>
         </service>
     </services>
 </container>

@@ -39,24 +39,6 @@ class StopwatchExtensionTest extends TestCase
         }
     }
 
-    protected function getStopwatch($events = array())
-    {
-        $events = is_array($events) ? $events : array($events);
-        $stopwatch = $this->getMockBuilder('Symfony\Component\Stopwatch\Stopwatch')->getMock();
-
-        $i = -1;
-        foreach ($events as $eventName) {
-            $stopwatch->expects($this->at(++$i))
-                ->method('start')
-                ->with($this->equalTo($eventName), 'template');
-            $stopwatch->expects($this->at(++$i))
-                ->method('stop')
-                ->with($this->equalTo($eventName));
-        }
-
-        return $stopwatch;
-    }
-
     public function getTimingTemplates()
     {
         return array(
@@ -67,5 +49,25 @@ class StopwatchExtensionTest extends TestCase
             array('{% stopwatch "foo.bar" %}something{% endstopwatch %}', 'foo.bar'),
             array('{% stopwatch "foo" %}something{% endstopwatch %}{% stopwatch "foo" %}something else{% endstopwatch %}', array('foo', 'foo')),
         );
+    }
+
+    protected function getStopwatch($events = array())
+    {
+        $events = is_array($events) ? $events : array($events);
+        $stopwatch = $this->getMockBuilder('Symfony\Component\Stopwatch\Stopwatch')->getMock();
+
+        $i = -1;
+        foreach ($events as $eventName) {
+            $stopwatch->expects($this->at(++$i))
+                ->method('start')
+                ->with($this->equalTo($eventName), 'template')
+            ;
+            $stopwatch->expects($this->at(++$i))
+                ->method('stop')
+                ->with($this->equalTo($eventName))
+            ;
+        }
+
+        return $stopwatch;
     }
 }

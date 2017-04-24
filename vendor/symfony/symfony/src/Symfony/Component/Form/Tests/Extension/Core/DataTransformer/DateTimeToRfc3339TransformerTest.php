@@ -18,6 +18,20 @@ class DateTimeToRfc3339TransformerTest extends DateTimeTestCase
     protected $dateTime;
     protected $dateTimeWithoutSeconds;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->dateTime = new \DateTime('2010-02-03 04:05:06 UTC');
+        $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
+    }
+
+    protected function tearDown()
+    {
+        $this->dateTime = null;
+        $this->dateTimeWithoutSeconds = null;
+    }
+
     public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
         if ($expected instanceof \DateTime && $actual instanceof \DateTime) {
@@ -26,11 +40,6 @@ class DateTimeToRfc3339TransformerTest extends DateTimeTestCase
         }
 
         parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
-    }
-
-    public function transformProvider()
-    {
-        return $this->allProvider();
     }
 
     public function allProvider()
@@ -43,6 +52,11 @@ class DateTimeToRfc3339TransformerTest extends DateTimeTestCase
             array('UTC', 'Asia/Hong_Kong', '2010-02-03 04:05:06 UTC', '2010-02-03T12:05:06+08:00'),
             array('America/New_York', 'UTC', '2010-02-03 04:05:06 America/New_York', '2010-02-03T09:05:06Z'),
         );
+    }
+
+    public function transformProvider()
+    {
+        return $this->allProvider();
     }
 
     public function reverseTransformProvider()
@@ -126,19 +140,5 @@ class DateTimeToRfc3339TransformerTest extends DateTimeTestCase
         $transformer = new DateTimeToRfc3339Transformer('UTC', 'UTC');
 
         $transformer->reverseTransform('2010-2010-2010');
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->dateTime = new \DateTime('2010-02-03 04:05:06 UTC');
-        $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
-    }
-
-    protected function tearDown()
-    {
-        $this->dateTime = null;
-        $this->dateTimeWithoutSeconds = null;
     }
 }

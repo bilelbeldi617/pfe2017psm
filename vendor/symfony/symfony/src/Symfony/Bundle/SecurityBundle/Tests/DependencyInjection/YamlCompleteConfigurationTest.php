@@ -19,7 +19,7 @@ class YamlCompleteConfigurationTest extends CompleteConfigurationTest
 {
     protected function getLoader(ContainerBuilder $container)
     {
-        return new YamlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/yml'));
+        return new YamlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/yml'));
     }
 
     protected function getFileExtension()

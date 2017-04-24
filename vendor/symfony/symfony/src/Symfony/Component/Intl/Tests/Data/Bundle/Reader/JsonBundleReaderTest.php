@@ -24,9 +24,14 @@ class JsonBundleReaderTest extends TestCase
      */
     private $reader;
 
+    protected function setUp()
+    {
+        $this->reader = new JsonBundleReader();
+    }
+
     public function testReadReturnsArray()
     {
-        $data = $this->reader->read(__DIR__ . '/Fixtures/json', 'en');
+        $data = $this->reader->read(__DIR__.'/Fixtures/json', 'en');
 
         $this->assertInternalType('array', $data);
         $this->assertSame('Bar', $data['Foo']);
@@ -38,7 +43,7 @@ class JsonBundleReaderTest extends TestCase
      */
     public function testReadFailsIfNonExistingLocale()
     {
-        $this->reader->read(__DIR__ . '/Fixtures/json', 'foo');
+        $this->reader->read(__DIR__.'/Fixtures/json', 'foo');
     }
 
     /**
@@ -46,7 +51,7 @@ class JsonBundleReaderTest extends TestCase
      */
     public function testReadFailsIfNonExistingDirectory()
     {
-        $this->reader->read(__DIR__ . '/foo', 'en');
+        $this->reader->read(__DIR__.'/foo', 'en');
     }
 
     /**
@@ -54,7 +59,7 @@ class JsonBundleReaderTest extends TestCase
      */
     public function testReadFailsIfNotAFile()
     {
-        $this->reader->read(__DIR__ . '/Fixtures/NotAFile', 'en');
+        $this->reader->read(__DIR__.'/Fixtures/NotAFile', 'en');
     }
 
     /**
@@ -62,11 +67,6 @@ class JsonBundleReaderTest extends TestCase
      */
     public function testReadFailsIfInvalidJson()
     {
-        $this->reader->read(__DIR__ . '/Fixtures/json', 'en_Invalid');
-    }
-
-    protected function setUp()
-    {
-        $this->reader = new JsonBundleReader();
+        $this->reader->read(__DIR__.'/Fixtures/json', 'en_Invalid');
     }
 }

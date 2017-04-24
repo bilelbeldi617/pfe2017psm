@@ -23,25 +23,26 @@ class TemplateFinderTest extends TestCase
         $kernel = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Kernel')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $kernel
             ->expects($this->any())
-            ->method('getBundle');
+            ->method('getBundle')
+        ;
 
         $kernel
             ->expects($this->once())
             ->method('getBundles')
-            ->will($this->returnValue(array('BaseBundle' => new BaseBundle())));
+            ->will($this->returnValue(array('BaseBundle' => new BaseBundle())))
+        ;
 
         $parser = new TemplateFilenameParser();
 
-        $finder = new TemplateFinder($kernel, $parser, __DIR__ . '/../Fixtures/Resources');
+        $finder = new TemplateFinder($kernel, $parser, __DIR__.'/../Fixtures/Resources');
 
         $templates = array_map(
-            function ($template) {
-                return $template->getLogicalName();
-            },
+            function ($template) { return $template->getLogicalName(); },
             $finder->findAllTemplates()
         );
 

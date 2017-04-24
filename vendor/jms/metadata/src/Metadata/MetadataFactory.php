@@ -34,14 +34,14 @@ class MetadataFactory implements AdvancedMetadataFactoryInterface
 
     /**
      * @param DriverInterface $driver
-     * @param string $hierarchyMetadataClass
-     * @param boolean $debug
+     * @param string          $hierarchyMetadataClass
+     * @param boolean         $debug
      */
     public function __construct(DriverInterface $driver, $hierarchyMetadataClass = 'Metadata\ClassHierarchyMetadata', $debug = false)
     {
         $this->driver = $driver;
         $this->hierarchyMetadataClass = $hierarchyMetadataClass;
-        $this->debug = (Boolean)$debug;
+        $this->debug = (Boolean) $debug;
     }
 
     /**
@@ -49,7 +49,7 @@ class MetadataFactory implements AdvancedMetadataFactoryInterface
      */
     public function setIncludeInterfaces($include)
     {
-        $this->includeInterfaces = (Boolean)$include;
+        $this->includeInterfaces = (Boolean) $include;
     }
 
     public function setCache(CacheInterface $cache)
@@ -85,7 +85,7 @@ class MetadataFactory implements AdvancedMetadataFactoryInterface
                 }
 
                 if (null !== $classMetadata) {
-                    if (!$classMetadata instanceof ClassMetadata) {
+                    if ( ! $classMetadata instanceof ClassMetadata) {
                         throw new \LogicException(sprintf('The cache must return instances of ClassMetadata, but got %s.', var_export($classMetadata, true)));
                     }
 
@@ -124,13 +124,38 @@ class MetadataFactory implements AdvancedMetadataFactoryInterface
     }
 
     /**
-     * @param NullMetadata|null $metadata
-     *
-     * @return ClassMetadata|null
+     * {@inheritDoc}
      */
-    private function filterNullMetadata($metadata = null)
+    public function getAllClassNames()
     {
-        return !$metadata instanceof NullMetadata ? $metadata : null;
+        if (!$this->driver instanceof AdvancedDriverInterface) {
+            throw new \RuntimeException(
+                sprintf('Driver "%s" must be an instance of "AdvancedDriverInterface".', get_class($this->driver))
+            );
+        }
+
+        return $this->driver->getAllClassNames();
+    }
+
+    /**
+     * @param ClassMetadata|null $metadata
+     * @param ClassMetadata      $toAdd
+     */
+    private function addClassMetadata(&$metadata, $toAdd)
+    {
+        if ($toAdd instanceof MergeableInterface) {
+            if (null === $metadata) {
+                $metadata = clone $toAdd;
+            } else {
+                $metadata->merge($toAdd);
+            }
+        } else {
+            if (null === $metadata) {
+                $metadata = new $this->hierarchyMetadataClass;
+            }
+
+            $metadata->addClassMetadata($toAdd);
+        }
     }
 
     /**
@@ -172,37 +197,12 @@ class MetadataFactory implements AdvancedMetadataFactoryInterface
     }
 
     /**
-     * @param ClassMetadata|null $metadata
-     * @param ClassMetadata $toAdd
+     * @param NullMetadata|null $metadata
+     *
+     * @return ClassMetadata|null
      */
-    private function addClassMetadata(&$metadata, $toAdd)
+    private function filterNullMetadata($metadata = null)
     {
-        if ($toAdd instanceof MergeableInterface) {
-            if (null === $metadata) {
-                $metadata = clone $toAdd;
-            } else {
-                $metadata->merge($toAdd);
-            }
-        } else {
-            if (null === $metadata) {
-                $metadata = new $this->hierarchyMetadataClass;
-            }
-
-            $metadata->addClassMetadata($toAdd);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getAllClassNames()
-    {
-        if (!$this->driver instanceof AdvancedDriverInterface) {
-            throw new \RuntimeException(
-                sprintf('Driver "%s" must be an instance of "AdvancedDriverInterface".', get_class($this->driver))
-            );
-        }
-
-        return $this->driver->getAllClassNames();
+        return !$metadata instanceof NullMetadata ? $metadata : null;
     }
 }

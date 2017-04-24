@@ -28,8 +28,8 @@ use Symfony\Component\Intl\Util\IcuVersion;
 use Symfony\Component\Intl\Util\SvnRepository;
 use Symfony\Component\Filesystem\Filesystem;
 
-require_once __DIR__ . '/common.php';
-require_once __DIR__ . '/autoload.php';
+require_once __DIR__.'/common.php';
+require_once __DIR__.'/autoload.php';
 
 $argc = $_SERVER['argc'];
 $argv = $_SERVER['argv'];
@@ -57,7 +57,7 @@ MESSAGE
 }
 
 echo LINE;
-echo centered('ICU Resource Bundle Compilation') . "\n";
+echo centered('ICU Resource Bundle Compilation')."\n";
 echo LINE;
 
 if (!Intl::isExtensionLoaded()) {
@@ -65,7 +65,7 @@ if (!Intl::isExtensionLoaded()) {
 }
 
 $filesystem = new Filesystem();
-$urls = parse_ini_file(__DIR__ . '/icu.ini');
+$urls = parse_ini_file(__DIR__.'/icu.ini');
 
 echo "icu.ini parsed. Available versions:\n";
 
@@ -89,7 +89,7 @@ if ($argc >= 2) {
 } else {
     echo "Starting SVN checkout for version $shortIcuVersion. This may take a while...\n";
 
-    $sourceDir = sys_get_temp_dir() . '/icu-data/' . $shortIcuVersion . '/source';
+    $sourceDir = sys_get_temp_dir().'/icu-data/'.$shortIcuVersion.'/source';
     $svn = SvnRepository::download($urls[$shortIcuVersion], $sourceDir);
 
     echo "SVN checkout to {$sourceDir} complete.\n";
@@ -106,79 +106,79 @@ if ($argc >= 3) {
 
     echo "Running configure...\n";
 
-    $buildDir = sys_get_temp_dir() . '/icu-data/' . $shortIcuVersion . '/build';
+    $buildDir = sys_get_temp_dir().'/icu-data/'.$shortIcuVersion.'/build';
 
     $filesystem->remove($buildDir);
     $filesystem->mkdir($buildDir);
 
-    run('./configure --prefix=' . $buildDir . ' 2>&1');
+    run('./configure --prefix='.$buildDir.' 2>&1');
 
     echo "Running make...\n";
 
     // If the directory "lib" does not exist in the download, create it or we
     // will run into problems when building libicuuc.so.
-    $filesystem->mkdir($sourceDir . '/lib');
+    $filesystem->mkdir($sourceDir.'/lib');
 
     // If the directory "bin" does not exist in the download, create it or we
     // will run into problems when building genrb.
-    $filesystem->mkdir($sourceDir . '/bin');
+    $filesystem->mkdir($sourceDir.'/bin');
 
     echo '[1/6] libicudata.so...';
 
-    cd($sourceDir . '/stubdata');
+    cd($sourceDir.'/stubdata');
     run('make 2>&1 && make install 2>&1');
 
     echo " ok.\n";
 
     echo '[2/6] libicuuc.so...';
 
-    cd($sourceDir . '/common');
+    cd($sourceDir.'/common');
     run('make 2>&1 && make install 2>&1');
 
     echo " ok.\n";
 
     echo '[3/6] libicui18n.so...';
 
-    cd($sourceDir . '/i18n');
+    cd($sourceDir.'/i18n');
     run('make 2>&1 && make install 2>&1');
 
     echo " ok.\n";
 
     echo '[4/6] libicutu.so...';
 
-    cd($sourceDir . '/tools/toolutil');
+    cd($sourceDir.'/tools/toolutil');
     run('make 2>&1 && make install 2>&1');
 
     echo " ok.\n";
 
     echo '[5/6] libicuio.so...';
 
-    cd($sourceDir . '/io');
+    cd($sourceDir.'/io');
     run('make 2>&1 && make install 2>&1');
 
     echo " ok.\n";
 
     echo '[6/6] genrb...';
 
-    cd($sourceDir . '/tools/genrb');
+    cd($sourceDir.'/tools/genrb');
     run('make 2>&1 && make install 2>&1');
 
     echo " ok.\n";
 }
 
-$genrb = $buildDir . '/bin/genrb';
-$genrbEnv = 'LD_LIBRARY_PATH=' . $buildDir . '/lib ';
+$genrb = $buildDir.'/bin/genrb';
+$genrbEnv = 'LD_LIBRARY_PATH='.$buildDir.'/lib ';
 
 echo "Using $genrb.\n";
 
-$icuVersionInDownload = get_icu_version_from_genrb($genrbEnv . ' ' . $genrb);
+$icuVersionInDownload = get_icu_version_from_genrb($genrbEnv.' '.$genrb);
 
 echo "Preparing resource bundle compilation (version $icuVersionInDownload)...\n";
 
 $compiler = new GenrbCompiler($genrb, $genrbEnv);
-$config = new GeneratorConfig($sourceDir . '/data', $icuVersionInDownload);
+$config = new GeneratorConfig($sourceDir.'/data', $icuVersionInDownload);
 
-$baseDir = dirname(__DIR__) . '/data';
+$baseDir = dirname(__DIR__).'/data';
 
 //$txtDir = $baseDir.'/txt';
 $jsonDir = $baseDir;
@@ -197,11 +197,11 @@ $filesystem->remove($workingDirs);
 
 foreach ($workingDirs as $targetDir) {
     $filesystem->mkdir(array(
-        $targetDir . '/' . Intl::CURRENCY_DIR,
-        $targetDir . '/' . Intl::LANGUAGE_DIR,
-        $targetDir . '/' . Intl::LOCALE_DIR,
-        $targetDir . '/' . Intl::REGION_DIR,
-        $targetDir . '/' . Intl::SCRIPT_DIR,
+        $targetDir.'/'.Intl::CURRENCY_DIR,
+        $targetDir.'/'.Intl::LANGUAGE_DIR,
+        $targetDir.'/'.Intl::LOCALE_DIR,
+        $targetDir.'/'.Intl::REGION_DIR,
+        $targetDir.'/'.Intl::SCRIPT_DIR,
     ));
 }
 
@@ -250,9 +250,9 @@ $reader = new BundleEntryReader(new JsonBundleReader());
 
 $generator = new LocaleDataGenerator(
     Intl::LOCALE_DIR,
-    new LanguageDataProvider($jsonDir . '/' . Intl::LANGUAGE_DIR, $reader),
-    new ScriptDataProvider($jsonDir . '/' . Intl::SCRIPT_DIR, $reader),
-    new RegionDataProvider($jsonDir . '/' . Intl::REGION_DIR, $reader)
+    new LanguageDataProvider($jsonDir.'/'.Intl::LANGUAGE_DIR, $reader),
+    new ScriptDataProvider($jsonDir.'/'.Intl::SCRIPT_DIR, $reader),
+    new RegionDataProvider($jsonDir.'/'.Intl::REGION_DIR, $reader)
 );
 
 $generator->generateData($config);
@@ -277,13 +277,13 @@ Date: {$svn->getLastCommit()->getDate()}
 SVN_INFO;
 
 foreach ($targetDirs as $targetDir) {
-    $svnInfoFile = $targetDir . '/svn-info.txt';
+    $svnInfoFile = $targetDir.'/svn-info.txt';
 
     file_put_contents($svnInfoFile, $svnInfo);
 
     echo "Wrote $svnInfoFile.\n";
 
-    $versionFile = $targetDir . '/version.txt';
+    $versionFile = $targetDir.'/version.txt';
 
     file_put_contents($versionFile, "$icuVersionInDownload\n");
 

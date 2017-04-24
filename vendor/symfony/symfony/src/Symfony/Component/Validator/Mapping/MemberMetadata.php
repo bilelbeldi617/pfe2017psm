@@ -64,8 +64,8 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
     /**
      * Constructor.
      *
-     * @param string $class The name of the class this member is defined on
-     * @param string $name The name of the member
+     * @param string $class    The name of the class this member is defined on
+     * @param string $name     The name of the member
      * @param string $property The property the member belongs to
      */
     public function __construct($class, $name, $property)
@@ -82,7 +82,7 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
      */
     public function accept(ValidationVisitorInterface $visitor, $value, $group, $propertyPath, $propagatedGroup = null)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         $visitor->visit($this, $value, $group, $propertyPath);
 
@@ -92,58 +92,11 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
     }
 
     /**
-     * Returns whether objects stored in this member should be validated.
-     *
-     * @return bool
-     *
-     * @deprecated since version 2.5, to be removed in 3.0.
-     *             Use {@link getCascadingStrategy()} instead.
-     */
-    public function isCascaded()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use the getCascadingStrategy() method instead.', E_USER_DEPRECATED);
-
-        return (bool)($this->cascadingStrategy & CascadingStrategy::CASCADE);
-    }
-
-    /**
-     * Returns whether arrays or traversable objects stored in this member
-     * should be traversed and validated in each entry.
-     *
-     * @return bool
-     *
-     * @deprecated since version 2.5, to be removed in 3.0.
-     *             Use {@link getTraversalStrategy()} instead.
-     */
-    public function isCollectionCascaded()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use the getTraversalStrategy() method instead.', E_USER_DEPRECATED);
-
-        return (bool)($this->traversalStrategy & (TraversalStrategy::IMPLICIT | TraversalStrategy::TRAVERSE));
-    }
-
-    /**
-     * Returns whether arrays or traversable objects stored in this member
-     * should be traversed recursively for inner arrays/traversable objects.
-     *
-     * @return bool
-     *
-     * @deprecated since version 2.5, to be removed in 3.0.
-     *             Use {@link getTraversalStrategy()} instead.
-     */
-    public function isCollectionCascadedDeeply()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use the getTraversalStrategy() method instead.', E_USER_DEPRECATED);
-
-        return !($this->traversalStrategy & TraversalStrategy::STOP_RECURSION);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function addConstraint(Constraint $constraint)
     {
-        if (!in_array(Constraint::PROPERTY_CONSTRAINT, (array)$constraint->getTargets())) {
+        if (!in_array(Constraint::PROPERTY_CONSTRAINT, (array) $constraint->getTargets())) {
             throw new ConstraintDefinitionException(sprintf(
                 'The constraint %s cannot be put on properties or getters',
                 get_class($constraint)
@@ -206,6 +159,77 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
     }
 
     /**
+     * Returns whether this member is protected.
+     *
+     * @param object|string $objectOrClassName The object or the class name
+     *
+     * @return bool
+     */
+    public function isProtected($objectOrClassName)
+    {
+        return $this->getReflectionMember($objectOrClassName)->isProtected();
+    }
+
+    /**
+     * Returns whether this member is private.
+     *
+     * @param object|string $objectOrClassName The object or the class name
+     *
+     * @return bool
+     */
+    public function isPrivate($objectOrClassName)
+    {
+        return $this->getReflectionMember($objectOrClassName)->isPrivate();
+    }
+
+    /**
+     * Returns whether objects stored in this member should be validated.
+     *
+     * @return bool
+     *
+     * @deprecated since version 2.5, to be removed in 3.0.
+     *             Use {@link getCascadingStrategy()} instead.
+     */
+    public function isCascaded()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the getCascadingStrategy() method instead.', E_USER_DEPRECATED);
+
+        return (bool) ($this->cascadingStrategy & CascadingStrategy::CASCADE);
+    }
+
+    /**
+     * Returns whether arrays or traversable objects stored in this member
+     * should be traversed and validated in each entry.
+     *
+     * @return bool
+     *
+     * @deprecated since version 2.5, to be removed in 3.0.
+     *             Use {@link getTraversalStrategy()} instead.
+     */
+    public function isCollectionCascaded()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the getTraversalStrategy() method instead.', E_USER_DEPRECATED);
+
+        return (bool) ($this->traversalStrategy & (TraversalStrategy::IMPLICIT | TraversalStrategy::TRAVERSE));
+    }
+
+    /**
+     * Returns whether arrays or traversable objects stored in this member
+     * should be traversed recursively for inner arrays/traversable objects.
+     *
+     * @return bool
+     *
+     * @deprecated since version 2.5, to be removed in 3.0.
+     *             Use {@link getTraversalStrategy()} instead.
+     */
+    public function isCollectionCascadedDeeply()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the getTraversalStrategy() method instead.', E_USER_DEPRECATED);
+
+        return !($this->traversalStrategy & TraversalStrategy::STOP_RECURSION);
+    }
+
+    /**
      * Returns the reflection instance for accessing the member's value.
      *
      * @param object|string $objectOrClassName The object or the class name
@@ -232,28 +256,4 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
      * @return \ReflectionMethod|\ReflectionProperty The reflection instance
      */
     abstract protected function newReflectionMember($objectOrClassName);
-
-    /**
-     * Returns whether this member is protected.
-     *
-     * @param object|string $objectOrClassName The object or the class name
-     *
-     * @return bool
-     */
-    public function isProtected($objectOrClassName)
-    {
-        return $this->getReflectionMember($objectOrClassName)->isProtected();
-    }
-
-    /**
-     * Returns whether this member is private.
-     *
-     * @param object|string $objectOrClassName The object or the class name
-     *
-     * @return bool
-     */
-    public function isPrivate($objectOrClassName)
-    {
-        return $this->getReflectionMember($objectOrClassName)->isPrivate();
-    }
 }

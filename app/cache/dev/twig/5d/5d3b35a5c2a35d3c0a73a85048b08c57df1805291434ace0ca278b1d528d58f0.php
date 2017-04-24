@@ -15,21 +15,39 @@ class __TwigTemplate_ecfec0aabb3b145777c5263ec6c61d6330b4771567dbf9231ede23842a6
         );
     }
 
-    public function block_title($context, array $blocks = array())
+    protected function doGetParent(array $context)
     {
-        $__internal_bcac5fda89f1a9049179a7d1e698bae6b15e06556efcf17260d2153e87753240 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_bcac5fda89f1a9049179a7d1e698bae6b15e06556efcf17260d2153e87753240->enter($__internal_bcac5fda89f1a9049179a7d1e698bae6b15e06556efcf17260d2153e87753240_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        return "SensioDistributionBundle::Configurator/layout.html.twig";
+    }
 
-        echo "Symfony - Configure database";
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_15e9c27126f6075f4a34cdc9892f38ad624dbc54355a8d720ba6ae785389e938 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_15e9c27126f6075f4a34cdc9892f38ad624dbc54355a8d720ba6ae785389e938->enter($__internal_15e9c27126f6075f4a34cdc9892f38ad624dbc54355a8d720ba6ae785389e938_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@SensioDistribution/Configurator/Step/doctrine.html.twig"));
 
-        $__internal_bcac5fda89f1a9049179a7d1e698bae6b15e06556efcf17260d2153e87753240->leave($__internal_bcac5fda89f1a9049179a7d1e698bae6b15e06556efcf17260d2153e87753240_prof);
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_15e9c27126f6075f4a34cdc9892f38ad624dbc54355a8d720ba6ae785389e938->leave($__internal_15e9c27126f6075f4a34cdc9892f38ad624dbc54355a8d720ba6ae785389e938_prof);
 
     }
 
+    // line 3
+    public function block_title($context, array $blocks = array())
+    {
+        $__internal_22f290be1d38ca967143821563ad4aa6dee476a1bfc616b9116b1edbf9f1da16 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_22f290be1d38ca967143821563ad4aa6dee476a1bfc616b9116b1edbf9f1da16->enter($__internal_22f290be1d38ca967143821563ad4aa6dee476a1bfc616b9116b1edbf9f1da16_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+
+        echo "Symfony - Configure database";
+        
+        $__internal_22f290be1d38ca967143821563ad4aa6dee476a1bfc616b9116b1edbf9f1da16->leave($__internal_22f290be1d38ca967143821563ad4aa6dee476a1bfc616b9116b1edbf9f1da16_prof);
+
+    }
+
+    // line 5
     public function block_content($context, array $blocks = array())
     {
-        $__internal_f61cbf95e5a45c4bfbed348c1f87c6fcd5bf90763a6f5df0aa46488637aac235 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_f61cbf95e5a45c4bfbed348c1f87c6fcd5bf90763a6f5df0aa46488637aac235->enter($__internal_f61cbf95e5a45c4bfbed348c1f87c6fcd5bf90763a6f5df0aa46488637aac235_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "content"));
+        $__internal_73a8eed5a2649ce0f82862b6bdf94e93f5dc0285fdceaaa253c591e6ab8f7c5d = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_73a8eed5a2649ce0f82862b6bdf94e93f5dc0285fdceaaa253c591e6ab8f7c5d->enter($__internal_73a8eed5a2649ce0f82862b6bdf94e93f5dc0285fdceaaa253c591e6ab8f7c5d_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "content"));
 
         // line 6
         echo "    ";
@@ -100,29 +118,30 @@ class __TwigTemplate_ecfec0aabb3b145777c5263ec6c61d6330b4771567dbf9231ede23842a6
         </form>
     </div>
 ";
-
-        $__internal_f61cbf95e5a45c4bfbed348c1f87c6fcd5bf90763a6f5df0aa46488637aac235->leave($__internal_f61cbf95e5a45c4bfbed348c1f87c6fcd5bf90763a6f5df0aa46488637aac235_prof);
+        
+        $__internal_73a8eed5a2649ce0f82862b6bdf94e93f5dc0285fdceaaa253c591e6ab8f7c5d->leave($__internal_73a8eed5a2649ce0f82862b6bdf94e93f5dc0285fdceaaa253c591e6ab8f7c5d_prof);
 
     }
 
-    // line 3
+    public function getTemplateName()
+    {
+        return "@SensioDistribution/Configurator/Step/doctrine.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 5
-
     public function getDebugInfo()
     {
-        return array(103 => 28, 97 => 25, 93 => 24, 87 => 21, 83 => 20, 79 => 19, 74 => 17, 69 => 15, 62 => 10, 60 => 9, 56 => 7, 53 => 6, 47 => 5, 35 => 3, 11 => 1,);
+        return array (  103 => 28,  97 => 25,  93 => 24,  87 => 21,  83 => 20,  79 => 19,  74 => 17,  69 => 15,  62 => 10,  60 => 9,  56 => 7,  53 => 6,  47 => 5,  35 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -174,26 +193,5 @@ class __TwigTemplate_ecfec0aabb3b145777c5263ec6c61d6330b4771567dbf9231ede23842a6
     </div>
 {% endblock %}
 ", "@SensioDistribution/Configurator/Step/doctrine.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\sensio\\distribution-bundle\\Sensio\\Bundle\\DistributionBundle\\Resources\\views\\Configurator\\Step\\doctrine.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "SensioDistributionBundle::Configurator/layout.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_385641383e0b9a7cb5c5cfadf5fa1df59a19990ef1e678980bf26467e7e5bf26 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_385641383e0b9a7cb5c5cfadf5fa1df59a19990ef1e678980bf26467e7e5bf26->enter($__internal_385641383e0b9a7cb5c5cfadf5fa1df59a19990ef1e678980bf26467e7e5bf26_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@SensioDistribution/Configurator/Step/doctrine.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_385641383e0b9a7cb5c5cfadf5fa1df59a19990ef1e678980bf26467e7e5bf26->leave($__internal_385641383e0b9a7cb5c5cfadf5fa1df59a19990ef1e678980bf26467e7e5bf26_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@SensioDistribution/Configurator/Step/doctrine.html.twig";
     }
 }

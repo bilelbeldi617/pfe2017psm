@@ -88,13 +88,13 @@ class PassConfig
      * Adds a pass.
      *
      * @param CompilerPassInterface $pass A Compiler pass
-     * @param string $type The pass type
+     * @param string                $type The pass type
      *
      * @throws InvalidArgumentException when a pass type doesn't exist
      */
     public function addPass(CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION)
     {
-        $property = $type . 'Passes';
+        $property = $type.'Passes';
         if (!isset($this->$property)) {
             throw new InvalidArgumentException(sprintf('Invalid type "%s".', $type));
         }
@@ -113,16 +113,6 @@ class PassConfig
     }
 
     /**
-     * Sets the AfterRemoving passes.
-     *
-     * @param array $passes An array of passes
-     */
-    public function setAfterRemovingPasses(array $passes)
-    {
-        $this->afterRemovingPasses = $passes;
-    }
-
-    /**
      * Gets all passes for the BeforeOptimization pass.
      *
      * @return array An array of passes
@@ -130,16 +120,6 @@ class PassConfig
     public function getBeforeOptimizationPasses()
     {
         return $this->beforeOptimizationPasses;
-    }
-
-    /**
-     * Sets the BeforeOptimization passes.
-     *
-     * @param array $passes An array of passes
-     */
-    public function setBeforeOptimizationPasses(array $passes)
-    {
-        $this->beforeOptimizationPasses = $passes;
     }
 
     /**
@@ -153,16 +133,6 @@ class PassConfig
     }
 
     /**
-     * Sets the BeforeRemoving passes.
-     *
-     * @param array $passes An array of passes
-     */
-    public function setBeforeRemovingPasses(array $passes)
-    {
-        $this->beforeRemovingPasses = $passes;
-    }
-
-    /**
      * Gets all passes for the Optimization pass.
      *
      * @return array An array of passes
@@ -173,16 +143,6 @@ class PassConfig
     }
 
     /**
-     * Sets the Optimization passes.
-     *
-     * @param array $passes An array of passes
-     */
-    public function setOptimizationPasses(array $passes)
-    {
-        $this->optimizationPasses = $passes;
-    }
-
-    /**
      * Gets all passes for the Removing pass.
      *
      * @return array An array of passes
@@ -190,16 +150,6 @@ class PassConfig
     public function getRemovingPasses()
     {
         return $this->removingPasses;
-    }
-
-    /**
-     * Sets the Removing passes.
-     *
-     * @param array $passes An array of passes
-     */
-    public function setRemovingPasses(array $passes)
-    {
-        $this->removingPasses = $passes;
     }
 
     /**
@@ -220,5 +170,55 @@ class PassConfig
     public function setMergePass(CompilerPassInterface $pass)
     {
         $this->mergePass = $pass;
+    }
+
+    /**
+     * Sets the AfterRemoving passes.
+     *
+     * @param array $passes An array of passes
+     */
+    public function setAfterRemovingPasses(array $passes)
+    {
+        $this->afterRemovingPasses = $passes;
+    }
+
+    /**
+     * Sets the BeforeOptimization passes.
+     *
+     * @param array $passes An array of passes
+     */
+    public function setBeforeOptimizationPasses(array $passes)
+    {
+        $this->beforeOptimizationPasses = $passes;
+    }
+
+    /**
+     * Sets the BeforeRemoving passes.
+     *
+     * @param array $passes An array of passes
+     */
+    public function setBeforeRemovingPasses(array $passes)
+    {
+        $this->beforeRemovingPasses = $passes;
+    }
+
+    /**
+     * Sets the Optimization passes.
+     *
+     * @param array $passes An array of passes
+     */
+    public function setOptimizationPasses(array $passes)
+    {
+        $this->optimizationPasses = $passes;
+    }
+
+    /**
+     * Sets the Removing passes.
+     *
+     * @param array $passes An array of passes
+     */
+    public function setRemovingPasses(array $passes)
+    {
+        $this->removingPasses = $passes;
     }
 }

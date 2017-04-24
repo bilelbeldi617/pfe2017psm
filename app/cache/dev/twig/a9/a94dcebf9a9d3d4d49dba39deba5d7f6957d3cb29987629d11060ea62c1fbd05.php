@@ -1,7 +1,6 @@
 <?php
 
 /* projetBundle:Default/Enseignant:saisirCahierTexte.html.twig */
-
 class __TwigTemplate_d2dd2b02156109f2d863cd40d8b0891e920ac50bd982b1e0161cc03ed9d23ac3 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,23 +16,41 @@ class __TwigTemplate_d2dd2b02156109f2d863cd40d8b0891e920ac50bd982b1e0161cc03ed9d
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "baseForEnseignant.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_5b02a34b883e16558ce517c144725285634ede77daf9971fca4335352753962b = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_5b02a34b883e16558ce517c144725285634ede77daf9971fca4335352753962b->enter($__internal_5b02a34b883e16558ce517c144725285634ede77daf9971fca4335352753962b_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "projetBundle:Default/Enseignant:saisirCahierTexte.html.twig"));
+
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_5b02a34b883e16558ce517c144725285634ede77daf9971fca4335352753962b->leave($__internal_5b02a34b883e16558ce517c144725285634ede77daf9971fca4335352753962b_prof);
+
+    }
+
+    // line 2
     public function block_title($context, array $blocks = array())
     {
-        $__internal_91abbb7b5b613b217f883985d0e70fb3e22b35977450380bdf3eafbe8263c73b = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_91abbb7b5b613b217f883985d0e70fb3e22b35977450380bdf3eafbe8263c73b->enter($__internal_91abbb7b5b613b217f883985d0e70fb3e22b35977450380bdf3eafbe8263c73b_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_eef9db9eb39d879a4dcf6ac180f6b5f2275395f52732d0960fa20532a984a920 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_eef9db9eb39d879a4dcf6ac180f6b5f2275395f52732d0960fa20532a984a920->enter($__internal_eef9db9eb39d879a4dcf6ac180f6b5f2275395f52732d0960fa20532a984a920_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
         // line 3
         echo "    Saisir le cahier de texte
 ";
-
-        $__internal_91abbb7b5b613b217f883985d0e70fb3e22b35977450380bdf3eafbe8263c73b->leave($__internal_91abbb7b5b613b217f883985d0e70fb3e22b35977450380bdf3eafbe8263c73b_prof);
+        
+        $__internal_eef9db9eb39d879a4dcf6ac180f6b5f2275395f52732d0960fa20532a984a920->leave($__internal_eef9db9eb39d879a4dcf6ac180f6b5f2275395f52732d0960fa20532a984a920_prof);
 
     }
 
+    // line 5
     public function block_script($context, array $blocks = array())
     {
-        $__internal_d2011abc2f368a545b6bb1847657932bbfa2978ad599fbf02eb86f25c2472124 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d2011abc2f368a545b6bb1847657932bbfa2978ad599fbf02eb86f25c2472124->enter($__internal_d2011abc2f368a545b6bb1847657932bbfa2978ad599fbf02eb86f25c2472124_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
+        $__internal_f42673922f8d77b95343fcf07363625cd4fed516432be100df6ebbf1a3556368 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_f42673922f8d77b95343fcf07363625cd4fed516432be100df6ebbf1a3556368->enter($__internal_f42673922f8d77b95343fcf07363625cd4fed516432be100df6ebbf1a3556368_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
 
         // line 6
         echo "    <script language=\"JavaScript\">
@@ -58,17 +75,16 @@ class __TwigTemplate_d2dd2b02156109f2d863cd40d8b0891e920ac50bd982b1e0161cc03ed9d
 
     </script>
 ";
-
-        $__internal_d2011abc2f368a545b6bb1847657932bbfa2978ad599fbf02eb86f25c2472124->leave($__internal_d2011abc2f368a545b6bb1847657932bbfa2978ad599fbf02eb86f25c2472124_prof);
+        
+        $__internal_f42673922f8d77b95343fcf07363625cd4fed516432be100df6ebbf1a3556368->leave($__internal_f42673922f8d77b95343fcf07363625cd4fed516432be100df6ebbf1a3556368_prof);
 
     }
 
-    // line 2
-
+    // line 28
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_fe1c4a4bff0a401eebf3de54520cea754860873830375f16fea53e0fad4029f1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_fe1c4a4bff0a401eebf3de54520cea754860873830375f16fea53e0fad4029f1->enter($__internal_fe1c4a4bff0a401eebf3de54520cea754860873830375f16fea53e0fad4029f1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_9355c06739c443e2a907ca43f1f91ebea2166e2a7a20409a0c0329b242db5bc7 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_9355c06739c443e2a907ca43f1f91ebea2166e2a7a20409a0c0329b242db5bc7->enter($__internal_9355c06739c443e2a907ca43f1f91ebea2166e2a7a20409a0c0329b242db5bc7_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 29
         echo "
@@ -150,29 +166,30 @@ class __TwigTemplate_d2dd2b02156109f2d863cd40d8b0891e920ac50bd982b1e0161cc03ed9d
 
 
 ";
-
-        $__internal_fe1c4a4bff0a401eebf3de54520cea754860873830375f16fea53e0fad4029f1->leave($__internal_fe1c4a4bff0a401eebf3de54520cea754860873830375f16fea53e0fad4029f1_prof);
+        
+        $__internal_9355c06739c443e2a907ca43f1f91ebea2166e2a7a20409a0c0329b242db5bc7->leave($__internal_9355c06739c443e2a907ca43f1f91ebea2166e2a7a20409a0c0329b242db5bc7_prof);
 
     }
 
-    // line 5
+    public function getTemplateName()
+    {
+        return "projetBundle:Default/Enseignant:saisirCahierTexte.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 28
-
     public function getDebugInfo()
     {
-        return array(131 => 48, 119 => 44, 111 => 43, 108 => 42, 104 => 41, 90 => 29, 84 => 28, 56 => 6, 50 => 5, 42 => 3, 36 => 2, 11 => 1,);
+        return array (  131 => 48,  119 => 44,  111 => 43,  108 => 42,  104 => 41,  90 => 29,  84 => 28,  56 => 6,  50 => 5,  42 => 3,  36 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -268,26 +285,5 @@ class __TwigTemplate_d2dd2b02156109f2d863cd40d8b0891e920ac50bd982b1e0161cc03ed9d
 
 
 ", "projetBundle:Default/Enseignant:saisirCahierTexte.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle/Resources/views/Default/Enseignant/saisirCahierTexte.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "baseForEnseignant.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_7e23136f5bfa31bef386ef045094bb0687bdc9a7a825739d8ecb8f7572c69316 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_7e23136f5bfa31bef386ef045094bb0687bdc9a7a825739d8ecb8f7572c69316->enter($__internal_7e23136f5bfa31bef386ef045094bb0687bdc9a7a825739d8ecb8f7572c69316_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "projetBundle:Default/Enseignant:saisirCahierTexte.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_7e23136f5bfa31bef386ef045094bb0687bdc9a7a825739d8ecb8f7572c69316->leave($__internal_7e23136f5bfa31bef386ef045094bb0687bdc9a7a825739d8ecb8f7572c69316_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "projetBundle:Default/Enseignant:saisirCahierTexte.html.twig";
     }
 }

@@ -45,21 +45,6 @@ class SecurityExtensionTest extends TestCase
         $container->compile();
     }
 
-    protected function getRawContainer()
-    {
-        $container = new ContainerBuilder();
-        $security = new SecurityExtension();
-        $container->registerExtension($security);
-
-        $bundle = new SecurityBundle();
-        $bundle->build($container);
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-
-        return $container;
-    }
-
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      * @expectedExceptionMessage No authentication listener registered for firewall "some_firewall"
@@ -132,6 +117,21 @@ class SecurityExtensionTest extends TestCase
         $container->compile();
 
         $this->assertFalse($container->hasDefinition('security.access.role_hierarchy_voter'));
+    }
+
+    protected function getRawContainer()
+    {
+        $container = new ContainerBuilder();
+        $security = new SecurityExtension();
+        $container->registerExtension($security);
+
+        $bundle = new SecurityBundle();
+        $bundle->build($container);
+
+        $container->getCompilerPassConfig()->setOptimizationPasses(array());
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+
+        return $container;
     }
 
     protected function getContainer()

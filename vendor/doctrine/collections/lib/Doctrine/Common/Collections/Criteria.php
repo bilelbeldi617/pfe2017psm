@@ -33,7 +33,7 @@ class Criteria
     /**
      * @var string
      */
-    const ASC = 'ASC';
+    const ASC  = 'ASC';
 
     /**
      * @var string
@@ -66,50 +66,6 @@ class Criteria
     private $maxResults;
 
     /**
-     * Construct a new Criteria.
-     *
-     * @param Expression $expression
-     * @param string[]|null $orderings
-     * @param int|null $firstResult
-     * @param int|null $maxResults
-     */
-    public function __construct(Expression $expression = null, array $orderings = null, $firstResult = null, $maxResults = null)
-    {
-        $this->expression = $expression;
-
-        $this->setFirstResult($firstResult);
-        $this->setMaxResults($maxResults);
-
-        if (null !== $orderings) {
-            $this->orderBy($orderings);
-        }
-    }
-
-    /**
-     * Sets the ordering of the result of this Criteria.
-     *
-     * Keys are field and values are the order, being either ASC or DESC.
-     *
-     * @see Criteria::ASC
-     * @see Criteria::DESC
-     *
-     * @param string[] $orderings
-     *
-     * @return Criteria
-     */
-    public function orderBy(array $orderings)
-    {
-        $this->orderings = array_map(
-            function ($ordering) {
-                return strtoupper($ordering) === Criteria::ASC ? Criteria::ASC : Criteria::DESC;
-            },
-            $orderings
-        );
-
-        return $this;
-    }
-
-    /**
      * Creates an instance of the class.
      *
      * @return Criteria
@@ -134,6 +90,40 @@ class Criteria
     }
 
     /**
+     * Construct a new Criteria.
+     *
+     * @param Expression    $expression
+     * @param string[]|null $orderings
+     * @param int|null      $firstResult
+     * @param int|null      $maxResults
+     */
+    public function __construct(Expression $expression = null, array $orderings = null, $firstResult = null, $maxResults = null)
+    {
+        $this->expression = $expression;
+
+        $this->setFirstResult($firstResult);
+        $this->setMaxResults($maxResults);
+
+        if (null !== $orderings) {
+            $this->orderBy($orderings);
+        }
+    }
+
+    /**
+     * Sets the where expression to evaluate when this Criteria is searched for.
+     *
+     * @param Expression $expression
+     *
+     * @return Criteria
+     */
+    public function where(Expression $expression)
+    {
+        $this->expression = $expression;
+
+        return $this;
+    }
+
+    /**
      * Appends the where expression to evaluate when this Criteria is searched for
      * using an AND with previous expression.
      *
@@ -150,20 +140,6 @@ class Criteria
         $this->expression = new CompositeExpression(CompositeExpression::TYPE_AND, array(
             $this->expression, $expression
         ));
-
-        return $this;
-    }
-
-    /**
-     * Sets the where expression to evaluate when this Criteria is searched for.
-     *
-     * @param Expression $expression
-     *
-     * @return Criteria
-     */
-    public function where(Expression $expression)
-    {
-        $this->expression = $expression;
 
         return $this;
     }
@@ -210,6 +186,30 @@ class Criteria
     }
 
     /**
+     * Sets the ordering of the result of this Criteria.
+     *
+     * Keys are field and values are the order, being either ASC or DESC.
+     *
+     * @see Criteria::ASC
+     * @see Criteria::DESC
+     *
+     * @param string[] $orderings
+     *
+     * @return Criteria
+     */
+    public function orderBy(array $orderings)
+    {
+        $this->orderings = array_map(
+            function ($ordering) {
+                return strtoupper($ordering) === Criteria::ASC ? Criteria::ASC : Criteria::DESC;
+            },
+            $orderings
+        );
+
+        return $this;
+    }
+
+    /**
      * Gets the current first result option of this Criteria.
      *
      * @return int|null
@@ -228,7 +228,7 @@ class Criteria
      */
     public function setFirstResult($firstResult)
     {
-        $this->firstResult = null === $firstResult ? null : (int)$firstResult;
+        $this->firstResult = null === $firstResult ? null : (int) $firstResult;
 
         return $this;
     }
@@ -252,7 +252,7 @@ class Criteria
      */
     public function setMaxResults($maxResults)
     {
-        $this->maxResults = null === $maxResults ? null : (int)$maxResults;
+        $this->maxResults = null === $maxResults ? null : (int) $maxResults;
 
         return $this;
     }

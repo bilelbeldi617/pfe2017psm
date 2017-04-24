@@ -9,6 +9,7 @@ $container
     ->register('foo', 'Foo')
     ->setAutowired(true)
     ->addAutowiringType('A')
-    ->addAutowiringType('B');
+    ->addAutowiringType('B')
+;
 
 return $container;

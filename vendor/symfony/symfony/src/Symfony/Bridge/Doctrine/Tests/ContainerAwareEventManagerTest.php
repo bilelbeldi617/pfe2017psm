@@ -20,6 +20,12 @@ class ContainerAwareEventManagerTest extends TestCase
     private $container;
     private $evm;
 
+    protected function setUp()
+    {
+        $this->container = new Container();
+        $this->evm = new ContainerAwareEventManager($this->container);
+    }
+
     public function testDispatchEvent()
     {
         $this->container->set('foobar', $listener1 = new MyListener());
@@ -46,12 +52,6 @@ class ContainerAwareEventManagerTest extends TestCase
 
         $this->evm->removeEventListener('foo', 'bar');
         $this->assertSame(array(), $this->evm->getListeners('foo'));
-    }
-
-    protected function setUp()
-    {
-        $this->container = new Container();
-        $this->evm = new ContainerAwareEventManager($this->container);
     }
 }
 

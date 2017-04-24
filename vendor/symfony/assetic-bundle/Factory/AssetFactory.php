@@ -30,11 +30,11 @@ class AssetFactory extends BaseAssetFactory
     /**
      * Constructor.
      *
-     * @param KernelInterface $kernel The kernel is used to parse bundle notation
-     * @param ContainerInterface $container The container is used to load the managers lazily, thus avoiding a circular dependency
+     * @param KernelInterface       $kernel       The kernel is used to parse bundle notation
+     * @param ContainerInterface    $container    The container is used to load the managers lazily, thus avoiding a circular dependency
      * @param ParameterBagInterface $parameterBag The container parameter bag
-     * @param string $baseDir The base directory for relative inputs
-     * @param Boolean $debug The current debug mode
+     * @param string                $baseDir      The base directory for relative inputs
+     * @param Boolean               $debug        The current debug mode
      */
     public function __construct(KernelInterface $kernel, ContainerInterface $container, ParameterBagInterface $parameterBag, $baseDir, $debug = false)
     {
@@ -68,7 +68,7 @@ class AssetFactory extends BaseAssetFactory
             if (false !== $pos = strpos($input, '*')) {
                 // locateResource() does not support globs so we provide a naive implementation here
                 list($before, $after) = explode('*', $input, 2);
-                $input = $this->kernel->locateResource($before) . '*' . $after;
+                $input = $this->kernel->locateResource($before).'*'.$after;
             } else {
                 $input = $this->kernel->locateResource($input);
             }

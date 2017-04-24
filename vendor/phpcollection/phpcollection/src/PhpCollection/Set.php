@@ -32,11 +32,201 @@ class Set implements SetInterface
         $this->addAll($elements);
     }
 
+    public function first()
+    {
+        if (empty($this->elements)) {
+            return None::create();
+        }
+
+        return new Some(reset($this->elements));
+    }
+
+    public function last()
+    {
+        if (empty($this->elements)) {
+            return None::create();
+        }
+
+        return new Some(end($this->elements));
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator(array_values($this->elements));
+    }
+
+    public function addSet(SetInterface $set)
+    {
+        $this->addAll($set->all());
+    }
+
+    public function take($number)
+    {
+        if ($number <= 0) {
+            throw new \InvalidArgumentException(sprintf('$number must be greater than 0, but got %d.', $number));
+        }
+
+        return $this->createNew(array_slice($this->elements, 0, $number));
+    }
+
+    /**
+     * Extracts element from the head while the passed callable returns true.
+     *
+     * @param callable $callable receives elements of this Set as first argument, and returns true/false.
+     *
+     * @return Set
+     */
+    public function takeWhile($callable)
+    {
+        $newElements = array();
+
+        for ($i=0,$c=count($this->elements); $i<$c; $i++) {
+            if (call_user_func($callable, $this->elements[$i]) !== true) {
+                break;
+            }
+
+            $newElements[] = $this->elements[$i];
+        }
+
+        return $this->createNew($newElements);
+    }
+
+    public function drop($number)
+    {
+        if ($number <= 0) {
+            throw new \InvalidArgumentException(sprintf('The number must be greater than 0, but got %d.', $number));
+        }
+
+        return $this->createNew(array_slice($this->elements, $number));
+    }
+
+    public function dropRight($number)
+    {
+        if ($number <= 0) {
+            throw new \InvalidArgumentException(sprintf('The number must be greater than 0, but got %d.', $number));
+        }
+
+        return $this->createNew(array_slice($this->elements, 0, -1 * $number));
+    }
+
+    public function dropWhile($callable)
+    {
+        for ($i=0,$c=count($this->elements); $i<$c; $i++) {
+            if (true !== call_user_func($callable, $this->elements[$i])) {
+                break;
+            }
+        }
+
+        return $this->createNew(array_slice($this->elements, $i));
+    }
+
+    public function map($callable)
+    {
+        $newElements = array();
+        foreach ($this->elements as $i => $element) {
+            $newElements[$i] = $callable($element);
+        }
+
+        return $this->createNew($newElements);
+    }
+
+    public function reverse()
+    {
+        return $this->createNew(array_reverse($this->elements));
+    }
+
+    public function all()
+    {
+        return array_values($this->elements);
+    }
+
+    public function filterNot($callable)
+    {
+        return $this->filterInternal($callable, false);
+    }
+
+    public function filter($callable)
+    {
+        return $this->filterInternal($callable, true);
+    }
+
+    public function foldLeft($initialValue, $callable)
+    {
+        $value = $initialValue;
+        foreach ($this->elements as $elem) {
+            $value = call_user_func($callable, $value, $elem);
+        }
+
+        return $value;
+    }
+
+    public function foldRight($initialValue, $callable)
+    {
+        $value = $initialValue;
+        foreach (array_reverse($this->elements) as $elem) {
+            $value = call_user_func($callable, $elem, $value);
+        }
+
+        return $value;
+    }
+
     public function addAll(array $elements)
     {
         foreach ($elements as $elem) {
             $this->add($elem);
         }
+    }
+
+    public function count()
+    {
+        return count($this->elements);
+    }
+
+    public function contains($elem)
+    {
+        if ($this->elementType === self::ELEM_TYPE_OBJECT) {
+            if ($elem instanceof ObjectBasics) {
+                return $this->containsObject($elem);
+            }
+
+            return false;
+        } elseif ($this->elementType === self::ELEM_TYPE_OBJECT_WITH_HANDLER) {
+            if (is_object($elem)) {
+                return $this->containsObjectWithHandler($elem, ObjectBasicsHandlerRegistry::getHandler(get_class($elem)));
+            }
+
+            return false;
+        } elseif ($this->elementType === self::ELEM_TYPE_SCALAR) {
+            if (is_scalar($elem)) {
+                return $this->containsScalar($elem);
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    public function remove($elem)
+    {
+        if ($this->elementType === self::ELEM_TYPE_OBJECT) {
+            if ($elem instanceof ObjectBasics) {
+                $this->removeObject($elem);
+            }
+        } elseif ($this->elementType === self::ELEM_TYPE_OBJECT_WITH_HANDLER) {
+            if (is_object($elem)) {
+                $this->removeObjectWithHandler($elem, ObjectBasicsHandlerRegistry::getHandler(get_class($elem)));
+            }
+        } elseif ($this->elementType === self::ELEM_TYPE_SCALAR) {
+            if (is_scalar($elem)) {
+                $this->removeScalar($elem);
+            }
+        }
+    }
+
+    public function isEmpty()
+    {
+        return empty($this->elements);
     }
 
     public function add($elem)
@@ -86,26 +276,124 @@ class Set implements SetInterface
         }
     }
 
-    private function addObject(ObjectBasics $elem)
+    protected function createNew(array $elements)
     {
-        $hash = $elem->hash();
-        if (isset($this->lookup[$hash])) {
-            foreach ($this->lookup[$hash] as $index) {
-                if ($elem->equals($this->elements[$index])) {
-                    return; // Element already exists.
-                }
+        return new static($elements);
+    }
+
+    private function filterInternal($callable, $booleanKeep)
+    {
+        $newElements = array();
+        foreach ($this->elements as $element) {
+            if ($booleanKeep !== call_user_func($callable, $element)) {
+                continue;
+            }
+
+            $newElements[] = $element;
+        }
+
+        return $this->createNew($newElements);
+    }
+
+    private function containsScalar($elem)
+    {
+        if ( ! isset($this->lookup[$elem])) {
+            return false;
+        }
+
+        foreach ($this->lookup[$elem] as $index) {
+            if ($elem === $this->elements[$index]) {
+                return true;
             }
         }
 
-        $this->insertElement($elem, $hash);
-        $this->elementType = self::ELEM_TYPE_OBJECT;
+        return false;
     }
 
-    private function insertElement($elem, $hash)
+    private function containsObjectWithHandler($object, ObjectBasicsHandler $handler)
     {
-        $index = $this->elementCount++;
-        $this->elements[$index] = $elem;
-        $this->lookup[$hash][] = $index;
+        $hash = $handler->hash($object);
+        if ( ! isset($this->lookup[$hash])) {
+            return false;
+        }
+
+        foreach ($this->lookup[$hash] as $index) {
+            if ($handler->equals($object, $this->elements[$index])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function containsObject(ObjectBasics $object)
+    {
+        $hash = $object->hash();
+        if ( ! isset($this->lookup[$hash])) {
+            return false;
+        }
+
+        foreach ($this->lookup[$hash] as $index) {
+            if ($object->equals($this->elements[$index])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function removeScalar($elem)
+    {
+        if ( ! isset($this->lookup[$elem])) {
+            return;
+        }
+
+        foreach ($this->lookup[$elem] as $k => $index) {
+            if ($elem === $this->elements[$index]) {
+                $this->removeElement($elem, $k, $index);
+                break;
+            }
+        }
+    }
+
+    private function removeObjectWithHandler($object, ObjectBasicsHandler $handler)
+    {
+        $hash = $handler->hash($object);
+        if ( ! isset($this->lookup[$hash])) {
+            return;
+        }
+
+        foreach ($this->lookup[$hash] as $k => $index) {
+            if ($handler->equals($object, $this->elements[$index])) {
+                $this->removeElement($hash, $k, $index);
+                break;
+            }
+        }
+    }
+
+    private function removeObject(ObjectBasics $object)
+    {
+        $hash = $object->hash();
+        if ( ! isset($this->lookup[$hash])) {
+            return;
+        }
+
+        foreach ($this->lookup[$hash] as $k => $index) {
+            if ($object->equals($this->elements[$index])) {
+                $this->removeElement($hash, $k, $index);
+                break;
+            }
+        }
+    }
+
+    private function removeElement($hash, $lookupIndex, $storageIndex)
+    {
+        unset($this->lookup[$hash][$lookupIndex]);
+        if (empty($this->lookup[$hash])) {
+            unset($this->lookup[$hash]);
+        }
+
+        unset($this->elements[$storageIndex]);
     }
 
     private function addScalar($elem)
@@ -137,313 +425,25 @@ class Set implements SetInterface
         $this->elementType = self::ELEM_TYPE_OBJECT_WITH_HANDLER;
     }
 
-    public function first()
+    private function addObject(ObjectBasics $elem)
     {
-        if (empty($this->elements)) {
-            return None::create();
-        }
-
-        return new Some(reset($this->elements));
-    }
-
-    public function last()
-    {
-        if (empty($this->elements)) {
-            return None::create();
-        }
-
-        return new Some(end($this->elements));
-    }
-
-    public function getIterator()
-    {
-        return new \ArrayIterator(array_values($this->elements));
-    }
-
-    public function addSet(SetInterface $set)
-    {
-        $this->addAll($set->all());
-    }
-
-    public function take($number)
-    {
-        if ($number <= 0) {
-            throw new \InvalidArgumentException(sprintf('$number must be greater than 0, but got %d.', $number));
-        }
-
-        return $this->createNew(array_slice($this->elements, 0, $number));
-    }
-
-    protected function createNew(array $elements)
-    {
-        return new static($elements);
-    }
-
-    /**
-     * Extracts element from the head while the passed callable returns true.
-     *
-     * @param callable $callable receives elements of this Set as first argument, and returns true/false.
-     *
-     * @return Set
-     */
-    public function takeWhile($callable)
-    {
-        $newElements = array();
-
-        for ($i = 0, $c = count($this->elements); $i < $c; $i++) {
-            if (call_user_func($callable, $this->elements[$i]) !== true) {
-                break;
-            }
-
-            $newElements[] = $this->elements[$i];
-        }
-
-        return $this->createNew($newElements);
-    }
-
-    public function drop($number)
-    {
-        if ($number <= 0) {
-            throw new \InvalidArgumentException(sprintf('The number must be greater than 0, but got %d.', $number));
-        }
-
-        return $this->createNew(array_slice($this->elements, $number));
-    }
-
-    public function dropRight($number)
-    {
-        if ($number <= 0) {
-            throw new \InvalidArgumentException(sprintf('The number must be greater than 0, but got %d.', $number));
-        }
-
-        return $this->createNew(array_slice($this->elements, 0, -1 * $number));
-    }
-
-    public function dropWhile($callable)
-    {
-        for ($i = 0, $c = count($this->elements); $i < $c; $i++) {
-            if (true !== call_user_func($callable, $this->elements[$i])) {
-                break;
+        $hash = $elem->hash();
+        if (isset($this->lookup[$hash])) {
+            foreach ($this->lookup[$hash] as $index) {
+                if ($elem->equals($this->elements[$index])) {
+                    return; // Element already exists.
+                }
             }
         }
 
-        return $this->createNew(array_slice($this->elements, $i));
+        $this->insertElement($elem, $hash);
+        $this->elementType = self::ELEM_TYPE_OBJECT;
     }
 
-    public function map($callable)
+    private function insertElement($elem, $hash)
     {
-        $newElements = array();
-        foreach ($this->elements as $i => $element) {
-            $newElements[$i] = $callable($element);
-        }
-
-        return $this->createNew($newElements);
-    }
-
-    public function reverse()
-    {
-        return $this->createNew(array_reverse($this->elements));
-    }
-
-    public function all()
-    {
-        return array_values($this->elements);
-    }
-
-    public function filterNot($callable)
-    {
-        return $this->filterInternal($callable, false);
-    }
-
-    private function filterInternal($callable, $booleanKeep)
-    {
-        $newElements = array();
-        foreach ($this->elements as $element) {
-            if ($booleanKeep !== call_user_func($callable, $element)) {
-                continue;
-            }
-
-            $newElements[] = $element;
-        }
-
-        return $this->createNew($newElements);
-    }
-
-    public function filter($callable)
-    {
-        return $this->filterInternal($callable, true);
-    }
-
-    public function foldLeft($initialValue, $callable)
-    {
-        $value = $initialValue;
-        foreach ($this->elements as $elem) {
-            $value = call_user_func($callable, $value, $elem);
-        }
-
-        return $value;
-    }
-
-    public function foldRight($initialValue, $callable)
-    {
-        $value = $initialValue;
-        foreach (array_reverse($this->elements) as $elem) {
-            $value = call_user_func($callable, $elem, $value);
-        }
-
-        return $value;
-    }
-
-    public function count()
-    {
-        return count($this->elements);
-    }
-
-    public function contains($elem)
-    {
-        if ($this->elementType === self::ELEM_TYPE_OBJECT) {
-            if ($elem instanceof ObjectBasics) {
-                return $this->containsObject($elem);
-            }
-
-            return false;
-        } elseif ($this->elementType === self::ELEM_TYPE_OBJECT_WITH_HANDLER) {
-            if (is_object($elem)) {
-                return $this->containsObjectWithHandler($elem, ObjectBasicsHandlerRegistry::getHandler(get_class($elem)));
-            }
-
-            return false;
-        } elseif ($this->elementType === self::ELEM_TYPE_SCALAR) {
-            if (is_scalar($elem)) {
-                return $this->containsScalar($elem);
-            }
-
-            return false;
-        }
-
-        return false;
-    }
-
-    private function containsObject(ObjectBasics $object)
-    {
-        $hash = $object->hash();
-        if (!isset($this->lookup[$hash])) {
-            return false;
-        }
-
-        foreach ($this->lookup[$hash] as $index) {
-            if ($object->equals($this->elements[$index])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function containsObjectWithHandler($object, ObjectBasicsHandler $handler)
-    {
-        $hash = $handler->hash($object);
-        if (!isset($this->lookup[$hash])) {
-            return false;
-        }
-
-        foreach ($this->lookup[$hash] as $index) {
-            if ($handler->equals($object, $this->elements[$index])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function containsScalar($elem)
-    {
-        if (!isset($this->lookup[$elem])) {
-            return false;
-        }
-
-        foreach ($this->lookup[$elem] as $index) {
-            if ($elem === $this->elements[$index]) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function remove($elem)
-    {
-        if ($this->elementType === self::ELEM_TYPE_OBJECT) {
-            if ($elem instanceof ObjectBasics) {
-                $this->removeObject($elem);
-            }
-        } elseif ($this->elementType === self::ELEM_TYPE_OBJECT_WITH_HANDLER) {
-            if (is_object($elem)) {
-                $this->removeObjectWithHandler($elem, ObjectBasicsHandlerRegistry::getHandler(get_class($elem)));
-            }
-        } elseif ($this->elementType === self::ELEM_TYPE_SCALAR) {
-            if (is_scalar($elem)) {
-                $this->removeScalar($elem);
-            }
-        }
-    }
-
-    private function removeObject(ObjectBasics $object)
-    {
-        $hash = $object->hash();
-        if (!isset($this->lookup[$hash])) {
-            return;
-        }
-
-        foreach ($this->lookup[$hash] as $k => $index) {
-            if ($object->equals($this->elements[$index])) {
-                $this->removeElement($hash, $k, $index);
-                break;
-            }
-        }
-    }
-
-    private function removeElement($hash, $lookupIndex, $storageIndex)
-    {
-        unset($this->lookup[$hash][$lookupIndex]);
-        if (empty($this->lookup[$hash])) {
-            unset($this->lookup[$hash]);
-        }
-
-        unset($this->elements[$storageIndex]);
-    }
-
-    private function removeObjectWithHandler($object, ObjectBasicsHandler $handler)
-    {
-        $hash = $handler->hash($object);
-        if (!isset($this->lookup[$hash])) {
-            return;
-        }
-
-        foreach ($this->lookup[$hash] as $k => $index) {
-            if ($handler->equals($object, $this->elements[$index])) {
-                $this->removeElement($hash, $k, $index);
-                break;
-            }
-        }
-    }
-
-    private function removeScalar($elem)
-    {
-        if (!isset($this->lookup[$elem])) {
-            return;
-        }
-
-        foreach ($this->lookup[$elem] as $k => $index) {
-            if ($elem === $this->elements[$index]) {
-                $this->removeElement($elem, $k, $index);
-                break;
-            }
-        }
-    }
-
-    public function isEmpty()
-    {
-        return empty($this->elements);
+        $index = $this->elementCount++;
+        $this->elements[$index] = $elem;
+        $this->lookup[$hash][] = $index;
     }
 }

@@ -43,21 +43,6 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * Gets the default parameters.
-     *
-     * @return array An array of the default parameters
-     */
-    protected function getDefaultParameters()
-    {
-        return array(
-            'foo' => ('wiz' . $this->targetDirs[1]),
-            'bar' => __DIR__,
-            'baz' => (__DIR__ . '/PhpDumperTest.php'),
-            'buz' => $this->targetDirs[2],
-        );
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function compile()
@@ -71,6 +56,19 @@ class ProjectServiceContainer extends Container
     public function isFrozen()
     {
         return true;
+    }
+
+    /**
+     * Gets the 'test' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \stdClass A stdClass instance
+     */
+    protected function getTestService()
+    {
+        return $this->services['test'] = new \stdClass(('wiz'.$this->targetDirs[1]), array(('wiz'.$this->targetDirs[1]) => ($this->targetDirs[2].'/')));
     }
 
     /**
@@ -118,15 +116,17 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * Gets the 'test' service.
+     * Gets the default parameters.
      *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return \stdClass A stdClass instance
+     * @return array An array of the default parameters
      */
-    protected function getTestService()
+    protected function getDefaultParameters()
     {
-        return $this->services['test'] = new \stdClass(('wiz' . $this->targetDirs[1]), array(('wiz' . $this->targetDirs[1]) => ($this->targetDirs[2] . '/')));
+        return array(
+            'foo' => ('wiz'.$this->targetDirs[1]),
+            'bar' => __DIR__,
+            'baz' => (__DIR__.'/PhpDumperTest.php'),
+            'buz' => $this->targetDirs[2],
+        );
     }
 }

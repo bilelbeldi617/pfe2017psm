@@ -11,43 +11,46 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @Route("/Enseignant", name="enseignantController")
  */
+
+
 class forEnseignantController extends Controller
 {
+
+    function SecurityManager(){
+        $user = $this->getRequest()->getSession()->get('user') ;
+        if ($user==null)
+            return false ; else return true ;
+    }
+
 
     /**
      * @Route("/", name="dashEnseignant")
      */
     public function indexAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
 
             return $this->render('projetBundle:Default/Enseignant:index.html.twig');
         }
     }
 
-    function SecurityManager()
-    {
-        $user = $this->getRequest()->getSession()->get('user');
-        if ($user == null)
-            return false; else return true;
-    }
 
     /**
      * @Route("/creerExamen", name="creerExamen")
      */
     public function creerExamenAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
 
-            return $this->render("@projet/Default/Enseignant/creerExamen.html.twig");
+            return $this->render("@projet/Default/Enseignant/creerExamen.html.twig") ;
 
         }
     }
@@ -58,14 +61,14 @@ class forEnseignantController extends Controller
      */
     public function listerExamensAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
 
-            return $this->render("@projet/Default/Enseignant/listerExamens.html.twig");
+            return $this->render("@projet/Default/Enseignant/listerExamens.html.twig") ;
 
         }
     }
@@ -75,14 +78,14 @@ class forEnseignantController extends Controller
      */
     public function contacterParentAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
+        }else{
             //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
             //$groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
 
-            return $this->render("@projet/Default/Enseignant/contacterParent.html.twig");
+            return $this->render("@projet/Default/Enseignant/contacterParent.html.twig") ;
 
         }
     }
@@ -93,17 +96,22 @@ class forEnseignantController extends Controller
      */
     public function insererNotesExamenAction(Request $request)
     {
-        if (!$this->SecurityManager()) {
+        if(!$this->SecurityManager()){
             return $this->redirect($this->generateUrl("login"));
 
-        } else {
-            $enseignantSession = new Enseignant();
-            $enseignantSession = $this->get("session")->get('user');
-            $listAnnee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll();
-            return $this->render("@projet/Default/Enseignant/insererNotesExamen.html.twig", array("listAnnees" => $listAnnee));
+        }else{
+           $enseignantSession = new Enseignant() ;
+           $enseignantSession = $this->get("session")->get('user') ;
+           $listAnnee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll() ;
+           return $this->render("@projet/Default/Enseignant/insererNotesExamen.html.twig", array("listAnnees"=>$listAnnee));
 
         }
     }
+
+
+
+
+
 
 
 }

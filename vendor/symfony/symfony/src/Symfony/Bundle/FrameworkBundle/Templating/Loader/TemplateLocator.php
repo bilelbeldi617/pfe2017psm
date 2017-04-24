@@ -29,12 +29,12 @@ class TemplateLocator implements FileLocatorInterface
     /**
      * Constructor.
      *
-     * @param FileLocatorInterface $locator A FileLocatorInterface instance
-     * @param string $cacheDir The cache path
+     * @param FileLocatorInterface $locator  A FileLocatorInterface instance
+     * @param string               $cacheDir The cache path
      */
     public function __construct(FileLocatorInterface $locator, $cacheDir = null)
     {
-        if (null !== $cacheDir && is_file($cache = $cacheDir . '/templates.php')) {
+        if (null !== $cacheDir && is_file($cache = $cacheDir.'/templates.php')) {
             $this->cache = require $cache;
         }
 
@@ -45,8 +45,20 @@ class TemplateLocator implements FileLocatorInterface
      * Returns a full path for a given file.
      *
      * @param TemplateReferenceInterface $template A template
-     * @param string $currentPath Unused
-     * @param bool $first Unused
+     *
+     * @return string The full path for the file
+     */
+    protected function getCacheKey($template)
+    {
+        return $template->getLogicalName();
+    }
+
+    /**
+     * Returns a full path for a given file.
+     *
+     * @param TemplateReferenceInterface $template    A template
+     * @param string                     $currentPath Unused
+     * @param bool                       $first       Unused
      *
      * @return string The full path for the file
      *
@@ -73,17 +85,5 @@ class TemplateLocator implements FileLocatorInterface
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to find template "%s" : "%s".', $template, $e->getMessage()), 0, $e);
         }
-    }
-
-    /**
-     * Returns a full path for a given file.
-     *
-     * @param TemplateReferenceInterface $template A template
-     *
-     * @return string The full path for the file
-     */
-    protected function getCacheKey($template)
-    {
-        return $template->getLogicalName();
     }
 }

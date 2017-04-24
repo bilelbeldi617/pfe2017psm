@@ -26,21 +26,13 @@ class ArrayNodeDefinitionTest extends TestCase
 
         $parent
             ->children()
-            ->scalarNode('foo')->end()
-            ->scalarNode('bar')->end()
+                ->scalarNode('foo')->end()
+                ->scalarNode('bar')->end()
             ->end()
             ->append($child);
 
         $this->assertCount(3, $this->getField($parent, 'children'));
         $this->assertTrue(in_array($child, $this->getField($parent, 'children')));
-    }
-
-    protected function getField($object, $field)
-    {
-        $reflection = new \ReflectionProperty($object, $field);
-        $reflection->setAccessible(true);
-
-        return $reflection->getValue($object);
     }
 
     /**
@@ -74,7 +66,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node = new ArrayNodeDefinition('root');
         $node
             ->addDefaultsIfNotSet()
-            ->prototype('array');
+            ->prototype('array')
+        ;
         $node->getNode();
     }
 
@@ -87,7 +80,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node
             ->defaultValue(array())
             ->addDefaultChildrenIfNoneSet('foo')
-            ->prototype('array');
+            ->prototype('array')
+        ;
         $node->getNode();
     }
 
@@ -96,7 +90,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node = new ArrayNodeDefinition('root');
         $node
             ->addDefaultChildrenIfNoneSet()
-            ->prototype('array');
+            ->prototype('array')
+        ;
         $tree = $node->getNode();
         $this->assertEquals(array(array()), $tree->getDefaultValue());
     }
@@ -109,7 +104,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node = new ArrayNodeDefinition('root');
         $node
             ->addDefaultChildrenIfNoneSet($args)
-            ->prototype('array');
+            ->prototype('array')
+        ;
 
         try {
             $tree = $node->getNode();
@@ -123,7 +119,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node
             ->useAttributeAsKey('attr')
             ->addDefaultChildrenIfNoneSet($args)
-            ->prototype('array');
+            ->prototype('array')
+        ;
 
         try {
             $tree = $node->getNode();
@@ -152,7 +149,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node
             ->addDefaultChildrenIfNoneSet()
             ->prototype('array')
-            ->prototype('array');
+                  ->prototype('array')
+        ;
         $node->getNode();
     }
 
@@ -162,7 +160,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node
             ->canBeEnabled()
             ->children()
-            ->scalarNode('foo')->defaultValue('bar')->end();
+                ->scalarNode('foo')->defaultValue('bar')->end()
+        ;
 
         $this->assertEquals(array('enabled' => false, 'foo' => 'bar'), $node->getNode()->getDefaultValue());
     }
@@ -177,7 +176,8 @@ class ArrayNodeDefinitionTest extends TestCase
         $node
             ->canBeEnabled()
             ->children()
-            ->scalarNode('foo')->defaultValue('bar')->end();
+                ->scalarNode('foo')->defaultValue('bar')->end()
+        ;
 
         $this->assertEquals(
             $expected,
@@ -238,5 +238,13 @@ class ArrayNodeDefinitionTest extends TestCase
             array(array('enabled' => false, 'foo' => 'baz'), array(array('foo' => 'baz', 'enabled' => false)), 'An enableable node can be disabled'),
             array(array('enabled' => false, 'foo' => 'bar'), array(false), 'false disables an enableable node'),
         );
+    }
+
+    protected function getField($object, $field)
+    {
+        $reflection = new \ReflectionProperty($object, $field);
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($object);
     }
 }

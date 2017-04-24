@@ -22,11 +22,11 @@
                     <td>{{ p.totalePaiement }} DT</td>
                     <td>{{ p.etatPaiement }}</td>
                     <td>
-                        {% if p.etatPaiement != "2 tranches payés" %}
+                        {% if p.etatPaiement != "2 tranches payés"%}
                             <a href="{{ path('payer') }}?idPaiement={{ p.id }}">Payer</a>
-                        {% else %}
-                            <a href="">Plus d'infos</a>
-                        {% endif %}
+                            {% else %}
+                                <a href="">Plus d'infos</a>
+                                {% endif %}
                     </td>
                 </tr>
             {% endfor %}

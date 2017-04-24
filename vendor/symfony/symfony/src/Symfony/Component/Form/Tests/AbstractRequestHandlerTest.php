@@ -36,11 +36,12 @@ abstract class AbstractRequestHandlerTest extends TestCase
 
     protected $serverParams;
 
-    public function methodProvider()
+    protected function setUp()
     {
-        return array_merge(array(
-            array('GET'),
-        ), $this->methodExceptGetProvider());
+        $this->serverParams = $this->getMockBuilder('Symfony\Component\Form\Util\ServerParams')->setMethods(array('getNormalizedIniPostMaxSize', 'getContentLength'))->getMock();
+        $this->requestHandler = $this->getRequestHandler();
+        $this->factory = Forms::createFormFactoryBuilder()->getFormFactory();
+        $this->request = null;
     }
 
     public function methodExceptGetProvider()
@@ -51,6 +52,13 @@ abstract class AbstractRequestHandlerTest extends TestCase
             array('DELETE'),
             array('PATCH'),
         );
+    }
+
+    public function methodProvider()
+    {
+        return array_merge(array(
+            array('GET'),
+        ), $this->methodExceptGetProvider());
     }
 
     /**
@@ -70,29 +78,6 @@ abstract class AbstractRequestHandlerTest extends TestCase
 
         $this->requestHandler->handleRequest($form, $this->request);
     }
-
-    protected function getMockForm($name, $method = null, $compound = true)
-    {
-        $config = $this->getMockBuilder('Symfony\Component\Form\FormConfigInterface')->getMock();
-        $config->expects($this->any())
-            ->method('getMethod')
-            ->will($this->returnValue($method));
-        $config->expects($this->any())
-            ->method('getCompound')
-            ->will($this->returnValue($compound));
-
-        $form = $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
-        $form->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($name));
-        $form->expects($this->any())
-            ->method('getConfig')
-            ->will($this->returnValue($config));
-
-        return $form;
-    }
-
-    abstract protected function setRequestData($method, $data, $files = array());
 
     /**
      * @dataProvider methodProvider
@@ -237,8 +222,6 @@ abstract class AbstractRequestHandlerTest extends TestCase
         $this->requestHandler->handleRequest($form, $this->request);
     }
 
-    abstract protected function getMockFile($suffix = '');
-
     /**
      * @dataProvider methodExceptGetProvider
      */
@@ -298,8 +281,8 @@ abstract class AbstractRequestHandlerTest extends TestCase
         ));
 
         $form->expects($this->once())
-            ->method('submit')
-            ->with($file, 'PATCH' !== $method);
+             ->method('submit')
+             ->with($file, 'PATCH' !== $method);
 
         $this->requestHandler->handleRequest($form, $this->request);
     }
@@ -319,8 +302,8 @@ abstract class AbstractRequestHandlerTest extends TestCase
         ));
 
         $form->expects($this->once())
-            ->method('submit')
-            ->with($file, 'PATCH' !== $method);
+             ->method('submit')
+             ->with($file, 'PATCH' !== $method);
 
         $this->requestHandler->handleRequest($form, $this->request);
     }
@@ -370,13 +353,30 @@ abstract class AbstractRequestHandlerTest extends TestCase
         );
     }
 
-    protected function setUp()
-    {
-        $this->serverParams = $this->getMockBuilder('Symfony\Component\Form\Util\ServerParams')->setMethods(array('getNormalizedIniPostMaxSize', 'getContentLength'))->getMock();
-        $this->requestHandler = $this->getRequestHandler();
-        $this->factory = Forms::createFormFactoryBuilder()->getFormFactory();
-        $this->request = null;
-    }
+    abstract protected function setRequestData($method, $data, $files = array());
 
     abstract protected function getRequestHandler();
+
+    abstract protected function getMockFile($suffix = '');
+
+    protected function getMockForm($name, $method = null, $compound = true)
+    {
+        $config = $this->getMockBuilder('Symfony\Component\Form\FormConfigInterface')->getMock();
+        $config->expects($this->any())
+            ->method('getMethod')
+            ->will($this->returnValue($method));
+        $config->expects($this->any())
+            ->method('getCompound')
+            ->will($this->returnValue($compound));
+
+        $form = $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
+        $form->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($name));
+        $form->expects($this->any())
+            ->method('getConfig')
+            ->will($this->returnValue($config));
+
+        return $form;
+    }
 }

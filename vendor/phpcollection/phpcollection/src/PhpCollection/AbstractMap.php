@@ -78,7 +78,7 @@ class AbstractMap extends AbstractCollection implements \IteratorAggregate, MapI
 
         return None::create();
     }
-
+    
     public function all()
     {
         return $this->elements;
@@ -86,7 +86,7 @@ class AbstractMap extends AbstractCollection implements \IteratorAggregate, MapI
 
     public function remove($key)
     {
-        if (!isset($this->elements[$key])) {
+        if ( ! isset($this->elements[$key])) {
             throw new \InvalidArgumentException(sprintf('The map has no key named "%s".', $key));
         }
 
@@ -157,6 +157,18 @@ class AbstractMap extends AbstractCollection implements \IteratorAggregate, MapI
     }
 
     /**
+     * Returns a new filtered map.
+     *
+     * @param callable $callable receives the element and must return true (= remove), or false (= keep).
+     *
+     * @return AbstractMap
+     */
+    public function filterNot($callable)
+    {
+        return $this->filterInternal($callable, false);
+    }
+
+    /**
      * @param callable $callable
      * @param boolean $booleanKeep
      */
@@ -172,23 +184,6 @@ class AbstractMap extends AbstractCollection implements \IteratorAggregate, MapI
         }
 
         return $this->createNew($newElements);
-    }
-
-    protected function createNew(array $elements)
-    {
-        return new static($elements);
-    }
-
-    /**
-     * Returns a new filtered map.
-     *
-     * @param callable $callable receives the element and must return true (= remove), or false (= keep).
-     *
-     * @return AbstractMap
-     */
-    public function filterNot($callable)
-    {
-        return $this->filterInternal($callable, false);
     }
 
     public function foldLeft($initialValue, $callable)
@@ -216,7 +211,7 @@ class AbstractMap extends AbstractCollection implements \IteratorAggregate, MapI
         $newElements = array();
         $stopped = false;
         foreach ($this->elements as $k => $v) {
-            if (!$stopped) {
+            if ( ! $stopped) {
                 if (call_user_func($callable, $k, $v) === true) {
                     continue;
                 }
@@ -300,5 +295,10 @@ class AbstractMap extends AbstractCollection implements \IteratorAggregate, MapI
     public function getIterator()
     {
         return new \ArrayIterator($this->elements);
+    }
+
+    protected function createNew(array $elements)
+    {
+        return new static($elements);
     }
 }

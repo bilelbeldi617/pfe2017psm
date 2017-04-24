@@ -59,18 +59,6 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('person_location'), $this->serialize($personCollection));
     }
 
-    /**
-     * @param string $key
-     */
-    protected function getContent($key)
-    {
-        if (!file_exists($file = __DIR__ . '/xml/' . $key . '.xml')) {
-            throw new InvalidArgumentException(sprintf('The key "%s" is not supported.', $key));
-        }
-
-        return file_get_contents($file);
-    }
-
     public function testPropertyIsCollectionOfObjectsWithAttributeAndValue()
     {
         $personCollection = new PersonCollection;
@@ -91,7 +79,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
             ]>
             <result>
                 &foo;
@@ -111,7 +99,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>'));
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
@@ -119,7 +107,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
             ]>
             <foo></foo>', 'stdClass', 'xml');
     }
@@ -176,11 +164,6 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
 
-    protected function getFormat()
-    {
-        return 'xml';
-    }
-
     /**
      * @expectedException JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage Unsupported value type for XML attribute map. Expected array but got object
@@ -226,12 +209,6 @@ class XmlSerializationTest extends BaseSerializationTest
 
     }
 
-    private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
-    {
-        $nodes = $xml->xpath($xpath);
-        return (string)reset($nodes);
-    }
-
     public function testObjectWithXmlRootNamespace()
     {
         $object = new ObjectWithXmlRootNamespace('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
@@ -256,5 +233,28 @@ class XmlSerializationTest extends BaseSerializationTest
 
 
         $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
+    }
+
+    private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
+    {
+        $nodes = $xml->xpath($xpath);
+        return (string) reset($nodes);
+    }
+
+    /**
+     * @param string $key
+     */
+    protected function getContent($key)
+    {
+        if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {
+            throw new InvalidArgumentException(sprintf('The key "%s" is not supported.', $key));
+        }
+
+        return file_get_contents($file);
+    }
+
+    protected function getFormat()
+    {
+        return 'xml';
     }
 }

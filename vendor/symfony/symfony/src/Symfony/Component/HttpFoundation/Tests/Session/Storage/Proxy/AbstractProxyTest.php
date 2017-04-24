@@ -59,6 +59,16 @@ class AbstractProxyTest extends TestCase
      */
     protected $proxy;
 
+    protected function setUp()
+    {
+        $this->proxy = new ConcreteProxy();
+    }
+
+    protected function tearDown()
+    {
+        $this->proxy = null;
+    }
+
     public function testGetSaveHandlerName()
     {
         $this->assertNull($this->proxy->getSaveHandlerName());
@@ -192,15 +202,5 @@ class AbstractProxyTest extends TestCase
     {
         session_start();
         $this->proxy->setId('foo');
-    }
-
-    protected function setUp()
-    {
-        $this->proxy = new ConcreteProxy();
-    }
-
-    protected function tearDown()
-    {
-        $this->proxy = null;
     }
 }

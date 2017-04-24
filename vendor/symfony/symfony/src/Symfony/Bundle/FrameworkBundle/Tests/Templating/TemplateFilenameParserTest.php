@@ -19,6 +19,16 @@ class TemplateFilenameParserTest extends TestCase
 {
     protected $parser;
 
+    protected function setUp()
+    {
+        $this->parser = new TemplateFilenameParser();
+    }
+
+    protected function tearDown()
+    {
+        $this->parser = null;
+    }
+
     /**
      * @dataProvider getFilenameToTemplateProvider
      */
@@ -42,15 +52,5 @@ class TemplateFilenameParserTest extends TestCase
             array('name.format', false),
             array('name', false),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->parser = new TemplateFilenameParser();
-    }
-
-    protected function tearDown()
-    {
-        $this->parser = null;
     }
 }

@@ -40,7 +40,7 @@ class ConcreteMicroKernel extends Kernel
 
     public function getCacheDir()
     {
-        return $this->cacheDir = sys_get_temp_dir() . '/sf_micro_kernel';
+        return $this->cacheDir = sys_get_temp_dir().'/sf_micro_kernel';
     }
 
     public function getLogDir()

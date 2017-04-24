@@ -35,7 +35,7 @@ class ServiceNotFoundException extends InvalidArgumentException
             } else {
                 $msg .= ' Did you mean one of these: "';
             }
-            $msg .= implode('", "', $alternatives) . '"?';
+            $msg .= implode('", "', $alternatives).'"?';
         }
 
         parent::__construct($msg, 0, $previous);

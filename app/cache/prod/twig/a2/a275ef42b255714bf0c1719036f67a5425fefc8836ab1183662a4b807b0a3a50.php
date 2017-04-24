@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:trace.html.twig */
-
 class __TwigTemplate_a6f03b9b9c1e3b146ea9a691cade4e253d7616c5815c5cccdbf764fd53415fbe extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,35 +9,8 @@ class __TwigTemplate_a6f03b9b9c1e3b146ea9a691cade4e253d7616c5815c5cccdbf764fd534
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "TwigBundle:Exception:trace.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(87 => 20, 80 => 19, 72 => 16, 66 => 15, 57 => 14, 55 => 13, 51 => 12, 46 => 11, 44 => 10, 41 => 9, 36 => 7, 31 => 5, 25 => 4, 21 => 2, 19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "TwigBundle:Exception:trace.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/trace.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -72,7 +44,7 @@ class __TwigTemplate_a6f03b9b9c1e3b146ea9a691cade4e253d7616c5815c5cccdbf764fd534
         if (((($this->getAttribute((isset($context["trace"]) ? $context["trace"] : null), "file", array(), "any", true, true) && $this->getAttribute((isset($context["trace"]) ? $context["trace"] : null), "file", array())) && $this->getAttribute((isset($context["trace"]) ? $context["trace"] : null), "line", array(), "any", true, true)) && $this->getAttribute((isset($context["trace"]) ? $context["trace"] : null), "line", array()))) {
             // line 11
             echo "    ";
-            echo(($this->getAttribute((isset($context["trace"]) ? $context["trace"] : null), "function", array())) ? ("<br />") : (""));
+            echo (($this->getAttribute((isset($context["trace"]) ? $context["trace"] : null), "function", array())) ? ("<br />") : (""));
             echo "
     in ";
             // line 12
@@ -93,13 +65,13 @@ class __TwigTemplate_a6f03b9b9c1e3b146ea9a691cade4e253d7616c5815c5cccdbf764fd534
             // line 15
             echo twig_escape_filter($this->env, (((isset($context["prefix"]) ? $context["prefix"] : null) . "-") . (isset($context["i"]) ? $context["i"] : null)), "html", null, true);
             echo "-close\" alt=\"-\" src=\"data:image/gif;base64,R0lGODlhEgASAMQSANft94TG57Hb8GS44ez1+mC24IvK6ePx+Wa44dXs92+942e54o3L6W2844/M6dnu+P/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAASABIAQAVCoCQBTBOd6Kk4gJhGBCTPxysJb44K0qD/ER/wlxjmisZkMqBEBW5NHrMZmVKvv9hMVsO+hE0EoNAstEYGxG9heIhCADs=\" style=\"display: ";
-            echo(((0 == (isset($context["i"]) ? $context["i"] : null))) ? ("inline") : ("none"));
+            echo (((0 == (isset($context["i"]) ? $context["i"] : null))) ? ("inline") : ("none"));
             echo "\" />
         <img class=\"toggle\" id=\"icon-";
             // line 16
             echo twig_escape_filter($this->env, (((isset($context["prefix"]) ? $context["prefix"] : null) . "-") . (isset($context["i"]) ? $context["i"] : null)), "html", null, true);
             echo "-open\" alt=\"+\" src=\"data:image/gif;base64,R0lGODlhEgASAMQTANft99/v+Ga44bHb8ITG52S44dXs9+z1+uPx+YvK6WC24G+944/M6W28443L6dnu+Ge54v/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABMALAAAAAASABIAQAVS4DQBTiOd6LkwgJgeUSzHSDoNaZ4PU6FLgYBA5/vFID/DbylRGiNIZu74I0h1hNsVxbNuUV4d9SsZM2EzWe1qThVzwWFOAFCQFa1RQq6DJB4iIQA7\" style=\"display: ";
-            echo(((0 == (isset($context["i"]) ? $context["i"] : null))) ? ("none") : ("inline"));
+            echo (((0 == (isset($context["i"]) ? $context["i"] : null))) ? ("none") : ("inline"));
             echo "\" />
     </a>
     ";
@@ -108,7 +80,7 @@ class __TwigTemplate_a6f03b9b9c1e3b146ea9a691cade4e253d7616c5815c5cccdbf764fd534
             echo "    <div id=\"trace-";
             echo twig_escape_filter($this->env, (((isset($context["prefix"]) ? $context["prefix"] : null) . "-") . (isset($context["i"]) ? $context["i"] : null)), "html", null, true);
             echo "\" style=\"display: ";
-            echo(((0 == (isset($context["i"]) ? $context["i"] : null))) ? ("block") : ("none"));
+            echo (((0 == (isset($context["i"]) ? $context["i"] : null))) ? ("block") : ("none"));
             echo "\" class=\"trace\">
         ";
             // line 20
@@ -117,5 +89,33 @@ class __TwigTemplate_a6f03b9b9c1e3b146ea9a691cade4e253d7616c5815c5cccdbf764fd534
     </div>
 ";
         }
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle:Exception:trace.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  87 => 20,  80 => 19,  72 => 16,  66 => 15,  57 => 14,  55 => 13,  51 => 12,  46 => 11,  44 => 10,  41 => 9,  36 => 7,  31 => 5,  25 => 4,  21 => 2,  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "TwigBundle:Exception:trace.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/trace.html.twig");
     }
 }

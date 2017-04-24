@@ -19,7 +19,7 @@ class PhpCompleteConfigurationTest extends CompleteConfigurationTest
 {
     protected function getLoader(ContainerBuilder $container)
     {
-        return new PhpFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/php'));
+        return new PhpFileLoader($container, new FileLocator(__DIR__.'/Fixtures/php'));
     }
 
     protected function getFileExtension()

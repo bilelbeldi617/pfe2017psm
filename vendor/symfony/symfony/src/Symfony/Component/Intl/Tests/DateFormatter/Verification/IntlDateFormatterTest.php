@@ -23,6 +23,13 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 class IntlDateFormatterTest extends AbstractIntlDateFormatterTest
 {
+    protected function setUp()
+    {
+        IntlTestHelper::requireFullIntl($this, false);
+
+        parent::setUp();
+    }
+
     /**
      * It seems IntlDateFormatter caches the timezone id when not explicitly set via constructor or by the
      * setTimeZoneId() method. Since testFormatWithDefaultTimezoneIntl() runs using the default environment
@@ -34,13 +41,6 @@ class IntlDateFormatterTest extends AbstractIntlDateFormatterTest
     public function testFormatWithTimezoneFromEnvironmentVariable()
     {
         parent::testFormatWithTimezoneFromEnvironmentVariable();
-    }
-
-    protected function setUp()
-    {
-        IntlTestHelper::requireFullIntl($this, false);
-
-        parent::setUp();
     }
 
     protected function getDateFormatter($locale, $datetype, $timetype, $timezone = null, $calendar = IntlDateFormatter::GREGORIAN, $pattern = null)

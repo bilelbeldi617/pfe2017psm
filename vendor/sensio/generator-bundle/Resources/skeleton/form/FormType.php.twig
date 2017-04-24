@@ -24,36 +24,36 @@ class {{ form_class }} extends AbstractType
 
                 ->add('{{ field }}')
 
-{%- endfor %};
-}
-{% endif %}
+            {%- endfor %};
+    }
+    {% endif %}
 
-/**
-* {@inheritdoc}
-*/
-public function configureOptions(OptionsResolver $resolver)
-{
-$resolver->setDefaults(array(
-'data_class' => '{{ namespace }}\Entity{{ entity_namespace ? '\\' ~ entity_namespace : '' }}\{{ entity_class }}'
-));
-}
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => '{{ namespace }}\Entity{{ entity_namespace ? '\\' ~ entity_namespace : '' }}\{{ entity_class }}'
+        ));
+    }
 
-/**
-* {@inheritdoc}
-*/
-public function getBlockPrefix()
-{
-return '{{ form_type_name }}';
-}
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return '{{ form_type_name }}';
+    }
 
 {# BC with Symfony 2.7 #}
 {%- if get_name_required %}
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getName()
     {
-    return $this->getBlockPrefix();
+        return $this->getBlockPrefix();
     }
 {% endif %}
 

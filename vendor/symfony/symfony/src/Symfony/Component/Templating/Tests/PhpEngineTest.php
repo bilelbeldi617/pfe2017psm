@@ -24,6 +24,16 @@ class PhpEngineTest extends TestCase
 {
     protected $loader;
 
+    protected function setUp()
+    {
+        $this->loader = new ProjectTemplateLoader();
+    }
+
+    protected function tearDown()
+    {
+        $this->loader = null;
+    }
+
     public function testConstructor()
     {
         $engine = new ProjectTemplateEngine(new TemplateNameParser(), $this->loader);
@@ -179,16 +189,6 @@ class PhpEngineTest extends TestCase
         $engine = new ProjectTemplateEngine(new TemplateNameParser(), $this->loader);
 
         $this->assertSame($this->loader, $engine->getLoader());
-    }
-
-    protected function setUp()
-    {
-        $this->loader = new ProjectTemplateLoader();
-    }
-
-    protected function tearDown()
-    {
-        $this->loader = null;
     }
 }
 

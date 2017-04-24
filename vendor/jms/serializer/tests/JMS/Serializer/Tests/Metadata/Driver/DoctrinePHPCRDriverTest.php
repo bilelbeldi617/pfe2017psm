@@ -27,15 +27,6 @@ use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
 
 class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
 {
-    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
-    {
-        $metadata = $this->getMetadata();
-        $this->assertEquals(
-            array('name' => 'DateTime', 'params' => array()),
-            $metadata->propertyMetadata['createdAt']->type
-        );
-    }
-
     public function getMetadata()
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\BlogPost');
@@ -44,43 +35,20 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
         return $metadata;
     }
 
-    protected function getDoctrinePHPCRDriver()
+    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
     {
-        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
-        $registry->expects($this->atLeastOnce())
-            ->method('getManagerForClass')
-            ->will($this->returnValue($this->getDocumentManager()));
-
-        return new DoctrinePHPCRTypeDriver(
-            $this->getAnnotationDriver(),
-            $registry
+        $metadata = $this->getMetadata();
+        $this->assertEquals(
+            array('name'=> 'DateTime', 'params' => array()),
+            $metadata->propertyMetadata['createdAt']->type
         );
-    }
-
-    protected function getDocumentManager()
-    {
-        $config = new Configuration();
-        $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
-        $config->setProxyNamespace('JMS\Tests\Proxies');
-        $config->setMetadataDriverImpl(
-            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR')
-        );
-
-        $session = $this->getMock('PHPCR\SessionInterface');
-
-        return DocumentManager::create($session, $config);
-    }
-
-    public function getAnnotationDriver()
-    {
-        return new AnnotationDriver(new AnnotationReader());
     }
 
     public function testSingleValuedAssociationIsProperlyHinted()
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => array()),
+            array('name'=> 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => array()),
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -90,7 +58,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name' => 'ArrayCollection', 'params' => array(
+            array('name'=> 'ArrayCollection', 'params' => array(
                 array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => array()))
             ),
             $metadata->propertyMetadata['comments']->type
@@ -103,7 +71,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
 
         // This would be guessed as boolean but we've overridden it to integer
         $this->assertEquals(
-            array('name' => 'integer', 'params' => array()),
+            array('name'=> 'integer', 'params' => array()),
             $metadata->propertyMetadata['published']->type
         );
     }
@@ -123,5 +91,37 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($plainMetadata, $doctrineMetadata);
+    }
+
+    protected function getDocumentManager()
+    {
+        $config = new Configuration();
+        $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
+        $config->setProxyNamespace('JMS\Tests\Proxies');
+        $config->setMetadataDriverImpl(
+            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/DoctrinePHPCR')
+        );
+
+        $session = $this->getMock('PHPCR\SessionInterface');
+
+        return DocumentManager::create($session, $config);
+    }
+
+    public function getAnnotationDriver()
+    {
+        return new AnnotationDriver(new AnnotationReader());
+    }
+
+    protected function getDoctrinePHPCRDriver()
+    {
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $registry->expects($this->atLeastOnce())
+             ->method('getManagerForClass')
+             ->will($this->returnValue($this->getDocumentManager()));
+
+        return new DoctrinePHPCRTypeDriver(
+            $this->getAnnotationDriver(),
+            $registry
+        );
     }
 }

@@ -30,7 +30,7 @@ class RegexValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Regex) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Regex');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Regex');
         }
 
         if (null === $value || '' === $value) {
@@ -41,7 +41,7 @@ class RegexValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if ($constraint->match xor preg_match($constraint->pattern, $value)) {
             if ($this->context instanceof ExecutionContextInterface) {

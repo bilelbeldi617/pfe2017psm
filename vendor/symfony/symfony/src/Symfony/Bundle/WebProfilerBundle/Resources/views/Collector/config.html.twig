@@ -221,23 +221,21 @@
     </p>
 
     {% if collector.bundles %}
-        <h2>Enabled Bundles
-            <small>({{ collector.bundles|length }})</small>
-        </h2>
+        <h2>Enabled Bundles <small>({{ collector.bundles|length }})</small></h2>
         <table>
             <thead>
-            <tr>
-                <th class="key">Name</th>
-                <th>Path</th>
-            </tr>
+                <tr>
+                    <th class="key">Name</th>
+                    <th>Path</th>
+                </tr>
             </thead>
             <tbody>
-            {% for name in collector.bundles|keys|sort %}
+                {% for name in collector.bundles|keys|sort %}
                 <tr>
                     <th scope="row" class="font-normal">{{ name }}</th>
                     <td class="font-normal">{{ collector.bundles[name] }}</td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
     {% endif %}

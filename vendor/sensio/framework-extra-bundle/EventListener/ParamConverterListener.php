@@ -40,26 +40,14 @@ class ParamConverterListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param ParamConverterManager $manager A ParamConverterManager instance
-     * @param bool $autoConvert Auto convert non-configured objects
+     * @param ParamConverterManager $manager     A ParamConverterManager instance
+     * @param bool                  $autoConvert Auto convert non-configured objects
      */
     public function __construct(ParamConverterManager $manager, $autoConvert = true)
     {
         $this->manager = $manager;
         $this->autoConvert = $autoConvert;
         $this->isParameterTypeSupported = method_exists('ReflectionParameter', 'getType');
-    }
-
-    /**
-     * Get subscribed events.
-     *
-     * @return array Subscribed events
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::CONTROLLER => 'onKernelController',
-        );
     }
 
     /**
@@ -125,5 +113,17 @@ class ParamConverterListener implements EventSubscriberInterface
         }
 
         return $configurations;
+    }
+
+    /**
+     * Get subscribed events.
+     *
+     * @return array Subscribed events
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => 'onKernelController',
+        );
     }
 }

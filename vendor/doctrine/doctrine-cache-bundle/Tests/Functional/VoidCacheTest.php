@@ -33,8 +33,8 @@ class VoidCacheTest extends BaseCacheTest
         parent::setUp();
 
         if (!class_exists('Doctrine\Common\Cache\VoidCache')) {
-            $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of VoidCache available in doctrine/cache since 1.5');
-        }
+    	    $this->markTestSkipped('The ' . __CLASS__ .' requires the use of VoidCache available in doctrine/cache since 1.5');
+    	}
     }
 
     public function testCacheDriver()
@@ -54,7 +54,7 @@ class VoidCacheTest extends BaseCacheTest
     protected function createCacheDriver()
     {
         $container = $this->compileContainer('void');
-        $cache = $container->get('doctrine_cache.providers.my_void_cache');
+        $cache     = $container->get('doctrine_cache.providers.my_void_cache');
 
         return $cache;
     }

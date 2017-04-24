@@ -13,16 +13,6 @@ namespace Symfony\Bundle\SecurityBundle\Tests\Functional;
 
 class SwitchUserTest extends WebTestCase
 {
-    public static function setUpBeforeClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
     /**
      * @dataProvider getTestParameters
      */
@@ -30,23 +20,10 @@ class SwitchUserTest extends WebTestCase
     {
         $client = $this->createAuthenticatedClient($originalUser);
 
-        $client->request('GET', '/profile?_switch_user=' . $targetUser);
+        $client->request('GET', '/profile?_switch_user='.$targetUser);
 
         $this->assertEquals($expectedStatus, $client->getResponse()->getStatusCode());
         $this->assertEquals($expectedUser, $client->getProfile()->getCollector('security')->getUser());
-    }
-
-    protected function createAuthenticatedClient($username)
-    {
-        $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => 'switchuser.yml'));
-        $client->followRedirects(true);
-
-        $form = $client->request('GET', '/login')->selectButton('login')->form();
-        $form['_username'] = $username;
-        $form['_password'] = 'test';
-        $client->submit($form);
-
-        return $client;
     }
 
     public function testSwitchedUserCannotSwitchToOther()
@@ -79,5 +56,28 @@ class SwitchUserTest extends WebTestCase
             'authorized_user_cannot_switch_to_non_existent' => array('user_can_switch', 'user_does_not_exist', 'user_can_switch', 500),
             'authorized_user_can_switch_to_himself' => array('user_can_switch', 'user_can_switch', 'user_can_switch', 200),
         );
+    }
+
+    protected function createAuthenticatedClient($username)
+    {
+        $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => 'switchuser.yml'));
+        $client->followRedirects(true);
+
+        $form = $client->request('GET', '/login')->selectButton('login')->form();
+        $form['_username'] = $username;
+        $form['_password'] = 'test';
+        $client->submit($form);
+
+        return $client;
+    }
+
+    public static function setUpBeforeClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
     }
 }

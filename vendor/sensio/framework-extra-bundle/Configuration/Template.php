@@ -67,16 +67,6 @@ class Template extends ConfigurationAnnotation
     }
 
     /**
-     * Sets the template variables.
-     *
-     * @param array $vars The template variables
-     */
-    public function setVars($vars)
-    {
-        $this->vars = $vars;
-    }
-
-    /**
      * @param bool $streamable
      */
     public function setIsStreamable($streamable)
@@ -89,7 +79,17 @@ class Template extends ConfigurationAnnotation
      */
     public function isStreamable()
     {
-        return (bool)$this->streamable;
+        return (bool) $this->streamable;
+    }
+
+    /**
+     * Sets the template variables.
+     *
+     * @param array $vars The template variables
+     */
+    public function setVars($vars)
+    {
+        $this->vars = $vars;
     }
 
     /**
@@ -167,6 +167,14 @@ class Template extends ConfigurationAnnotation
     }
 
     /**
+     * @param array $owner
+     */
+    public function setOwner(array $owner)
+    {
+        $this->owner = $owner;
+    }
+
+    /**
      * The controller (+action) this annotation is attached to.
      *
      * @return array
@@ -174,13 +182,5 @@ class Template extends ConfigurationAnnotation
     public function getOwner()
     {
         return $this->owner;
-    }
-
-    /**
-     * @param array $owner
-     */
-    public function setOwner(array $owner)
-    {
-        $this->owner = $owner;
     }
 }

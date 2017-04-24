@@ -16,6 +16,17 @@ use Symfony\Bridge\Twig\NodeVisitor\TranslationNodeVisitor;
 
 class TranslationNodeVisitorTest extends TestCase
 {
+    /** @dataProvider getMessagesExtractionTestData */
+    public function testMessagesExtraction(\Twig_Node $node, array $expectedMessages)
+    {
+        $env = new \Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('cache' => false, 'autoescape' => false, 'optimizations' => 0));
+        $visitor = new TranslationNodeVisitor();
+        $visitor->enable();
+        $visitor->enterNode($node, $env);
+        $visitor->leaveNode($node, $env);
+        $this->assertEquals($expectedMessages, $visitor->getMessages());
+    }
+
     public function testMessageExtractionWithInvalidDomainNode()
     {
         $message = 'new key';
@@ -31,17 +42,6 @@ class TranslationNodeVisitorTest extends TestCase
         );
 
         $this->testMessagesExtraction($node, array(array($message, TranslationNodeVisitor::UNDEFINED_DOMAIN)));
-    }
-
-    /** @dataProvider getMessagesExtractionTestData */
-    public function testMessagesExtraction(\Twig_Node $node, array $expectedMessages)
-    {
-        $env = new \Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('cache' => false, 'autoescape' => false, 'optimizations' => 0));
-        $visitor = new TranslationNodeVisitor();
-        $visitor->enable();
-        $visitor->enterNode($node, $env);
-        $visitor->leaveNode($node, $env);
-        $this->assertEquals($expectedMessages, $visitor->getMessages());
     }
 
     public function getMessagesExtractionTestData()

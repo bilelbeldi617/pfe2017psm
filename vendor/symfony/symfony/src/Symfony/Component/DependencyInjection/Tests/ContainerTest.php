@@ -181,14 +181,6 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $scoped['foo']['foo'], '->set() sets a scoped service');
     }
 
-    protected function getField($obj, $field)
-    {
-        $reflection = new \ReflectionProperty($obj, $field);
-        $reflection->setAccessible(true);
-
-        return $reflection->getValue($obj);
-    }
-
     /**
      * @group legacy
      */
@@ -282,7 +274,7 @@ class ContainerTest extends TestCase
      */
     public function testGetSyntheticServiceAlwaysThrows()
     {
-        require_once __DIR__ . '/Fixtures/php/services9.php';
+        require_once __DIR__.'/Fixtures/php/services9.php';
 
         $container = new \ProjectServiceContainer();
         $container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
@@ -684,6 +676,14 @@ class ContainerTest extends TestCase
             array(ContainerInterface::SCOPE_CONTAINER),
             array(ContainerInterface::SCOPE_PROTOTYPE),
         );
+    }
+
+    protected function getField($obj, $field)
+    {
+        $reflection = new \ReflectionProperty($obj, $field);
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($obj);
     }
 
     public function testAlias()

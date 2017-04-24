@@ -71,7 +71,7 @@ class RegionDataGenerator extends AbstractDataGenerator
      */
     protected function scanLocales(LocaleScanner $scanner, $sourceDir)
     {
-        return $scanner->scanLocales($sourceDir . '/region');
+        return $scanner->scanLocales($sourceDir.'/region');
     }
 
     /**
@@ -79,7 +79,7 @@ class RegionDataGenerator extends AbstractDataGenerator
      */
     protected function compileTemporaryBundles(GenrbCompiler $compiler, $sourceDir, $tempDir)
     {
-        $compiler->compile($sourceDir . '/region', $tempDir);
+        $compiler->compile($sourceDir.'/region', $tempDir);
     }
 
     /**
@@ -111,6 +111,30 @@ class RegionDataGenerator extends AbstractDataGenerator
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function generateDataForRoot(BundleReaderInterface $reader, $tempDir)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function generateDataForMeta(BundleReaderInterface $reader, $tempDir)
+    {
+        $rootBundle = $reader->read($tempDir, 'root');
+
+        $this->regionCodes = array_unique($this->regionCodes);
+
+        sort($this->regionCodes);
+
+        return array(
+            'Version' => $rootBundle['Version'],
+            'Regions' => $this->regionCodes,
+        );
+    }
+
+    /**
      * @param ArrayAccessibleResourceBundle $localeBundle
      *
      * @return array
@@ -134,29 +158,5 @@ class RegionDataGenerator extends AbstractDataGenerator
         }
 
         return $regionNames;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function generateDataForRoot(BundleReaderInterface $reader, $tempDir)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function generateDataForMeta(BundleReaderInterface $reader, $tempDir)
-    {
-        $rootBundle = $reader->read($tempDir, 'root');
-
-        $this->regionCodes = array_unique($this->regionCodes);
-
-        sort($this->regionCodes);
-
-        return array(
-            'Version' => $rootBundle['Version'],
-            'Regions' => $this->regionCodes,
-        );
     }
 }

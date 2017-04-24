@@ -37,7 +37,8 @@ class RepeatedType extends AbstractType
                 $options['second_name'],
             )))
             ->add($options['first_name'], $options['type'], array_merge($options['options'], $options['first_options']))
-            ->add($options['second_name'], $options['type'], array_merge($options['options'], $options['second_options']));
+            ->add($options['second_name'], $options['type'], array_merge($options['options'], $options['second_options']))
+        ;
     }
 
     /**
@@ -46,7 +47,7 @@ class RepeatedType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'type' => __NAMESPACE__ . '\TextType',
+            'type' => __NAMESPACE__.'\TextType',
             'options' => array(),
             'first_options' => array(),
             'second_options' => array(),

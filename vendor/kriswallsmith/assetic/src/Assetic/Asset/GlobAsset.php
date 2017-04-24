@@ -27,14 +27,14 @@ class GlobAsset extends AssetCollection
     /**
      * Constructor.
      *
-     * @param string|array $globs A single glob path or array of paths
-     * @param array $filters An array of filters
-     * @param string $root The root directory
-     * @param array $vars
+     * @param string|array $globs   A single glob path or array of paths
+     * @param array        $filters An array of filters
+     * @param string       $root    The root directory
+     * @param array        $vars
      */
     public function __construct($globs, $filters = array(), $root = null, array $vars = array())
     {
-        $this->globs = (array)$globs;
+        $this->globs = (array) $globs;
         $this->initialized = false;
 
         parent::__construct(array(), $filters, $root, $vars);
@@ -47,28 +47,6 @@ class GlobAsset extends AssetCollection
         }
 
         return parent::all();
-    }
-
-    /**
-     * Initializes the collection based on the glob(s) passed in.
-     */
-    private function initialize()
-    {
-        foreach ($this->globs as $glob) {
-            $glob = VarUtils::resolve($glob, $this->getVars(), $this->getValues());
-
-            if (false !== $paths = glob($glob)) {
-                foreach ($paths as $path) {
-                    if (is_file($path)) {
-                        $asset = new FileAsset($path, array(), $this->getSourceRoot(), null, $this->getVars());
-                        $asset->setValues($this->getValues());
-                        $this->add($asset);
-                    }
-                }
-            }
-        }
-
-        $this->initialized = true;
     }
 
     public function load(FilterInterface $additionalFilter = null)
@@ -111,5 +89,27 @@ class GlobAsset extends AssetCollection
     {
         parent::setValues($values);
         $this->initialized = false;
+    }
+
+    /**
+     * Initializes the collection based on the glob(s) passed in.
+     */
+    private function initialize()
+    {
+        foreach ($this->globs as $glob) {
+            $glob = VarUtils::resolve($glob, $this->getVars(), $this->getValues());
+
+            if (false !== $paths = glob($glob)) {
+                foreach ($paths as $path) {
+                    if (is_file($path)) {
+                        $asset = new FileAsset($path, array(), $this->getSourceRoot(), null, $this->getVars());
+                        $asset->setValues($this->getValues());
+                        $this->add($asset);
+                    }
+                }
+            }
+        }
+
+        $this->initialized = true;
     }
 }

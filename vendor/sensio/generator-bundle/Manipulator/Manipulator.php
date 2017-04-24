@@ -25,7 +25,7 @@ class Manipulator
      * Sets the code to manipulate.
      *
      * @param array $tokens An array of PHP tokens
-     * @param int $line The start line of the code
+     * @param int   $line   The start line of the code
      */
     protected function setCode(array $tokens, $line = 0)
     {
@@ -52,22 +52,10 @@ class Manipulator
     }
 
     /**
-     * Gets the value of a token.
-     *
-     * @param string|string[] $token The token value
-     *
-     * @return string
-     */
-    protected function value($token)
-    {
-        return is_array($token) ? $token[1] : $token;
-    }
-
-    /**
      * Peeks the next token.
      *
      * @param int $nb
-     *
+     * 
      * @return string|null
      */
     protected function peek($nb = 1)
@@ -84,5 +72,17 @@ class Manipulator
                 return $token;
             }
         }
+    }
+
+    /**
+     * Gets the value of a token.
+     *
+     * @param string|string[] $token The token value
+     *
+     * @return string
+     */
+    protected function value($token)
+    {
+        return is_array($token) ? $token[1] : $token;
     }
 }

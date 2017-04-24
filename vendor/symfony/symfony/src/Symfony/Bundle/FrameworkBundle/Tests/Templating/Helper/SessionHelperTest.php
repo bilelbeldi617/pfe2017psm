@@ -22,6 +22,25 @@ class SessionHelperTest extends TestCase
 {
     protected $requestStack;
 
+    protected function setUp()
+    {
+        $request = new Request();
+
+        $session = new Session(new MockArraySessionStorage());
+        $session->set('foobar', 'bar');
+        $session->getFlashBag()->set('notice', 'bar');
+
+        $request->setSession($session);
+
+        $this->requestStack = new RequestStack();
+        $this->requestStack->push($request);
+    }
+
+    protected function tearDown()
+    {
+        $this->requestStack = null;
+    }
+
     public function testFlash()
     {
         $helper = new SessionHelper($this->requestStack);
@@ -52,24 +71,5 @@ class SessionHelperTest extends TestCase
         $helper = new SessionHelper($this->requestStack);
 
         $this->assertEquals('session', $helper->getName());
-    }
-
-    protected function setUp()
-    {
-        $request = new Request();
-
-        $session = new Session(new MockArraySessionStorage());
-        $session->set('foobar', 'bar');
-        $session->getFlashBag()->set('notice', 'bar');
-
-        $request->setSession($session);
-
-        $this->requestStack = new RequestStack();
-        $this->requestStack->push($request);
-    }
-
-    protected function tearDown()
-    {
-        $this->requestStack = null;
     }
 }

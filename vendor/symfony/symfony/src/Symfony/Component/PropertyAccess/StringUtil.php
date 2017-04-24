@@ -206,13 +206,13 @@ class StringUtil
                         $singulars = array();
 
                         foreach ($newSuffix as $newSuffixEntry) {
-                            $singulars[] = $newBase . ($firstUpper ? ucfirst($newSuffixEntry) : $newSuffixEntry);
+                            $singulars[] = $newBase.($firstUpper ? ucfirst($newSuffixEntry) : $newSuffixEntry);
                         }
 
                         return $singulars;
                     }
 
-                    return $newBase . ($firstUpper ? ucfirst($newSuffix) : $newSuffix);
+                    return $newBase.($firstUpper ? ucfirst($newSuffix) : $newSuffix);
                 }
 
                 // Suffix is longer than word

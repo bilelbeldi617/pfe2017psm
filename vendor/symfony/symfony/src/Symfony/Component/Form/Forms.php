@@ -102,13 +102,6 @@ use Symfony\Component\Form\Extension\Core\CoreExtension;
 final class Forms
 {
     /**
-     * This class cannot be instantiated.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Creates a form factory with the default configuration.
      *
      * @return FormFactoryInterface The form factory
@@ -129,5 +122,12 @@ final class Forms
         $builder->addExtension(new CoreExtension());
 
         return $builder;
+    }
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

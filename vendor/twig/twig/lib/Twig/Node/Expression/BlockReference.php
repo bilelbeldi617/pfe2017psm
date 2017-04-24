@@ -65,7 +65,8 @@ class Twig_Node_Expression_BlockReference extends Twig_Node_Expression
                 ->repr($this->getTemplateName())
                 ->raw(', ')
                 ->repr($this->getTemplateLine())
-                ->raw(')');
+                ->raw(')')
+            ;
         }
 
         $compiler->raw(sprintf('->%s', $method));

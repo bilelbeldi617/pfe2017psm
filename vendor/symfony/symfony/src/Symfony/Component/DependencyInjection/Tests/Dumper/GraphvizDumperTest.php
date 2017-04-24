@@ -21,7 +21,7 @@ class GraphvizDumperTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = __DIR__ . '/../Fixtures/';
+        self::$fixturesPath = __DIR__.'/../Fixtures/';
     }
 
     /**
@@ -29,26 +29,26 @@ class GraphvizDumperTest extends TestCase
      */
     public function testLegacyDump()
     {
-        $container = include self::$fixturesPath . '/containers/legacy-container9.php';
+        $container = include self::$fixturesPath.'/containers/legacy-container9.php';
         $dumper = new GraphvizDumper($container);
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/legacy-services9.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/legacy-services9.dot')), $dumper->dump(), '->dump() dumps services');
     }
 
     public function testDump()
     {
         $dumper = new GraphvizDumper($container = new ContainerBuilder());
 
-        $this->assertStringEqualsFile(self::$fixturesPath . '/graphviz/services1.dot', $dumper->dump(), '->dump() dumps an empty container as an empty dot file');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/graphviz/services1.dot', $dumper->dump(), '->dump() dumps an empty container as an empty dot file');
 
-        $container = include self::$fixturesPath . '/containers/container9.php';
+        $container = include self::$fixturesPath.'/containers/container9.php';
         $dumper = new GraphvizDumper($container);
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services9.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services9.dot')), $dumper->dump(), '->dump() dumps services');
 
-        $container = include self::$fixturesPath . '/containers/container10.php';
+        $container = include self::$fixturesPath.'/containers/container10.php';
         $dumper = new GraphvizDumper($container);
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services10.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services10.dot')), $dumper->dump(), '->dump() dumps services');
 
-        $container = include self::$fixturesPath . '/containers/container10.php';
+        $container = include self::$fixturesPath.'/containers/container10.php';
         $dumper = new GraphvizDumper($container);
         $this->assertEquals($dumper->dump(array(
             'graph' => array('ratio' => 'normal'),
@@ -57,29 +57,29 @@ class GraphvizDumperTest extends TestCase
             'node.instance' => array('fillcolor' => 'green', 'style' => 'empty'),
             'node.definition' => array('fillcolor' => 'grey'),
             'node.missing' => array('fillcolor' => 'red', 'style' => 'empty'),
-        )), str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services10-1.dot')), '->dump() dumps services');
+        )), str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services10-1.dot')), '->dump() dumps services');
     }
 
     public function testDumpWithFrozenContainer()
     {
-        $container = include self::$fixturesPath . '/containers/container13.php';
+        $container = include self::$fixturesPath.'/containers/container13.php';
         $dumper = new GraphvizDumper($container);
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services13.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services13.dot')), $dumper->dump(), '->dump() dumps services');
     }
 
     public function testDumpWithFrozenCustomClassContainer()
     {
-        $container = include self::$fixturesPath . '/containers/container14.php';
+        $container = include self::$fixturesPath.'/containers/container14.php';
         $dumper = new GraphvizDumper($container);
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services14.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services14.dot')), $dumper->dump(), '->dump() dumps services');
     }
 
     public function testDumpWithUnresolvedParameter()
     {
-        $container = include self::$fixturesPath . '/containers/container17.php';
+        $container = include self::$fixturesPath.'/containers/container17.php';
         $dumper = new GraphvizDumper($container);
 
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services17.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services17.dot')), $dumper->dump(), '->dump() dumps services');
     }
 
     /**
@@ -87,8 +87,8 @@ class GraphvizDumperTest extends TestCase
      */
     public function testDumpWithScopes()
     {
-        $container = include self::$fixturesPath . '/containers/legacy-container18.php';
+        $container = include self::$fixturesPath.'/containers/legacy-container18.php';
         $dumper = new GraphvizDumper($container);
-        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath . '/graphviz/services18.dot')), $dumper->dump(), '->dump() dumps services');
+        $this->assertEquals(str_replace('%path%', __DIR__, file_get_contents(self::$fixturesPath.'/graphviz/services18.dot')), $dumper->dump(), '->dump() dumps services');
     }
 }

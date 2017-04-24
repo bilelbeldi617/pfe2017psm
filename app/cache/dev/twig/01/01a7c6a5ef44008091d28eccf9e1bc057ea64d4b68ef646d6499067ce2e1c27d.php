@@ -9,43 +9,14 @@ class __TwigTemplate_138c23a89c8c6dc7ea4c46c6dd998f907fc64e99ea4e9aadf9c61071399
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(49 => 7, 38 => 4, 29 => 3, 25 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<ol class=\"traces logs\">
-    {% for log in logs %}
-        <li{% if log.priority >= 400 %} class=\"error\"{% elseif log.priority >= 300 %} class=\"warning\"{% endif %}>
-            {{ log.priorityName }} - {{ log.message }}
-        </li>
-    {% endfor %}
-</ol>
-", "@Twig/Exception/logs.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\logs.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_72c9a34b0ccdf918dd6d2fa5c69520d7b83af50c11e1f42583dda4c6f23bd301 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_72c9a34b0ccdf918dd6d2fa5c69520d7b83af50c11e1f42583dda4c6f23bd301->enter($__internal_72c9a34b0ccdf918dd6d2fa5c69520d7b83af50c11e1f42583dda4c6f23bd301_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/logs.html.twig"));
+        $__internal_45612aade7acb1b08db669aaef3dcd1bcd80e2546639f879f8a02f0174c16777 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_45612aade7acb1b08db669aaef3dcd1bcd80e2546639f879f8a02f0174c16777->enter($__internal_45612aade7acb1b08db669aaef3dcd1bcd80e2546639f879f8a02f0174c16777_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/logs.html.twig"));
 
         // line 1
         echo "<ol class=\"traces logs\">
@@ -77,13 +48,43 @@ class __TwigTemplate_138c23a89c8c6dc7ea4c46c6dd998f907fc64e99ea4e9aadf9c61071399
         // line 7
         echo "</ol>
 ";
-
-        $__internal_72c9a34b0ccdf918dd6d2fa5c69520d7b83af50c11e1f42583dda4c6f23bd301->leave($__internal_72c9a34b0ccdf918dd6d2fa5c69520d7b83af50c11e1f42583dda4c6f23bd301_prof);
+        
+        $__internal_45612aade7acb1b08db669aaef3dcd1bcd80e2546639f879f8a02f0174c16777->leave($__internal_45612aade7acb1b08db669aaef3dcd1bcd80e2546639f879f8a02f0174c16777_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@Twig/Exception/logs.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  49 => 7,  38 => 4,  29 => 3,  25 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<ol class=\"traces logs\">
+    {% for log in logs %}
+        <li{% if log.priority >= 400 %} class=\"error\"{% elseif log.priority >= 300 %} class=\"warning\"{% endif %}>
+            {{ log.priorityName }} - {{ log.message }}
+        </li>
+    {% endfor %}
+</ol>
+", "@Twig/Exception/logs.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\logs.html.twig");
     }
 }

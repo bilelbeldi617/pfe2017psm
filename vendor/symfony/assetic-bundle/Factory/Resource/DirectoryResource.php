@@ -28,16 +28,16 @@ class DirectoryResource extends BaseDirectoryResource
     /**
      * Constructor.
      *
-     * @param LoaderInterface $loader The templating loader
-     * @param string $bundle The current bundle name
-     * @param string $path The directory path
-     * @param string $pattern A regex pattern for file basenames
+     * @param LoaderInterface $loader  The templating loader
+     * @param string          $bundle  The current bundle name
+     * @param string          $path    The directory path
+     * @param string          $pattern A regex pattern for file basenames
      */
     public function __construct(LoaderInterface $loader, $bundle, $path, $pattern = null)
     {
         $this->loader = $loader;
         $this->bundle = $bundle;
-        $this->path = rtrim($path, '/') . '/';
+        $this->path = rtrim($path, '/').'/';
 
         parent::__construct($path, $pattern);
     }

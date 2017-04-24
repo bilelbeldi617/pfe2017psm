@@ -67,6 +67,28 @@ abstract class Constraint
     public $payload;
 
     /**
+     * Returns the name of the given error code.
+     *
+     * @param string $errorCode The error code
+     *
+     * @return string The name of the error code
+     *
+     * @throws InvalidArgumentException If the error code does not exist
+     */
+    public static function getErrorName($errorCode)
+    {
+        if (!isset(static::$errorNames[$errorCode])) {
+            throw new InvalidArgumentException(sprintf(
+                'The error code "%s" does not exist for constraint of type "%s".',
+                $errorCode,
+                get_called_class()
+            ));
+        }
+
+        return static::$errorNames[$errorCode];
+    }
+
+    /**
      * Initializes the constraint with options.
      *
      * You should pass an associative array. The keys should be the names of
@@ -96,7 +118,7 @@ abstract class Constraint
     public function __construct($options = null)
     {
         $invalidOptions = array();
-        $missingOptions = array_flip((array)$this->getRequiredOptions());
+        $missingOptions = array_flip((array) $this->getRequiredOptions());
         $knownOptions = get_object_vars($this);
 
         // The "groups" option is added to the object lazily
@@ -152,52 +174,26 @@ abstract class Constraint
     }
 
     /**
-     * Returns the name of the required options.
+     * Sets the value of a lazily initialized option.
      *
-     * Override this method if you want to define required options.
+     * Corresponding properties are added to the object on first access. Hence
+     * this method will be called at most once per constraint instance and
+     * option name.
      *
-     * @return array
+     * @param string $option The option name
+     * @param mixed  $value  The value to set
      *
-     * @see __construct()
+     * @throws InvalidOptionsException If an invalid option name is given
      */
-    public function getRequiredOptions()
+    public function __set($option, $value)
     {
-        return array();
-    }
+        if ('groups' === $option) {
+            $this->groups = (array) $value;
 
-    /**
-     * Returns the name of the default option.
-     *
-     * Override this method to define a default option.
-     *
-     * @return string
-     *
-     * @see __construct()
-     */
-    public function getDefaultOption()
-    {
-    }
-
-    /**
-     * Returns the name of the given error code.
-     *
-     * @param string $errorCode The error code
-     *
-     * @return string The name of the error code
-     *
-     * @throws InvalidArgumentException If the error code does not exist
-     */
-    public static function getErrorName($errorCode)
-    {
-        if (!isset(static::$errorNames[$errorCode])) {
-            throw new InvalidArgumentException(sprintf(
-                'The error code "%s" does not exist for constraint of type "%s".',
-                $errorCode,
-                get_called_class()
-            ));
+            return;
         }
 
-        return static::$errorNames[$errorCode];
+        throw new InvalidOptionsException(sprintf('The option "%s" does not exist in constraint %s', $option, get_class($this)), array($option));
     }
 
     /**
@@ -227,29 +223,6 @@ abstract class Constraint
     }
 
     /**
-     * Sets the value of a lazily initialized option.
-     *
-     * Corresponding properties are added to the object on first access. Hence
-     * this method will be called at most once per constraint instance and
-     * option name.
-     *
-     * @param string $option The option name
-     * @param mixed $value The value to set
-     *
-     * @throws InvalidOptionsException If an invalid option name is given
-     */
-    public function __set($option, $value)
-    {
-        if ('groups' === $option) {
-            $this->groups = (array)$value;
-
-            return;
-        }
-
-        throw new InvalidOptionsException(sprintf('The option "%s" does not exist in constraint %s', $option, get_class($this)), array($option));
-    }
-
-    /**
      * Adds the given group if this constraint is in the Default group.
      *
      * @param string $group
@@ -259,6 +232,33 @@ abstract class Constraint
         if (in_array(self::DEFAULT_GROUP, $this->groups) && !in_array($group, $this->groups)) {
             $this->groups[] = $group;
         }
+    }
+
+    /**
+     * Returns the name of the default option.
+     *
+     * Override this method to define a default option.
+     *
+     * @return string
+     *
+     * @see __construct()
+     */
+    public function getDefaultOption()
+    {
+    }
+
+    /**
+     * Returns the name of the required options.
+     *
+     * Override this method if you want to define required options.
+     *
+     * @return array
+     *
+     * @see __construct()
+     */
+    public function getRequiredOptions()
+    {
+        return array();
     }
 
     /**
@@ -272,7 +272,7 @@ abstract class Constraint
      */
     public function validatedBy()
     {
-        return get_class($this) . 'Validator';
+        return get_class($this).'Validator';
     }
 
     /**

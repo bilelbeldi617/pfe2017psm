@@ -40,11 +40,6 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($obj->__isInitialized());
     }
 
-    private function createEvent($object, array $type)
-    {
-        return new PreSerializeEvent($this->visitor, $object, $type);
-    }
-
     public function testDoesNotRewriteCustomType()
     {
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => 'FakedName', 'params' => array()));
@@ -58,5 +53,10 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->subscriber = new DoctrineProxySubscriber();
         $this->visitor = $this->getMock('JMS\Serializer\Context');
+    }
+
+    private function createEvent($object, array $type)
+    {
+        return new PreSerializeEvent($this->visitor, $object, $type);
     }
 }

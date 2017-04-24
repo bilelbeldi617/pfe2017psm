@@ -28,10 +28,18 @@ class ProxyDumperTest extends TestCase
     protected $dumper;
 
     /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        $this->dumper = new ProxyDumper();
+    }
+
+    /**
      * @dataProvider getProxyCandidates
      *
      * @param Definition $definition
-     * @param bool $expected
+     * @param bool       $expected
      */
     public function testIsProxyCandidate(Definition $definition, $expected)
     {
@@ -48,7 +56,7 @@ class ProxyDumperTest extends TestCase
 
         $this->assertStringMatchesFormat(
             '%Aclass SymfonyBridgeProxyManagerTestsLazyProxyPhpDumperProxyDumperTest%aextends%w'
-            . '\Symfony\Bridge\ProxyManager\Tests\LazyProxy\PhpDumper\ProxyDumperTest%a',
+                .'\Symfony\Bridge\ProxyManager\Tests\LazyProxy\PhpDumper\ProxyDumperTest%a',
             $code
         );
     }
@@ -63,10 +71,10 @@ class ProxyDumperTest extends TestCase
 
         $this->assertStringMatchesFormat(
             '%wif ($lazyLoad) {%w$container = $this;%wreturn $this->services[\'foo\'] =%s'
-            . 'SymfonyBridgeProxyManagerTestsLazyProxyPhpDumperProxyDumperTest_%s(%wfunction '
-            . '(&$wrappedInstance, \ProxyManager\Proxy\LazyLoadingInterface $proxy) use ($container) {'
-            . '%w$wrappedInstance = $container->getFooService(false);%w$proxy->setProxyInitializer(null);'
-            . '%wreturn true;%w}%w);%w}%w',
+            .'SymfonyBridgeProxyManagerTestsLazyProxyPhpDumperProxyDumperTest_%s(%wfunction '
+            .'(&$wrappedInstance, \ProxyManager\Proxy\LazyLoadingInterface $proxy) use ($container) {'
+            .'%w$wrappedInstance = $container->getFooService(false);%w$proxy->setProxyInitializer(null);'
+            .'%wreturn true;%w}%w);%w}%w',
             $code
         );
     }
@@ -91,13 +99,5 @@ class ProxyDumperTest extends TestCase
         );
 
         return $definitions;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        $this->dumper = new ProxyDumper();
     }
 }

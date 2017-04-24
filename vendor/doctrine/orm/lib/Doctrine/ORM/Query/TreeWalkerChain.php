@@ -58,16 +58,6 @@ class TreeWalkerChain implements TreeWalker
     private $_queryComponents;
 
     /**
-     * {@inheritdoc}
-     */
-    public function __construct($query, $parserResult, array $queryComponents)
-    {
-        $this->_query = $query;
-        $this->_parserResult = $parserResult;
-        $this->_queryComponents = $queryComponents;
-    }
-
-    /**
      * Returns the internal queryComponents array.
      *
      * @return array
@@ -89,6 +79,16 @@ class TreeWalkerChain implements TreeWalker
         }
 
         $this->_queryComponents[$dqlAlias] = $queryComponent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($query, $parserResult, array $queryComponents)
+    {
+        $this->_query = $query;
+        $this->_parserResult = $parserResult;
+        $this->_queryComponents = $queryComponents;
     }
 
     /**

@@ -39,7 +39,7 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
      */
     public function getNamespace()
     {
-        return 'http://example.org/schema/dic/' . $this->getAlias();
+        return 'http://example.org/schema/dic/'.$this->getAlias();
     }
 
     /**
@@ -81,7 +81,7 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
         $reflected = new \ReflectionClass($this);
         $namespace = $reflected->getNamespaceName();
 
-        $class = $namespace . '\\Configuration';
+        $class = $namespace.'\\Configuration';
         if (class_exists($class)) {
             $r = new \ReflectionClass($class);
             $container->addResource(new FileResource($r->getFileName()));
@@ -101,7 +101,7 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
 
     /**
      * @param ContainerBuilder $container
-     * @param array $config
+     * @param array            $config
      *
      * @return bool Whether the configuration is enabled
      *
@@ -113,6 +113,6 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
             throw new InvalidArgumentException("The config array has no 'enabled' key.");
         }
 
-        return (bool)$container->getParameterBag()->resolveValue($config['enabled']);
+        return (bool) $container->getParameterBag()->resolveValue($config['enabled']);
     }
 }

@@ -18,7 +18,8 @@ class SendEmailCommandTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('flushQueue')
             ->with($realTransport)
-            ->will($this->returnValue(5));
+            ->will($this->returnValue(5))
+        ;
 
         $spoolTransport = new \Swift_Transport_SpoolTransport(new \Swift_Events_SimpleEventDispatcher(), $spool);
 
@@ -26,6 +27,29 @@ class SendEmailCommandTest extends \PHPUnit_Framework_TestCase
         $tester = $this->executeCommand($container);
 
         $this->assertStringEndsWith("5 emails sent\n", $tester->getDisplay());
+    }
+
+    public function testRecoverLoadbalancedTransportWithSpool()
+    {
+        $realTransport = $this->getMockBuilder('Swift_Transport')->getMock();
+
+        $spool = $this->getMockBuilder('Swift_Spool')->getMock();
+        $spool
+            ->expects($this->once())
+            ->method('flushQueue')
+            ->with($realTransport)
+            ->will($this->returnValue(7))
+        ;
+
+        $spoolTransport = new \Swift_Transport_SpoolTransport(new \Swift_Events_SimpleEventDispatcher(), $spool);
+
+        $loadBalancedTransport = new \Swift_Transport_LoadBalancedTransport();
+        $loadBalancedTransport->setTransports(array($spoolTransport));
+
+        $container = $this->buildContainer($loadBalancedTransport, $realTransport);
+        $tester = $this->executeCommand($container);
+
+        $this->assertStringEndsWith("7 emails sent\n", $tester->getDisplay());
     }
 
     /**
@@ -56,27 +80,5 @@ class SendEmailCommandTest extends \PHPUnit_Framework_TestCase
         $tester->execute($input, $options);
 
         return $tester;
-    }
-
-    public function testRecoverLoadbalancedTransportWithSpool()
-    {
-        $realTransport = $this->getMockBuilder('Swift_Transport')->getMock();
-
-        $spool = $this->getMockBuilder('Swift_Spool')->getMock();
-        $spool
-            ->expects($this->once())
-            ->method('flushQueue')
-            ->with($realTransport)
-            ->will($this->returnValue(7));
-
-        $spoolTransport = new \Swift_Transport_SpoolTransport(new \Swift_Events_SimpleEventDispatcher(), $spool);
-
-        $loadBalancedTransport = new \Swift_Transport_LoadBalancedTransport();
-        $loadBalancedTransport->setTransports(array($spoolTransport));
-
-        $container = $this->buildContainer($loadBalancedTransport, $realTransport);
-        $tester = $this->executeCommand($container);
-
-        $this->assertStringEndsWith("7 emails sent\n", $tester->getDisplay());
     }
 }

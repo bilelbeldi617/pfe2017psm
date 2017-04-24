@@ -28,13 +28,13 @@ class CodeHelper extends Helper
      * Constructor.
      *
      * @param string $fileLinkFormat The format for links to source files
-     * @param string $rootDir The project root directory
-     * @param string $charset The charset
+     * @param string $rootDir        The project root directory
+     * @param string $charset        The charset
      */
     public function __construct($fileLinkFormat, $rootDir, $charset)
     {
         $this->fileLinkFormat = $fileLinkFormat ?: ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
-        $this->rootDir = str_replace('\\', '/', $rootDir) . '/';
+        $this->rootDir = str_replace('\\', '/', $rootDir).'/';
         $this->charset = $charset;
     }
 
@@ -48,6 +48,28 @@ class CodeHelper extends Helper
     public function formatArgsAsText(array $args)
     {
         return strip_tags($this->formatArgs($args));
+    }
+
+    public function abbrClass($class)
+    {
+        $parts = explode('\\', $class);
+        $short = array_pop($parts);
+
+        return sprintf('<abbr title="%s">%s</abbr>', $class, $short);
+    }
+
+    public function abbrMethod($method)
+    {
+        if (false !== strpos($method, '::')) {
+            list($class, $method) = explode('::', $method, 2);
+            $result = sprintf('%s::%s()', $this->abbrClass($class), $method);
+        } elseif ('Closure' === $method) {
+            $result = sprintf('<abbr title="%s">%s</abbr>', $method, $method);
+        } else {
+            $result = sprintf('<abbr title="%s">%s</abbr>()', $method, $method);
+        }
+
+        return $result;
     }
 
     /**
@@ -72,11 +94,11 @@ class CodeHelper extends Helper
             } elseif ('null' === $item[0]) {
                 $formattedValue = '<em>null</em>';
             } elseif ('boolean' === $item[0]) {
-                $formattedValue = '<em>' . strtolower(var_export($item[1], true)) . '</em>';
+                $formattedValue = '<em>'.strtolower(var_export($item[1], true)).'</em>';
             } elseif ('resource' === $item[0]) {
                 $formattedValue = '<em>resource</em>';
             } else {
-                $formattedValue = str_replace("\n", '', var_export(htmlspecialchars((string)$item[1], ENT_QUOTES, $this->getCharset()), true));
+                $formattedValue = str_replace("\n", '', var_export(htmlspecialchars((string) $item[1], ENT_QUOTES, $this->getCharset()), true));
             }
 
             $result[] = is_int($key) ? $formattedValue : sprintf("'%s' => %s", $key, $formattedValue);
@@ -85,33 +107,11 @@ class CodeHelper extends Helper
         return implode(', ', $result);
     }
 
-    public function abbrMethod($method)
-    {
-        if (false !== strpos($method, '::')) {
-            list($class, $method) = explode('::', $method, 2);
-            $result = sprintf('%s::%s()', $this->abbrClass($class), $method);
-        } elseif ('Closure' === $method) {
-            $result = sprintf('<abbr title="%s">%s</abbr>', $method, $method);
-        } else {
-            $result = sprintf('<abbr title="%s">%s</abbr>()', $method, $method);
-        }
-
-        return $result;
-    }
-
-    public function abbrClass($class)
-    {
-        $parts = explode('\\', $class);
-        $short = array_pop($parts);
-
-        return sprintf('<abbr title="%s">%s</abbr>', $class, $short);
-    }
-
     /**
      * Returns an excerpt of a code file around the given line number.
      *
      * @param string $file A file path
-     * @param int $line The selected line number
+     * @param int    $line The selected line number
      *
      * @return string An HTML string
      */
@@ -136,46 +136,18 @@ class CodeHelper extends Helper
 
             $lines = array();
             for ($i = max($line - 3, 1), $max = min($line + 3, count($content)); $i <= $max; ++$i) {
-                $lines[] = '<li' . ($i == $line ? ' class="selected"' : '') . '><code>' . self::fixCodeMarkup($content[$i - 1]) . '</code></li>';
+                $lines[] = '<li'.($i == $line ? ' class="selected"' : '').'><code>'.self::fixCodeMarkup($content[$i - 1]).'</code></li>';
             }
 
-            return '<ol start="' . max($line - 3, 1) . '">' . implode("\n", $lines) . '</ol>';
+            return '<ol start="'.max($line - 3, 1).'">'.implode("\n", $lines).'</ol>';
         }
-    }
-
-    protected static function fixCodeMarkup($line)
-    {
-        // </span> ending tag from previous line
-        $opening = strpos($line, '<span');
-        $closing = strpos($line, '</span>');
-        if (false !== $closing && (false === $opening || $closing < $opening)) {
-            $line = substr_replace($line, '', $closing, 7);
-        }
-
-        // missing </span> tag at the end of line
-        $opening = strpos($line, '<span');
-        $closing = strpos($line, '</span>');
-        if (false !== $opening && (false === $closing || $closing > $opening)) {
-            $line .= '</span>';
-        }
-
-        return $line;
-    }
-
-    public function formatFileFromText($text)
-    {
-        $that = $this;
-
-        return preg_replace_callback('/in ("|&quot;)?(.+?)\1(?: +(?:on|at))? +line (\d+)/s', function ($match) use ($that) {
-            return 'in ' . $that->formatFile($match[2], $match[3]);
-        }, $text);
     }
 
     /**
      * Formats a file path.
      *
      * @param string $file An absolute file path
-     * @param int $line The line number
+     * @param int    $line The line number
      * @param string $text Use this text for the link rather than the file path
      *
      * @return string
@@ -211,7 +183,7 @@ class CodeHelper extends Helper
      * Returns the link for a given file/line pair.
      *
      * @param string $file An absolute file path
-     * @param int $line The line number
+     * @param int    $line The line number
      *
      * @return string A link of false
      */
@@ -224,11 +196,39 @@ class CodeHelper extends Helper
         return false;
     }
 
+    public function formatFileFromText($text)
+    {
+        $that = $this;
+
+        return preg_replace_callback('/in ("|&quot;)?(.+?)\1(?: +(?:on|at))? +line (\d+)/s', function ($match) use ($that) {
+            return 'in '.$that->formatFile($match[2], $match[3]);
+        }, $text);
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
         return 'code';
+    }
+
+    protected static function fixCodeMarkup($line)
+    {
+        // </span> ending tag from previous line
+        $opening = strpos($line, '<span');
+        $closing = strpos($line, '</span>');
+        if (false !== $closing && (false === $opening || $closing < $opening)) {
+            $line = substr_replace($line, '', $closing, 7);
+        }
+
+        // missing </span> tag at the end of line
+        $opening = strpos($line, '<span');
+        $closing = strpos($line, '</span>');
+        if (false !== $opening && (false === $closing || $closing > $opening)) {
+            $line .= '</span>';
+        }
+
+        return $line;
     }
 }

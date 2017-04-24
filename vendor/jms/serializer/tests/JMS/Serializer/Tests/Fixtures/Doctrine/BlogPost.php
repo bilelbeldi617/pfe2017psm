@@ -37,15 +37,18 @@ class BlogPost
      * @ORM\Id @ORM\Column(type="integer")
      */
     protected $id;
-    /**
-     * @ORM\Column(type="some_custom_type")
-     */
-    protected $slug;
+
     /**
      * @ORM\Column(type="string")
      * @Groups({"comments","post"})
      */
     private $title;
+
+    /**
+     * @ORM\Column(type="some_custom_type")
+     */
+    protected $slug;
+
     /**
      * @ORM\Column(type="datetime")
      * @XmlAttribute

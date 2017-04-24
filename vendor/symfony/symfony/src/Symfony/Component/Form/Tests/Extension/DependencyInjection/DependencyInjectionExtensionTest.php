@@ -57,14 +57,6 @@ class DependencyInjectionExtensionTest extends TestCase
         $this->assertSame(array($typeExtension1, $typeExtension2), $extension->getTypeExtensions('test'));
     }
 
-    private function createFormTypeExtensionMock($extendedType)
-    {
-        $extension = $this->getMockBuilder('Symfony\Component\Form\FormTypeExtensionInterface')->getMock();
-        $extension->expects($this->any())->method('getExtendedType')->willReturn($extendedType);
-
-        return $extension;
-    }
-
     /**
      * @expectedException \Symfony\Component\Form\Exception\InvalidArgumentException
      */
@@ -106,5 +98,13 @@ class DependencyInjectionExtensionTest extends TestCase
         $extension = new DependencyInjectionExtension($container, array(), array(), array());
 
         $this->assertNull($extension->getTypeGuesser());
+    }
+
+    private function createFormTypeExtensionMock($extendedType)
+    {
+        $extension = $this->getMockBuilder('Symfony\Component\Form\FormTypeExtensionInterface')->getMock();
+        $extension->expects($this->any())->method('getExtendedType')->willReturn($extendedType);
+
+        return $extension;
     }
 }

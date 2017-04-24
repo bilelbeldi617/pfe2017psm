@@ -27,6 +27,14 @@ class RuntimeInstantiatorTest extends TestCase
      */
     protected $instantiator;
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        $this->instantiator = new RuntimeInstantiator();
+    }
+
     public function testInstantiateProxy()
     {
         $instance = new \stdClass();
@@ -46,13 +54,5 @@ class RuntimeInstantiatorTest extends TestCase
         $proxy->initializeProxy();
 
         $this->assertSame($instance, $proxy->getWrappedValueHolderValue());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        $this->instantiator = new RuntimeInstantiator();
     }
 }

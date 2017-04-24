@@ -26,7 +26,7 @@ interface LdapClientInterface
     /**
      * Return a connection bound to the ldap.
      *
-     * @param string $dn A LDAP dn
+     * @param string $dn       A LDAP dn
      * @param string $password A password
      *
      * @throws ConnectionException If dn / password could not be bound.
@@ -49,7 +49,7 @@ interface LdapClientInterface
      *
      * @param string $subject
      * @param string $ignore
-     * @param int $flags
+     * @param int    $flags
      *
      * @return string
      */

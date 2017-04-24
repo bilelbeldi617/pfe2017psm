@@ -116,26 +116,11 @@ abstract class Context
 
     private function assertMutable()
     {
-        if (!$this->initialized) {
+        if ( ! $this->initialized) {
             return;
         }
 
         throw new \LogicException('This context was already initialized and is immutable; you cannot modify it anymore.');
-    }
-
-    /**
-     * @param integer $version
-     */
-    public function setVersion($version)
-    {
-        if (null === $version) {
-            throw new \LogicException('The version must not be null.');
-        }
-
-        $this->attributes->set('version', $version);
-        $this->addExclusionStrategy(new VersionExclusionStrategy($version));
-
-        return $this;
     }
 
     public function addExclusionStrategy(ExclusionStrategyInterface $strategy)
@@ -163,6 +148,21 @@ abstract class Context
     }
 
     /**
+     * @param integer $version
+     */
+    public function setVersion($version)
+    {
+        if (null === $version) {
+            throw new \LogicException('The version must not be null.');
+        }
+
+        $this->attributes->set('version', $version);
+        $this->addExclusionStrategy(new VersionExclusionStrategy($version));
+
+        return $this;
+    }
+
+    /**
      * @param array|string $groups
      */
     public function setGroups($groups)
@@ -171,8 +171,8 @@ abstract class Context
             throw new \LogicException('The groups must not be empty.');
         }
 
-        $this->attributes->set('groups', (array)$groups);
-        $this->addExclusionStrategy(new GroupsExclusionStrategy((array)$groups));
+        $this->attributes->set('groups', (array) $groups);
+        $this->addExclusionStrategy(new GroupsExclusionStrategy((array) $groups));
 
         return $this;
     }
@@ -186,7 +186,7 @@ abstract class Context
 
     public function setSerializeNull($bool)
     {
-        $this->serializeNull = (boolean)$bool;
+        $this->serializeNull = (boolean) $bool;
 
         return $this;
     }

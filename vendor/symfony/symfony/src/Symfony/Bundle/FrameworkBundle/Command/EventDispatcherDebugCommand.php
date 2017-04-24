@@ -48,7 +48,8 @@ To get specific listeners for an event, specify its name:
 
   <info>php %command.full_name% kernel.request</info>
 EOF
-            );
+            )
+        ;
     }
 
     /**

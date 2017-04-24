@@ -20,6 +20,26 @@ use Symfony\Component\Validator\Validation;
  */
 class GreaterThanOrEqualValidatorTest extends AbstractComparisonValidatorTestCase
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new GreaterThanOrEqualValidator();
+    }
+
+    protected function createConstraint(array $options)
+    {
+        return new GreaterThanOrEqual($options);
+    }
+
+    protected function getErrorCode()
+    {
+        return GreaterThanOrEqual::TOO_LOW_ERROR;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -52,25 +72,5 @@ class GreaterThanOrEqualValidatorTest extends AbstractComparisonValidatorTestCas
             array(new \DateTime('2000/01/01 UTC'), 'Jan 1, 2000, 12:00 AM', '2005/01/01 UTC', 'Jan 1, 2005, 12:00 AM', 'DateTime'),
             array('b', '"b"', 'c', '"c"', 'string'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new GreaterThanOrEqualValidator();
-    }
-
-    protected function createConstraint(array $options)
-    {
-        return new GreaterThanOrEqual($options);
-    }
-
-    protected function getErrorCode()
-    {
-        return GreaterThanOrEqual::TOO_LOW_ERROR;
     }
 }

@@ -19,6 +19,11 @@ class ProfilerPassTest extends TestCase
 {
     private $profilerDefinition;
 
+    protected function setUp()
+    {
+        $this->profilerDefinition = new Definition('ProfilerClass');
+    }
+
     /**
      * Tests that collectors that specify a template but no "id" will throw
      * an exception (both are needed if the template is specified).
@@ -40,23 +45,6 @@ class ProfilerPassTest extends TestCase
 
         $profilerPass = new ProfilerPass();
         $profilerPass->process($builder);
-    }
-
-    private function createContainerMock($services)
-    {
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('hasDefinition', 'getDefinition', 'findTaggedServiceIds', 'setParameter'))->getMock();
-        $container->expects($this->any())
-            ->method('hasDefinition')
-            ->with($this->equalTo('profiler'))
-            ->will($this->returnValue(true));
-        $container->expects($this->any())
-            ->method('getDefinition')
-            ->will($this->returnValue($this->profilerDefinition));
-        $container->expects($this->atLeastOnce())
-            ->method('findTaggedServiceIds')
-            ->will($this->returnValue($services));
-
-        return $container;
     }
 
     public function testValidCollector()
@@ -86,8 +74,20 @@ class ProfilerPassTest extends TestCase
         $this->assertEquals('add', $methodCalls[0][0]); // grab the method part of the first call
     }
 
-    protected function setUp()
+    private function createContainerMock($services)
     {
-        $this->profilerDefinition = new Definition('ProfilerClass');
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('hasDefinition', 'getDefinition', 'findTaggedServiceIds', 'setParameter'))->getMock();
+        $container->expects($this->any())
+            ->method('hasDefinition')
+            ->with($this->equalTo('profiler'))
+            ->will($this->returnValue(true));
+        $container->expects($this->any())
+            ->method('getDefinition')
+            ->will($this->returnValue($this->profilerDefinition));
+        $container->expects($this->atLeastOnce())
+            ->method('findTaggedServiceIds')
+            ->will($this->returnValue($services));
+
+        return $container;
     }
 }

@@ -40,7 +40,7 @@ class XmlFileLoader extends FileLoader
             $xml = $this->parseFile($this->file);
 
             foreach ($xml->class as $class) {
-                $this->classes[(string)$class['name']] = $class;
+                $this->classes[(string) $class['name']] = $class;
             }
         }
 
@@ -50,7 +50,7 @@ class XmlFileLoader extends FileLoader
             $xml = $this->classes[$classMetadata->getName()];
 
             foreach ($xml->attribute as $attribute) {
-                $attributeName = (string)$attribute['name'];
+                $attributeName = (string) $attribute['name'];
 
                 if (isset($attributesMetadata[$attributeName])) {
                     $attributeMetadata = $attributesMetadata[$attributeName];
@@ -60,7 +60,7 @@ class XmlFileLoader extends FileLoader
                 }
 
                 foreach ($attribute->group as $group) {
-                    $attributeMetadata->addGroup((string)$group);
+                    $attributeMetadata->addGroup((string) $group);
                 }
             }
 
@@ -82,7 +82,7 @@ class XmlFileLoader extends FileLoader
     private function parseFile($file)
     {
         try {
-            $dom = XmlUtils::loadFile($file, __DIR__ . '/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd');
+            $dom = XmlUtils::loadFile($file, __DIR__.'/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd');
         } catch (\Exception $e) {
             throw new MappingException($e->getMessage(), $e->getCode(), $e);
         }

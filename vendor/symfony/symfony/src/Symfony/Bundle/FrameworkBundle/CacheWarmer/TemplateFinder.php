@@ -32,9 +32,9 @@ class TemplateFinder implements TemplateFinderInterface
     /**
      * Constructor.
      *
-     * @param KernelInterface $kernel A KernelInterface instance
-     * @param TemplateNameParserInterface $parser A TemplateNameParserInterface instance
-     * @param string $rootDir The directory where global templates can be stored
+     * @param KernelInterface             $kernel  A KernelInterface instance
+     * @param TemplateNameParserInterface $parser  A TemplateNameParserInterface instance
+     * @param string                      $rootDir The directory where global templates can be stored
      */
     public function __construct(KernelInterface $kernel, TemplateNameParserInterface $parser, $rootDir)
     {
@@ -60,32 +60,9 @@ class TemplateFinder implements TemplateFinderInterface
             $templates = array_merge($templates, $this->findTemplatesInBundle($bundle));
         }
 
-        $templates = array_merge($templates, $this->findTemplatesInFolder($this->rootDir . '/views'));
+        $templates = array_merge($templates, $this->findTemplatesInFolder($this->rootDir.'/views'));
 
         return $this->templates = $templates;
-    }
-
-    /**
-     * Find templates in the given bundle.
-     *
-     * @param BundleInterface $bundle The bundle where to look for templates
-     *
-     * @return TemplateReferenceInterface[]
-     */
-    private function findTemplatesInBundle(BundleInterface $bundle)
-    {
-        $name = $bundle->getName();
-        $templates = array_merge(
-            $this->findTemplatesInFolder($bundle->getPath() . '/Resources/views'),
-            $this->findTemplatesInFolder($this->rootDir . '/' . $name . '/views')
-        );
-        $templates = array_unique($templates);
-
-        foreach ($templates as $i => $template) {
-            $templates[$i] = $template->set('bundle', $name);
-        }
-
-        return $templates;
     }
 
     /**
@@ -107,6 +84,29 @@ class TemplateFinder implements TemplateFinderInterface
                     $templates[] = $template;
                 }
             }
+        }
+
+        return $templates;
+    }
+
+    /**
+     * Find templates in the given bundle.
+     *
+     * @param BundleInterface $bundle The bundle where to look for templates
+     *
+     * @return TemplateReferenceInterface[]
+     */
+    private function findTemplatesInBundle(BundleInterface $bundle)
+    {
+        $name = $bundle->getName();
+        $templates = array_merge(
+            $this->findTemplatesInFolder($bundle->getPath().'/Resources/views'),
+            $this->findTemplatesInFolder($this->rootDir.'/'.$name.'/views')
+        );
+        $templates = array_unique($templates);
+
+        foreach ($templates as $i => $template) {
+            $templates[$i] = $template->set('bundle', $name);
         }
 
         return $templates;

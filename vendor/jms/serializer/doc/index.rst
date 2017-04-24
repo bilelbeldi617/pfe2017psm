@@ -37,7 +37,7 @@ Documentation
 -------------
 
 .. toctree ::
-:hidden:
+    :hidden:
 
     configuration
     usage

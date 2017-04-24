@@ -135,10 +135,85 @@ class ViolationMapper implements ViolationMapperInterface
     }
 
     /**
+     * Tries to match the beginning of the property path at the
+     * current position against the children of the scope.
+     *
+     * If a matching child is found, it is returned. Otherwise
+     * null is returned.
+     *
+     * @param FormInterface                 $form The form to search
+     * @param PropertyPathIteratorInterface $it   The iterator at its current position
+     *
+     * @return null|FormInterface The found match or null
+     */
+    private function matchChild(FormInterface $form, PropertyPathIteratorInterface $it)
+    {
+        $target = null;
+        $chunk = '';
+        $foundAtIndex = null;
+
+        // Construct mapping rules for the given form
+        $rules = array();
+
+        foreach ($form->getConfig()->getOption('error_mapping') as $propertyPath => $targetPath) {
+            // Dot rules are considered at the very end
+            if ('.' !== $propertyPath) {
+                $rules[] = new MappingRule($form, $propertyPath, $targetPath);
+            }
+        }
+
+        $children = iterator_to_array(new \RecursiveIteratorIterator(new InheritDataAwareIterator($form)), false);
+
+        while ($it->valid()) {
+            if ($it->isIndex()) {
+                $chunk .= '['.$it->current().']';
+            } else {
+                $chunk .= ('' === $chunk ? '' : '.').$it->current();
+            }
+
+            // Test mapping rules as long as we have any
+            foreach ($rules as $key => $rule) {
+                /* @var MappingRule $rule */
+
+                // Mapping rule matches completely, terminate.
+                if (null !== ($form = $rule->match($chunk))) {
+                    return $form;
+                }
+
+                // Keep only rules that have $chunk as prefix
+                if (!$rule->isPrefix($chunk)) {
+                    unset($rules[$key]);
+                }
+            }
+
+            /** @var FormInterface $child */
+            foreach ($children as $i => $child) {
+                $childPath = (string) $child->getPropertyPath();
+                if ($childPath === $chunk) {
+                    $target = $child;
+                    $foundAtIndex = $it->key();
+                } elseif (0 === strpos($childPath, $chunk)) {
+                    continue;
+                }
+
+                unset($children[$i]);
+            }
+
+            $it->next();
+        }
+
+        if (null !== $foundAtIndex) {
+            $it->seek($foundAtIndex);
+        }
+
+        return $target;
+    }
+
+    /**
      * Reconstructs a property path from a violation path and a form tree.
      *
      * @param ViolationPath $violationPath The violation path
-     * @param FormInterface $origin The root form of the tree
+     * @param FormInterface $origin        The root form of the tree
      *
      * @return RelativePath The reconstructed path
      */
@@ -204,80 +279,5 @@ class ViolationMapper implements ViolationMapperInterface
         // requests.
         // https://github.com/symfony/symfony/pull/10567
         return $form->isSubmitted() && ($this->allowNonSynchronized || $form->isSynchronized());
-    }
-
-    /**
-     * Tries to match the beginning of the property path at the
-     * current position against the children of the scope.
-     *
-     * If a matching child is found, it is returned. Otherwise
-     * null is returned.
-     *
-     * @param FormInterface $form The form to search
-     * @param PropertyPathIteratorInterface $it The iterator at its current position
-     *
-     * @return null|FormInterface The found match or null
-     */
-    private function matchChild(FormInterface $form, PropertyPathIteratorInterface $it)
-    {
-        $target = null;
-        $chunk = '';
-        $foundAtIndex = null;
-
-        // Construct mapping rules for the given form
-        $rules = array();
-
-        foreach ($form->getConfig()->getOption('error_mapping') as $propertyPath => $targetPath) {
-            // Dot rules are considered at the very end
-            if ('.' !== $propertyPath) {
-                $rules[] = new MappingRule($form, $propertyPath, $targetPath);
-            }
-        }
-
-        $children = iterator_to_array(new \RecursiveIteratorIterator(new InheritDataAwareIterator($form)), false);
-
-        while ($it->valid()) {
-            if ($it->isIndex()) {
-                $chunk .= '[' . $it->current() . ']';
-            } else {
-                $chunk .= ('' === $chunk ? '' : '.') . $it->current();
-            }
-
-            // Test mapping rules as long as we have any
-            foreach ($rules as $key => $rule) {
-                /* @var MappingRule $rule */
-
-                // Mapping rule matches completely, terminate.
-                if (null !== ($form = $rule->match($chunk))) {
-                    return $form;
-                }
-
-                // Keep only rules that have $chunk as prefix
-                if (!$rule->isPrefix($chunk)) {
-                    unset($rules[$key]);
-                }
-            }
-
-            /** @var FormInterface $child */
-            foreach ($children as $i => $child) {
-                $childPath = (string)$child->getPropertyPath();
-                if ($childPath === $chunk) {
-                    $target = $child;
-                    $foundAtIndex = $it->key();
-                } elseif (0 === strpos($childPath, $chunk)) {
-                    continue;
-                }
-
-                unset($children[$i]);
-            }
-
-            $it->next();
-        }
-
-        if (null !== $foundAtIndex) {
-            $it->seek($foundAtIndex);
-        }
-
-        return $target;
     }
 }

@@ -29,17 +29,6 @@ class InlineFragmentRendererTest extends TestCase
         $this->assertEquals('foo', $strategy->render('/', Request::create('/'))->getContent());
     }
 
-    private function getKernel($returnValue)
-    {
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $kernel
-            ->expects($this->any())
-            ->method('handle')
-            ->will($returnValue);
-
-        return $kernel;
-    }
-
     public function testRenderWithControllerReference()
     {
         $strategy = new InlineFragmentRenderer($this->getKernel($this->returnValue(new Response('foo'))));
@@ -61,21 +50,6 @@ class InlineFragmentRendererTest extends TestCase
         $strategy->render(new ControllerReference('main_controller', array('object' => $object), array()), Request::create('/'));
     }
 
-    /**
-     * Creates a Kernel expecting a request equals to $request
-     * Allows delta in comparison in case REQUEST_TIME changed by 1 second.
-     */
-    private function getKernelExpectingRequest(Request $request)
-    {
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $kernel
-            ->expects($this->any())
-            ->method('handle')
-            ->with($this->equalTo($request, 1));
-
-        return $kernel;
-    }
-
     public function testRenderWithObjectsAsAttributesPassedAsObjectsInTheController()
     {
         $resolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolver')->setMethods(array('getController'))->getMock();
@@ -84,7 +58,8 @@ class InlineFragmentRendererTest extends TestCase
             ->method('getController')
             ->will($this->returnValue(function (\stdClass $object, Bar $object1) {
                 return new Response($object1->getBar());
-            }));
+            }))
+        ;
 
         $kernel = new HttpKernel(new EventDispatcher(), $resolver);
         $renderer = new InlineFragmentRenderer($kernel);
@@ -138,6 +113,34 @@ class InlineFragmentRendererTest extends TestCase
         $this->assertEquals('bar', $strategy->render('/', Request::create('/'), array('ignore_errors' => true, 'alt' => '/foo'))->getContent());
     }
 
+    private function getKernel($returnValue)
+    {
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $kernel
+            ->expects($this->any())
+            ->method('handle')
+            ->will($returnValue)
+        ;
+
+        return $kernel;
+    }
+
+    /**
+     * Creates a Kernel expecting a request equals to $request
+     * Allows delta in comparison in case REQUEST_TIME changed by 1 second.
+     */
+    private function getKernelExpectingRequest(Request $request)
+    {
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $kernel
+            ->expects($this->any())
+            ->method('handle')
+            ->with($this->equalTo($request, 1))
+        ;
+
+        return $kernel;
+    }
+
     public function testExceptionInSubRequestsDoesNotMangleOutputBuffers()
     {
         $resolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolverInterface')->getMock();
@@ -148,11 +151,13 @@ class InlineFragmentRendererTest extends TestCase
                 ob_start();
                 echo 'bar';
                 throw new \RuntimeException();
-            }));
+            }))
+        ;
         $resolver
             ->expects($this->once())
             ->method('getArguments')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue(array()))
+        ;
 
         $kernel = new HttpKernel(new EventDispatcher(), $resolver);
         $renderer = new InlineFragmentRenderer($kernel);
@@ -165,16 +170,6 @@ class InlineFragmentRendererTest extends TestCase
         $renderer->render('/', Request::create('/'), array('ignore_errors' => true));
 
         $this->assertEquals('Foo', ob_get_clean());
-    }
-
-    public function testESIHeaderIsKeptInSubrequestWithTrustedHeaderDisabled()
-    {
-        $trustedHeaderName = Request::getTrustedHeaderName(Request::HEADER_CLIENT_IP);
-        Request::setTrustedHeaderName(Request::HEADER_CLIENT_IP, '');
-
-        $this->testESIHeaderIsKeptInSubrequest();
-
-        Request::setTrustedHeaderName(Request::HEADER_CLIENT_IP, $trustedHeaderName);
     }
 
     public function testESIHeaderIsKeptInSubrequest()
@@ -192,6 +187,16 @@ class InlineFragmentRendererTest extends TestCase
         $request = Request::create('/');
         $request->headers->set('Surrogate-Capability', 'abc="ESI/1.0"');
         $strategy->render('/', $request);
+    }
+
+    public function testESIHeaderIsKeptInSubrequestWithTrustedHeaderDisabled()
+    {
+        $trustedHeaderName = Request::getTrustedHeaderName(Request::HEADER_CLIENT_IP);
+        Request::setTrustedHeaderName(Request::HEADER_CLIENT_IP, '');
+
+        $this->testESIHeaderIsKeptInSubrequest();
+
+        Request::setTrustedHeaderName(Request::HEADER_CLIENT_IP, $trustedHeaderName);
     }
 
     public function testHeadersPossiblyResultingIn304AreNotAssignedToSubrequest()

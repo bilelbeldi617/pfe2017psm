@@ -189,6 +189,18 @@ abstract class AbstractScriptDataProviderTest extends AbstractDataProviderTest
      */
     protected $dataProvider;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->dataProvider = new ScriptDataProvider(
+            $this->getDataDirectory().'/'.Intl::SCRIPT_DIR,
+            $this->createEntryReader()
+        );
+    }
+
+    abstract protected function getDataDirectory();
+
     public function testGetScripts()
     {
         $this->assertSame(static::$scripts, $this->dataProvider->getScripts());
@@ -252,16 +264,4 @@ abstract class AbstractScriptDataProviderTest extends AbstractDataProviderTest
             $this->assertSame($name, $this->dataProvider->getName($script));
         }
     }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->dataProvider = new ScriptDataProvider(
-            $this->getDataDirectory() . '/' . Intl::SCRIPT_DIR,
-            $this->createEntryReader()
-        );
-    }
-
-    abstract protected function getDataDirectory();
 }

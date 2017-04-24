@@ -34,7 +34,7 @@ class AddConsoleCommandPassTest extends TestCase
 
         $alias = 'console.command.symfony_bundle_frameworkbundle_tests_dependencyinjection_compiler_mycommand';
         $this->assertTrue($container->hasAlias($alias));
-        $this->assertSame('my-command', (string)$container->getAlias($alias));
+        $this->assertSame('my-command', (string) $container->getAlias($alias));
 
         $this->assertTrue($container->hasParameter('console.command.ids'));
         $this->assertSame(array('my-command'), $container->getParameter('console.command.ids'));

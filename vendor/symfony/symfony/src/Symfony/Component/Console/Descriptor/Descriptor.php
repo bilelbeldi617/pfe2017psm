@@ -60,10 +60,21 @@ abstract class Descriptor implements DescriptorInterface
     }
 
     /**
+     * Writes content to output.
+     *
+     * @param string $content
+     * @param bool   $decorated
+     */
+    protected function write($content, $decorated = false)
+    {
+        $this->output->write($content, false, $decorated ? OutputInterface::OUTPUT_NORMAL : OutputInterface::OUTPUT_RAW);
+    }
+
+    /**
      * Describes an InputArgument instance.
      *
      * @param InputArgument $argument
-     * @param array $options
+     * @param array         $options
      *
      * @return string|mixed
      */
@@ -73,7 +84,7 @@ abstract class Descriptor implements DescriptorInterface
      * Describes an InputOption instance.
      *
      * @param InputOption $option
-     * @param array $options
+     * @param array       $options
      *
      * @return string|mixed
      */
@@ -83,7 +94,7 @@ abstract class Descriptor implements DescriptorInterface
      * Describes an InputDefinition instance.
      *
      * @param InputDefinition $definition
-     * @param array $options
+     * @param array           $options
      *
      * @return string|mixed
      */
@@ -93,7 +104,7 @@ abstract class Descriptor implements DescriptorInterface
      * Describes a Command instance.
      *
      * @param Command $command
-     * @param array $options
+     * @param array   $options
      *
      * @return string|mixed
      */
@@ -103,20 +114,9 @@ abstract class Descriptor implements DescriptorInterface
      * Describes an Application instance.
      *
      * @param Application $application
-     * @param array $options
+     * @param array       $options
      *
      * @return string|mixed
      */
     abstract protected function describeApplication(Application $application, array $options = array());
-
-    /**
-     * Writes content to output.
-     *
-     * @param string $content
-     * @param bool $decorated
-     */
-    protected function write($content, $decorated = false)
-    {
-        $this->output->write($content, false, $decorated ? OutputInterface::OUTPUT_NORMAL : OutputInterface::OUTPUT_RAW);
-    }
 }

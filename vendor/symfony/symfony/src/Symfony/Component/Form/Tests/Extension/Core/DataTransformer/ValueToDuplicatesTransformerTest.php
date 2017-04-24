@@ -18,6 +18,16 @@ class ValueToDuplicatesTransformerTest extends TestCase
 {
     private $transformer;
 
+    protected function setUp()
+    {
+        $this->transformer = new ValueToDuplicatesTransformer(array('a', 'b', 'c'));
+    }
+
+    protected function tearDown()
+    {
+        $this->transformer = null;
+    }
+
     public function testTransform()
     {
         $output = array(
@@ -129,15 +139,5 @@ class ValueToDuplicatesTransformerTest extends TestCase
     public function testReverseTransformRequiresArray()
     {
         $this->transformer->reverseTransform('12345');
-    }
-
-    protected function setUp()
-    {
-        $this->transformer = new ValueToDuplicatesTransformer(array('a', 'b', 'c'));
-    }
-
-    protected function tearDown()
-    {
-        $this->transformer = null;
     }
 }

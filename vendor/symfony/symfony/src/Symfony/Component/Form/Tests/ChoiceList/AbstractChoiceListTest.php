@@ -103,6 +103,35 @@ abstract class AbstractChoiceListTest extends TestCase
      */
     protected $key4;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->list = $this->createChoiceList();
+
+        $choices = $this->getChoices();
+
+        $this->values = $this->getValues();
+        $this->structuredValues = array_combine(array_keys($choices), $this->values);
+        $this->choices = array_combine($this->values, $choices);
+        $this->keys = array_combine($this->values, array_keys($choices));
+
+        // allow access to the individual entries without relying on their indices
+        reset($this->choices);
+        reset($this->values);
+        reset($this->keys);
+
+        for ($i = 1; $i <= 4; ++$i) {
+            $this->{'choice'.$i} = current($this->choices);
+            $this->{'value'.$i} = current($this->values);
+            $this->{'key'.$i} = current($this->keys);
+
+            next($this->choices);
+            next($this->values);
+            next($this->keys);
+        }
+    }
+
     public function testGetChoices()
     {
         $this->assertSame($this->choices, $this->list->getChoices());
@@ -147,12 +176,11 @@ abstract class AbstractChoiceListTest extends TestCase
         $this->assertSame(array($this->choice1, $this->choice2), $this->list->getChoicesForValues($values));
     }
 
+    // https://github.com/symfony/symfony/issues/3446
     public function testGetChoicesForValuesEmpty()
     {
         $this->assertSame(array(), $this->list->getChoicesForValues(array()));
     }
-
-    // https://github.com/symfony/symfony/issues/3446
 
     public function testGetValuesForChoices()
     {
@@ -188,35 +216,6 @@ abstract class AbstractChoiceListTest extends TestCase
         $values = $this->list->getValuesForChoices(array(null));
 
         $this->assertNotEmpty($this->list->getChoicesForValues($values));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->list = $this->createChoiceList();
-
-        $choices = $this->getChoices();
-
-        $this->values = $this->getValues();
-        $this->structuredValues = array_combine(array_keys($choices), $this->values);
-        $this->choices = array_combine($this->values, $choices);
-        $this->keys = array_combine($this->values, array_keys($choices));
-
-        // allow access to the individual entries without relying on their indices
-        reset($this->choices);
-        reset($this->values);
-        reset($this->keys);
-
-        for ($i = 1; $i <= 4; ++$i) {
-            $this->{'choice' . $i} = current($this->choices);
-            $this->{'value' . $i} = current($this->values);
-            $this->{'key' . $i} = current($this->keys);
-
-            next($this->choices);
-            next($this->values);
-            next($this->keys);
-        }
     }
 
     /**

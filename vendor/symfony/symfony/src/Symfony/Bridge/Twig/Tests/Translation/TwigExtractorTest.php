@@ -42,7 +42,7 @@ class TwigExtractorTest extends TestCase
 
         foreach ($messages as $key => $domain) {
             $this->assertTrue($catalogue->has($key, $domain));
-            $this->assertEquals('prefix' . $key, $catalogue->get($key, $domain));
+            $this->assertEquals('prefix'.$key, $catalogue->get($key, $domain));
         }
     }
 
@@ -87,7 +87,7 @@ class TwigExtractorTest extends TestCase
             $extractor->extract($resources, new MessageCatalogue('en'));
         } catch (\Twig_Error $e) {
             if (method_exists($e, 'getSourceContext')) {
-                $this->assertSame(dirname(__DIR__) . strtr('/Fixtures/extractor/syntax_error.twig', '/', DIRECTORY_SEPARATOR), $e->getFile());
+                $this->assertSame(dirname(__DIR__).strtr('/Fixtures/extractor/syntax_error.twig', '/', DIRECTORY_SEPARATOR), $e->getFile());
                 $this->assertSame(1, $e->getLine());
                 $this->assertSame('Unclosed "block".', $e->getMessage());
             } else {
@@ -103,9 +103,9 @@ class TwigExtractorTest extends TestCase
     public function resourcesWithSyntaxErrorsProvider()
     {
         return array(
-            array(__DIR__ . '/../Fixtures'),
-            array(__DIR__ . '/../Fixtures/extractor/syntax_error.twig'),
-            array(new \SplFileInfo(__DIR__ . '/../Fixtures/extractor/syntax_error.twig')),
+            array(__DIR__.'/../Fixtures'),
+            array(__DIR__.'/../Fixtures/extractor/syntax_error.twig'),
+            array(new \SplFileInfo(__DIR__.'/../Fixtures/extractor/syntax_error.twig')),
         );
     }
 
@@ -136,14 +136,14 @@ class TwigExtractorTest extends TestCase
      */
     public function resourceProvider()
     {
-        $directory = __DIR__ . '/../Fixtures/extractor/';
+        $directory = __DIR__.'/../Fixtures/extractor/';
 
         return array(
-            array($directory . 'with_translations.html.twig'),
-            array(array($directory . 'with_translations.html.twig')),
-            array(array(new \SplFileInfo($directory . 'with_translations.html.twig'))),
-            array(new \ArrayObject(array($directory . 'with_translations.html.twig'))),
-            array(new \ArrayObject(array(new \SplFileInfo($directory . 'with_translations.html.twig')))),
+            array($directory.'with_translations.html.twig'),
+            array(array($directory.'with_translations.html.twig')),
+            array(array(new \SplFileInfo($directory.'with_translations.html.twig'))),
+            array(new \ArrayObject(array($directory.'with_translations.html.twig'))),
+            array(new \ArrayObject(array(new \SplFileInfo($directory.'with_translations.html.twig')))),
         );
     }
 }

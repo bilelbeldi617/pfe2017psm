@@ -31,115 +31,6 @@ class DumpCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $command;
 
-    public function testEmptyAssetManager()
-    {
-        $this->am->expects($this->once())
-            ->method('getNames')
-            ->will($this->returnValue(array()));
-
-        $this->command->run(new ArrayInput(array()), new NullOutput());
-    }
-
-    public function testDumpOne()
-    {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-
-        $this->am->expects($this->once())
-            ->method('getNames')
-            ->will($this->returnValue(array('test_asset')));
-        $this->am->expects($this->once())
-            ->method('get')
-            ->with('test_asset')
-            ->will($this->returnValue($asset));
-        $this->am->expects($this->once())
-            ->method('hasFormula')
-            ->with('test_asset')
-            ->will($this->returnValue(true));
-        $this->am->expects($this->once())
-            ->method('getFormula')
-            ->with('test_asset')
-            ->will($this->returnValue(array()));
-        $this->am->expects($this->exactly(2))
-            ->method('isDebug')
-            ->will($this->returnValue(false));
-        $asset->expects($this->once())
-            ->method('getTargetPath')
-            ->will($this->returnValue('test_asset.css'));
-        $asset->expects($this->once())
-            ->method('dump')
-            ->will($this->returnValue('/* test_asset */'));
-        $asset->expects($this->any())
-            ->method('getVars')
-            ->will($this->returnValue(array()));
-        $asset->expects($this->any())
-            ->method('getValues')
-            ->will($this->returnValue(array()));
-
-        $this->command->run(new ArrayInput(array()), new NullOutput());
-
-        $this->assertFileExists($this->writeTo . '/test_asset.css');
-        $this->assertEquals('/* test_asset */', file_get_contents($this->writeTo . '/test_asset.css'));
-    }
-
-    public function testDumpDebug()
-    {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetCollection')->getMock();
-        $leaf = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-
-        $this->am->expects($this->once())
-            ->method('getNames')
-            ->will($this->returnValue(array('test_asset')));
-        $this->am->expects($this->once())
-            ->method('get')
-            ->with('test_asset')
-            ->will($this->returnValue($asset));
-        $this->am->expects($this->once())
-            ->method('hasFormula')
-            ->with('test_asset')
-            ->will($this->returnValue(true));
-        $this->am->expects($this->once())
-            ->method('getFormula')
-            ->with('test_asset')
-            ->will($this->returnValue(array()));
-        $this->am->expects($this->exactly(2))
-            ->method('isDebug')
-            ->will($this->returnValue(true));
-        $asset->expects($this->once())
-            ->method('getTargetPath')
-            ->will($this->returnValue('test_asset.css'));
-        $asset->expects($this->once())
-            ->method('dump')
-            ->will($this->returnValue('/* test_asset */'));
-        $asset->expects($this->once())
-            ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator(array($leaf))));
-        $asset->expects($this->any())
-            ->method('getVars')
-            ->will($this->returnValue(array()));
-        $asset->expects($this->any())
-            ->method('getValues')
-            ->will($this->returnValue(array()));
-        $leaf->expects($this->once())
-            ->method('getTargetPath')
-            ->will($this->returnValue('test_leaf.css'));
-        $leaf->expects($this->once())
-            ->method('dump')
-            ->will($this->returnValue('/* test_leaf */'));
-        $leaf->expects($this->any())
-            ->method('getVars')
-            ->will($this->returnValue(array()));
-        $leaf->expects($this->any())
-            ->method('getValues')
-            ->will($this->returnValue(array()));
-
-        $this->command->run(new ArrayInput(array()), new NullOutput());
-
-        $this->assertFileExists($this->writeTo . '/test_asset.css');
-        $this->assertFileExists($this->writeTo . '/test_leaf.css');
-        $this->assertEquals('/* test_asset */', file_get_contents($this->writeTo . '/test_asset.css'));
-        $this->assertEquals('/* test_leaf */', file_get_contents($this->writeTo . '/test_leaf.css'));
-    }
-
     protected function setUp()
     {
         if (!class_exists('Assetic\\AssetManager')) {
@@ -150,7 +41,7 @@ class DumpCommandTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Symfony Console is not available.');
         }
 
-        $this->writeTo = sys_get_temp_dir() . '/assetic_dump';
+        $this->writeTo = sys_get_temp_dir().'/assetic_dump';
 
         $this->application = $this->getMockBuilder('Symfony\\Bundle\\FrameworkBundle\\Console\\Application')
             ->disableOriginalConstructor()
@@ -213,8 +104,117 @@ class DumpCommandTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         if (is_dir($this->writeTo)) {
-            array_map('unlink', glob($this->writeTo . '/*'));
+            array_map('unlink', glob($this->writeTo.'/*'));
             rmdir($this->writeTo);
         }
+    }
+
+    public function testEmptyAssetManager()
+    {
+        $this->am->expects($this->once())
+            ->method('getNames')
+            ->will($this->returnValue(array()));
+
+        $this->command->run(new ArrayInput(array()), new NullOutput());
+    }
+
+    public function testDumpOne()
+    {
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+
+        $this->am->expects($this->once())
+            ->method('getNames')
+            ->will($this->returnValue(array('test_asset')));
+        $this->am->expects($this->once())
+            ->method('get')
+            ->with('test_asset')
+            ->will($this->returnValue($asset));
+        $this->am->expects($this->once())
+            ->method('hasFormula')
+            ->with('test_asset')
+            ->will($this->returnValue(true));
+        $this->am->expects($this->once())
+            ->method('getFormula')
+            ->with('test_asset')
+            ->will($this->returnValue(array()));
+        $this->am->expects($this->exactly(2))
+            ->method('isDebug')
+            ->will($this->returnValue(false));
+        $asset->expects($this->once())
+            ->method('getTargetPath')
+            ->will($this->returnValue('test_asset.css'));
+        $asset->expects($this->once())
+            ->method('dump')
+            ->will($this->returnValue('/* test_asset */'));
+        $asset->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue(array()));
+        $asset->expects($this->any())
+            ->method('getValues')
+            ->will($this->returnValue(array()));
+
+        $this->command->run(new ArrayInput(array()), new NullOutput());
+
+        $this->assertFileExists($this->writeTo.'/test_asset.css');
+        $this->assertEquals('/* test_asset */', file_get_contents($this->writeTo.'/test_asset.css'));
+    }
+
+    public function testDumpDebug()
+    {
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetCollection')->getMock();
+        $leaf = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+
+        $this->am->expects($this->once())
+            ->method('getNames')
+            ->will($this->returnValue(array('test_asset')));
+        $this->am->expects($this->once())
+            ->method('get')
+            ->with('test_asset')
+            ->will($this->returnValue($asset));
+        $this->am->expects($this->once())
+            ->method('hasFormula')
+            ->with('test_asset')
+            ->will($this->returnValue(true));
+        $this->am->expects($this->once())
+            ->method('getFormula')
+            ->with('test_asset')
+            ->will($this->returnValue(array()));
+        $this->am->expects($this->exactly(2))
+            ->method('isDebug')
+            ->will($this->returnValue(true));
+        $asset->expects($this->once())
+            ->method('getTargetPath')
+            ->will($this->returnValue('test_asset.css'));
+        $asset->expects($this->once())
+            ->method('dump')
+            ->will($this->returnValue('/* test_asset */'));
+        $asset->expects($this->once())
+            ->method('getIterator')
+            ->will($this->returnValue(new \ArrayIterator(array($leaf))));
+        $asset->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue(array()));
+        $asset->expects($this->any())
+            ->method('getValues')
+            ->will($this->returnValue(array()));
+        $leaf->expects($this->once())
+            ->method('getTargetPath')
+            ->will($this->returnValue('test_leaf.css'));
+        $leaf->expects($this->once())
+            ->method('dump')
+            ->will($this->returnValue('/* test_leaf */'));
+        $leaf->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue(array()));
+        $leaf->expects($this->any())
+            ->method('getValues')
+            ->will($this->returnValue(array()));
+
+        $this->command->run(new ArrayInput(array()), new NullOutput());
+
+        $this->assertFileExists($this->writeTo.'/test_asset.css');
+        $this->assertFileExists($this->writeTo.'/test_leaf.css');
+        $this->assertEquals('/* test_asset */', file_get_contents($this->writeTo.'/test_asset.css'));
+        $this->assertEquals('/* test_leaf */', file_get_contents($this->writeTo.'/test_leaf.css'));
     }
 }

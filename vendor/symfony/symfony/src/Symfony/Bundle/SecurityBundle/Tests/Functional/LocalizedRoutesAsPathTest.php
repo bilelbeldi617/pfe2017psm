@@ -13,16 +13,6 @@ namespace Symfony\Bundle\SecurityBundle\Tests\Functional;
 
 class LocalizedRoutesAsPathTest extends WebTestCase
 {
-    public static function setUpBeforeClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
     /**
      * @dataProvider getLocales
      */
@@ -30,17 +20,17 @@ class LocalizedRoutesAsPathTest extends WebTestCase
     {
         $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => 'localized_routes.yml'));
 
-        $crawler = $client->request('GET', '/' . $locale . '/login');
+        $crawler = $client->request('GET', '/'.$locale.'/login');
         $form = $crawler->selectButton('login')->form();
         $form['_username'] = 'johannes';
         $form['_password'] = 'test';
         $client->submit($form);
 
-        $this->assertRedirect($client->getResponse(), '/' . $locale . '/profile');
+        $this->assertRedirect($client->getResponse(), '/'.$locale.'/profile');
         $this->assertEquals('Profile', $client->followRedirect()->text());
 
-        $client->request('GET', '/' . $locale . '/logout');
-        $this->assertRedirect($client->getResponse(), '/' . $locale . '/');
+        $client->request('GET', '/'.$locale.'/logout');
+        $this->assertRedirect($client->getResponse(), '/'.$locale.'/');
         $this->assertEquals('Homepage', $client->followRedirect()->text());
     }
 
@@ -51,13 +41,13 @@ class LocalizedRoutesAsPathTest extends WebTestCase
     {
         $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => 'localized_form_failure_handler.yml'));
 
-        $crawler = $client->request('GET', '/' . $locale . '/login');
+        $crawler = $client->request('GET', '/'.$locale.'/login');
         $form = $crawler->selectButton('login')->form();
         $form['_username'] = 'johannes';
         $form['_password'] = 'foobar';
         $client->submit($form);
 
-        $this->assertRedirect($client->getResponse(), '/' . $locale . '/login');
+        $this->assertRedirect($client->getResponse(), '/'.$locale.'/login');
     }
 
     /**
@@ -67,8 +57,8 @@ class LocalizedRoutesAsPathTest extends WebTestCase
     {
         $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => 'localized_routes.yml'));
 
-        $client->request('GET', '/' . $locale . '/secure/');
-        $this->assertRedirect($client->getResponse(), '/' . $locale . '/login');
+        $client->request('GET', '/'.$locale.'/secure/');
+        $this->assertRedirect($client->getResponse(), '/'.$locale.'/login');
     }
 
     /**
@@ -78,12 +68,22 @@ class LocalizedRoutesAsPathTest extends WebTestCase
     {
         $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => 'localized_routes_with_forward.yml'));
 
-        $crawler = $client->request('GET', '/' . $locale . '/secure/');
-        $this->assertCount(1, $crawler->selectButton('login'), (string)$client->getResponse());
+        $crawler = $client->request('GET', '/'.$locale.'/secure/');
+        $this->assertCount(1, $crawler->selectButton('login'), (string) $client->getResponse());
     }
 
     public function getLocales()
     {
         return array(array('en'), array('de'));
+    }
+
+    public static function setUpBeforeClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
     }
 }

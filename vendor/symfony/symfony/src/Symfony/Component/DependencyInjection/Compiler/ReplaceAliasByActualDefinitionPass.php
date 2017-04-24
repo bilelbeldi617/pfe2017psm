@@ -42,7 +42,7 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
         $seenAliasTargets = array();
         $replacements = array();
         foreach ($container->getAliases() as $definitionId => $target) {
-            $targetId = (string)$target;
+            $targetId = (string) $target;
             // Special case: leave this target alone
             if ('service_container' === $targetId) {
                 continue;
@@ -85,9 +85,9 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
     /**
      * Recursively updates references in an array.
      *
-     * @param array $replacements Table of aliases to replace
+     * @param array  $replacements Table of aliases to replace
      * @param string $definitionId Identifier of this definition
-     * @param array $arguments Where to replace the aliases
+     * @param array  $arguments    Where to replace the aliases
      *
      * @return array
      */
@@ -103,7 +103,7 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
             if (!$argument instanceof Reference) {
                 continue;
             }
-            $referenceId = (string)$argument;
+            $referenceId = (string) $argument;
             if (!isset($replacements[$referenceId])) {
                 continue;
             }
@@ -119,8 +119,8 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
     /**
      * Returns the updated reference for the factory service.
      *
-     * @param array $replacements Table of aliases to replace
-     * @param string|null $referenceId Factory service reference identifier
+     * @param array       $replacements Table of aliases to replace
+     * @param string|null $referenceId  Factory service reference identifier
      *
      * @return string|null
      */
@@ -135,7 +135,7 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
 
     private function updateFactoryReference(array $replacements, $factory)
     {
-        if (is_array($factory) && $factory[0] instanceof Reference && isset($replacements[$referenceId = (string)$factory[0]])) {
+        if (is_array($factory) && $factory[0] instanceof Reference && isset($replacements[$referenceId = (string) $factory[0]])) {
             $factory[0] = new Reference($replacements[$referenceId], $factory[0]->getInvalidBehavior());
         }
 

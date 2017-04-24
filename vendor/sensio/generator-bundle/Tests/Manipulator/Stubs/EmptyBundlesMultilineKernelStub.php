@@ -17,7 +17,9 @@ class EmptyBundlesMultilineKernelStub extends KernelForTest
 {
     public function registerBundles()
     {
-        $bundles = array();
+        $bundles = array(
+
+        );
 
         return $bundles;
     }

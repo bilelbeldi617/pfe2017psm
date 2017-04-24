@@ -22,6 +22,20 @@ class MemberMetadataTest extends TestCase
 {
     protected $metadata;
 
+    protected function setUp()
+    {
+        $this->metadata = new TestMemberMetadata(
+            'Symfony\Component\Validator\Tests\Fixtures\Entity',
+            'getLastName',
+            'lastName'
+        );
+    }
+
+    protected function tearDown()
+    {
+        $this->metadata = null;
+    }
+
     /**
      * @group legacy
      */
@@ -91,20 +105,6 @@ class MemberMetadataTest extends TestCase
         $metadata = unserialize(serialize($this->metadata));
 
         $this->assertEquals($this->metadata, $metadata);
-    }
-
-    protected function setUp()
-    {
-        $this->metadata = new TestMemberMetadata(
-            'Symfony\Component\Validator\Tests\Fixtures\Entity',
-            'getLastName',
-            'lastName'
-        );
-    }
-
-    protected function tearDown()
-    {
-        $this->metadata = null;
     }
 }
 

@@ -50,8 +50,8 @@ class FormErrorIterator implements \RecursiveIterator, \SeekableIterator, \Array
     /**
      * Creates a new iterator.
      *
-     * @param FormInterface $form The erroneous form
-     * @param array $errors The form errors
+     * @param FormInterface $form   The erroneous form
+     * @param array         $errors The form errors
      *
      * @throws InvalidArgumentException If the errors are invalid
      */
@@ -60,7 +60,7 @@ class FormErrorIterator implements \RecursiveIterator, \SeekableIterator, \Array
         foreach ($errors as $error) {
             if (!($error instanceof FormError || $error instanceof self)) {
                 throw new InvalidArgumentException(sprintf(
-                    'The errors must be instances of ' .
+                    'The errors must be instances of '.
                     '"\Symfony\Component\Form\FormError" or "%s". Got: "%s".',
                     __CLASS__,
                     is_object($error) ? get_class($error) : gettype($error)
@@ -83,27 +83,15 @@ class FormErrorIterator implements \RecursiveIterator, \SeekableIterator, \Array
 
         foreach ($this->errors as $error) {
             if ($error instanceof FormError) {
-                $string .= 'ERROR: ' . $error->getMessage() . "\n";
+                $string .= 'ERROR: '.$error->getMessage()."\n";
             } else {
                 /* @var $error FormErrorIterator */
-                $string .= $error->form->getName() . ":\n";
-                $string .= self::indent((string)$error);
+                $string .= $error->form->getName().":\n";
+                $string .= self::indent((string) $error);
             }
         }
 
         return $string;
-    }
-
-    /**
-     * Utility function for indenting multi-line strings.
-     *
-     * @param string $string The string
-     *
-     * @return string The indented string
-     */
-    private static function indent($string)
-    {
-        return rtrim(self::INDENTATION . str_replace("\n", "\n" . self::INDENTATION, $string), ' ');
     }
 
     /**
@@ -190,7 +178,7 @@ class FormErrorIterator implements \RecursiveIterator, \SeekableIterator, \Array
     public function offsetGet($position)
     {
         if (!isset($this->errors[$position])) {
-            throw new OutOfBoundsException('The offset ' . $position . ' does not exist.');
+            throw new OutOfBoundsException('The offset '.$position.' does not exist.');
         }
 
         return $this->errors[$position];
@@ -267,7 +255,7 @@ class FormErrorIterator implements \RecursiveIterator, \SeekableIterator, \Array
     public function seek($position)
     {
         if (!isset($this->errors[$position])) {
-            throw new OutOfBoundsException('The offset ' . $position . ' does not exist.');
+            throw new OutOfBoundsException('The offset '.$position.' does not exist.');
         }
 
         reset($this->errors);
@@ -275,5 +263,17 @@ class FormErrorIterator implements \RecursiveIterator, \SeekableIterator, \Array
         while ($position !== key($this->errors)) {
             next($this->errors);
         }
+    }
+
+    /**
+     * Utility function for indenting multi-line strings.
+     *
+     * @param string $string The string
+     *
+     * @return string The indented string
+     */
+    private static function indent($string)
+    {
+        return rtrim(self::INDENTATION.str_replace("\n", "\n".self::INDENTATION, $string), ' ');
     }
 }

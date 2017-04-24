@@ -62,6 +62,20 @@ class DoctrineDataCollectorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $entityFQCN
+     *
+     * @return ClassMetadataInfo
+     */
+    private function createEntityMetadata($entityFQCN)
+    {
+        $metadata = new ClassMetadataInfo($entityFQCN);
+        $metadata->name = $entityFQCN;
+        $metadata->reflClass = new \ReflectionClass('stdClass');
+
+        return $metadata;
+    }
+
+    /**
      * @param array $managers
      *
      * @return DoctrineDataCollector
@@ -85,19 +99,5 @@ class DoctrineDataCollectorTest extends \PHPUnit_Framework_TestCase
         $collector = new DoctrineDataCollector($registry);
 
         return $collector;
-    }
-
-    /**
-     * @param string $entityFQCN
-     *
-     * @return ClassMetadataInfo
-     */
-    private function createEntityMetadata($entityFQCN)
-    {
-        $metadata = new ClassMetadataInfo($entityFQCN);
-        $metadata->name = $entityFQCN;
-        $metadata->reflClass = new \ReflectionClass('stdClass');
-
-        return $metadata;
     }
 }

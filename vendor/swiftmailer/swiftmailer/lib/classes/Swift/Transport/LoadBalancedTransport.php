@@ -16,38 +16,29 @@
 class Swift_Transport_LoadBalancedTransport implements Swift_Transport
 {
     /**
-     * The Transports which are used in rotation.
-     *
-     * @var Swift_Transport[]
-     */
-    protected $_transports = array();
-    /**
-     * The Transport used in the last successful send operation.
-     *
-     * @var Swift_Transport
-     */
-    protected $_lastUsedTransport = null;
-    /**
      * Transports which are deemed useless.
      *
      * @var Swift_Transport[]
      */
     private $_deadTransports = array();
 
-    // needed as __construct is called from elsewhere explicitly
-
-    public function __construct()
-    {
-    }
+    /**
+     * The Transports which are used in rotation.
+     *
+     * @var Swift_Transport[]
+     */
+    protected $_transports = array();
 
     /**
-     * Get $transports to delegate to.
+     * The Transport used in the last successful send operation.
      *
-     * @return Swift_Transport[]
+     * @var Swift_Transport
      */
-    public function getTransports()
+    protected $_lastUsedTransport = null;
+
+    // needed as __construct is called from elsewhere explicitly
+    public function __construct()
     {
-        return array_merge($this->_transports, $this->_deadTransports);
     }
 
     /**
@@ -59,6 +50,16 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     {
         $this->_transports = $transports;
         $this->_deadTransports = array();
+    }
+
+    /**
+     * Get $transports to delegate to.
+     *
+     * @return Swift_Transport[]
+     */
+    public function getTransports()
+    {
+        return array_merge($this->_transports, $this->_deadTransports);
     }
 
     /**
@@ -106,7 +107,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
      * The return value is the number of recipients who were accepted for delivery.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] $failedRecipients An array of failures by-reference
+     * @param string[]           $failedRecipients An array of failures by-reference
      *
      * @return int
      */
@@ -117,7 +118,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
         $this->_lastUsedTransport = null;
 
         for ($i = 0; $i < $maxTransports
-        && $transport = $this->_getNextTransport(); ++$i) {
+            && $transport = $this->_getNextTransport(); ++$i) {
             try {
                 if (!$transport->isStarted()) {
                     $transport->start();
@@ -134,10 +135,22 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
         if (count($this->_transports) == 0) {
             throw new Swift_TransportException(
                 'All Transports in LoadBalancedTransport failed, or no Transports available'
-            );
+                );
         }
 
         return $sent;
+    }
+
+    /**
+     * Register a plugin.
+     *
+     * @param Swift_Events_EventListener $plugin
+     */
+    public function registerPlugin(Swift_Events_EventListener $plugin)
+    {
+        foreach ($this->_transports as $transport) {
+            $transport->registerPlugin($plugin);
+        }
     }
 
     /**
@@ -165,18 +178,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
             } catch (Exception $e) {
             }
             $this->_deadTransports[] = $transport;
-        }
-    }
-
-    /**
-     * Register a plugin.
-     *
-     * @param Swift_Events_EventListener $plugin
-     */
-    public function registerPlugin(Swift_Events_EventListener $plugin)
-    {
-        foreach ($this->_transports as $transport) {
-            $transport->registerPlugin($plugin);
         }
     }
 }

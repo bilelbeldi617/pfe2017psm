@@ -26,28 +26,6 @@ class AbstractRememberMeServicesTest extends TestCase
         $this->assertEquals('foo', $service->getRememberMeParameter());
     }
 
-    protected function getService($userProvider = null, $options = array(), $logger = null)
-    {
-        if (null === $userProvider) {
-            $userProvider = $this->getProvider();
-        }
-
-        return $this->getMockForAbstractClass('Symfony\Component\Security\Http\RememberMe\AbstractRememberMeServices', array(
-            array($userProvider), 'foosecret', 'fookey', $options, $logger,
-        ));
-    }
-
-    protected function getProvider()
-    {
-        $provider = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserProviderInterface')->getMock();
-        $provider
-            ->expects($this->any())
-            ->method('supportsClass')
-            ->will($this->returnValue(true));
-
-        return $provider;
-    }
-
     public function testGetSecret()
     {
         $service = $this->getService();
@@ -73,7 +51,8 @@ class AbstractRememberMeServicesTest extends TestCase
         $service
             ->expects($this->once())
             ->method('processAutoLoginCookie')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $service->autoLogin($request);
     }
@@ -88,12 +67,14 @@ class AbstractRememberMeServicesTest extends TestCase
         $user
             ->expects($this->once())
             ->method('getRoles')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue(array()))
+        ;
 
         $service
             ->expects($this->once())
             ->method('processAutoLoginCookie')
-            ->will($this->returnValue($user));
+            ->will($this->returnValue($user))
+        ;
 
         $returnedToken = $service->autoLogin($request);
 
@@ -150,11 +131,13 @@ class AbstractRememberMeServicesTest extends TestCase
         $token
             ->expects($this->once())
             ->method('getUser')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         $service
             ->expects($this->never())
-            ->method('onLoginSuccess');
+            ->method('onLoginSuccess')
+        ;
 
         $this->assertFalse($request->request->has('foo'));
 
@@ -171,12 +154,14 @@ class AbstractRememberMeServicesTest extends TestCase
         $token
             ->expects($this->once())
             ->method('getUser')
-            ->will($this->returnValue($account));
+            ->will($this->returnValue($account))
+        ;
 
         $service
             ->expects($this->never())
             ->method('onLoginSuccess')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $this->assertFalse($request->request->has('foo'));
 
@@ -193,12 +178,14 @@ class AbstractRememberMeServicesTest extends TestCase
         $token
             ->expects($this->once())
             ->method('getUser')
-            ->will($this->returnValue($account));
+            ->will($this->returnValue($account))
+        ;
 
         $service
             ->expects($this->once())
             ->method('onLoginSuccess')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $service->loginSuccess($request, $response, $token);
     }
@@ -218,12 +205,14 @@ class AbstractRememberMeServicesTest extends TestCase
         $token
             ->expects($this->once())
             ->method('getUser')
-            ->will($this->returnValue($account));
+            ->will($this->returnValue($account))
+        ;
 
         $service
             ->expects($this->once())
             ->method('onLoginSuccess')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $service->loginSuccess($request, $response, $token);
     }
@@ -243,12 +232,14 @@ class AbstractRememberMeServicesTest extends TestCase
         $token
             ->expects($this->once())
             ->method('getUser')
-            ->will($this->returnValue($account));
+            ->will($this->returnValue($account))
+        ;
 
         $service
             ->expects($this->once())
             ->method('onLoginSuccess')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $service->loginSuccess($request, $response, $token);
     }
@@ -275,6 +266,41 @@ class AbstractRememberMeServicesTest extends TestCase
         $this->assertSame($cookieParts, $decoded);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage cookie delimiter
+     */
+    public function testThereShouldBeNoCookieDelimiterInCookieParts()
+    {
+        $cookieParts = array('aa', 'b'.AbstractRememberMeServices::COOKIE_DELIMITER.'b', 'cc');
+        $service = $this->getService();
+
+        $this->callProtected($service, 'encodeCookie', array($cookieParts));
+    }
+
+    protected function getService($userProvider = null, $options = array(), $logger = null)
+    {
+        if (null === $userProvider) {
+            $userProvider = $this->getProvider();
+        }
+
+        return $this->getMockForAbstractClass('Symfony\Component\Security\Http\RememberMe\AbstractRememberMeServices', array(
+            array($userProvider), 'foosecret', 'fookey', $options, $logger,
+        ));
+    }
+
+    protected function getProvider()
+    {
+        $provider = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserProviderInterface')->getMock();
+        $provider
+            ->expects($this->any())
+            ->method('supportsClass')
+            ->will($this->returnValue(true))
+        ;
+
+        return $provider;
+    }
+
     private function callProtected($object, $method, array $args)
     {
         $reflection = new \ReflectionClass(get_class($object));
@@ -282,17 +308,5 @@ class AbstractRememberMeServicesTest extends TestCase
         $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod->invokeArgs($object, $args);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage cookie delimiter
-     */
-    public function testThereShouldBeNoCookieDelimiterInCookieParts()
-    {
-        $cookieParts = array('aa', 'b' . AbstractRememberMeServices::COOKIE_DELIMITER . 'b', 'cc');
-        $service = $this->getService();
-
-        $this->callProtected($service, 'encodeCookie', array($cookieParts));
     }
 }

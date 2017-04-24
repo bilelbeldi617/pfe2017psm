@@ -14,49 +14,7 @@ use projetBundle\Entity\Emploi;
  */
 class Groupe
 {
-    private $nombreEleve;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-    /**
-     * use projetBundle\Entity\Emploi;
-     * @ORM\OneToOne(targetEntity="Emploi", inversedBy="groupe")
-     * @ORM\JoinColumn(name="emploi_id", referencedColumnName="id")
-     */
-    private $emploi;
-    /**
-     * use projetBundle\Entity\Registre;
-     * @ORM\OneToOne(targetEntity="Registre", mappedBy="groupe")
-     */
-    private $registre;
-    /**
-     * use projetBundle\Entity\Cahier;
-     * @ORM\OneToOne(targetEntity="Cahier", mappedBy="groupe")
-     */
-    private $cahier;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="num_groupe", type="integer")
-     */
-    private $numGroupe;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom_groupe", type="string", length=100)
-     */
-    private $nomGroupe;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="niveau_groupe", type="integer")
-     */
-    private $niveauGroupe;
+    private $nombreEleve ;
 
     /**
      * @return mixed
@@ -73,6 +31,33 @@ class Groupe
     {
         $this->nombreEleve = $nombreEleve;
     }
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * use projetBundle\Entity\Emploi;
+     * @ORM\OneToOne(targetEntity="Emploi", inversedBy="groupe")
+     * @ORM\JoinColumn(name="emploi_id", referencedColumnName="id")
+     */
+    private $emploi;
+
+    /**
+     * use projetBundle\Entity\Registre;
+     * @ORM\OneToOne(targetEntity="Registre", mappedBy="groupe")
+     */
+    private $registre;
+
+    /**
+     * use projetBundle\Entity\Cahier;
+     * @ORM\OneToOne(targetEntity="Cahier", mappedBy="groupe")
+     */
+    private $cahier;
 
     /**
      * @return mixed
@@ -122,6 +107,32 @@ class Groupe
         $this->registre = $registre;
     }
 
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="num_groupe", type="integer")
+     */
+    private $numGroupe;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_groupe", type="string", length=100)
+     */
+    private $nomGroupe;
+
+
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="niveau_groupe", type="integer")
+     */
+    private $niveauGroupe;
+
     /**
      * @return int
      */
@@ -138,15 +149,9 @@ class Groupe
         $this->niveauGroupe = $niveauGroupe;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+
+
+
 
     /**
      * @param int $id
@@ -156,14 +161,16 @@ class Groupe
         $this->id = $id;
     }
 
+
+
     /**
-     * Get numGroupe
+     * Get id
      *
-     * @return integer
+     * @return integer 
      */
-    public function getNumGroupe()
+    public function getId()
     {
-        return $this->numGroupe;
+        return $this->id;
     }
 
     /**
@@ -180,13 +187,13 @@ class Groupe
     }
 
     /**
-     * Get nomGroupe
+     * Get numGroupe
      *
-     * @return string
+     * @return integer 
      */
-    public function getNomGroupe()
+    public function getNumGroupe()
     {
-        return $this->nomGroupe;
+        return $this->numGroupe;
     }
 
     /**
@@ -200,5 +207,15 @@ class Groupe
         $this->nomGroupe = $nomGroupe;
 
         return $this;
+    }
+
+    /**
+     * Get nomGroupe
+     *
+     * @return string 
+     */
+    public function getNomGroupe()
+    {
+        return $this->nomGroupe;
     }
 }

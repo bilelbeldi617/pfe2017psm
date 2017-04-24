@@ -26,7 +26,7 @@ class PhpDriverTest extends BaseDriverTest
     protected function getDriver()
     {
         return new PhpDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/php',
+            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/php',
         )));
     }
 }

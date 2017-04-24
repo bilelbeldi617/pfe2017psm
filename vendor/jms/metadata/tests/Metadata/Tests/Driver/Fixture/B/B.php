@@ -2,6 +2,4 @@
 
 namespace Metadata\Tests\Driver\Fixture\B;
 
-class B
-{
-}
+class B { }

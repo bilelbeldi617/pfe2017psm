@@ -30,7 +30,7 @@ abstract class AbstractComparisonValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof AbstractComparison) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\AbstractComparison');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\AbstractComparison');
         }
 
         if (null === $value) {

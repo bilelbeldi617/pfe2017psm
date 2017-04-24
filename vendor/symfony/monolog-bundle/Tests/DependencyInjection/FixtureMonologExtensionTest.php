@@ -48,23 +48,6 @@ abstract class FixtureMonologExtensionTest extends DependencyInjectionTest
         $this->assertDICConstructorArguments($handler, array(new Reference('monolog.handler.nested2'), array(\Monolog\Logger::WARNING, \Monolog\Logger::ERROR), \Monolog\Logger::EMERGENCY, true));
     }
 
-    protected function getContainer($fixture)
-    {
-        $container = new ContainerBuilder();
-        $container->registerExtension(new MonologExtension());
-
-        $this->loadFixture($container, $fixture);
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->addCompilerPass(new LoggerChannelPass());
-        $container->compile();
-
-        return $container;
-    }
-
-    abstract protected function loadFixture(ContainerBuilder $container, $fixture);
-
     public function testLoadWithOverwriting()
     {
         $container = $this->getContainer('overwriting');
@@ -175,7 +158,7 @@ abstract class FixtureMonologExtensionTest extends DependencyInjectionTest
     {
         $container = $this->getContainer('multiple_email_recipients');
 
-        $this->assertEquals(array(
+        $this->assertEquals (array(
             new Reference('mailer'),
             'error@example.com',
             array('dev1@example.com', 'dev2@example.com'),
@@ -211,4 +194,21 @@ abstract class FixtureMonologExtensionTest extends DependencyInjectionTest
             }
         }
     }
+
+    protected function getContainer($fixture)
+    {
+        $container = new ContainerBuilder();
+        $container->registerExtension(new MonologExtension());
+
+        $this->loadFixture($container, $fixture);
+
+        $container->getCompilerPassConfig()->setOptimizationPasses(array());
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->addCompilerPass(new LoggerChannelPass());
+        $container->compile();
+
+        return $container;
+    }
+
+    abstract protected function loadFixture(ContainerBuilder $container, $fixture);
 }

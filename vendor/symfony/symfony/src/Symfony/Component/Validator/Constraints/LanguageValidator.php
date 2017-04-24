@@ -30,7 +30,7 @@ class LanguageValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Language) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Language');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Language');
         }
 
         if (null === $value || '' === $value) {
@@ -41,7 +41,7 @@ class LanguageValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         $languages = Intl::getLanguageBundle()->getLanguageNames();
 
         if (!isset($languages[$value])) {

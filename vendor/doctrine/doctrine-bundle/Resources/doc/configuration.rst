@@ -1,5 +1,5 @@
 .. index::
-single: Doctrine; ORM Configuration Reference
+   single: Doctrine; ORM Configuration Reference
    single: Configuration Reference; Doctrine ORM
 
 Configuration Reference
@@ -782,7 +782,7 @@ can control. The following configuration options exist for a mapping:
     of a bundle.
 
 .. index::
-single: Configuration; Doctrine DBAL
+    single: Configuration; Doctrine DBAL
     single: Doctrine; DBAL configuration
 
 Filters Configuration

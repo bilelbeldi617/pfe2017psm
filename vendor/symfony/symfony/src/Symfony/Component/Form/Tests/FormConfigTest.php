@@ -99,13 +99,6 @@ class FormConfigTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Form\NativeRequestHandler', $config->getRequestHandler());
     }
 
-    private function getConfigBuilder($name = 'name')
-    {
-        $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-
-        return new FormConfigBuilder($name, null, $dispatcher);
-    }
-
     public function testGetRequestHandlerReusesNativeRequestHandlerInstance()
     {
         $config1 = $this->getConfigBuilder()->getFormConfig();
@@ -145,5 +138,12 @@ class FormConfigTest extends TestCase
     public function testSetMethodDoesNotAllowOtherValues()
     {
         $this->getConfigBuilder()->setMethod('foo');
+    }
+
+    private function getConfigBuilder($name = 'name')
+    {
+        $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+
+        return new FormConfigBuilder($name, null, $dispatcher);
     }
 }

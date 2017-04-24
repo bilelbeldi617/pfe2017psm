@@ -19,6 +19,35 @@ class DateTimeToLocalizedStringTransformerTest extends DateTimeTestCase
     protected $dateTime;
     protected $dateTimeWithoutSeconds;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // Since we test against "de_AT", we need the full implementation
+        IntlTestHelper::requireFullIntl($this, '57.1');
+
+        \Locale::setDefault('de_AT');
+
+        $this->dateTime = new \DateTime('2010-02-03 04:05:06 UTC');
+        $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
+    }
+
+    protected function tearDown()
+    {
+        $this->dateTime = null;
+        $this->dateTimeWithoutSeconds = null;
+    }
+
+    public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
+    {
+        if ($expected instanceof \DateTime && $actual instanceof \DateTime) {
+            $expected = $expected->format('c');
+            $actual = $actual->format('c');
+        }
+
+        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+    }
+
     public function dataProvider()
     {
         return array(
@@ -68,16 +97,6 @@ class DateTimeToLocalizedStringTransformerTest extends DateTimeTestCase
         $input = new \DateTime($input);
 
         $this->assertEquals($output, $transformer->transform($input));
-    }
-
-    public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
-    {
-        if ($expected instanceof \DateTime && $actual instanceof \DateTime) {
-            $expected = $expected->format('c');
-            $actual = $actual->format('c');
-        }
-
-        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
 
     public function testTransformFullTime()
@@ -315,24 +334,5 @@ class DateTimeToLocalizedStringTransformerTest extends DateTimeTestCase
     {
         $transformer = new DateTimeToLocalizedStringTransformer('UTC', 'UTC');
         $transformer->reverseTransform('1789-07-14');
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        // Since we test against "de_AT", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, '57.1');
-
-        \Locale::setDefault('de_AT');
-
-        $this->dateTime = new \DateTime('2010-02-03 04:05:06 UTC');
-        $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
-    }
-
-    protected function tearDown()
-    {
-        $this->dateTime = null;
-        $this->dateTimeWithoutSeconds = null;
     }
 }

@@ -31,7 +31,7 @@ class DirectoryLoader extends FileLoader
 
         foreach (scandir($path) as $dir) {
             if ('.' !== $dir[0]) {
-                if (is_dir($path . '/' . $dir)) {
+                if (is_dir($path.'/'.$dir)) {
                     $dir .= '/'; // append / to allow recursion
                 }
 

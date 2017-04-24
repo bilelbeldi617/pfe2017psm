@@ -27,17 +27,18 @@ use Assetic\Util\LessUtils;
  */
 class LessphpFilter implements DependencyExtractorInterface
 {
+    private $presets = array();
+    private $formatter;
+    private $preserveComments;
+    private $customFunctions = array();
+    private $options = array();
+
     /**
      * Lessphp Load Paths
      *
      * @var array
      */
     protected $loadPaths = array();
-    private $presets = array();
-    private $formatter;
-    private $preserveComments;
-    private $customFunctions = array();
-    private $options = array();
 
     /**
      * Adds a load path to the paths used by lessphp
@@ -63,10 +64,10 @@ class LessphpFilter implements DependencyExtractorInterface
     {
         $this->presets = $presets;
     }
-
+    
     public function setOptions(array $options)
     {
-        $this->options = $options;
+    	$this->options = $options;
     }
 
     /**
@@ -107,9 +108,9 @@ class LessphpFilter implements DependencyExtractorInterface
         if (null !== $this->preserveComments) {
             $lc->setPreserveComments($this->preserveComments);
         }
-
-        if (method_exists($lc, 'setOptions') && count($this->options) > 0) {
-            $lc->setOptions($this->options);
+        
+        if (method_exists($lc, 'setOptions') && count($this->options) > 0 ) {
+        	$lc->setOptions($this->options);
         }
 
         $asset->setContent($lc->parse($asset->getContent(), $this->presets));
@@ -148,7 +149,7 @@ class LessphpFilter implements DependencyExtractorInterface
             }
 
             foreach ($loadPaths as $loadPath) {
-                if (file_exists($file = $loadPath . '/' . $reference)) {
+                if (file_exists($file = $loadPath.'/'.$reference)) {
                     $coll = $factory->createAsset($file, array(), array('root' => $loadPath));
                     foreach ($coll as $leaf) {
                         $leaf->ensureFilter($this);

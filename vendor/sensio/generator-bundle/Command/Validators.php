@@ -60,6 +60,73 @@ class Validators
         return $namespace;
     }
 
+    public static function validateBundleName($bundle)
+    {
+        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $bundle)) {
+            throw new \InvalidArgumentException(sprintf('The bundle name %s contains invalid characters.', $bundle));
+        }
+
+        if (!preg_match('/Bundle$/', $bundle)) {
+            throw new \InvalidArgumentException('The bundle name must end with Bundle.');
+        }
+
+        return $bundle;
+    }
+
+    public static function validateControllerName($controller)
+    {
+        try {
+            self::validateEntityName($controller);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The controller name must contain a : ("%s" given, expecting something like AcmeBlogBundle:Post)',
+                    $controller
+                )
+            );
+        }
+
+        return $controller;
+    }
+
+    public static function validateFormat($format)
+    {
+        if (!$format) {
+            throw new \RuntimeException('Please enter a configuration format.');
+        }
+
+        $format = strtolower($format);
+
+        // in case they typed "yaml", but ok with that
+        if ($format == 'yaml') {
+            $format = 'yml';
+        }
+
+        if (!in_array($format, array('php', 'xml', 'yml', 'annotation'))) {
+            throw new \RuntimeException(sprintf('Format "%s" is not supported.', $format));
+        }
+
+        return $format;
+    }
+
+    /**
+     * Performs basic checks in entity name.
+     *
+     * @param string $entity
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function validateEntityName($entity)
+    {
+        if (!preg_match('{^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*:[a-zA-Z0-9_\x7f-\xff\\\/]+$}', $entity)) {
+            throw new \InvalidArgumentException(sprintf('The entity name isn\'t valid ("%s" given, expecting something like AcmeBlogBundle:Blog/Post)', $entity));
+        }
+
+        return $entity;
+    }
+
     public static function getReservedWords()
     {
         return array(
@@ -139,72 +206,5 @@ class Validators
             'print',
             'unset',
         );
-    }
-
-    public static function validateBundleName($bundle)
-    {
-        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $bundle)) {
-            throw new \InvalidArgumentException(sprintf('The bundle name %s contains invalid characters.', $bundle));
-        }
-
-        if (!preg_match('/Bundle$/', $bundle)) {
-            throw new \InvalidArgumentException('The bundle name must end with Bundle.');
-        }
-
-        return $bundle;
-    }
-
-    public static function validateControllerName($controller)
-    {
-        try {
-            self::validateEntityName($controller);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'The controller name must contain a : ("%s" given, expecting something like AcmeBlogBundle:Post)',
-                    $controller
-                )
-            );
-        }
-
-        return $controller;
-    }
-
-    /**
-     * Performs basic checks in entity name.
-     *
-     * @param string $entity
-     *
-     * @return string
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function validateEntityName($entity)
-    {
-        if (!preg_match('{^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*:[a-zA-Z0-9_\x7f-\xff\\\/]+$}', $entity)) {
-            throw new \InvalidArgumentException(sprintf('The entity name isn\'t valid ("%s" given, expecting something like AcmeBlogBundle:Blog/Post)', $entity));
-        }
-
-        return $entity;
-    }
-
-    public static function validateFormat($format)
-    {
-        if (!$format) {
-            throw new \RuntimeException('Please enter a configuration format.');
-        }
-
-        $format = strtolower($format);
-
-        // in case they typed "yaml", but ok with that
-        if ($format == 'yaml') {
-            $format = 'yml';
-        }
-
-        if (!in_array($format, array('php', 'xml', 'yml', 'annotation'))) {
-            throw new \RuntimeException(sprintf('Format "%s" is not supported.', $format));
-        }
-
-        return $format;
     }
 }

@@ -16,6 +16,17 @@ class __TwigTemplate_3b704945adf457a05f6b60edc99bb9ec730d4b35daf8a832a99c199a5ea
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 2
     public function block_title($context, array $blocks = array())
     {
         // line 3
@@ -23,6 +34,7 @@ class __TwigTemplate_3b704945adf457a05f6b60edc99bb9ec730d4b35daf8a832a99c199a5ea
 ";
     }
 
+    // line 6
     public function block_script($context, array $blocks = array())
     {
         // line 7
@@ -73,8 +85,7 @@ class __TwigTemplate_3b704945adf457a05f6b60edc99bb9ec730d4b35daf8a832a99c199a5ea
 ";
     }
 
-    // line 2
-
+    // line 47
     public function block_mainContent($context, array $blocks = array())
     {
         // line 48
@@ -144,14 +155,10 @@ class __TwigTemplate_3b704945adf457a05f6b60edc99bb9ec730d4b35daf8a832a99c199a5ea
 ";
     }
 
-    // line 6
-
     public function getTemplateName()
     {
         return "@projet/Default/Admin/listerGroupe.html.twig";
     }
-
-    // line 47
 
     public function isTraitable()
     {
@@ -160,13 +167,13 @@ class __TwigTemplate_3b704945adf457a05f6b60edc99bb9ec730d4b35daf8a832a99c199a5ea
 
     public function getDebugInfo()
     {
-        return array(121 => 63, 110 => 61, 106 => 60, 92 => 48, 89 => 47, 70 => 31, 54 => 18, 41 => 7, 38 => 6, 33 => 3, 30 => 2, 11 => 1,);
+        return array (  121 => 63,  110 => 61,  106 => 60,  92 => 48,  89 => 47,  70 => 31,  54 => 18,  41 => 7,  38 => 6,  33 => 3,  30 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -174,15 +181,5 @@ class __TwigTemplate_3b704945adf457a05f6b60edc99bb9ec730d4b35daf8a832a99c199a5ea
     public function getSourceContext()
     {
         return new Twig_Source("", "@projet/Default/Admin/listerGroupe.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Admin\\listerGroupe.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

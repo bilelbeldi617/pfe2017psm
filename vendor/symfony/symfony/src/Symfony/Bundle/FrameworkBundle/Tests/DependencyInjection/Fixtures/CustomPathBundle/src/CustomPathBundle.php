@@ -17,6 +17,6 @@ class CustomPathBundle extends Bundle
 {
     public function getPath()
     {
-        return __DIR__ . '/..';
+        return __DIR__.'/..';
     }
 }

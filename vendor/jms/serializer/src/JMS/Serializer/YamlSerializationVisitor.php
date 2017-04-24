@@ -46,6 +46,14 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->writer = new Writer();
     }
 
+    public function setNavigator(GraphNavigator $navigator)
+    {
+        $this->navigator = $navigator;
+        $this->writer->reset();
+        $this->stack = new \SplStack;
+        $this->metadataStack = new \SplStack;
+    }
+
     public function visitNull($data, array $type, Context $context)
     {
         if ('' === $this->writer->content) {
@@ -76,14 +84,14 @@ class YamlSerializationVisitor extends AbstractVisitor
         $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v && (!is_string($k) || !$context->shouldSerializeNull())) {
+            if (null === $v && (!is_string($k) || ! $context->shouldSerializeNull())) {
                 continue;
             }
 
             if ($isList) {
                 $this->writer->writeln('-');
             } else {
-                $this->writer->writeln(Inline::dump($k) . ':');
+                $this->writer->writeln(Inline::dump($k).':');
             }
 
             $this->writer->indent();
@@ -91,7 +99,8 @@ class YamlSerializationVisitor extends AbstractVisitor
             if (null !== $v = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->writer
                     ->rtrim(false)
-                    ->writeln(' ' . $v);
+                    ->writeln(' '.$v)
+                ;
             }
 
             $this->writer->outdent();
@@ -100,7 +109,8 @@ class YamlSerializationVisitor extends AbstractVisitor
         if ($count === $this->writer->changeCount && isset($type['params'][1])) {
             $this->writer
                 ->rtrim(false)
-                ->writeln(' {}');
+                ->writeln(' {}')
+            ;
         }
     }
 
@@ -117,7 +127,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     public function visitDouble($data, array $type, Context $context)
     {
-        $v = (string)$data;
+        $v = (string) $data;
 
         if ('' === $this->writer->content) {
             $this->writer->writeln($v);
@@ -128,7 +138,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     public function visitInteger($data, array $type, Context $context)
     {
-        $v = (string)$data;
+        $v = (string) $data;
 
         if ('' === $this->writer->content) {
             $this->writer->writeln($v);
@@ -153,8 +163,8 @@ class YamlSerializationVisitor extends AbstractVisitor
 
         if (!$metadata->inline) {
             $this->writer
-                ->writeln(Inline::dump($name) . ':')
-                ->indent();
+                 ->writeln(Inline::dump($name).':')
+                 ->indent();
         }
 
         $this->setCurrentMetadata($metadata);
@@ -164,7 +174,8 @@ class YamlSerializationVisitor extends AbstractVisitor
         if (null !== $v = $this->navigator->accept($v, $metadata->type, $context)) {
             $this->writer
                 ->rtrim(false)
-                ->writeln(' ' . $v);
+                ->writeln(' '.$v)
+            ;
         } elseif ($count === $this->writer->changeCount && !$metadata->inline) {
             $this->writer->revert();
         }
@@ -173,6 +184,10 @@ class YamlSerializationVisitor extends AbstractVisitor
             $this->writer->outdent();
         }
         $this->revertCurrentMetadata();
+    }
+
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    {
     }
 
     public function setCurrentMetadata(PropertyMetadata $metadata)
@@ -186,21 +201,9 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
-    {
-    }
-
     public function getNavigator()
     {
         return $this->navigator;
-    }
-
-    public function setNavigator(GraphNavigator $navigator)
-    {
-        $this->navigator = $navigator;
-        $this->writer->reset();
-        $this->stack = new \SplStack;
-        $this->metadataStack = new \SplStack;
     }
 
     public function getResult()

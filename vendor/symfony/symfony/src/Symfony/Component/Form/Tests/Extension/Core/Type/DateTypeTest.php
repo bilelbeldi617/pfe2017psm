@@ -21,6 +21,18 @@ class DateTypeTest extends BaseTypeTest
 
     private $defaultTimezone;
 
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->defaultTimezone = date_default_timezone_get();
+    }
+
+    protected function tearDown()
+    {
+        date_default_timezone_set($this->defaultTimezone);
+        \Locale::setDefault('en');
+    }
+
     /**
      * @group legacy
      */
@@ -990,17 +1002,5 @@ class DateTypeTest extends BaseTypeTest
         $this->assertNull($form->getData());
         $this->assertNull($form->getNormData());
         $this->assertSame('', $form->getViewData());
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->defaultTimezone = date_default_timezone_get();
-    }
-
-    protected function tearDown()
-    {
-        date_default_timezone_set($this->defaultTimezone);
-        \Locale::setDefault('en');
     }
 }

@@ -9,18 +9,42 @@ class __TwigTemplate_cd08e908144c49261c50037df4db355928051110cff9f6a94be8372711e
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_f34affb1c653ab3fef44ab1d44d3e6a7ea3f81e96ee747306096b1fc2c6e43d2 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_f34affb1c653ab3fef44ab1d44d3e6a7ea3f81e96ee747306096b1fc2c6e43d2->enter($__internal_f34affb1c653ab3fef44ab1d44d3e6a7ea3f81e96ee747306096b1fc2c6e43d2_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Framework/FormTable/button_row.html.php"));
+
+        // line 1
+        echo "<tr>
+    <td></td>
+    <td>
+        <?php echo \$view['form']->widget(\$form) ?>
+    </td>
+</tr>
+";
+        
+        $__internal_f34affb1c653ab3fef44ab1d44d3e6a7ea3f81e96ee747306096b1fc2c6e43d2->leave($__internal_f34affb1c653ab3fef44ab1d44d3e6a7ea3f81e96ee747306096b1fc2c6e43d2_prof);
+
+    }
+
+    public function getTemplateName()
+    {
+        return "@Framework/FormTable/button_row.html.php";
     }
 
     public function getDebugInfo()
     {
-        return array(22 => 1,);
+        return array (  22 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -34,28 +58,5 @@ class __TwigTemplate_cd08e908144c49261c50037df4db355928051110cff9f6a94be8372711e
     </td>
 </tr>
 ", "@Framework/FormTable/button_row.html.php", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\FrameworkBundle\\Resources\\views\\FormTable\\button_row.html.php");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_01c6fefa4abb0c2e4e0b240f00080f537b5d6188b891e22b574a399926c83619 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_01c6fefa4abb0c2e4e0b240f00080f537b5d6188b891e22b574a399926c83619->enter($__internal_01c6fefa4abb0c2e4e0b240f00080f537b5d6188b891e22b574a399926c83619_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Framework/FormTable/button_row.html.php"));
-
-        // line 1
-        echo "<tr>
-    <td></td>
-    <td>
-        <?php echo \$view['form']->widget(\$form) ?>
-    </td>
-</tr>
-";
-
-        $__internal_01c6fefa4abb0c2e4e0b240f00080f537b5d6188b891e22b574a399926c83619->leave($__internal_01c6fefa4abb0c2e4e0b240f00080f537b5d6188b891e22b574a399926c83619_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@Framework/FormTable/button_row.html.php";
     }
 }

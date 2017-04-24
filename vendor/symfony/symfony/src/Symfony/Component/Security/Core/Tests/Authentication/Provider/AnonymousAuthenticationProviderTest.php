@@ -24,21 +24,6 @@ class AnonymousAuthenticationProviderTest extends TestCase
         $this->assertFalse($provider->supports($this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock()));
     }
 
-    protected function getProvider($secret)
-    {
-        return new AnonymousAuthenticationProvider($secret);
-    }
-
-    protected function getSupportedToken($secret)
-    {
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\AnonymousToken')->setMethods(array('getSecret'))->disableOriginalConstructor()->getMock();
-        $token->expects($this->any())
-            ->method('getSecret')
-            ->will($this->returnValue($secret));
-
-        return $token;
-    }
-
     public function testAuthenticateWhenTokenIsNotSupported()
     {
         $provider = $this->getProvider('foo');
@@ -62,5 +47,21 @@ class AnonymousAuthenticationProviderTest extends TestCase
         $token = $this->getSupportedToken('foo');
 
         $this->assertSame($token, $provider->authenticate($token));
+    }
+
+    protected function getSupportedToken($secret)
+    {
+        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\AnonymousToken')->setMethods(array('getSecret'))->disableOriginalConstructor()->getMock();
+        $token->expects($this->any())
+              ->method('getSecret')
+              ->will($this->returnValue($secret))
+        ;
+
+        return $token;
+    }
+
+    protected function getProvider($secret)
+    {
+        return new AnonymousAuthenticationProvider($secret);
     }
 }

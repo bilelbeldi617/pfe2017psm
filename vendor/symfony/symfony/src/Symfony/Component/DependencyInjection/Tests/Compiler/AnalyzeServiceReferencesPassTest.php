@@ -26,24 +26,29 @@ class AnalyzeServiceReferencesPassTest extends TestCase
 
         $a = $container
             ->register('a')
-            ->addArgument($ref1 = new Reference('b'));
+            ->addArgument($ref1 = new Reference('b'))
+        ;
 
         $b = $container
             ->register('b')
-            ->addMethodCall('setA', array($ref2 = new Reference('a')));
+            ->addMethodCall('setA', array($ref2 = new Reference('a')))
+        ;
 
         $c = $container
             ->register('c')
             ->addArgument($ref3 = new Reference('a'))
-            ->addArgument($ref4 = new Reference('b'));
+            ->addArgument($ref4 = new Reference('b'))
+        ;
 
         $d = $container
             ->register('d')
-            ->setProperty('foo', $ref5 = new Reference('b'));
+            ->setProperty('foo', $ref5 = new Reference('b'))
+        ;
 
         $e = $container
             ->register('e')
-            ->setConfigurator(array($ref6 = new Reference('b'), 'methodName'));
+            ->setConfigurator(array($ref6 = new Reference('b'), 'methodName'))
+        ;
 
         $graph = $this->process($container);
 
@@ -55,24 +60,18 @@ class AnalyzeServiceReferencesPassTest extends TestCase
         $this->assertSame($ref6, $edges[3]->getValue());
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new RepeatedPass(array(new AnalyzeServiceReferencesPass()));
-        $pass->process($container);
-
-        return $container->getCompiler()->getServiceReferenceGraph();
-    }
-
     public function testProcessDetectsReferencesFromInlinedDefinitions()
     {
         $container = new ContainerBuilder();
 
         $container
-            ->register('a');
+            ->register('a')
+        ;
 
         $container
             ->register('b')
-            ->addArgument(new Definition(null, array($ref = new Reference('a'))));
+            ->addArgument(new Definition(null, array($ref = new Reference('a'))))
+        ;
 
         $graph = $this->process($container);
 
@@ -85,14 +84,16 @@ class AnalyzeServiceReferencesPassTest extends TestCase
         $container = new ContainerBuilder();
 
         $container
-            ->register('a');
+            ->register('a')
+        ;
 
         $factory = new Definition();
         $factory->setFactory(array(new Reference('a'), 'a'));
 
         $container
             ->register('b')
-            ->addArgument($factory);
+            ->addArgument($factory)
+        ;
 
         $graph = $this->process($container);
 
@@ -105,11 +106,13 @@ class AnalyzeServiceReferencesPassTest extends TestCase
         $container = new ContainerBuilder();
 
         $container
-            ->register('a');
+            ->register('a')
+        ;
         $container
             ->register('b')
             ->addArgument(new Definition(null, array($ref1 = new Reference('a'))))
-            ->addArgument(new Definition(null, array($ref2 = new Reference('a'))));
+            ->addArgument(new Definition(null, array($ref2 = new Reference('a'))))
+        ;
 
         $graph = $this->process($container);
 
@@ -132,5 +135,13 @@ class AnalyzeServiceReferencesPassTest extends TestCase
 
         $this->assertTrue($graph->hasNode('foo'));
         $this->assertCount(1, $graph->getNode('foo')->getInEdges());
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new RepeatedPass(array(new AnalyzeServiceReferencesPass()));
+        $pass->process($container);
+
+        return $container->getCompiler()->getServiceReferenceGraph();
     }
 }

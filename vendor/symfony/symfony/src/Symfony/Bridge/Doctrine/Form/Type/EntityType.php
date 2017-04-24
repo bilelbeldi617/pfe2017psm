@@ -47,8 +47,8 @@ class EntityType extends DoctrineType
      * Return the default loader object.
      *
      * @param ObjectManager $manager
-     * @param QueryBuilder $queryBuilder
-     * @param string $class
+     * @param QueryBuilder  $queryBuilder
+     * @param string        $class
      *
      * @return ORMQueryBuilderLoader
      */

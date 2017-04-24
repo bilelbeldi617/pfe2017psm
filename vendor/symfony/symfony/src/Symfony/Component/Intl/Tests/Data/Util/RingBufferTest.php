@@ -24,6 +24,11 @@ class RingBufferTest extends TestCase
      */
     private $buffer;
 
+    protected function setUp()
+    {
+        $this->buffer = new RingBuffer(2);
+    }
+
     public function testWriteWithinBuffer()
     {
         $this->buffer[0] = 'foo';
@@ -93,10 +98,5 @@ class RingBufferTest extends TestCase
         unset($this->buffer[0]);
 
         $this->assertFalse(isset($this->buffer[0]));
-    }
-
-    protected function setUp()
-    {
-        $this->buffer = new RingBuffer(2);
     }
 }

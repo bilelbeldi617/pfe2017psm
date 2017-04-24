@@ -20,6 +20,12 @@ class GlobalVariablesTest extends TestCase
     private $container;
     private $globals;
 
+    protected function setUp()
+    {
+        $this->container = new Container();
+        $this->globals = new GlobalVariables($this->container);
+    }
+
     /**
      * @group legacy
      */
@@ -82,11 +88,5 @@ class GlobalVariablesTest extends TestCase
             array(10, null),
             array(true, null),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->container = new Container();
-        $this->globals = new GlobalVariables($this->container);
     }
 }

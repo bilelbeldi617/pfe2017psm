@@ -100,8 +100,8 @@ class Collator
     /**
      * Sort array maintaining index association.
      *
-     * @param array &$array Input array
-     * @param int $sortFlag Flags for sorting, can be one of the following:
+     * @param array &$array   Input array
+     * @param int   $sortFlag Flags for sorting, can be one of the following:
      *                        Collator::SORT_REGULAR - compare items normally (don't change types)
      *                        Collator::SORT_NUMERIC - compare items numerically
      *                        Collator::SORT_STRING - compare items as strings
@@ -224,7 +224,7 @@ class Collator
      * Not supported. Set a collator's attribute.
      *
      * @param int $attr An attribute specifier, one of the attribute constants
-     * @param int $val The attribute value, one of the attribute value constants
+     * @param int $val  The attribute value, one of the attribute value constants
      *
      * @return bool True on success or false on failure
      *
@@ -278,8 +278,8 @@ class Collator
     /**
      * Not supported. Sort array using specified collator.
      *
-     * @param array &$arr Array of string to sort
-     * @param int $sortFlag Optional sorting type, one of the following:
+     * @param array &$arr     Array of string to sort
+     * @param int   $sortFlag Optional sorting type, one of the following:
      *                        Collator::SORT_REGULAR
      *                        Collator::SORT_NUMERIC
      *                        Collator::SORT_STRING

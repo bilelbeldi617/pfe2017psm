@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class LuhnValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new LuhnValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Luhn());
@@ -77,7 +87,7 @@ class LuhnValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($number, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $number . '"')
+            ->setParameter('{{ value }}', '"'.$number.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -113,15 +123,5 @@ class LuhnValidatorTest extends AbstractConstraintValidatorTest
             array(378282246310005),
             array(371449635398431),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new LuhnValidator();
     }
 }

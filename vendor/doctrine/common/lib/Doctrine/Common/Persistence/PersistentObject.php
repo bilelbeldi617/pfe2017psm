@@ -67,14 +67,6 @@ abstract class PersistentObject implements ObjectManagerAware
     private $cm = null;
 
     /**
-     * @return ObjectManager|null
-     */
-    static public function getObjectManager()
-    {
-        return self::$objectManager;
-    }
-
-    /**
      * Sets the object manager responsible for all persistent object base classes.
      *
      * @param ObjectManager|null $objectManager
@@ -84,6 +76,14 @@ abstract class PersistentObject implements ObjectManagerAware
     static public function setObjectManager(ObjectManager $objectManager = null)
     {
         self::$objectManager = $objectManager;
+    }
+
+    /**
+     * @return ObjectManager|null
+     */
+    static public function getObjectManager()
+    {
+        return self::$objectManager;
     }
 
     /**
@@ -107,35 +107,10 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * Magic methods.
-     *
-     * @param string $method
-     * @param array $args
-     *
-     * @return mixed
-     *
-     * @throws \BadMethodCallException
-     */
-    public function __call($method, $args)
-    {
-        $command = substr($method, 0, 3);
-        $field = lcfirst(substr($method, 3));
-        if ($command == "set") {
-            $this->set($field, $args);
-        } else if ($command == "get") {
-            return $this->get($field);
-        } else if ($command == "add") {
-            $this->add($field, $args);
-        } else {
-            throw new \BadMethodCallException("There is no method " . $method . " on " . $this->cm->getName());
-        }
-    }
-
-    /**
      * Sets a persistent fields value.
      *
      * @param string $field
-     * @param array $args
+     * @param array  $args
      *
      * @return void
      *
@@ -151,12 +126,84 @@ abstract class PersistentObject implements ObjectManagerAware
         } else if ($this->cm->hasAssociation($field) && $this->cm->isSingleValuedAssociation($field)) {
             $targetClass = $this->cm->getAssociationTargetClass($field);
             if (!($args[0] instanceof $targetClass) && $args[0] !== null) {
-                throw new \InvalidArgumentException("Expected persistent object of type '" . $targetClass . "'");
+                throw new \InvalidArgumentException("Expected persistent object of type '".$targetClass."'");
             }
             $this->$field = $args[0];
             $this->completeOwningSide($field, $targetClass, $args[0]);
         } else {
-            throw new \BadMethodCallException("no field with name '" . $field . "' exists on '" . $this->cm->getName() . "'");
+            throw new \BadMethodCallException("no field with name '".$field."' exists on '".$this->cm->getName()."'");
+        }
+    }
+
+    /**
+     * Gets a persistent field value.
+     *
+     * @param string $field
+     *
+     * @return mixed
+     *
+     * @throws \BadMethodCallException When no persistent field exists by that name.
+     */
+    private function get($field)
+    {
+        $this->initializeDoctrine();
+
+        if ( $this->cm->hasField($field) || $this->cm->hasAssociation($field) ) {
+            return $this->$field;
+        } else {
+            throw new \BadMethodCallException("no field with name '".$field."' exists on '".$this->cm->getName()."'");
+        }
+    }
+
+    /**
+     * If this is an inverse side association, completes the owning side.
+     *
+     * @param string        $field
+     * @param ClassMetadata $targetClass
+     * @param object        $targetObject
+     *
+     * @return void
+     */
+    private function completeOwningSide($field, $targetClass, $targetObject)
+    {
+        // add this object on the owning side as well, for obvious infinite recursion
+        // reasons this is only done when called on the inverse side.
+        if ($this->cm->isAssociationInverseSide($field)) {
+            $mappedByField = $this->cm->getAssociationMappedByTargetField($field);
+            $targetMetadata = self::$objectManager->getClassMetadata($targetClass);
+
+            $setter = ($targetMetadata->isCollectionValuedAssociation($mappedByField) ? "add" : "set").$mappedByField;
+            $targetObject->$setter($this);
+        }
+    }
+
+    /**
+     * Adds an object to a collection.
+     *
+     * @param string $field
+     * @param array  $args
+     *
+     * @return void
+     *
+     * @throws \BadMethodCallException
+     * @throws \InvalidArgumentException
+     */
+    private function add($field, $args)
+    {
+        $this->initializeDoctrine();
+
+        if ($this->cm->hasAssociation($field) && $this->cm->isCollectionValuedAssociation($field)) {
+            $targetClass = $this->cm->getAssociationTargetClass($field);
+            if (!($args[0] instanceof $targetClass)) {
+                throw new \InvalidArgumentException("Expected persistent object of type '".$targetClass."'");
+            }
+            if (!($this->$field instanceof Collection)) {
+                $this->$field = new ArrayCollection($this->$field ?: array());
+            }
+            $this->$field->add($args[0]);
+            $this->completeOwningSide($field, $targetClass, $args[0]);
+        } else {
+            throw new \BadMethodCallException("There is no method add".$field."() on ".$this->cm->getName());
         }
     }
 
@@ -181,74 +228,27 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * If this is an inverse side association, completes the owning side.
+     * Magic methods.
      *
-     * @param string $field
-     * @param ClassMetadata $targetClass
-     * @param object $targetObject
-     *
-     * @return void
-     */
-    private function completeOwningSide($field, $targetClass, $targetObject)
-    {
-        // add this object on the owning side as well, for obvious infinite recursion
-        // reasons this is only done when called on the inverse side.
-        if ($this->cm->isAssociationInverseSide($field)) {
-            $mappedByField = $this->cm->getAssociationMappedByTargetField($field);
-            $targetMetadata = self::$objectManager->getClassMetadata($targetClass);
-
-            $setter = ($targetMetadata->isCollectionValuedAssociation($mappedByField) ? "add" : "set") . $mappedByField;
-            $targetObject->$setter($this);
-        }
-    }
-
-    /**
-     * Gets a persistent field value.
-     *
-     * @param string $field
+     * @param string $method
+     * @param array  $args
      *
      * @return mixed
      *
-     * @throws \BadMethodCallException When no persistent field exists by that name.
-     */
-    private function get($field)
-    {
-        $this->initializeDoctrine();
-
-        if ($this->cm->hasField($field) || $this->cm->hasAssociation($field)) {
-            return $this->$field;
-        } else {
-            throw new \BadMethodCallException("no field with name '" . $field . "' exists on '" . $this->cm->getName() . "'");
-        }
-    }
-
-    /**
-     * Adds an object to a collection.
-     *
-     * @param string $field
-     * @param array $args
-     *
-     * @return void
-     *
      * @throws \BadMethodCallException
-     * @throws \InvalidArgumentException
      */
-    private function add($field, $args)
+    public function __call($method, $args)
     {
-        $this->initializeDoctrine();
-
-        if ($this->cm->hasAssociation($field) && $this->cm->isCollectionValuedAssociation($field)) {
-            $targetClass = $this->cm->getAssociationTargetClass($field);
-            if (!($args[0] instanceof $targetClass)) {
-                throw new \InvalidArgumentException("Expected persistent object of type '" . $targetClass . "'");
-            }
-            if (!($this->$field instanceof Collection)) {
-                $this->$field = new ArrayCollection($this->$field ?: array());
-            }
-            $this->$field->add($args[0]);
-            $this->completeOwningSide($field, $targetClass, $args[0]);
+        $command = substr($method, 0, 3);
+        $field = lcfirst(substr($method, 3));
+        if ($command == "set") {
+            $this->set($field, $args);
+        } else if ($command == "get") {
+            return $this->get($field);
+        } else if ($command == "add") {
+            $this->add($field, $args);
         } else {
-            throw new \BadMethodCallException("There is no method add" . $field . "() on " . $this->cm->getName());
+            throw new \BadMethodCallException("There is no method ".$method." on ".$this->cm->getName());
         }
     }
 }

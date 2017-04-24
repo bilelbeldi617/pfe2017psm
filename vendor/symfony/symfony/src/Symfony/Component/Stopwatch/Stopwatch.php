@@ -62,19 +62,6 @@ class Stopwatch
     }
 
     /**
-     * Starts an event.
-     *
-     * @param string $name The event name
-     * @param string $category The event category
-     *
-     * @return StopwatchEvent
-     */
-    public function start($name, $category = null)
-    {
-        return end($this->activeSections)->startEvent($name, $category);
-    }
-
-    /**
      * Stops the last started section.
      *
      * The id parameter is used to retrieve the events from this section.
@@ -98,15 +85,16 @@ class Stopwatch
     }
 
     /**
-     * Stops an event.
+     * Starts an event.
      *
-     * @param string $name The event name
+     * @param string $name     The event name
+     * @param string $category The event category
      *
      * @return StopwatchEvent
      */
-    public function stop($name)
+    public function start($name, $category = null)
     {
-        return end($this->activeSections)->stopEvent($name);
+        return end($this->activeSections)->startEvent($name, $category);
     }
 
     /**
@@ -119,6 +107,18 @@ class Stopwatch
     public function isStarted($name)
     {
         return end($this->activeSections)->isEventStarted($name);
+    }
+
+    /**
+     * Stops an event.
+     *
+     * @param string $name The event name
+     *
+     * @return StopwatchEvent
+     */
+    public function stop($name)
+    {
+        return end($this->activeSections)->stopEvent($name);
     }
 
     /**

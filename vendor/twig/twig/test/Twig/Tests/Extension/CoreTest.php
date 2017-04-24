@@ -271,7 +271,7 @@ class Twig_Tests_Extension_CoreTest extends PHPUnit_Framework_TestCase
 
 function foo_escaper_for_test(Twig_Environment $env, $string, $charset)
 {
-    return $string . $charset;
+    return $string.$charset;
 }
 
 final class CoreTestIteratorAggregate implements IteratorAggregate
@@ -344,7 +344,7 @@ final class CoreTestIterator implements Iterator
     {
         ++$this->position;
         if ($this->position === $this->maxPosition) {
-            throw new LogicException(sprintf('Code should not iterate beyond %d.', $this->maxPosition));
+             throw new LogicException(sprintf('Code should not iterate beyond %d.', $this->maxPosition));
         }
     }
 

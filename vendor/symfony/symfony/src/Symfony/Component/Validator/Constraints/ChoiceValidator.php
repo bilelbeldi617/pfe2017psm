@@ -32,7 +32,7 @@ class ChoiceValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Choice) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Choice');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Choice');
         }
 
         if (!is_array($constraint->choices) && !$constraint->callback) {
@@ -85,13 +85,13 @@ class ChoiceValidator extends ConstraintValidator
                 if ($this->context instanceof ExecutionContextInterface) {
                     $this->context->buildViolation($constraint->minMessage)
                         ->setParameter('{{ limit }}', $constraint->min)
-                        ->setPlural((int)$constraint->min)
+                        ->setPlural((int) $constraint->min)
                         ->setCode(Choice::TOO_FEW_ERROR)
                         ->addViolation();
                 } else {
                     $this->buildViolation($constraint->minMessage)
                         ->setParameter('{{ limit }}', $constraint->min)
-                        ->setPlural((int)$constraint->min)
+                        ->setPlural((int) $constraint->min)
                         ->setCode(Choice::TOO_FEW_ERROR)
                         ->addViolation();
                 }
@@ -103,13 +103,13 @@ class ChoiceValidator extends ConstraintValidator
                 if ($this->context instanceof ExecutionContextInterface) {
                     $this->context->buildViolation($constraint->maxMessage)
                         ->setParameter('{{ limit }}', $constraint->max)
-                        ->setPlural((int)$constraint->max)
+                        ->setPlural((int) $constraint->max)
                         ->setCode(Choice::TOO_MANY_ERROR)
                         ->addViolation();
                 } else {
                     $this->buildViolation($constraint->maxMessage)
                         ->setParameter('{{ limit }}', $constraint->max)
-                        ->setPlural((int)$constraint->max)
+                        ->setPlural((int) $constraint->max)
                         ->setCode(Choice::TOO_MANY_ERROR)
                         ->addViolation();
                 }

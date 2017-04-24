@@ -12,8 +12,8 @@ namespace projetBundle\Entity;
 class MatiereGroupe
 {
 
-    private $groupe;
-    private $matiere;
+    private $groupe ;
+    private $matiere ;
 
     /**
      * @return mixed

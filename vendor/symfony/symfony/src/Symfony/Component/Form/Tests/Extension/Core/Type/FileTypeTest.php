@@ -30,7 +30,7 @@ class FileTypeTest extends BaseTypeTest
     {
         $form = $this->factory->createBuilder(static::TESTED_TYPE)->getForm();
         $data = $this->getMockBuilder('Symfony\Component\HttpFoundation\File\File')
-            ->setConstructorArgs(array(__DIR__ . '/../../../Fixtures/foo', 'foo'))
+            ->setConstructorArgs(array(__DIR__.'/../../../Fixtures/foo', 'foo'))
             ->getMock();
 
         $form->setData($data);
@@ -47,28 +47,6 @@ class FileTypeTest extends BaseTypeTest
         $form->submit($data);
 
         $this->assertSame($data, $form->getData());
-    }
-
-    private function createUploadedFileMock($name, $originalName, $valid)
-    {
-        $file = $this
-            ->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')
-            ->setConstructorArgs(array(__DIR__ . '/../../../Fixtures/foo', 'foo'))
-            ->getMock();
-        $file
-            ->expects($this->any())
-            ->method('getBasename')
-            ->will($this->returnValue($name));
-        $file
-            ->expects($this->any())
-            ->method('getClientOriginalName')
-            ->will($this->returnValue($originalName));
-        $file
-            ->expects($this->any())
-            ->method('isValid')
-            ->will($this->returnValue($valid));
-
-        return $file;
     }
 
     public function testSetDataMultiple()
@@ -139,5 +117,31 @@ class FileTypeTest extends BaseTypeTest
         $this->assertSame(array(), $form->getData());
         $this->assertSame(array(), $form->getNormData());
         $this->assertSame(array(), $form->getViewData());
+    }
+
+    private function createUploadedFileMock($name, $originalName, $valid)
+    {
+        $file = $this
+            ->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')
+            ->setConstructorArgs(array(__DIR__.'/../../../Fixtures/foo', 'foo'))
+            ->getMock()
+        ;
+        $file
+            ->expects($this->any())
+            ->method('getBasename')
+            ->will($this->returnValue($name))
+        ;
+        $file
+            ->expects($this->any())
+            ->method('getClientOriginalName')
+            ->will($this->returnValue($originalName))
+        ;
+        $file
+            ->expects($this->any())
+            ->method('isValid')
+            ->will($this->returnValue($valid))
+        ;
+
+        return $file;
     }
 }

@@ -55,7 +55,7 @@ class ContextListener implements ListenerInterface
         $this->tokenStorage = $tokenStorage;
         $this->userProviders = $userProviders;
         $this->contextKey = $contextKey;
-        $this->sessionKey = '_security_' . $contextKey;
+        $this->sessionKey = '_security_'.$contextKey;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
     }
@@ -101,6 +101,40 @@ class ContextListener implements ListenerInterface
     }
 
     /**
+     * Writes the security token into the session.
+     *
+     * @param FilterResponseEvent $event A FilterResponseEvent instance
+     */
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        if (!$event->getRequest()->hasSession()) {
+            return;
+        }
+
+        $this->dispatcher->removeListener(KernelEvents::RESPONSE, array($this, 'onKernelResponse'));
+        $this->registered = false;
+
+        $request = $event->getRequest();
+        $session = $request->getSession();
+
+        if ((null === $token = $this->tokenStorage->getToken()) || ($token instanceof AnonymousToken)) {
+            if ($request->hasPreviousSession()) {
+                $session->remove($this->sessionKey);
+            }
+        } else {
+            $session->set($this->sessionKey, serialize($token));
+
+            if (null !== $this->logger) {
+                $this->logger->debug('Stored the security token in the session.', array('key' => $this->sessionKey));
+            }
+        }
+    }
+
+    /**
      * Refreshes the user by reloading it from the user provider.
      *
      * @param TokenInterface $token
@@ -138,39 +172,5 @@ class ContextListener implements ListenerInterface
         }
 
         throw new \RuntimeException(sprintf('There is no user provider for user "%s".', get_class($user)));
-    }
-
-    /**
-     * Writes the security token into the session.
-     *
-     * @param FilterResponseEvent $event A FilterResponseEvent instance
-     */
-    public function onKernelResponse(FilterResponseEvent $event)
-    {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
-        if (!$event->getRequest()->hasSession()) {
-            return;
-        }
-
-        $this->dispatcher->removeListener(KernelEvents::RESPONSE, array($this, 'onKernelResponse'));
-        $this->registered = false;
-
-        $request = $event->getRequest();
-        $session = $request->getSession();
-
-        if ((null === $token = $this->tokenStorage->getToken()) || ($token instanceof AnonymousToken)) {
-            if ($request->hasPreviousSession()) {
-                $session->remove($this->sessionKey);
-            }
-        } else {
-            $session->set($this->sessionKey, serialize($token));
-
-            if (null !== $this->logger) {
-                $this->logger->debug('Stored the security token in the session.', array('key' => $this->sessionKey));
-            }
-        }
     }
 }

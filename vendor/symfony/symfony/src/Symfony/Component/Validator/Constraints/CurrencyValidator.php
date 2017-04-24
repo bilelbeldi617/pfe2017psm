@@ -31,7 +31,7 @@ class CurrencyValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Currency) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Currency');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Currency');
         }
 
         if (null === $value || '' === $value) {
@@ -42,7 +42,7 @@ class CurrencyValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         $currencies = Intl::getCurrencyBundle()->getCurrencyNames();
 
         if (!isset($currencies[$value])) {

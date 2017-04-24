@@ -31,35 +31,6 @@ namespace Doctrine\Common\Collections\Expr;
 class ClosureExpressionVisitor extends ExpressionVisitor
 {
     /**
-     * Helper for sorting arrays of objects based on multiple fields + orientations.
-     *
-     * @param string $name
-     * @param int $orientation
-     * @param \Closure $next
-     *
-     * @return \Closure
-     */
-    public static function sortByField($name, $orientation = 1, \Closure $next = null)
-    {
-        if (!$next) {
-            $next = function () {
-                return 0;
-            };
-        }
-
-        return function ($a, $b) use ($name, $next, $orientation) {
-            $aValue = ClosureExpressionVisitor::getObjectFieldValue($a, $name);
-            $bValue = ClosureExpressionVisitor::getObjectFieldValue($b, $name);
-
-            if ($aValue === $bValue) {
-                return $next($a, $b);
-            }
-
-            return (($aValue > $bValue) ? 1 : -1) * $orientation;
-        };
-    }
-
-    /**
      * Accesses the field of a given object. This field has to be public
      * directly or indirectly (through an accessor get*, is*, or a magic
      * method, __get, __call).
@@ -80,7 +51,7 @@ class ClosureExpressionVisitor extends ExpressionVisitor
         foreach ($accessors as $accessor) {
             $accessor .= $field;
 
-            if (!method_exists($object, $accessor)) {
+            if ( ! method_exists($object, $accessor)) {
                 continue;
             }
 
@@ -99,6 +70,35 @@ class ClosureExpressionVisitor extends ExpressionVisitor
         }
 
         return $object->$field;
+    }
+
+    /**
+     * Helper for sorting arrays of objects based on multiple fields + orientations.
+     *
+     * @param string   $name
+     * @param int      $orientation
+     * @param \Closure $next
+     *
+     * @return \Closure
+     */
+    public static function sortByField($name, $orientation = 1, \Closure $next = null)
+    {
+        if ( ! $next) {
+            $next = function() {
+                return 0;
+            };
+        }
+
+        return function ($a, $b) use ($name, $next, $orientation) {
+            $aValue = ClosureExpressionVisitor::getObjectFieldValue($a, $name);
+            $bValue = ClosureExpressionVisitor::getObjectFieldValue($b, $name);
+
+            if ($aValue === $bValue) {
+                return $next($a, $b);
+            }
+
+            return (($aValue > $bValue) ? 1 : -1) * $orientation;
+        };
     }
 
     /**
@@ -147,7 +147,7 @@ class ClosureExpressionVisitor extends ExpressionVisitor
 
             case Comparison::NIN:
                 return function ($object) use ($field, $value) {
-                    return !in_array(ClosureExpressionVisitor::getObjectFieldValue($object, $field), $value);
+                    return ! in_array(ClosureExpressionVisitor::getObjectFieldValue($object, $field), $value);
                 };
 
             case Comparison::CONTAINS:
@@ -179,7 +179,7 @@ class ClosureExpressionVisitor extends ExpressionVisitor
             $expressionList[] = $this->dispatch($child);
         }
 
-        switch ($expr->getType()) {
+        switch($expr->getType()) {
             case CompositeExpression::TYPE_AND:
                 return $this->andExpressions($expressionList);
 
@@ -200,7 +200,7 @@ class ClosureExpressionVisitor extends ExpressionVisitor
     {
         return function ($object) use ($expressions) {
             foreach ($expressions as $expression) {
-                if (!$expression($object)) {
+                if ( ! $expression($object)) {
                     return false;
                 }
             }

@@ -17,7 +17,8 @@ class CustomConfig
     {
         $rootNode
             ->children()
-            ->scalarNode('custom')->end()
-            ->end();
+                ->scalarNode('custom')->end()
+            ->end()
+        ;
     }
 }

@@ -48,6 +48,32 @@ abstract class AsseticHelper extends Helper
     }
 
     /**
+     * Returns an array of stylesheet urls.
+     */
+    public function stylesheets($inputs = array(), $filters = array(), array $options = array())
+    {
+        if (!isset($options['output'])) {
+            $options['output'] = 'css/*.css';
+        }
+
+        return $this->getAssetUrls($inputs, $filters, $options);
+    }
+
+    /**
+     * Returns an array of one image url.
+     */
+    public function image($inputs = array(), $filters = array(), array $options = array())
+    {
+        if (!isset($options['output'])) {
+            $options['output'] = 'images/*';
+        }
+
+        $options['single'] = true;
+
+        return $this->getAssetUrls($inputs, $filters, $options);
+    }
+
+    /**
      * Gets the URLs for the configured asset.
      *
      * Usage looks something like this:
@@ -59,9 +85,9 @@ abstract class AsseticHelper extends Helper
      * When in debug mode, the helper returns an array of one or more URLs.
      * When not in debug mode it returns an array of one URL.
      *
-     * @param array|string $inputs An array or comma-separated list of input strings
+     * @param array|string $inputs  An array or comma-separated list of input strings
      * @param array|string $filters An array or comma-separated list of filter names
-     * @param array $options An array of options
+     * @param array        $options An array of options
      *
      * @return array An array of URLs for the asset
      */
@@ -105,7 +131,7 @@ abstract class AsseticHelper extends Helper
             $i = 0;
             foreach ($asset as $leaf) {
                 $many[] = $this->getAssetUrl($leaf, array_replace($options, array(
-                    'name' => $options['name'] . '_' . $i++,
+                    'name' => $options['name'].'_'.$i++,
                 )));
             }
         }
@@ -116,38 +142,12 @@ abstract class AsseticHelper extends Helper
     /**
      * Returns an URL for the supplied asset.
      *
-     * @param AssetInterface $asset An asset
-     * @param array $options An array of options
+     * @param AssetInterface $asset   An asset
+     * @param array          $options An array of options
      *
      * @return string An echo-ready URL
      */
     abstract protected function getAssetUrl(AssetInterface $asset, $options = array());
-
-    /**
-     * Returns an array of stylesheet urls.
-     */
-    public function stylesheets($inputs = array(), $filters = array(), array $options = array())
-    {
-        if (!isset($options['output'])) {
-            $options['output'] = 'css/*.css';
-        }
-
-        return $this->getAssetUrls($inputs, $filters, $options);
-    }
-
-    /**
-     * Returns an array of one image url.
-     */
-    public function image($inputs = array(), $filters = array(), array $options = array())
-    {
-        if (!isset($options['output'])) {
-            $options['output'] = 'images/*';
-        }
-
-        $options['single'] = true;
-
-        return $this->getAssetUrls($inputs, $filters, $options);
-    }
 
     public function getName()
     {

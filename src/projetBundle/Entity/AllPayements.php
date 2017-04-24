@@ -9,8 +9,7 @@
 namespace projetBundle\Entity;
 
 
-class AllPayements
-{
+class AllPayements {
 
 
     private $frais;
@@ -49,6 +48,9 @@ class AllPayements
     {
         $this->trimestre = $trimestre;
     }
+
+
+
 
 
     /**

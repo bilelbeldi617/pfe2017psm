@@ -29,8 +29,8 @@ class TwigEngine implements EngineInterface, StreamingEngineInterface
     /**
      * Constructor.
      *
-     * @param \Twig_Environment $environment A \Twig_Environment instance
-     * @param TemplateNameParserInterface $parser A TemplateNameParserInterface instance
+     * @param \Twig_Environment           $environment A \Twig_Environment instance
+     * @param TemplateNameParserInterface $parser      A TemplateNameParserInterface instance
      */
     public function __construct(\Twig_Environment $environment, TemplateNameParserInterface $parser)
     {
@@ -48,29 +48,6 @@ class TwigEngine implements EngineInterface, StreamingEngineInterface
     public function render($name, array $parameters = array())
     {
         return $this->load($name)->render($parameters);
-    }
-
-    /**
-     * Loads the given template.
-     *
-     * @param string|TemplateReferenceInterface|\Twig_Template $name A template name or an instance of
-     *                                                               TemplateReferenceInterface or \Twig_Template
-     *
-     * @return \Twig_Template A \Twig_Template instance
-     *
-     * @throws \InvalidArgumentException if the template does not exist
-     */
-    protected function load($name)
-    {
-        if ($name instanceof \Twig_Template) {
-            return $name;
-        }
-
-        try {
-            return $this->environment->loadTemplate((string)$name);
-        } catch (\Twig_Error_Loader $e) {
-            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
-        }
     }
 
     /**
@@ -99,13 +76,13 @@ class TwigEngine implements EngineInterface, StreamingEngineInterface
         $loader = $this->environment->getLoader();
 
         if ($loader instanceof \Twig_ExistsLoaderInterface || method_exists($loader, 'exists')) {
-            return $loader->exists((string)$name);
+            return $loader->exists((string) $name);
         }
 
         try {
             // cast possible TemplateReferenceInterface to string because the
             // EngineInterface supports them but Twig_LoaderInterface does not
-            $loader->getSourceContext((string)$name)->getCode();
+            $loader->getSourceContext((string) $name)->getCode();
         } catch (\Twig_Error_Loader $e) {
             return false;
         }
@@ -127,5 +104,28 @@ class TwigEngine implements EngineInterface, StreamingEngineInterface
         $template = $this->parser->parse($name);
 
         return 'twig' === $template->get('engine');
+    }
+
+    /**
+     * Loads the given template.
+     *
+     * @param string|TemplateReferenceInterface|\Twig_Template $name A template name or an instance of
+     *                                                               TemplateReferenceInterface or \Twig_Template
+     *
+     * @return \Twig_Template A \Twig_Template instance
+     *
+     * @throws \InvalidArgumentException if the template does not exist
+     */
+    protected function load($name)
+    {
+        if ($name instanceof \Twig_Template) {
+            return $name;
+        }
+
+        try {
+            return $this->environment->loadTemplate((string) $name);
+        } catch (\Twig_Error_Loader $e) {
+            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 }

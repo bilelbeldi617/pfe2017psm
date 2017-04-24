@@ -33,8 +33,8 @@ class PredisDefinition extends CacheDefinition
     }
 
     /**
-     * @param string $name
-     * @param array $config
+     * @param string                                                  $name
+     * @param array                                                   $config
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      *
      * @return \Symfony\Component\DependencyInjection\Reference
@@ -47,8 +47,8 @@ class PredisDefinition extends CacheDefinition
 
         $parameters = array(
             'scheme' => $config['scheme'],
-            'host' => $config['host'],
-            'port' => $config['port'],
+            'host'   => $config['host'],
+            'port'   => $config['port'],
         );
 
         if ($config['password']) {

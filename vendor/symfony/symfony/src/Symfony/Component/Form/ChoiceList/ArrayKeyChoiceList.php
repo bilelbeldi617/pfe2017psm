@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Form\ChoiceList;
 
-@trigger_error('The ' . __NAMESPACE__ . '\ArrayKeyChoiceList class is deprecated since version 2.8 and will be removed in 3.0. Use ' . __NAMESPACE__ . '\ArrayChoiceList instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\ArrayKeyChoiceList class is deprecated since version 2.8 and will be removed in 3.0. Use '.__NAMESPACE__.'\ArrayChoiceList instead.', E_USER_DEPRECATED);
 
 use Symfony\Component\Form\Exception\InvalidArgumentException;
 
@@ -54,43 +54,6 @@ class ArrayKeyChoiceList extends ArrayChoiceList
     private $useChoicesAsValues = false;
 
     /**
-     * Creates a list with the given choices and values.
-     *
-     * The given choice array must have the same array keys as the value array.
-     * Each choice must be castable to an integer/string according to the
-     * casting rules described in {@link toArrayKey()}.
-     *
-     * If no values are given, the choices are cast to strings and used as
-     * values.
-     *
-     * @param array|\Traversable $choices The selectable choices
-     * @param callable $value The callable for creating the value
-     *                                    for a choice. If `null` is passed, the
-     *                                    choices are cast to strings and used
-     *                                    as values
-     *
-     * @throws InvalidArgumentException If the keys of the choices don't match
-     *                                  the keys of the values or if any of the
-     *                                  choices is not scalar
-     */
-    public function __construct($choices, $value = null)
-    {
-        // If no values are given, use the choices as values
-        // Since the choices are stored in the collection keys, i.e. they are
-        // strings or integers, we are guaranteed to be able to convert them
-        // to strings
-        if (null === $value) {
-            $value = function ($choice) {
-                return (string)$choice;
-            };
-
-            $this->useChoicesAsValues = true;
-        }
-
-        parent::__construct($choices, $value);
-    }
-
-    /**
      * Casts the given choice to an array key.
      *
      * PHP arrays accept only strings and integers as array keys. Integer
@@ -115,11 +78,48 @@ class ArrayKeyChoiceList extends ArrayChoiceList
             ));
         }
 
-        if (is_bool($choice) || (string)(int)$choice === (string)$choice) {
-            return (int)$choice;
+        if (is_bool($choice) || (string) (int) $choice === (string) $choice) {
+            return (int) $choice;
         }
 
-        return (string)$choice;
+        return (string) $choice;
+    }
+
+    /**
+     * Creates a list with the given choices and values.
+     *
+     * The given choice array must have the same array keys as the value array.
+     * Each choice must be castable to an integer/string according to the
+     * casting rules described in {@link toArrayKey()}.
+     *
+     * If no values are given, the choices are cast to strings and used as
+     * values.
+     *
+     * @param array|\Traversable $choices The selectable choices
+     * @param callable           $value   The callable for creating the value
+     *                                    for a choice. If `null` is passed, the
+     *                                    choices are cast to strings and used
+     *                                    as values
+     *
+     * @throws InvalidArgumentException If the keys of the choices don't match
+     *                                  the keys of the values or if any of the
+     *                                  choices is not scalar
+     */
+    public function __construct($choices, $value = null)
+    {
+        // If no values are given, use the choices as values
+        // Since the choices are stored in the collection keys, i.e. they are
+        // strings or integers, we are guaranteed to be able to convert them
+        // to strings
+        if (null === $value) {
+            $value = function ($choice) {
+                return (string) $choice;
+            };
+
+            $this->useChoicesAsValues = true;
+        }
+
+        parent::__construct($choices, $value);
     }
 
     /**
@@ -157,13 +157,13 @@ class ArrayKeyChoiceList extends ArrayChoiceList
     /**
      * Flattens and flips an array into the given output variable.
      *
-     * @param array $choices The array to flatten
-     * @param callable $value The callable for generating choice values
-     * @param array $choicesByValues The flattened choices indexed by the
+     * @param array    $choices          The array to flatten
+     * @param callable $value            The callable for generating choice values
+     * @param array    $choicesByValues  The flattened choices indexed by the
      *                                   corresponding values
-     * @param array $keysByValues The original keys indexed by the
+     * @param array    $keysByValues     The original keys indexed by the
      *                                   corresponding values
-     * @param array $structuredValues The values indexed by the original keys
+     * @param array    $structuredValues The values indexed by the original keys
      *
      * @internal Must not be used by user-land code
      */
@@ -182,7 +182,7 @@ class ArrayKeyChoiceList extends ArrayChoiceList
                 continue;
             }
 
-            $choiceValue = (string)call_user_func($value, $choice);
+            $choiceValue = (string) call_user_func($value, $choice);
             $choicesByValues[$choiceValue] = $choice;
             $keysByValues[$choiceValue] = $key;
             $structuredValues[$key] = $choiceValue;

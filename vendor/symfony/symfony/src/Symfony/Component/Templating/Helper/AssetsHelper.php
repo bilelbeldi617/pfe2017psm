@@ -35,11 +35,11 @@ class AssetsHelper extends CoreAssetsHelper
     /**
      * Constructor.
      *
-     * @param string $basePath The base path
-     * @param string|array $baseUrls Base asset URLs
-     * @param string $version The asset version
-     * @param string $format The version format
-     * @param array $namedPackages Additional packages
+     * @param string       $basePath      The base path
+     * @param string|array $baseUrls      Base asset URLs
+     * @param string       $version       The asset version
+     * @param string       $format        The version format
+     * @param array        $namedPackages Additional packages
      */
     public function __construct($basePath = null, $baseUrls = array(), $version = null, $format = null, $namedPackages = array())
     {

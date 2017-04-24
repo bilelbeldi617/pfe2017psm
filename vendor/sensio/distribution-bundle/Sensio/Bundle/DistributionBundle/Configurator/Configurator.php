@@ -30,53 +30,15 @@ class Configurator
     public function __construct($kernelDir)
     {
         $this->kernelDir = $kernelDir;
-        $this->filename = $kernelDir . '/config/parameters.yml';
+        $this->filename = $kernelDir.'/config/parameters.yml';
 
         $this->steps = array();
         $this->parameters = $this->read();
     }
 
-    /**
-     * Reads parameters from file.
-     *
-     * @return array
-     */
-    protected function read()
-    {
-        $filename = $this->filename;
-        if (!$this->isFileWritable() && file_exists($this->getCacheFilename())) {
-            $filename = $this->getCacheFilename();
-        }
-
-        if (!file_exists($filename)) {
-            return array();
-        }
-
-        $ret = Yaml::parse(file_get_contents($filename));
-        if (false === $ret || array() === $ret) {
-            throw new \InvalidArgumentException(sprintf('The %s file is not valid.', $filename));
-        }
-
-        if (isset($ret['parameters']) && is_array($ret['parameters'])) {
-            return $ret['parameters'];
-        } else {
-            return array();
-        }
-    }
-
     public function isFileWritable()
     {
         return is_writable($this->filename);
-    }
-
-    /**
-     * getCacheFilename.
-     *
-     * @return string
-     */
-    protected function getCacheFilename()
-    {
-        return $this->kernelDir . '/cache/parameters.yml';
     }
 
     public function clean()
@@ -88,7 +50,7 @@ class Configurator
 
     /**
      * @param StepInterface $step
-     * @param int $priority
+     * @param int           $priority
      */
     public function addStep(StepInterface $step, $priority = 0)
     {
@@ -201,6 +163,18 @@ class Configurator
     }
 
     /**
+     * Renders parameters as a string.
+     *
+     * @param int $expanded
+     *
+     * @return string
+     */
+    public function render($expanded = 10)
+    {
+        return Yaml::dump(array('parameters' => $this->parameters), $expanded);
+    }
+
+    /**
      * Writes parameters to parameters.yml or temporary in the cache directory.
      *
      * @param int $expanded
@@ -215,14 +189,40 @@ class Configurator
     }
 
     /**
-     * Renders parameters as a string.
+     * Reads parameters from file.
      *
-     * @param int $expanded
+     * @return array
+     */
+    protected function read()
+    {
+        $filename = $this->filename;
+        if (!$this->isFileWritable() && file_exists($this->getCacheFilename())) {
+            $filename = $this->getCacheFilename();
+        }
+
+        if (!file_exists($filename)) {
+            return array();
+        }
+
+        $ret = Yaml::parse(file_get_contents($filename));
+        if (false === $ret || array() === $ret) {
+            throw new \InvalidArgumentException(sprintf('The %s file is not valid.', $filename));
+        }
+
+        if (isset($ret['parameters']) && is_array($ret['parameters'])) {
+            return $ret['parameters'];
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * getCacheFilename.
      *
      * @return string
      */
-    public function render($expanded = 10)
+    protected function getCacheFilename()
     {
-        return Yaml::dump(array('parameters' => $this->parameters), $expanded);
+        return $this->kernelDir.'/cache/parameters.yml';
     }
 }

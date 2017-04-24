@@ -21,6 +21,27 @@ class AsseticControllerTest extends \PHPUnit_Framework_TestCase
     private $cache;
     private $controller;
 
+    protected function setUp()
+    {
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
+
+        $this->request = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\Request')->setMethods(array('getETags', 'getMethod'))->getMock();
+        $this->headers = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\ParameterBag')->getMock();
+        $this->request->headers = $this->headers;
+        $this->am = $this->getMockBuilder('Assetic\\Factory\\LazyAssetManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->cache = $this->getMockBuilder('Assetic\\Cache\\CacheInterface')->getMock();
+
+        $this->request->expects($this->any())
+            ->method('getMethod')
+            ->willReturn('GET');
+
+        $this->controller = new AsseticController($this->am, $this->cache);
+    }
+
     public function testRenderNotFound()
     {
         $this->setExpectedException('Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException');
@@ -41,7 +62,7 @@ class AsseticControllerTest extends \PHPUnit_Framework_TestCase
 
         $name = 'foo';
         $lastModified = strtotime('2010-10-10 10:10:10');
-        $ifModifiedSince = gmdate('D, d M Y H:i:s', $lastModified) . ' GMT';
+        $ifModifiedSince = gmdate('D, d M Y H:i:s', $lastModified).' GMT';
 
         $asset->expects($this->any())
             ->method('getFilters')
@@ -77,7 +98,7 @@ class AsseticControllerTest extends \PHPUnit_Framework_TestCase
         $name = 'foo';
         $content = '==ASSET_CONTENT==';
         $lastModified = strtotime('2010-10-10 10:10:10');
-        $ifModifiedSince = gmdate('D, d M Y H:i:s', $lastModified - 300) . ' GMT';
+        $ifModifiedSince = gmdate('D, d M Y H:i:s', $lastModified - 300).' GMT';
 
         $asset->expects($this->any())
             ->method('getFilters')
@@ -141,7 +162,7 @@ class AsseticControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($formula));
         $this->request->expects($this->any())
             ->method('getETags')
-            ->will($this->returnValue(array('"' . $etag . '"')));
+            ->will($this->returnValue(array('"'.$etag.'"')));
         $asset->expects($this->never())
             ->method('dump');
 
@@ -188,26 +209,5 @@ class AsseticControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(200, $response->getStatusCode(), '->render() sends an OK response when If-None-Match is stale');
         $this->assertEquals($content, $response->getContent(), '->render() sends the dumped asset as the response content');
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
-
-        $this->request = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\Request')->setMethods(array('getETags', 'getMethod'))->getMock();
-        $this->headers = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\ParameterBag')->getMock();
-        $this->request->headers = $this->headers;
-        $this->am = $this->getMockBuilder('Assetic\\Factory\\LazyAssetManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->cache = $this->getMockBuilder('Assetic\\Cache\\CacheInterface')->getMock();
-
-        $this->request->expects($this->any())
-            ->method('getMethod')
-            ->willReturn('GET');
-
-        $this->controller = new AsseticController($this->am, $this->cache);
     }
 }

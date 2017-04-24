@@ -32,6 +32,20 @@ class PhpBundleWriterTest extends TestCase
      */
     private $filesystem;
 
+    protected function setUp()
+    {
+        $this->writer = new PhpBundleWriter();
+        $this->directory = sys_get_temp_dir().'/PhpBundleWriterTest/'.mt_rand(1000, 9999);
+        $this->filesystem = new Filesystem();
+
+        $this->filesystem->mkdir($this->directory);
+    }
+
+    protected function tearDown()
+    {
+        $this->filesystem->remove($this->directory);
+    }
+
     public function testWrite()
     {
         $this->writer->write($this->directory, 'en', array(
@@ -47,7 +61,7 @@ class PhpBundleWriterTest extends TestCase
             )),
         ));
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/en.php', $this->directory . '/en.php');
+        $this->assertFileEquals(__DIR__.'/Fixtures/en.php', $this->directory.'/en.php');
     }
 
     /**
@@ -59,24 +73,10 @@ class PhpBundleWriterTest extends TestCase
             $this->markTestSkipped('ResourceBundle implements Traversable only as of PHP 5.3.15 and 5.4.4');
         }
 
-        $bundle = new \ResourceBundle('rb', __DIR__ . '/Fixtures', false);
+        $bundle = new \ResourceBundle('rb', __DIR__.'/Fixtures', false);
 
         $this->writer->write($this->directory, 'en', $bundle);
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/rb.php', $this->directory . '/en.php');
-    }
-
-    protected function setUp()
-    {
-        $this->writer = new PhpBundleWriter();
-        $this->directory = sys_get_temp_dir() . '/PhpBundleWriterTest/' . mt_rand(1000, 9999);
-        $this->filesystem = new Filesystem();
-
-        $this->filesystem->mkdir($this->directory);
-    }
-
-    protected function tearDown()
-    {
-        $this->filesystem->remove($this->directory);
+        $this->assertFileEquals(__DIR__.'/Fixtures/rb.php', $this->directory.'/en.php');
     }
 }

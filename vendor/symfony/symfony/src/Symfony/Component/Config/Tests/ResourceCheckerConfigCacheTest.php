@@ -20,6 +20,22 @@ class ResourceCheckerConfigCacheTest extends TestCase
 {
     private $cacheFile = null;
 
+    protected function setUp()
+    {
+        $this->cacheFile = tempnam(sys_get_temp_dir(), 'config_');
+    }
+
+    protected function tearDown()
+    {
+        $files = array($this->cacheFile, "{$this->cacheFile}.meta");
+
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+    }
+
     public function testGetPath()
     {
         $cache = new ResourceCheckerConfigCache($this->cacheFile);
@@ -63,12 +79,12 @@ class ResourceCheckerConfigCacheTest extends TestCase
         $checker = $this->getMockBuilder('\Symfony\Component\Config\ResourceCheckerInterface')->getMock();
 
         $checker->expects($this->once())
-            ->method('supports')
-            ->willReturn(true);
+                  ->method('supports')
+                  ->willReturn(true);
 
         $checker->expects($this->once())
-            ->method('isFresh')
-            ->willReturn(true);
+                  ->method('isFresh')
+                  ->willReturn(true);
 
         $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
         $cache->write('', array(new ResourceStub()));
@@ -81,12 +97,12 @@ class ResourceCheckerConfigCacheTest extends TestCase
         $checker = $this->getMockBuilder('\Symfony\Component\Config\ResourceCheckerInterface')->getMock();
 
         $checker->expects($this->once())
-            ->method('supports')
-            ->willReturn(true);
+                  ->method('supports')
+                  ->willReturn(true);
 
         $checker->expects($this->once())
-            ->method('isFresh')
-            ->willReturn(false);
+                  ->method('isFresh')
+                  ->willReturn(false);
 
         $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
         $cache->write('', array(new ResourceStub()));
@@ -124,21 +140,5 @@ class ResourceCheckerConfigCacheTest extends TestCase
         unlink($metaFile);
 
         $this->assertFalse($cache->isFresh());
-    }
-
-    protected function setUp()
-    {
-        $this->cacheFile = tempnam(sys_get_temp_dir(), 'config_');
-    }
-
-    protected function tearDown()
-    {
-        $files = array($this->cacheFile, "{$this->cacheFile}.meta");
-
-        foreach ($files as $file) {
-            if (file_exists($file)) {
-                unlink($file);
-            }
-        }
     }
 }

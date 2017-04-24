@@ -43,7 +43,7 @@ outputs the results:
 
 <info>php %command.full_name% "SELECT * from user"</info>
 EOT
-            );
+        );
     }
 
     /**

@@ -35,36 +35,6 @@ class Notification
      * @ORM\Column(name="reciever", type="integer")
      */
     private $reciever;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="reciever_type", type="string", length=255)
-     */
-    private $recieverType;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="vu", type="integer")
-     */
-    private $vu;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titre_notification", type="string", length=50)
-     */
-    private $titreNotification;
-    /**
-     * @var datetime
-     *
-     * @ORM\Column(name="date_notification", type="datetime")
-     */
-    private $dateNotification;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="texte_notification", type="string", length=255)
-     */
-    private $texteNotification;
 
     /**
      * @return string
@@ -81,6 +51,20 @@ class Notification
     {
         $this->senderType = $senderType;
     }
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reciever_type", type="string", length=255)
+     */
+    private $recieverType;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="vu", type="integer")
+     */
+    private $vu;
 
     /**
      * @return int
@@ -146,6 +130,15 @@ class Notification
         $this->sender = $sender;
     }
 
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="titre_notification", type="string", length=50)
+     */
+    private $titreNotification;
+
     /**
      * @return datetime
      */
@@ -162,24 +155,33 @@ class Notification
         $this->dateNotification = $dateNotification;
     }
 
+
+
+
+
+    /**
+     * @var datetime
+     *
+     * @ORM\Column(name="date_notification", type="datetime")
+     */
+    private $dateNotification;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="texte_notification", type="string", length=255)
+     */
+    private $texteNotification;
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get titreNotification
-     *
-     * @return string
-     */
-    public function getTitreNotification()
-    {
-        return $this->titreNotification;
     }
 
     /**
@@ -196,13 +198,13 @@ class Notification
     }
 
     /**
-     * Get texteNotification
+     * Get titreNotification
      *
-     * @return string
+     * @return string 
      */
-    public function getTexteNotification()
+    public function getTitreNotification()
     {
-        return $this->texteNotification;
+        return $this->titreNotification;
     }
 
     /**
@@ -216,5 +218,15 @@ class Notification
         $this->texteNotification = $texteNotification;
 
         return $this;
+    }
+
+    /**
+     * Get texteNotification
+     *
+     * @return string 
+     */
+    public function getTexteNotification()
+    {
+        return $this->texteNotification;
     }
 }

@@ -25,16 +25,6 @@ class NotAllAclsFoundException extends AclNotFoundException
     private $partialResult;
 
     /**
-     * Returns the partial result.
-     *
-     * @return \SplObjectStorage
-     */
-    public function getPartialResult()
-    {
-        return $this->partialResult;
-    }
-
-    /**
      * Sets the partial result.
      *
      * @param \SplObjectStorage $result
@@ -42,5 +32,15 @@ class NotAllAclsFoundException extends AclNotFoundException
     public function setPartialResult(\SplObjectStorage $result)
     {
         $this->partialResult = $result;
+    }
+
+    /**
+     * Returns the partial result.
+     *
+     * @return \SplObjectStorage
+     */
+    public function getPartialResult()
+    {
+        return $this->partialResult;
     }
 }

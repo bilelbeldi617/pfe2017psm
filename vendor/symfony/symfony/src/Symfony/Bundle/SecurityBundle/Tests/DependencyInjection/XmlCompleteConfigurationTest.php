@@ -19,7 +19,7 @@ class XmlCompleteConfigurationTest extends CompleteConfigurationTest
 {
     protected function getLoader(ContainerBuilder $container)
     {
-        return new XmlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/xml'));
+        return new XmlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/xml'));
     }
 
     protected function getFileExtension()

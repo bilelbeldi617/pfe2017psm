@@ -29,20 +29,6 @@ class PsrResponseListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelView($event);
     }
 
-    private function createEventMock($controllerResult)
-    {
-        $event = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $event
-            ->expects($this->any())
-            ->method('getControllerResult')
-            ->will($this->returnValue($controllerResult));
-
-        return $event;
-    }
-
     public function testDoesNotConvertControllerResult()
     {
         $listener = new PsrResponseListener(new HttpFoundationFactory());
@@ -55,5 +41,21 @@ class PsrResponseListenerTest extends \PHPUnit_Framework_TestCase
         $event->expects($this->never())->method('setResponse');
 
         $listener->onKernelView($event);
+    }
+
+    private function createEventMock($controllerResult)
+    {
+        $event = $this
+            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $event
+            ->expects($this->any())
+            ->method('getControllerResult')
+            ->will($this->returnValue($controllerResult))
+        ;
+
+        return $event;
     }
 }

@@ -17,22 +17,6 @@ use Symfony\Component\Security\Http\Firewall\X509AuthenticationListener;
 
 class X509AuthenticationListenerTest extends TestCase
 {
-    public static function dataProviderGetPreAuthenticatedData()
-    {
-        return array(
-            'validValues' => array('TheUser', 'TheCredentials'),
-            'noCredentials' => array('TheUser', ''),
-        );
-    }
-
-    public static function dataProviderGetPreAuthenticatedDataNoUser()
-    {
-        return array(
-            'basicEmailAddress' => array('cert@example.com'),
-            'emailAddressWithPlusSign' => array('cert+something@example.com'),
-        );
-    }
-
     /**
      * @dataProvider dataProviderGetPreAuthenticatedData
      */
@@ -61,12 +45,20 @@ class X509AuthenticationListenerTest extends TestCase
         $this->assertSame($result, array($user, $credentials));
     }
 
+    public static function dataProviderGetPreAuthenticatedData()
+    {
+        return array(
+            'validValues' => array('TheUser', 'TheCredentials'),
+            'noCredentials' => array('TheUser', ''),
+        );
+    }
+
     /**
      * @dataProvider dataProviderGetPreAuthenticatedDataNoUser
      */
     public function testGetPreAuthenticatedDataNoUser($emailAddress)
     {
-        $credentials = 'CN=Sample certificate DN/emailAddress=' . $emailAddress;
+        $credentials = 'CN=Sample certificate DN/emailAddress='.$emailAddress;
         $request = new Request(array(), array(), array(), array(), array(), array('SSL_CLIENT_S_DN' => $credentials));
 
         $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
@@ -80,6 +72,14 @@ class X509AuthenticationListenerTest extends TestCase
 
         $result = $method->invokeArgs($listener, array($request));
         $this->assertSame($result, array($emailAddress, $credentials));
+    }
+
+    public static function dataProviderGetPreAuthenticatedDataNoUser()
+    {
+        return array(
+            'basicEmailAddress' => array('cert@example.com'),
+            'emailAddressWithPlusSign' => array('cert+something@example.com'),
+        );
     }
 
     /**

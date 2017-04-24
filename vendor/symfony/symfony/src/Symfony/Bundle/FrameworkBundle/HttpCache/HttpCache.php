@@ -31,8 +31,8 @@ abstract class HttpCache extends BaseHttpCache
     /**
      * Constructor.
      *
-     * @param HttpKernelInterface $kernel An HttpKernelInterface instance
-     * @param string $cacheDir The cache directory (default used if null)
+     * @param HttpKernelInterface $kernel   An HttpKernelInterface instance
+     * @param string              $cacheDir The cache directory (default used if null)
      */
     public function __construct(HttpKernelInterface $kernel, $cacheDir = null)
     {
@@ -42,32 +42,12 @@ abstract class HttpCache extends BaseHttpCache
         parent::__construct($kernel, $this->createStore(), $this->createSurrogate(), array_merge(array('debug' => $kernel->isDebug()), $this->getOptions()));
     }
 
-    protected function createStore()
-    {
-        return new Store($this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache');
-    }
-
-    protected function createSurrogate()
-    {
-        return new Esi();
-    }
-
-    /**
-     * Returns an array of options to customize the Cache configuration.
-     *
-     * @return array An array of options
-     */
-    protected function getOptions()
-    {
-        return array();
-    }
-
     /**
      * Forwards the Request to the backend and returns the Response.
      *
-     * @param Request $request A Request instance
-     * @param bool $raw Whether to catch exceptions or not
-     * @param Response $entry A Response instance (the stale entry if present, null otherwise)
+     * @param Request  $request A Request instance
+     * @param bool     $raw     Whether to catch exceptions or not
+     * @param Response $entry   A Response instance (the stale entry if present, null otherwise)
      *
      * @return Response A Response instance
      */
@@ -81,6 +61,21 @@ abstract class HttpCache extends BaseHttpCache
     }
 
     /**
+     * Returns an array of options to customize the Cache configuration.
+     *
+     * @return array An array of options
+     */
+    protected function getOptions()
+    {
+        return array();
+    }
+
+    protected function createSurrogate()
+    {
+        return new Esi();
+    }
+
+    /**
      * Creates new ESI instance.
      *
      * @return Esi
@@ -89,8 +84,13 @@ abstract class HttpCache extends BaseHttpCache
      */
     protected function createEsi()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.6 and will be removed in 3.0. Use createSurrogate() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0. Use createSurrogate() instead.', E_USER_DEPRECATED);
 
         return $this->createSurrogate();
+    }
+
+    protected function createStore()
+    {
+        return new Store($this->cacheDir ?: $this->kernel->getCacheDir().'/http_cache');
     }
 }

@@ -46,9 +46,9 @@ class FormPassTest extends TestCase
             array(),
         ));
 
-        $definition1 = new Definition(__CLASS__ . '_Type1');
+        $definition1 = new Definition(__CLASS__.'_Type1');
         $definition1->addTag('form.type');
-        $definition2 = new Definition(__CLASS__ . '_Type2');
+        $definition2 = new Definition(__CLASS__.'_Type2');
         $definition2->addTag('form.type');
 
         $container->setDefinition('form.extension', $extDefinition);
@@ -61,8 +61,8 @@ class FormPassTest extends TestCase
 
         $this->assertEquals(array(
             // As of Symfony 2.8, the class is used to look up types
-            __CLASS__ . '_Type1' => 'my.type1',
-            __CLASS__ . '_Type2' => 'my.type2',
+            __CLASS__.'_Type1' => 'my.type1',
+            __CLASS__.'_Type2' => 'my.type2',
             // Before Symfony 2.8, the service ID was used as default alias
             'my.type1' => 'my.type1',
             'my.type2' => 'my.type2',
@@ -85,9 +85,9 @@ class FormPassTest extends TestCase
             array(),
         ));
 
-        $definition1 = new Definition(__CLASS__ . '_Type1');
+        $definition1 = new Definition(__CLASS__.'_Type1');
         $definition1->addTag('form.type', array('alias' => 'mytype1'));
-        $definition2 = new Definition(__CLASS__ . '_Type2');
+        $definition2 = new Definition(__CLASS__.'_Type2');
         $definition2->addTag('form.type', array('alias' => 'mytype2'));
 
         $container->setDefinition('form.extension', $extDefinition);
@@ -99,8 +99,8 @@ class FormPassTest extends TestCase
         $extDefinition = $container->getDefinition('form.extension');
 
         $this->assertEquals(array(
-            __CLASS__ . '_Type1' => 'my.type1',
-            __CLASS__ . '_Type2' => 'my.type2',
+            __CLASS__.'_Type1' => 'my.type1',
+            __CLASS__.'_Type2' => 'my.type2',
             'mytype1' => 'my.type1',
             'mytype2' => 'my.type2',
         ), $extDefinition->getArgument(1));

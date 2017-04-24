@@ -20,10 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ControllerResolverTest extends TestCase
 {
-    protected static function controllerMethod4()
-    {
-    }
-
     public function testGetControllerWithoutControllerParameter()
     {
         $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->getMock();
@@ -34,18 +30,12 @@ class ControllerResolverTest extends TestCase
         $this->assertFalse($resolver->getController($request), '->getController() returns false when the request has no _controller attribute');
     }
 
-    protected function createControllerResolver(LoggerInterface $logger = null)
-    {
-        return new ControllerResolver($logger);
-    }
-
     public function testGetControllerWithLambda()
     {
         $resolver = $this->createControllerResolver();
 
         $request = Request::create('/');
-        $request->attributes->set('_controller', $lambda = function () {
-        });
+        $request->attributes->set('_controller', $lambda = function () {});
         $controller = $resolver->getController($request);
         $this->assertSame($lambda, $controller);
     }
@@ -168,14 +158,12 @@ class ControllerResolverTest extends TestCase
 
         $request = Request::create('/');
         $request->attributes->set('foo', 'foo');
-        $controller = function ($foo) {
-        };
+        $controller = function ($foo) {};
         $this->assertEquals(array('foo'), $resolver->getArguments($request, $controller));
 
         $request = Request::create('/');
         $request->attributes->set('foo', 'foo');
-        $controller = function ($foo, $bar = 'bar') {
-        };
+        $controller = function ($foo, $bar = 'bar') {};
         $this->assertEquals(array('foo', 'bar'), $resolver->getArguments($request, $controller));
 
         $request = Request::create('/');
@@ -277,6 +265,11 @@ class ControllerResolverTest extends TestCase
         $this->assertEquals(array(null, null, 'value', 'mandatory'), $resolver->getArguments($request, $controller));
     }
 
+    protected function createControllerResolver(LoggerInterface $logger = null)
+    {
+        return new ControllerResolver($logger);
+    }
+
     public function __invoke($foo, $bar = null)
     {
     }
@@ -290,6 +283,10 @@ class ControllerResolverTest extends TestCase
     }
 
     protected function controllerMethod3($foo, $bar, $foobar)
+    {
+    }
+
+    protected static function controllerMethod4()
     {
     }
 

@@ -34,14 +34,14 @@ class Entry implements AuditableEntryInterface
     /**
      * Constructor.
      *
-     * @param int $id
-     * @param AclInterface $acl
+     * @param int                       $id
+     * @param AclInterface              $acl
      * @param SecurityIdentityInterface $sid
-     * @param string $strategy
-     * @param int $mask
-     * @param bool $granting
-     * @param bool $auditFailure
-     * @param bool $auditSuccess
+     * @param string                    $strategy
+     * @param int                       $mask
+     * @param bool                      $granting
+     * @param bool                      $auditFailure
+     * @param bool                      $auditSuccess
      */
     public function __construct($id, AclInterface $acl, SecurityIdentityInterface $sid, $strategy, $mask, $granting, $auditFailure, $auditSuccess)
     {
@@ -72,19 +72,6 @@ class Entry implements AuditableEntryInterface
     }
 
     /**
-     * Sets the permission mask.
-     *
-     * Do never call this method directly. Use the respective methods on the
-     * AclInterface instead.
-     *
-     * @param int $mask
-     */
-    public function setMask($mask)
-    {
-        $this->mask = $mask;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getId()
@@ -109,24 +96,27 @@ class Entry implements AuditableEntryInterface
     }
 
     /**
-     * Sets the mask comparison strategy.
-     *
-     * Do never call this method directly. Use the respective methods on the
-     * AclInterface instead.
-     *
-     * @param string $strategy
-     */
-    public function setStrategy($strategy)
-    {
-        $this->strategy = $strategy;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function isAuditFailure()
     {
         return $this->auditFailure;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAuditSuccess()
+    {
+        return $this->auditSuccess;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isGranting()
+    {
+        return $this->granting;
     }
 
     /**
@@ -143,14 +133,6 @@ class Entry implements AuditableEntryInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function isAuditSuccess()
-    {
-        return $this->auditSuccess;
-    }
-
-    /**
      * Turns on/off auditing on permission grants.
      *
      * Do never call this method directly. Use the respective methods on the
@@ -164,11 +146,29 @@ class Entry implements AuditableEntryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Sets the permission mask.
+     *
+     * Do never call this method directly. Use the respective methods on the
+     * AclInterface instead.
+     *
+     * @param int $mask
      */
-    public function isGranting()
+    public function setMask($mask)
     {
-        return $this->granting;
+        $this->mask = $mask;
+    }
+
+    /**
+     * Sets the mask comparison strategy.
+     *
+     * Do never call this method directly. Use the respective methods on the
+     * AclInterface instead.
+     *
+     * @param string $strategy
+     */
+    public function setStrategy($strategy)
+    {
+        $this->strategy = $strategy;
     }
 
     /**
@@ -197,12 +197,12 @@ class Entry implements AuditableEntryInterface
     public function unserialize($serialized)
     {
         list($this->mask,
-            $this->id,
-            $this->securityIdentity,
-            $this->strategy,
-            $this->auditFailure,
-            $this->auditSuccess,
-            $this->granting
-            ) = unserialize($serialized);
+             $this->id,
+             $this->securityIdentity,
+             $this->strategy,
+             $this->auditFailure,
+             $this->auditSuccess,
+             $this->granting
+        ) = unserialize($serialized);
     }
 }

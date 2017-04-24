@@ -22,7 +22,7 @@ interface AuditLoggerInterface
      * This method is called whenever access is granted, or denied, and
      * administrative mode is turned off.
      *
-     * @param bool $granted
+     * @param bool           $granted
      * @param EntryInterface $ace
      */
     public function logIfNeeded($granted, EntryInterface $ace);

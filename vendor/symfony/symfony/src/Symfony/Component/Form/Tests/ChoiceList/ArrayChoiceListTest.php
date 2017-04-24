@@ -20,6 +20,28 @@ class ArrayChoiceListTest extends AbstractChoiceListTest
 {
     private $object;
 
+    protected function setUp()
+    {
+        $this->object = new \stdClass();
+
+        parent::setUp();
+    }
+
+    protected function createChoiceList()
+    {
+        return new ArrayChoiceList($this->getChoices());
+    }
+
+    protected function getChoices()
+    {
+        return array(0, 1, 1.5, '1', 'a', false, true, $this->object, null);
+    }
+
+    protected function getValues()
+    {
+        return array('0', '1', '2', '3', '4', '5', '6', '7', '8');
+    }
+
     /**
      * @expectedException \Symfony\Component\Form\Exception\InvalidArgumentException
      */
@@ -31,7 +53,7 @@ class ArrayChoiceListTest extends AbstractChoiceListTest
     public function testCreateChoiceListWithValueCallback()
     {
         $callback = function ($choice) {
-            return ':' . $choice;
+            return ':'.$choice;
         };
 
         $choiceList = new ArrayChoiceList(array(2 => 'foo', 7 => 'bar', 10 => 'baz'), $callback);
@@ -101,12 +123,12 @@ class ArrayChoiceListTest extends AbstractChoiceListTest
             return $choice->value;
         };
 
-        $obj1 = (object)array('value' => 'value1');
-        $obj2 = (object)array('value' => 'value2');
+        $obj1 = (object) array('value' => 'value1');
+        $obj2 = (object) array('value' => 'value2');
 
         $choiceList = new ArrayChoiceList(array($obj1, $obj2), $callback);
         $this->assertSame(array(2 => 'value2'), $choiceList->getValuesForChoices(array(2 => $obj2)));
-        $this->assertSame(array(2 => 'value2'), $choiceList->getValuesForChoices(array(2 => (object)array('value' => 'value2'))));
+        $this->assertSame(array(2 => 'value2'), $choiceList->getValuesForChoices(array(2 => (object) array('value' => 'value2'))));
     }
 
     public function testGetChoicesForValuesWithContainingNull()
@@ -148,27 +170,5 @@ class ArrayChoiceListTest extends AbstractChoiceListTest
         $this->assertSame(array(0 => ''), $choiceList->getChoicesForValues(array('')));
         $this->assertSame(array(0 => 0.3), $choiceList->getChoicesForValues(array('0.3')));
         $this->assertSame(array(0 => 0.5), $choiceList->getChoicesForValues(array('0.5')));
-    }
-
-    protected function setUp()
-    {
-        $this->object = new \stdClass();
-
-        parent::setUp();
-    }
-
-    protected function createChoiceList()
-    {
-        return new ArrayChoiceList($this->getChoices());
-    }
-
-    protected function getChoices()
-    {
-        return array(0, 1, 1.5, '1', 'a', false, true, $this->object, null);
-    }
-
-    protected function getValues()
-    {
-        return array('0', '1', '2', '3', '4', '5', '6', '7', '8');
     }
 }

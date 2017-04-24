@@ -50,31 +50,6 @@ class DoctrineStep implements StepInterface
 
     public $path;
 
-    /**
-     * @return array
-     */
-    public static function getDriverKeys()
-    {
-        return array_keys(static::getDrivers());
-    }
-
-    /**
-     * @return array
-     */
-    public static function getDrivers()
-    {
-        return array(
-            'pdo_mysql' => 'MySQL (PDO)',
-            'pdo_sqlite' => 'SQLite (PDO)',
-            'pdo_pgsql' => 'PosgreSQL (PDO)',
-            'oci8' => 'Oracle (native)',
-            'ibm_db2' => 'IBM DB2 (native)',
-            'pdo_oci' => 'Oracle (PDO)',
-            'pdo_ibm' => 'IBM DB2 (PDO)',
-            'pdo_sqlsrv' => 'SQLServer (PDO)',
-        );
-    }
-
     public function setParameters(array $parameters)
     {
         foreach ($parameters as $key => $value) {
@@ -129,7 +104,7 @@ class DoctrineStep implements StepInterface
         $parameters = array();
 
         foreach ($data as $key => $value) {
-            $parameters['database_' . $key] = $value;
+            $parameters['database_'.$key] = $value;
         }
 
         return $parameters;
@@ -141,5 +116,30 @@ class DoctrineStep implements StepInterface
     public function getTemplate()
     {
         return 'SensioDistributionBundle:Configurator/Step:doctrine.html.twig';
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDriverKeys()
+    {
+        return array_keys(static::getDrivers());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDrivers()
+    {
+        return array(
+            'pdo_mysql' => 'MySQL (PDO)',
+            'pdo_sqlite' => 'SQLite (PDO)',
+            'pdo_pgsql' => 'PosgreSQL (PDO)',
+            'oci8' => 'Oracle (native)',
+            'ibm_db2' => 'IBM DB2 (native)',
+            'pdo_oci' => 'Oracle (PDO)',
+            'pdo_ibm' => 'IBM DB2 (PDO)',
+            'pdo_sqlsrv' => 'SQLServer (PDO)',
+        );
     }
 }

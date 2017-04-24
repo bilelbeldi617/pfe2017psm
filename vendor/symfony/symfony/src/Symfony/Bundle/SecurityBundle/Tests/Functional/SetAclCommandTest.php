@@ -40,6 +40,20 @@ class SetAclCommandTest extends WebTestCase
     const OBJECT_CLASS = 'Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\AclBundle\Entity\Car';
     const SECURITY_CLASS = 'Symfony\Component\Security\Core\User\User';
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->deleteTmpDir('Acl');
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->deleteTmpDir('Acl');
+    }
+
     public function testSetAclUser()
     {
         $objectId = 1;
@@ -83,21 +97,6 @@ class SetAclCommandTest extends WebTestCase
             $this->fail('NoAceFoundException not throwed');
         } catch (NoAceFoundException $e) {
         }
-    }
-
-    private function getApplication()
-    {
-        $kernel = $this->createKernel(array('test_case' => 'Acl'));
-        $kernel->boot();
-
-        $application = new Application($kernel);
-        $application->add(new InitAclCommand());
-
-        $initAclCommand = $application->find('init:acl');
-        $initAclCommandTester = new CommandTester($initAclCommand);
-        $initAclCommandTester->execute(array('command' => 'init:acl'));
-
-        return $application;
     }
 
     public function testSetAclRole()
@@ -176,17 +175,18 @@ class SetAclCommandTest extends WebTestCase
         $this->assertTrue($acl2->isGranted($permissionMap->getMasks($grantedPermission, null), array($roleSecurityIdentity)));
     }
 
-    protected function setUp()
+    private function getApplication()
     {
-        parent::setUp();
+        $kernel = $this->createKernel(array('test_case' => 'Acl'));
+        $kernel->boot();
 
-        $this->deleteTmpDir('Acl');
-    }
+        $application = new Application($kernel);
+        $application->add(new InitAclCommand());
 
-    protected function tearDown()
-    {
-        parent::tearDown();
+        $initAclCommand = $application->find('init:acl');
+        $initAclCommandTester = new CommandTester($initAclCommand);
+        $initAclCommandTester->execute(array('command' => 'init:acl'));
 
-        $this->deleteTmpDir('Acl');
+        return $application;
     }
 }

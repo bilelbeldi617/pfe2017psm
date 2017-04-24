@@ -19,6 +19,11 @@ class JsonEncodeTest extends TestCase
 {
     private $encoder;
 
+    protected function setUp()
+    {
+        $this->encode = new JsonEncode();
+    }
+
     public function testSupportsEncoding()
     {
         $this->assertTrue($this->encode->supportsEncoding(JsonEncoder::FORMAT));
@@ -51,10 +56,5 @@ class JsonEncodeTest extends TestCase
     public function testEncodeWithError()
     {
         $this->encode->encode("\xB1\x31", JsonEncoder::FORMAT);
-    }
-
-    protected function setUp()
-    {
-        $this->encode = new JsonEncode();
     }
 }

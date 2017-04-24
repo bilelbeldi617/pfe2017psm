@@ -27,11 +27,6 @@ abstract class BaseTypeTest extends TypeTestCase
         $this->assertTrue($form->isDisabled());
     }
 
-    protected function getTestedType()
-    {
-        return static::TESTED_TYPE;
-    }
-
     public function testPassIdAndNameToView()
     {
         $view = $this->factory->createNamed('name', $this->getTestedType())
@@ -148,5 +143,10 @@ abstract class BaseTypeTest extends TypeTestCase
         $this->assertSame($expected, $form->getData());
         $this->assertSame($norm, $form->getNormData());
         $this->assertSame($view, $form->getViewData());
+    }
+
+    protected function getTestedType()
+    {
+        return static::TESTED_TYPE;
     }
 }

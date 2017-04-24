@@ -31,16 +31,16 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class CacheProviderLoader
 {
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      */
     public function loadCacheProvider($name, array $config, ContainerBuilder $container)
     {
-        $serviceId = 'doctrine_cache.providers.' . $name;
-        $decorator = $this->getProviderDecorator($container, $config);
-        $service = $container->setDefinition($serviceId, $decorator);
-        $type = ($config['type'] === 'custom_provider')
+        $serviceId  = 'doctrine_cache.providers.' . $name;
+        $decorator  = $this->getProviderDecorator($container, $config);
+        $service    = $container->setDefinition($serviceId, $decorator);
+        $type       = ($config['type'] === 'custom_provider')
             ? $config['custom_provider']['type']
             : $config['type'];
 
@@ -58,18 +58,18 @@ class CacheProviderLoader
     }
 
     /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @param array $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
+     * @param array                                                     $config
      *
      * @return \Symfony\Component\DependencyInjection\DefinitionDecorator
      */
     protected function getProviderDecorator(ContainerBuilder $container, array $config)
     {
         $type = $config['type'];
-        $id = 'doctrine_cache.abstract.' . $type;
+        $id   = 'doctrine_cache.abstract.' . $type;
 
         if ($type === 'custom_provider') {
-            $type = $config['custom_provider']['type'];
+            $type  = $config['custom_provider']['type'];
             $param = $this->getCustomProviderParameter($type);
 
             if ($container->hasParameter($param)) {
@@ -85,18 +85,22 @@ class CacheProviderLoader
     }
 
     /**
-     * @param string $type
+     * @param string                                                    $type
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
-     * @return string
+     * @return \Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\Definition\CacheDefinition
      */
-    public function getCustomProviderParameter($type)
+    private function getCacheDefinition($type, ContainerBuilder $container)
     {
-        return 'doctrine_cache.custom_provider.' . $type;
+        $class  = $this->getDefinitionClass($type, $container);
+        $object = new $class($type);
+
+        return $object;
     }
 
     /**
-     * @param string $type
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $type
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return boolean
      */
@@ -110,18 +114,8 @@ class CacheProviderLoader
     }
 
     /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getCustomDefinitionClassParameter($type)
-    {
-        return 'doctrine_cache.custom_definition_class.' . $type;
-    }
-
-    /**
-     * @param string $type
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $type
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return string
      */
@@ -131,7 +125,7 @@ class CacheProviderLoader
             return $container->getParameter($this->getCustomDefinitionClassParameter($type));
         }
 
-        $name = Inflector::classify($type) . 'Definition';
+        $name  = Inflector::classify($type) . 'Definition';
         $class = sprintf('%s\Definition\%s', __NAMESPACE__, $name);
 
         return $class;
@@ -139,15 +133,21 @@ class CacheProviderLoader
 
     /**
      * @param string $type
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      *
-     * @return \Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\Definition\CacheDefinition
+     * @return string
      */
-    private function getCacheDefinition($type, ContainerBuilder $container)
+    public function getCustomProviderParameter($type)
     {
-        $class = $this->getDefinitionClass($type, $container);
-        $object = new $class($type);
+        return 'doctrine_cache.custom_provider.' . $type;
+    }
 
-        return $object;
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getCustomDefinitionClassParameter($type)
+    {
+        return 'doctrine_cache.custom_definition_class.' . $type;
     }
 }

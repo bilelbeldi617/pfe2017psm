@@ -21,27 +21,31 @@ use Symfony\Component\Form\Exception\BadMethodCallException;
 class FormError implements \Serializable
 {
     /**
+     * @var string
+     */
+    private $message;
+
+    /**
      * The template for the error message.
      *
      * @var string
      */
     protected $messageTemplate;
+
     /**
      * The parameters that should be substituted in the message template.
      *
      * @var array
      */
     protected $messageParameters;
+
     /**
      * The value for error message pluralization.
      *
      * @var int|null
      */
     protected $messagePluralization;
-    /**
-     * @var string
-     */
-    private $message;
+
     /**
      * The cause for this error.
      *
@@ -62,12 +66,12 @@ class FormError implements \Serializable
      * Any array key in $messageParameters will be used as a placeholder in
      * $messageTemplate.
      *
-     * @param string $message The translated error message
-     * @param string|null $messageTemplate The template for the error message
-     * @param array $messageParameters The parameters that should be
+     * @param string      $message              The translated error message
+     * @param string|null $messageTemplate      The template for the error message
+     * @param array       $messageParameters    The parameters that should be
      *                                          substituted in the message template
-     * @param int|null $messagePluralization The value for error message pluralization
-     * @param mixed $cause The cause of the error
+     * @param int|null    $messagePluralization The value for error message pluralization
+     * @param mixed       $cause                The cause of the error
      *
      * @see \Symfony\Component\Translation\Translator
      */
@@ -131,16 +135,6 @@ class FormError implements \Serializable
     }
 
     /**
-     * Returns the form that caused this error.
-     *
-     * @return FormInterface The form that caused this error
-     */
-    public function getOrigin()
-    {
-        return $this->origin;
-    }
-
-    /**
      * Sets the form that caused this error.
      *
      * This method must only be called once.
@@ -156,6 +150,16 @@ class FormError implements \Serializable
         }
 
         $this->origin = $origin;
+    }
+
+    /**
+     * Returns the form that caused this error.
+     *
+     * @return FormInterface The form that caused this error
+     */
+    public function getOrigin()
+    {
+        return $this->origin;
     }
 
     /**

@@ -31,10 +31,10 @@ class FileResource implements ResourceInterface
     /**
      * Constructor.
      *
-     * @param LoaderInterface $loader The templating loader
-     * @param string $bundle The current bundle name
-     * @param string $baseDir The directory
-     * @param string $path The file path
+     * @param LoaderInterface $loader  The templating loader
+     * @param string          $bundle  The current bundle name
+     * @param string          $baseDir The directory
+     * @param string          $path    The file path
      */
     public function __construct(LoaderInterface $loader, $bundle, $baseDir, $path)
     {
@@ -47,6 +47,23 @@ class FileResource implements ResourceInterface
     public function isFresh($timestamp)
     {
         return $this->loader->isFresh($this->getTemplate(), $timestamp);
+    }
+
+    public function getContent()
+    {
+        $templateReference = $this->getTemplate();
+        $fileResource = $this->loader->load($templateReference);
+
+        if (!$fileResource) {
+            throw new \InvalidArgumentException(sprintf('Unable to find template "%s".', $templateReference));
+        }
+
+        return $fileResource->getContent();
+    }
+
+    public function __toString()
+    {
+        return (string) $this->getTemplate();
     }
 
     protected function getTemplate()
@@ -67,22 +84,5 @@ class FileResource implements ResourceInterface
         $name = implode('.', $elements);
 
         return new TemplateReference($bundle, implode('/', $parts), $name, $format, $engine);
-    }
-
-    public function getContent()
-    {
-        $templateReference = $this->getTemplate();
-        $fileResource = $this->loader->load($templateReference);
-
-        if (!$fileResource) {
-            throw new \InvalidArgumentException(sprintf('Unable to find template "%s".', $templateReference));
-        }
-
-        return $fileResource->getContent();
-    }
-
-    public function __toString()
-    {
-        return (string)$this->getTemplate();
     }
 }

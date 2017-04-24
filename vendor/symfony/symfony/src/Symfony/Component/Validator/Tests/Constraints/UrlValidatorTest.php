@@ -21,6 +21,16 @@ use Symfony\Component\Validator\Validation;
  */
 class UrlValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new UrlValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Url());
@@ -133,7 +143,7 @@ class UrlValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($url, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $url . '"')
+            ->setParameter('{{ value }}', '"'.$url.'"')
             ->setCode(Url::INVALID_URL_ERROR)
             ->assertRaised();
     }
@@ -212,16 +222,6 @@ class UrlValidatorTest extends AbstractConstraintValidatorTest
     public function getCheckDns()
     {
         return array(array(true), array(false));
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new UrlValidator();
     }
 }
 

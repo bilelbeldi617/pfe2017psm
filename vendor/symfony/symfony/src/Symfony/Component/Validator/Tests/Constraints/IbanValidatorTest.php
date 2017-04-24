@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class IbanValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new IbanValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Iban());
@@ -156,20 +166,6 @@ class IbanValidatorTest extends AbstractConstraintValidatorTest
     public function testIbansWithInvalidFormat($iban)
     {
         $this->assertViolationRaised($iban, Iban::INVALID_FORMAT_ERROR);
-    }
-
-    private function assertViolationRaised($iban, $code)
-    {
-        $constraint = new Iban(array(
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($iban, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $iban . '"')
-            ->setCode($code)
-            ->assertRaised();
     }
 
     public function getIbansWithInvalidFormat()
@@ -390,7 +386,7 @@ class IbanValidatorTest extends AbstractConstraintValidatorTest
      */
     public function testIbansWithUnsupportedCountryCode($countryCode)
     {
-        $this->assertViolationRaised($countryCode . '260211000000230064016', Iban::NOT_SUPPORTED_COUNTRY_CODE_ERROR);
+        $this->assertViolationRaised($countryCode.'260211000000230064016', Iban::NOT_SUPPORTED_COUNTRY_CODE_ERROR);
     }
 
     public function getUnsupportedCountryCodes()
@@ -426,13 +422,17 @@ class IbanValidatorTest extends AbstractConstraintValidatorTest
         );
     }
 
-    protected function getApiVersion()
+    private function assertViolationRaised($iban, $code)
     {
-        return Validation::API_VERSION_2_5;
-    }
+        $constraint = new Iban(array(
+            'message' => 'myMessage',
+        ));
 
-    protected function createValidator()
-    {
-        return new IbanValidator();
+        $this->validator->validate($iban, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$iban.'"')
+            ->setCode($code)
+            ->assertRaised();
     }
 }

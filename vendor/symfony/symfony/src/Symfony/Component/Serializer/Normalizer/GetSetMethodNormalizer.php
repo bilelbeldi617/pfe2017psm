@@ -90,26 +90,6 @@ class GetSetMethodNormalizer extends AbstractNormalizer
     }
 
     /**
-     * Checks if a method's name is get.* or is.*, and can be called without parameters.
-     *
-     * @param \ReflectionMethod $method the method to check
-     *
-     * @return bool whether the method is a getter or boolean getter
-     */
-    private function isGetMethod(\ReflectionMethod $method)
-    {
-        $methodLength = strlen($method->name);
-
-        return
-            !$method->isStatic() &&
-            (
-                ((0 === strpos($method->name, 'get') && 3 < $methodLength) ||
-                    (0 === strpos($method->name, 'is') && 2 < $methodLength)) &&
-                0 === $method->getNumberOfRequiredParameters()
-            );
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @throws RuntimeException
@@ -132,7 +112,7 @@ class GetSetMethodNormalizer extends AbstractNormalizer
             $ignored = in_array($attribute, $this->ignoredAttributes);
 
             if ($allowed && !$ignored) {
-                $setter = 'set' . ucfirst($attribute);
+                $setter = 'set'.ucfirst($attribute);
 
                 if (in_array($setter, $classMethods) && !$reflectionClass->getMethod($setter)->isStatic()) {
                     $object->$setter($value);
@@ -149,6 +129,14 @@ class GetSetMethodNormalizer extends AbstractNormalizer
     public function supportsNormalization($data, $format = null)
     {
         return is_object($data) && !$data instanceof \Traversable && $this->supports(get_class($data));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return class_exists($type) && $this->supports($type);
     }
 
     /**
@@ -172,10 +160,23 @@ class GetSetMethodNormalizer extends AbstractNormalizer
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if a method's name is get.* or is.*, and can be called without parameters.
+     *
+     * @param \ReflectionMethod $method the method to check
+     *
+     * @return bool whether the method is a getter or boolean getter
      */
-    public function supportsDenormalization($data, $type, $format = null)
+    private function isGetMethod(\ReflectionMethod $method)
     {
-        return class_exists($type) && $this->supports($type);
+        $methodLength = strlen($method->name);
+
+        return
+            !$method->isStatic() &&
+            (
+                ((0 === strpos($method->name, 'get') && 3 < $methodLength) ||
+                (0 === strpos($method->name, 'is') && 2 < $methodLength)) &&
+                0 === $method->getNumberOfRequiredParameters()
+            )
+        ;
     }
 }

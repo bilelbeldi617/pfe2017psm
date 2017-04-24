@@ -1,7 +1,6 @@
 <?php
 
 /* projetBundle:Default/Admin:listerEleve.html.twig */
-
 class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4ff22d2 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,6 +16,17 @@ class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4f
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 3
     public function block_title($context, array $blocks = array())
     {
         // line 4
@@ -24,6 +34,7 @@ class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4f
 ";
     }
 
+    // line 6
     public function block_script($context, array $blocks = array())
     {
         // line 7
@@ -137,8 +148,7 @@ class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4f
 ";
     }
 
-    // line 3
-
+    // line 108
     public function block_mainContent($context, array $blocks = array())
     {
         // line 109
@@ -224,14 +234,10 @@ class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4f
 ";
     }
 
-    // line 6
-
     public function getTemplateName()
     {
         return "projetBundle:Default/Admin:listerEleve.html.twig";
     }
-
-    // line 108
 
     public function isTraitable()
     {
@@ -240,13 +246,13 @@ class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4f
 
     public function getDebugInfo()
     {
-        return array(232 => 179, 178 => 118, 167 => 116, 163 => 115, 155 => 109, 152 => 108, 111 => 69, 83 => 44, 55 => 19, 41 => 7, 38 => 6, 33 => 4, 30 => 3, 11 => 1,);
+        return array (  232 => 179,  178 => 118,  167 => 116,  163 => 115,  155 => 109,  152 => 108,  111 => 69,  83 => 44,  55 => 19,  41 => 7,  38 => 6,  33 => 4,  30 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -254,15 +260,5 @@ class __TwigTemplate_1f8a06c42ea6d7136014008031ced47eca0e8edbef0610d0072db9e3a4f
     public function getSourceContext()
     {
         return new Twig_Source("", "projetBundle:Default/Admin:listerEleve.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle/Resources/views/Default/Admin/listerEleve.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

@@ -102,14 +102,6 @@ class OutputFormatterStyleStack
     }
 
     /**
-     * @return OutputFormatterStyleInterface
-     */
-    public function getEmptyStyle()
-    {
-        return $this->emptyStyle;
-    }
-
-    /**
      * @param OutputFormatterStyleInterface $emptyStyle
      *
      * @return $this
@@ -119,5 +111,13 @@ class OutputFormatterStyleStack
         $this->emptyStyle = $emptyStyle;
 
         return $this;
+    }
+
+    /**
+     * @return OutputFormatterStyleInterface
+     */
+    public function getEmptyStyle()
+    {
+        return $this->emptyStyle;
     }
 }

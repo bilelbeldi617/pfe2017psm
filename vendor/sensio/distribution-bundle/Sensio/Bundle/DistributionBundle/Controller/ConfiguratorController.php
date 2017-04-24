@@ -64,13 +64,6 @@ class ConfiguratorController extends ContainerAware
         ));
     }
 
-    protected function getVersion()
-    {
-        $kernel = $this->container->get('kernel');
-
-        return $kernel::VERSION;
-    }
-
     public function checkAction()
     {
         $configurator = $this->container->get('sensio_distribution.webconfigurator');
@@ -107,9 +100,16 @@ class ConfiguratorController extends ContainerAware
         return $this->container->get('templating')->renderResponse('SensioDistributionBundle::Configurator/final.html.twig', array(
             'welcome_url' => $welcomeUrl,
             'parameters' => $configurator->render(),
-            'yml_path' => $this->container->getParameter('kernel.root_dir') . '/config/parameters.yml',
+            'yml_path' => $this->container->getParameter('kernel.root_dir').'/config/parameters.yml',
             'is_writable' => $configurator->isFileWritable(),
             'version' => $this->getVersion(),
         ));
+    }
+
+    protected function getVersion()
+    {
+        $kernel = $this->container->get('kernel');
+
+        return $kernel::VERSION;
     }
 }

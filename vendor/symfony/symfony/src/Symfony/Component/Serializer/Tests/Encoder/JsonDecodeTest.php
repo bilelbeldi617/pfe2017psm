@@ -20,6 +20,11 @@ class JsonDecodeTest extends TestCase
     /** @var \Symfony\Component\Serializer\Encoder\JsonDecode */
     private $decode;
 
+    protected function setUp()
+    {
+        $this->decode = new JsonDecode();
+    }
+
     public function testSupportsDecoding()
     {
         $this->assertTrue($this->decode->supportsDecoding(JsonEncoder::FORMAT));
@@ -66,10 +71,5 @@ class JsonDecodeTest extends TestCase
             array("{'foo': 'bar'}"),
             array('kaboom!'),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->decode = new JsonDecode();
     }
 }

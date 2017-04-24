@@ -30,7 +30,7 @@ class StaticAsseticHelper extends AsseticHelper
      * Constructor.
      *
      * @param Packages|CoreAssetsHelper $packages The assets packages
-     * @param AssetFactory $factory The asset factory
+     * @param AssetFactory              $factory  The asset factory
      */
     public function __construct($packages, AssetFactory $factory)
     {
@@ -43,7 +43,7 @@ class StaticAsseticHelper extends AsseticHelper
         } elseif ($packages instanceof CoreAssetsHelper) {
             $this->assetsHelper = $packages;
         } else {
-            throw new \InvalidArgumentException('Argument 1 passed to ' . __METHOD__ . ' must be an instance of Symfony\Component\Asset\Packages or Symfony\Component\Templating\Helper\CoreAssetsHelper, instance of ' . get_class($packages) . ' given');
+            throw new \InvalidArgumentException('Argument 1 passed to '.__METHOD__.' must be an instance of Symfony\Component\Asset\Packages or Symfony\Component\Templating\Helper\CoreAssetsHelper, instance of '.get_class($packages).' given');
         }
 
         parent::__construct($factory);

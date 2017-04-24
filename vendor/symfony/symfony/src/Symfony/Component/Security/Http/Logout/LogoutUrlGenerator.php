@@ -41,10 +41,10 @@ class LogoutUrlGenerator
     /**
      * Registers a firewall's LogoutListener, allowing its URL to be generated.
      *
-     * @param string $key The firewall key
-     * @param string $logoutPath The path that starts the logout process
-     * @param string $csrfTokenId The ID of the CSRF token
-     * @param string $csrfParameter The CSRF token parameter name
+     * @param string                    $key              The firewall key
+     * @param string                    $logoutPath       The path that starts the logout process
+     * @param string                    $csrfTokenId      The ID of the CSRF token
+     * @param string                    $csrfParameter    The CSRF token parameter name
      * @param CsrfTokenManagerInterface $csrfTokenManager A CsrfTokenManagerInterface instance
      */
     public function registerListener($key, $logoutPath, $csrfTokenId, $csrfParameter, $csrfTokenManager = null)
@@ -71,10 +71,22 @@ class LogoutUrlGenerator
     }
 
     /**
-     * Generates the logout URL for the firewall.
+     * Generates the absolute logout URL for the firewall.
      *
      * @param string|null $key The firewall key or null to use the current firewall key
-     * @param int $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
+     *
+     * @return string The logout URL
+     */
+    public function getLogoutUrl($key = null)
+    {
+        return $this->generateLogoutUrl($key, UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * Generates the logout URL for the firewall.
+     *
+     * @param string|null $key           The firewall key or null to use the current firewall key
+     * @param int         $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
      *
      * @return string The logout URL
      *
@@ -100,7 +112,7 @@ class LogoutUrlGenerator
 
         list($logoutPath, $csrfTokenId, $csrfParameter, $csrfTokenManager) = $this->listeners[$key];
 
-        $parameters = null !== $csrfTokenManager ? array($csrfParameter => (string)$csrfTokenManager->getToken($csrfTokenId)) : array();
+        $parameters = null !== $csrfTokenManager ? array($csrfParameter => (string) $csrfTokenManager->getToken($csrfTokenId)) : array();
 
         if ('/' === $logoutPath[0]) {
             if (!$this->requestStack) {
@@ -109,10 +121,10 @@ class LogoutUrlGenerator
 
             $request = $this->requestStack->getCurrentRequest();
 
-            $url = UrlGeneratorInterface::ABSOLUTE_URL === $referenceType ? $request->getUriForPath($logoutPath) : $request->getBaseUrl() . $logoutPath;
+            $url = UrlGeneratorInterface::ABSOLUTE_URL === $referenceType ? $request->getUriForPath($logoutPath) : $request->getBaseUrl().$logoutPath;
 
             if (!empty($parameters)) {
-                $url .= '?' . http_build_query($parameters);
+                $url .= '?'.http_build_query($parameters);
             }
         } else {
             if (!$this->router) {
@@ -123,17 +135,5 @@ class LogoutUrlGenerator
         }
 
         return $url;
-    }
-
-    /**
-     * Generates the absolute logout URL for the firewall.
-     *
-     * @param string|null $key The firewall key or null to use the current firewall key
-     *
-     * @return string The logout URL
-     */
-    public function getLogoutUrl($key = null)
-    {
-        return $this->generateLogoutUrl($key, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

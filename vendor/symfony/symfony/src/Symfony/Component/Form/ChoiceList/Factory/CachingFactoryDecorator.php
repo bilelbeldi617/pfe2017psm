@@ -38,6 +38,58 @@ class CachingFactoryDecorator implements ChoiceListFactoryInterface
     private $views = array();
 
     /**
+     * Generates a SHA-256 hash for the given value.
+     *
+     * Optionally, a namespace string can be passed. Calling this method will
+     * the same values, but different namespaces, will return different hashes.
+     *
+     * @param mixed  $value     The value to hash
+     * @param string $namespace Optional. The namespace
+     *
+     * @return string The SHA-256 hash
+     *
+     * @internal Should not be used by user-land code.
+     */
+    public static function generateHash($value, $namespace = '')
+    {
+        if (is_object($value)) {
+            $value = spl_object_hash($value);
+        } elseif (is_array($value)) {
+            array_walk_recursive($value, function (&$v) {
+                if (is_object($v)) {
+                    $v = spl_object_hash($v);
+                }
+            });
+        }
+
+        return hash('sha256', $namespace.':'.serialize($value));
+    }
+
+    /**
+     * Flattens an array into the given output variable.
+     *
+     * @param array $array  The array to flatten
+     * @param array $output The flattened output
+     *
+     * @internal Should not be used by user-land code
+     */
+    private static function flatten(array $array, &$output)
+    {
+        if (null === $output) {
+            $output = array();
+        }
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                self::flatten($value, $output);
+                continue;
+            }
+
+            $output[$key] = $value;
+        }
+    }
+
+    /**
      * Decorates the given factory.
      *
      * @param ChoiceListFactoryInterface $decoratedFactory The decorated factory
@@ -81,58 +133,6 @@ class CachingFactoryDecorator implements ChoiceListFactoryInterface
         }
 
         return $this->lists[$hash];
-    }
-
-    /**
-     * Flattens an array into the given output variable.
-     *
-     * @param array $array The array to flatten
-     * @param array $output The flattened output
-     *
-     * @internal Should not be used by user-land code
-     */
-    private static function flatten(array $array, &$output)
-    {
-        if (null === $output) {
-            $output = array();
-        }
-
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                self::flatten($value, $output);
-                continue;
-            }
-
-            $output[$key] = $value;
-        }
-    }
-
-    /**
-     * Generates a SHA-256 hash for the given value.
-     *
-     * Optionally, a namespace string can be passed. Calling this method will
-     * the same values, but different namespaces, will return different hashes.
-     *
-     * @param mixed $value The value to hash
-     * @param string $namespace Optional. The namespace
-     *
-     * @return string The SHA-256 hash
-     *
-     * @internal Should not be used by user-land code.
-     */
-    public static function generateHash($value, $namespace = '')
-    {
-        if (is_object($value)) {
-            $value = spl_object_hash($value);
-        } elseif (is_array($value)) {
-            array_walk_recursive($value, function (&$v) {
-                if (is_object($v)) {
-                    $v = spl_object_hash($v);
-                }
-            });
-        }
-
-        return hash('sha256', $namespace . ':' . serialize($value));
     }
 
     /**

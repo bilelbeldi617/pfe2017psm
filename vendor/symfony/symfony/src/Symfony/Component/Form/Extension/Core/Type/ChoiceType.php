@@ -107,7 +107,7 @@ class ChoiceType extends AbstractType
                 // Convert the submitted data to a string, if scalar, before
                 // casting it to an array
                 if (!is_array($data)) {
-                    $data = (array)(string)$data;
+                    $data = (array) (string) $data;
                 }
 
                 // A map from submitted values to integers
@@ -176,73 +176,6 @@ class ChoiceType extends AbstractType
                 }
             }
         }, 256);
-    }
-
-    private function createChoiceListView(ChoiceListInterface $choiceList, array $options)
-    {
-        return $this->choiceListFactory->createView(
-            $choiceList,
-            $options['preferred_choices'],
-            $options['choice_label'],
-            $options['choice_name'],
-            $options['group_by'],
-            $options['choice_attr']
-        );
-    }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param                      $name
-     * @param                      $choiceView
-     * @param array $options
-     *
-     * @return mixed
-     */
-    private function addSubForm(FormBuilderInterface $builder, $name, ChoiceView $choiceView, array $options)
-    {
-        $choiceOpts = array(
-            'value' => $choiceView->value,
-            'label' => $choiceView->label,
-            'attr' => $choiceView->attr,
-            'translation_domain' => $options['translation_domain'],
-            'block_name' => 'entry',
-        );
-
-        if ($options['multiple']) {
-            $choiceType = __NAMESPACE__ . '\CheckboxType';
-            // The user can check 0 or more checkboxes. If required
-            // is true, he is required to check all of them.
-            $choiceOpts['required'] = false;
-        } else {
-            $choiceType = __NAMESPACE__ . '\RadioType';
-        }
-
-        $builder->add($name, $choiceType, $choiceOpts);
-    }
-
-    /**
-     * Adds the sub fields for an expanded choice field.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array $choiceViews The choice view objects
-     * @param array $options The build options
-     */
-    private function addSubForms(FormBuilderInterface $builder, array $choiceViews, array $options)
-    {
-        foreach ($choiceViews as $name => $choiceView) {
-            // Flatten groups
-            if (is_array($choiceView)) {
-                $this->addSubForms($builder, $choiceView, $options);
-                continue;
-            }
-
-            if ($choiceView instanceof ChoiceGroupView) {
-                $this->addSubForms($builder, $choiceView->choices, $options);
-                continue;
-            }
-
-            $this->addSubForm($builder, $name, $choiceView, $options);
-        }
     }
 
     /**
@@ -329,7 +262,7 @@ class ChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $choiceLabels = (object)array('labels' => array());
+        $choiceLabels = (object) array('labels' => array());
         $choiceListFactory = $this->choiceListFactory;
 
         $emptyData = function (Options $options) {
@@ -515,16 +448,99 @@ class ChoiceType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'choice';
+    }
+
+    /**
+     * Adds the sub fields for an expanded choice field.
+     *
+     * @param FormBuilderInterface $builder     The form builder
+     * @param array                $choiceViews The choice view objects
+     * @param array                $options     The build options
+     */
+    private function addSubForms(FormBuilderInterface $builder, array $choiceViews, array $options)
+    {
+        foreach ($choiceViews as $name => $choiceView) {
+            // Flatten groups
+            if (is_array($choiceView)) {
+                $this->addSubForms($builder, $choiceView, $options);
+                continue;
+            }
+
+            if ($choiceView instanceof ChoiceGroupView) {
+                $this->addSubForms($builder, $choiceView->choices, $options);
+                continue;
+            }
+
+            $this->addSubForm($builder, $name, $choiceView, $options);
+        }
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param                      $name
+     * @param                      $choiceView
+     * @param array                $options
+     *
+     * @return mixed
+     */
+    private function addSubForm(FormBuilderInterface $builder, $name, ChoiceView $choiceView, array $options)
+    {
+        $choiceOpts = array(
+            'value' => $choiceView->value,
+            'label' => $choiceView->label,
+            'attr' => $choiceView->attr,
+            'translation_domain' => $options['translation_domain'],
+            'block_name' => 'entry',
+        );
+
+        if ($options['multiple']) {
+            $choiceType = __NAMESPACE__.'\CheckboxType';
+            // The user can check 0 or more checkboxes. If required
+            // is true, he is required to check all of them.
+            $choiceOpts['required'] = false;
+        } else {
+            $choiceType = __NAMESPACE__.'\RadioType';
+        }
+
+        $builder->add($name, $choiceType, $choiceOpts);
+    }
+
+    private function createChoiceListView(ChoiceListInterface $choiceList, array $options)
+    {
+        return $this->choiceListFactory->createView(
+            $choiceList,
+            $options['preferred_choices'],
+            $options['choice_label'],
+            $options['choice_name'],
+            $options['group_by'],
+            $options['choice_attr']
+        );
+    }
+
+    /**
      * When "choices_as_values" is set to false, the choices are in the keys and
      * their labels in the values. Labels may occur twice. The form component
      * flips the choices array in the new implementation, so duplicate labels
      * are lost. Store them in a utility array that is used from the
      * "choice_label" closure by default.
      *
-     * @param array|\Traversable $choices The choice labels indexed by choices
-     * @param object $choiceLabels The object that receives the choice labels
+     * @param array|\Traversable $choices      The choice labels indexed by choices
+     * @param object             $choiceLabels The object that receives the choice labels
      *                                         indexed by generated keys
-     * @param int $nextKey The next generated key
+     * @param int                $nextKey      The next generated key
      *
      * @return array The choices in a normalized array with labels replaced by generated keys
      *
@@ -546,21 +562,5 @@ class ChoiceType extends AbstractType
         }
 
         return $normalizedChoices;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'choice';
     }
 }

@@ -57,11 +57,11 @@ class Setup
     /**
      * Creates a configuration with an annotation metadata driver.
      *
-     * @param array $paths
+     * @param array   $paths
      * @param boolean $isDevMode
-     * @param string $proxyDir
-     * @param Cache $cache
-     * @param bool $useSimpleAnnotationReader
+     * @param string  $proxyDir
+     * @param Cache   $cache
+     * @param bool    $useSimpleAnnotationReader
      *
      * @return Configuration
      */
@@ -74,11 +74,47 @@ class Setup
     }
 
     /**
+     * Creates a configuration with a xml metadata driver.
+     *
+     * @param array   $paths
+     * @param boolean $isDevMode
+     * @param string  $proxyDir
+     * @param Cache   $cache
+     *
+     * @return Configuration
+     */
+    public static function createXMLMetadataConfiguration(array $paths, $isDevMode = false, $proxyDir = null, Cache $cache = null)
+    {
+        $config = self::createConfiguration($isDevMode, $proxyDir, $cache);
+        $config->setMetadataDriverImpl(new XmlDriver($paths));
+
+        return $config;
+    }
+
+    /**
+     * Creates a configuration with a yaml metadata driver.
+     *
+     * @param array   $paths
+     * @param boolean $isDevMode
+     * @param string  $proxyDir
+     * @param Cache   $cache
+     *
+     * @return Configuration
+     */
+    public static function createYAMLMetadataConfiguration(array $paths, $isDevMode = false, $proxyDir = null, Cache $cache = null)
+    {
+        $config = self::createConfiguration($isDevMode, $proxyDir, $cache);
+        $config->setMetadataDriverImpl(new YamlDriver($paths));
+
+        return $config;
+    }
+
+    /**
      * Creates a configuration without a metadata driver.
      *
-     * @param bool $isDevMode
+     * @param bool   $isDevMode
      * @param string $proxyDir
-     * @param Cache $cache
+     * @param Cache  $cache
      *
      * @return Configuration
      */
@@ -117,42 +153,6 @@ class Setup
         $config->setProxyDir($proxyDir);
         $config->setProxyNamespace('DoctrineProxies');
         $config->setAutoGenerateProxyClasses($isDevMode);
-
-        return $config;
-    }
-
-    /**
-     * Creates a configuration with a xml metadata driver.
-     *
-     * @param array $paths
-     * @param boolean $isDevMode
-     * @param string $proxyDir
-     * @param Cache $cache
-     *
-     * @return Configuration
-     */
-    public static function createXMLMetadataConfiguration(array $paths, $isDevMode = false, $proxyDir = null, Cache $cache = null)
-    {
-        $config = self::createConfiguration($isDevMode, $proxyDir, $cache);
-        $config->setMetadataDriverImpl(new XmlDriver($paths));
-
-        return $config;
-    }
-
-    /**
-     * Creates a configuration with a yaml metadata driver.
-     *
-     * @param array $paths
-     * @param boolean $isDevMode
-     * @param string $proxyDir
-     * @param Cache $cache
-     *
-     * @return Configuration
-     */
-    public static function createYAMLMetadataConfiguration(array $paths, $isDevMode = false, $proxyDir = null, Cache $cache = null)
-    {
-        $config = self::createConfiguration($isDevMode, $proxyDir, $cache);
-        $config->setMetadataDriverImpl(new YamlDriver($paths));
 
         return $config;
     }

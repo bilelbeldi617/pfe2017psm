@@ -21,6 +21,16 @@ class PropertyAccessorBuilderTest extends TestCase
      */
     protected $builder;
 
+    protected function setUp()
+    {
+        $this->builder = new PropertyAccessorBuilder();
+    }
+
+    protected function tearDown()
+    {
+        $this->builder = null;
+    }
+
     public function testEnableMagicCall()
     {
         $this->assertSame($this->builder, $this->builder->enableMagicCall());
@@ -42,15 +52,5 @@ class PropertyAccessorBuilderTest extends TestCase
     {
         $this->assertInstanceOf('Symfony\Component\PropertyAccess\PropertyAccessor', $this->builder->getPropertyAccessor());
         $this->assertInstanceOf('Symfony\Component\PropertyAccess\PropertyAccessor', $this->builder->enableMagicCall()->getPropertyAccessor());
-    }
-
-    protected function setUp()
-    {
-        $this->builder = new PropertyAccessorBuilder();
-    }
-
-    protected function tearDown()
-    {
-        $this->builder = null;
     }
 }

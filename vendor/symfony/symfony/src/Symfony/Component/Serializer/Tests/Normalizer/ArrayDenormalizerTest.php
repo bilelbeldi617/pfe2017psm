@@ -27,6 +27,13 @@ class ArrayDenormalizerTest extends TestCase
      */
     private $serializer;
 
+    protected function setUp()
+    {
+        $this->serializer = $this->getMockBuilder('Symfony\Component\Serializer\Serializer')->getMock();
+        $this->denormalizer = new ArrayDenormalizer();
+        $this->denormalizer->setSerializer($this->serializer);
+    }
+
     public function testDenormalize()
     {
         $this->serializer->expects($this->at(0))
@@ -44,7 +51,7 @@ class ArrayDenormalizerTest extends TestCase
                 array('foo' => 'one', 'bar' => 'two'),
                 array('foo' => 'three', 'bar' => 'four'),
             ),
-            __NAMESPACE__ . '\ArrayDummy[]'
+            __NAMESPACE__.'\ArrayDummy[]'
         );
 
         $this->assertEquals(
@@ -60,7 +67,7 @@ class ArrayDenormalizerTest extends TestCase
     {
         $this->serializer->expects($this->once())
             ->method('supportsDenormalization')
-            ->with($this->anything(), __NAMESPACE__ . '\ArrayDummy', $this->anything())
+            ->with($this->anything(), __NAMESPACE__.'\ArrayDummy', $this->anything())
             ->will($this->returnValue(true));
 
         $this->assertTrue(
@@ -69,7 +76,7 @@ class ArrayDenormalizerTest extends TestCase
                     array('foo' => 'one', 'bar' => 'two'),
                     array('foo' => 'three', 'bar' => 'four'),
                 ),
-                __NAMESPACE__ . '\ArrayDummy[]'
+                __NAMESPACE__.'\ArrayDummy[]'
             )
         );
     }
@@ -86,7 +93,7 @@ class ArrayDenormalizerTest extends TestCase
                     array('foo' => 'one', 'bar' => 'two'),
                     array('foo' => 'three', 'bar' => 'four'),
                 ),
-                __NAMESPACE__ . '\InvalidClass[]'
+                __NAMESPACE__.'\InvalidClass[]'
             )
         );
     }
@@ -96,16 +103,9 @@ class ArrayDenormalizerTest extends TestCase
         $this->assertFalse(
             $this->denormalizer->supportsDenormalization(
                 array('foo' => 'one', 'bar' => 'two'),
-                __NAMESPACE__ . '\ArrayDummy'
+                __NAMESPACE__.'\ArrayDummy'
             )
         );
-    }
-
-    protected function setUp()
-    {
-        $this->serializer = $this->getMockBuilder('Symfony\Component\Serializer\Serializer')->getMock();
-        $this->denormalizer = new ArrayDenormalizer();
-        $this->denormalizer->setSerializer($this->serializer);
     }
 }
 

@@ -27,6 +27,18 @@ use Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\DoctrineCacheExtensi
 class FunctionalTestCase extends TestCase
 {
     /**
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     *
+     * @param type $file
+     */
+    protected function loadFromFile(ContainerBuilder $container, $file)
+    {
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/Functional/Fixtures/config'));
+
+        $loader->load($file . '.xml');
+    }
+
+    /**
      * @param string $file
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      *
@@ -35,7 +47,7 @@ class FunctionalTestCase extends TestCase
     protected function compileContainer($file, ContainerBuilder $container = null)
     {
         $container = $container ?: $this->createContainer();
-        $loader = new DoctrineCacheExtension();
+        $loader    = new DoctrineCacheExtension();
 
         $container->registerExtension($loader);
         $this->loadFromFile($container, $file);
@@ -43,18 +55,6 @@ class FunctionalTestCase extends TestCase
         $container->compile();
 
         return $container;
-    }
-
-    /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     *
-     * @param type $file
-     */
-    protected function loadFromFile(ContainerBuilder $container, $file)
-    {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/Functional/Fixtures/config'));
-
-        $loader->load($file . '.xml');
     }
 
     /**

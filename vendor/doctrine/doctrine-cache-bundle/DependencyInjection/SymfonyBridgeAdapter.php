@@ -33,28 +33,30 @@ use Symfony\Component\Config\FileLocator;
 class SymfonyBridgeAdapter
 {
     /**
-     * @var string
-     */
-    protected $objectManagerName;
-    /**
-     * @var string
-     */
-    protected $mappingResourceName;
-    /**
      * @var \Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\CacheProviderLoader
      */
     private $cacheProviderLoader;
 
     /**
-     * @param \Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\CacheProviderLoader $cacheProviderLoader
-     * @param string $objectManagerName
-     * @param string $mappingResourceName
+     * @var string
+     */
+    protected $objectManagerName;
+
+    /**
+     * @var string
+     */
+    protected $mappingResourceName;
+
+    /**
+     * @param \Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\CacheProviderLoader  $cacheProviderLoader
+     * @param string                                                                        $objectManagerName
+     * @param string                                                                        $mappingResourceName
      */
     public function __construct(CacheProviderLoader $cacheProviderLoader, $objectManagerName, $mappingResourceName)
     {
-        $this->cacheProviderLoader = $cacheProviderLoader;
-        $this->objectManagerName = $objectManagerName;
-        $this->mappingResourceName = $mappingResourceName;
+        $this->cacheProviderLoader  = $cacheProviderLoader;
+        $this->objectManagerName    = $objectManagerName;
+        $this->mappingResourceName  = $mappingResourceName;
     }
 
     /**
@@ -63,37 +65,27 @@ class SymfonyBridgeAdapter
     public function loadServicesConfiguration(ContainerBuilder $container)
     {
         $locator = new FileLocator(__DIR__ . '/../Resources/config/');
-        $loader = new XmlFileLoader($container, $locator);
+        $loader  = new XmlFileLoader($container, $locator);
 
         $loader->load('services.xml');
     }
 
     /**
-     * @param array $objectManager
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @param string $cacheName
-     */
-    public function loadObjectManagerCacheDriver(array $objectManager, ContainerBuilder $container, $cacheName)
-    {
-        $this->loadCacheDriver($cacheName, $objectManager['name'], $objectManager[$cacheName . '_driver'], $container);
-    }
-
-    /**
-     * @param string $cacheName
-     * @param string $objectManagerName
-     * @param array $cacheDriver
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $cacheName
+     * @param string                                                    $objectManagerName
+     * @param array                                                     $cacheDriver
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return string
      */
     public function loadCacheDriver($cacheName, $objectManagerName, array $cacheDriver, ContainerBuilder $container)
     {
-        $id = $this->getObjectManagerElementName($objectManagerName . '_' . $cacheName);
-        $host = isset($cacheDriver['host']) ? $cacheDriver['host'] : null;
-        $port = isset($cacheDriver['port']) ? $cacheDriver['port'] : null;
+        $id       = $this->getObjectManagerElementName($objectManagerName . '_' . $cacheName);
+        $host     = isset($cacheDriver['host']) ? $cacheDriver['host'] : null;
+        $port     = isset($cacheDriver['port']) ? $cacheDriver['port'] : null;
         $password = isset($cacheDriver['password']) ? $cacheDriver['password'] : null;
         $database = isset($cacheDriver['database']) ? $cacheDriver['database'] : null;
-        $type = $cacheDriver['type'];
+        $type     = $cacheDriver['type'];
 
         if ($type == 'service') {
             $container->setAlias($id, new Alias($cacheDriver['id'], false));
@@ -102,21 +94,21 @@ class SymfonyBridgeAdapter
         }
 
         $config = array(
-            'aliases' => array($id),
-            $type => array(),
-            'type' => $type,
+            'aliases'   => array($id),
+            $type       => array(),
+            'type'      => $type,
             'namespace' => null,
         );
 
-        if (!isset($cacheDriver['namespace'])) {
+        if ( ! isset($cacheDriver['namespace'])) {
             // generate a unique namespace for the given application
-            $environment = $container->getParameter('kernel.root_dir') . $container->getParameter('kernel.environment');
-            $hash = hash('sha256', $environment);
-            $namespace = 'sf2' . $this->mappingResourceName . '_' . $objectManagerName . '_' . $hash;
+            $environment = $container->getParameter('kernel.root_dir').$container->getParameter('kernel.environment');
+            $hash        = hash('sha256', $environment);
+            $namespace   = 'sf2' . $this->mappingResourceName .'_' . $objectManagerName . '_' . $hash;
 
             $cacheDriver['namespace'] = $namespace;
         }
-
+        
         $config['namespace'] = $cacheDriver['namespace'];
 
         if (in_array($type, array('memcache', 'memcached'))) {
@@ -139,6 +131,16 @@ class SymfonyBridgeAdapter
         $this->cacheProviderLoader->loadCacheProvider($id, $config, $container);
 
         return $id;
+    }
+
+    /**
+     * @param array                                                     $objectManager
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
+     * @param string                                                    $cacheName
+     */
+    public function loadObjectManagerCacheDriver(array $objectManager, ContainerBuilder $container, $cacheName)
+    {
+        $this->loadCacheDriver($cacheName, $objectManager['name'], $objectManager[$cacheName.'_driver'], $container);
     }
 
     /**

@@ -65,6 +65,6 @@ class CustomArrayObject implements \ArrayAccess, \IteratorAggregate, \Countable,
 
     public function unserialize($serialized)
     {
-        $this->array = (array)unserialize((string)$serialized);
+        $this->array = (array) unserialize((string) $serialized);
     }
 }

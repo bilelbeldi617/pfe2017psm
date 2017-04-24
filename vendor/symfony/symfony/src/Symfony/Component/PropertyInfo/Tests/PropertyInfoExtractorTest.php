@@ -27,6 +27,12 @@ class PropertyInfoExtractorTest extends TestCase
      */
     private $propertyInfo;
 
+    protected function setUp()
+    {
+        $extractors = array(new NullExtractor(), new DummyExtractor());
+        $this->propertyInfo = new PropertyInfoExtractor($extractors, $extractors, $extractors, $extractors);
+    }
+
     public function testInstanceOf()
     {
         $this->assertInstanceOf('Symfony\Component\PropertyInfo\PropertyInfoExtractorInterface', $this->propertyInfo);
@@ -63,11 +69,5 @@ class PropertyInfoExtractorTest extends TestCase
     public function testGetProperties()
     {
         $this->assertEquals(array('a', 'b'), $this->propertyInfo->getProperties('Foo'));
-    }
-
-    protected function setUp()
-    {
-        $extractors = array(new NullExtractor(), new DummyExtractor());
-        $this->propertyInfo = new PropertyInfoExtractor($extractors, $extractors, $extractors, $extractors);
     }
 }

@@ -33,12 +33,12 @@ class LdapUserProvider implements UserProviderInterface
 
     /**
      * @param LdapClientInterface $ldap
-     * @param string $baseDn
-     * @param string $searchDn
-     * @param string $searchPassword
-     * @param array $defaultRoles
-     * @param string $uidKey
-     * @param string $filter
+     * @param string              $baseDn
+     * @param string              $searchDn
+     * @param string              $searchPassword
+     * @param array               $defaultRoles
+     * @param string              $uidKey
+     * @param string              $filter
      */
     public function __construct(LdapClientInterface $ldap, $baseDn, $searchDn = null, $searchPassword = null, array $defaultRoles = array(), $uidKey = 'sAMAccountName', $filter = '({uid_key}={username})')
     {

@@ -23,6 +23,13 @@ class ConfigDebugCommandTest extends WebTestCase
 {
     private $application;
 
+    protected function setUp()
+    {
+        $kernel = static::createKernel(array('test_case' => 'ConfigDump', 'root_config' => 'config.yml'));
+        $this->application = new Application($kernel);
+        $this->application->doRun(new ArrayInput(array()), new NullOutput());
+    }
+
     public function testDumpBundleName()
     {
         $tester = $this->createCommandTester();
@@ -40,12 +47,5 @@ class ConfigDebugCommandTest extends WebTestCase
         $command = $this->application->find('debug:config');
 
         return new CommandTester($command);
-    }
-
-    protected function setUp()
-    {
-        $kernel = static::createKernel(array('test_case' => 'ConfigDump', 'root_config' => 'config.yml'));
-        $this->application = new Application($kernel);
-        $this->application->doRun(new ArrayInput(array()), new NullOutput());
     }
 }

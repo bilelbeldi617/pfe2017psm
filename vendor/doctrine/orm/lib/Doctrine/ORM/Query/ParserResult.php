@@ -25,7 +25,7 @@ namespace Doctrine\ORM\Query;
  *
  * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
- * @author        Roman Borschel <roman@code-factory.org>
+ * @author		Roman Borschel <roman@code-factory.org>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.doctrine-project.org
  * @since       2.0
@@ -86,16 +86,6 @@ class ParserResult
     }
 
     /**
-     * Gets the SQL executor used by this ParserResult.
-     *
-     * @return \Doctrine\ORM\Query\Exec\AbstractSqlExecutor
-     */
-    public function getSqlExecutor()
-    {
-        return $this->_sqlExecutor;
-    }
-
-    /**
      * Sets the SQL executor that should be used for this ParserResult.
      *
      * @param \Doctrine\ORM\Query\Exec\AbstractSqlExecutor $executor
@@ -108,11 +98,21 @@ class ParserResult
     }
 
     /**
+     * Gets the SQL executor used by this ParserResult.
+     *
+     * @return \Doctrine\ORM\Query\Exec\AbstractSqlExecutor
+     */
+    public function getSqlExecutor()
+    {
+        return $this->_sqlExecutor;
+    }
+
+    /**
      * Adds a DQL to SQL parameter mapping. One DQL parameter name/position can map to
      * several SQL parameter positions.
      *
      * @param string|integer $dqlPosition
-     * @param integer $sqlPosition
+     * @param integer        $sqlPosition
      *
      * @return void
      */

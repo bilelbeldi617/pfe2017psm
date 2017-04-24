@@ -72,7 +72,7 @@ class Serializer implements SerializerInterface
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
-        if (!$this->serializationVisitors->containsKey($format)) {
+        if ( ! $this->serializationVisitors->containsKey($format)) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
         }
 
@@ -95,7 +95,7 @@ class Serializer implements SerializerInterface
 
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
-        if (!$this->deserializationVisitors->containsKey($format)) {
+        if ( ! $this->deserializationVisitors->containsKey($format)) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 

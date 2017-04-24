@@ -25,7 +25,13 @@ class IniFileLoaderTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = realpath(__DIR__ . '/../Fixtures/');
+        self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
+    }
+
+    protected function setUp()
+    {
+        $this->container = new ContainerBuilder();
+        $this->loader = new IniFileLoader($this->container, new FileLocator(self::$fixturesPath.'/ini'));
     }
 
     public function testIniFileCanBeLoaded()
@@ -58,11 +64,5 @@ class IniFileLoaderTest extends TestCase
 
         $this->assertTrue($loader->supports('foo.ini'), '->supports() returns true if the resource is loadable');
         $this->assertFalse($loader->supports('foo.foo'), '->supports() returns true if the resource is loadable');
-    }
-
-    protected function setUp()
-    {
-        $this->container = new ContainerBuilder();
-        $this->loader = new IniFileLoader($this->container, new FileLocator(self::$fixturesPath . '/ini'));
     }
 }

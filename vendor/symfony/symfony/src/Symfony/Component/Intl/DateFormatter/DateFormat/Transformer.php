@@ -25,7 +25,7 @@ abstract class Transformer
      *
      *
      * @param \DateTime $dateTime A DateTime object to be used to generate the formatted value
-     * @param int $length The formatted value string length
+     * @param int       $length   The formatted value string length
      *
      * @return string The formatted value
      */
@@ -45,7 +45,7 @@ abstract class Transformer
      * regular expression.
      *
      * @param string $matched The matched value
-     * @param int $length The length of the Transformer pattern string
+     * @param int    $length  The length of the Transformer pattern string
      *
      * @return array An associative array
      */
@@ -54,8 +54,8 @@ abstract class Transformer
     /**
      * Pad a string with zeros to the left.
      *
-     * @param string $value The string to be padded
-     * @param int $length The length to pad
+     * @param string $value  The string to be padded
+     * @param int    $length The length to pad
      *
      * @return string The padded string
      */

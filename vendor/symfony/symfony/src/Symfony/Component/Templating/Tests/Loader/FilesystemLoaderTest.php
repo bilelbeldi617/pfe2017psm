@@ -21,13 +21,13 @@ class FilesystemLoaderTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = realpath(__DIR__ . '/../Fixtures/');
+        self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
     }
 
     public function testConstructor()
     {
-        $pathPattern = self::$fixturesPath . '/templates/%name%.%engine%';
-        $path = self::$fixturesPath . '/templates';
+        $pathPattern = self::$fixturesPath.'/templates/%name%.%engine%';
+        $path = self::$fixturesPath.'/templates';
         $loader = new ProjectTemplateLoader2($pathPattern);
         $this->assertEquals(array($pathPattern), $loader->getTemplatePathPatterns(), '__construct() takes a path as its second argument');
         $loader = new ProjectTemplateLoader2(array($pathPattern));
@@ -46,18 +46,18 @@ class FilesystemLoaderTest extends TestCase
 
     public function testLoad()
     {
-        $pathPattern = self::$fixturesPath . '/templates/%name%';
-        $path = self::$fixturesPath . '/templates';
+        $pathPattern = self::$fixturesPath.'/templates/%name%';
+        $path = self::$fixturesPath.'/templates';
         $loader = new ProjectTemplateLoader2($pathPattern);
-        $storage = $loader->load(new TemplateReference($path . '/foo.php', 'php'));
+        $storage = $loader->load(new TemplateReference($path.'/foo.php', 'php'));
         $this->assertInstanceOf('Symfony\Component\Templating\Storage\FileStorage', $storage, '->load() returns a FileStorage if you pass an absolute path');
-        $this->assertEquals($path . '/foo.php', (string)$storage, '->load() returns a FileStorage pointing to the passed absolute path');
+        $this->assertEquals($path.'/foo.php', (string) $storage, '->load() returns a FileStorage pointing to the passed absolute path');
 
         $this->assertFalse($loader->load(new TemplateReference('bar', 'php')), '->load() returns false if the template is not found');
 
         $storage = $loader->load(new TemplateReference('foo.php', 'php'));
         $this->assertInstanceOf('Symfony\Component\Templating\Storage\FileStorage', $storage, '->load() returns a FileStorage if you pass a relative template that exists');
-        $this->assertEquals($path . '/foo.php', (string)$storage, '->load() returns a FileStorage pointing to the absolute path of the template');
+        $this->assertEquals($path.'/foo.php', (string) $storage, '->load() returns a FileStorage pointing to the absolute path of the template');
 
         $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->getMock();
         $logger->expects($this->exactly(2))->method('debug');
@@ -66,7 +66,7 @@ class FilesystemLoaderTest extends TestCase
         $loader->setLogger($logger);
         $this->assertFalse($loader->load(new TemplateReference('foo.xml', 'php')), '->load() returns false if the template does not exist for the given engine');
 
-        $loader = new ProjectTemplateLoader2(array(self::$fixturesPath . '/null/%name%', $pathPattern));
+        $loader = new ProjectTemplateLoader2(array(self::$fixturesPath.'/null/%name%', $pathPattern));
         $loader->setLogger($logger);
         $loader->load(new TemplateReference('foo.php', 'php'));
     }
@@ -74,13 +74,13 @@ class FilesystemLoaderTest extends TestCase
 
 class ProjectTemplateLoader2 extends FilesystemLoader
 {
-    public static function isAbsolutePath($path)
-    {
-        return parent::isAbsolutePath($path);
-    }
-
     public function getTemplatePathPatterns()
     {
         return $this->templatePathPatterns;
+    }
+
+    public static function isAbsolutePath($path)
+    {
+        return parent::isAbsolutePath($path);
     }
 }

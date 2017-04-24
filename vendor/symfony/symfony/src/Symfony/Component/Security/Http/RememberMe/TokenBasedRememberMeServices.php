@@ -65,21 +65,6 @@ class TokenBasedRememberMeServices extends AbstractRememberMeServices
     }
 
     /**
-     * Generates a hash for the cookie to ensure it is not being tempered with.
-     *
-     * @param string $class
-     * @param string $username The username
-     * @param int $expires The Unix timestamp when the cookie expires
-     * @param string $password The encoded password
-     *
-     * @return string
-     */
-    protected function generateCookieHash($class, $username, $expires, $password)
-    {
-        return hash_hmac('sha256', $class . $username . $expires . $password, $this->getSecret());
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function onLoginSuccess(Request $request, Response $response, TokenInterface $token)
@@ -106,7 +91,7 @@ class TokenBasedRememberMeServices extends AbstractRememberMeServices
      *
      * @param string $class
      * @param string $username The username
-     * @param int $expires The Unix timestamp when the cookie expires
+     * @param int    $expires  The Unix timestamp when the cookie expires
      * @param string $password The encoded password
      *
      * @return string
@@ -121,5 +106,20 @@ class TokenBasedRememberMeServices extends AbstractRememberMeServices
             $expires,
             $this->generateCookieHash($class, $username, $expires, $password),
         ));
+    }
+
+    /**
+     * Generates a hash for the cookie to ensure it is not being tempered with.
+     *
+     * @param string $class
+     * @param string $username The username
+     * @param int    $expires  The Unix timestamp when the cookie expires
+     * @param string $password The encoded password
+     *
+     * @return string
+     */
+    protected function generateCookieHash($class, $username, $expires, $password)
+    {
+        return hash_hmac('sha256', $class.$username.$expires.$password, $this->getSecret());
     }
 }

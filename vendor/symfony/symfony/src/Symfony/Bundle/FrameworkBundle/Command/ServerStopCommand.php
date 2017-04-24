@@ -46,7 +46,8 @@ To change the default bind address and the default port use the <info>address</i
   <info>php %command.full_name% 127.0.0.1:8080</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -58,7 +59,7 @@ EOF
 
         $address = $input->getArgument('address');
         if (false === strpos($address, ':')) {
-            $address = $address . ':' . $input->getOption('port');
+            $address = $address.':'.$input->getOption('port');
         }
 
         $lockFile = $this->getLockFile($address);

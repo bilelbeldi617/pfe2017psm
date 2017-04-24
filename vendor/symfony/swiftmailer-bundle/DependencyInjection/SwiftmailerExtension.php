@@ -39,12 +39,12 @@ class SwiftmailerExtension extends Extension
      *        <swiftmailer:spool path="/path/to/spool/" />
      *      </swiftmailer:config>
      *
-     * @param array $configs An array of configuration settings
+     * @param array            $configs   An array of configuration settings
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('swiftmailer.xml');
 
         $configuration = $this->getConfiguration($configs, $container);
@@ -65,16 +65,12 @@ class SwiftmailerExtension extends Extension
         $container->setAlias('mailer', 'swiftmailer.mailer');
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
-    {
-        return new Configuration($container->getParameter('kernel.debug'));
-    }
-
     protected function configureMailer($name, array $mailer, ContainerBuilder $container, $isDefaultMailer = false)
     {
         $definitionDecorator = $this->createChildDefinition('swiftmailer.transport.eventdispatcher.abstract');
         $container
-            ->setDefinition(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name), $definitionDecorator);
+            ->setDefinition(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name), $definitionDecorator)
+        ;
 
         $usedEnvs = null;
         $disableDelivery = isset($mailer['disable_delivery']) && $mailer['disable_delivery'];
@@ -102,7 +98,8 @@ class SwiftmailerExtension extends Extension
             $definitionDecorator = $this->createChildDefinition('swiftmailer.mailer.abstract');
             $container
                 ->setDefinition(sprintf('swiftmailer.mailer.%s', $name), $definitionDecorator)
-                ->replaceArgument(0, new Reference(sprintf('swiftmailer.mailer.%s.transport', $name)));
+                ->replaceArgument(0, new Reference(sprintf('swiftmailer.mailer.%s.transport', $name)))
+            ;
 
             $container->setParameter(sprintf('swiftmailer.mailer.%s.transport.name', $name), 'dynamic');
         } else {
@@ -135,15 +132,6 @@ class SwiftmailerExtension extends Extension
         }
     }
 
-    private function createChildDefinition($id)
-    {
-        if (class_exists('Symfony\Component\DependencyInjection\ChildDefinition')) {
-            return new ChildDefinition($id);
-        }
-
-        return new DefinitionDecorator($id);
-    }
-
     protected function configureMailerTransport($name, array $mailer, ContainerBuilder $container, $transport, $isDefaultMailer = false)
     {
         foreach (array('encryption', 'port', 'host', 'username', 'password', 'auth_mode', 'timeout', 'source_ip', 'local_domain') as $key) {
@@ -168,7 +156,8 @@ class SwiftmailerExtension extends Extension
                 ->setArguments(array(
                     sprintf('%%swiftmailer.mailer.%s.transport.smtp.local_domain%%', $name),
                     new Reference('router.request_context', ContainerInterface::NULL_ON_INVALID_REFERENCE),
-                ));
+                ))
+            ;
 
             $definitionDecorator = $this->createChildDefinition('swiftmailer.transport.smtp.abstract');
             $container
@@ -183,7 +172,8 @@ class SwiftmailerExtension extends Extension
                 ->addMethodCall('setEncryption', array(sprintf('%%swiftmailer.mailer.%s.transport.smtp.encryption%%', $name)))
                 ->addMethodCall('setTimeout', array(sprintf('%%swiftmailer.mailer.%s.transport.smtp.timeout%%', $name)))
                 ->addMethodCall('setSourceIp', array(sprintf('%%swiftmailer.mailer.%s.transport.smtp.source_ip%%', $name)))
-                ->setConfigurator(array(new Reference(sprintf('swiftmailer.transport.configurator.%s', $name)), 'configure'));
+                ->setConfigurator(array(new Reference(sprintf('swiftmailer.transport.configurator.%s', $name)), 'configure'))
+            ;
 
             if (isset($mailer['stream_options'])) {
                 $container->setParameter(sprintf('swiftmailer.mailer.%s.transport.smtp.stream_options', $name), $mailer['stream_options']);
@@ -202,7 +192,8 @@ class SwiftmailerExtension extends Extension
                 ->setArguments(array(
                     sprintf('%%swiftmailer.mailer.%s.transport.smtp.local_domain%%', $name),
                     new Reference('router.request_context', ContainerInterface::NULL_ON_INVALID_REFERENCE),
-                ));
+                ))
+            ;
 
             $definitionDecorator = $this->createChildDefinition(sprintf('swiftmailer.transport.%s.abstract', $transport));
             $container
@@ -211,7 +202,8 @@ class SwiftmailerExtension extends Extension
                     new Reference(sprintf('swiftmailer.mailer.%s.transport.buffer', $name)),
                     new Reference(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name)),
                 ))
-                ->setConfigurator(array(new Reference(sprintf('swiftmailer.transport.configurator.%s', $name)), 'configure'));
+                ->setConfigurator(array(new Reference(sprintf('swiftmailer.transport.configurator.%s', $name)), 'configure'))
+            ;
 
             $container->setAlias(sprintf('swiftmailer.mailer.%s.transport', $name), sprintf('swiftmailer.mailer.%s.transport.%s', $name, $transport));
         } elseif ('mail' === $transport) {
@@ -219,7 +211,8 @@ class SwiftmailerExtension extends Extension
             $definitionDecorator = $this->createChildDefinition(sprintf('swiftmailer.transport.%s.abstract', $transport));
             $container
                 ->setDefinition(sprintf('swiftmailer.mailer.%s.transport.%s', $name, $transport), $definitionDecorator)
-                ->addArgument(new Reference(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name)));
+                ->addArgument(new Reference(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name)))
+            ;
             $container->setAlias(sprintf('swiftmailer.mailer.%s.transport', $name), sprintf('swiftmailer.mailer.%s.transport.%s', $name, $transport));
         } elseif ('null' === $transport) {
             $definitionDecorator = $this->createChildDefinition('swiftmailer.transport.null.abstract');
@@ -227,7 +220,8 @@ class SwiftmailerExtension extends Extension
                 ->setDefinition(sprintf('swiftmailer.mailer.%s.transport.null', $name, $transport), $definitionDecorator)
                 ->setArguments(array(
                     new Reference(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name)),
-                ));
+                ))
+            ;
             $container->setAlias(sprintf('swiftmailer.mailer.%s.transport', $name), sprintf('swiftmailer.mailer.%s.transport.%s', $name, $transport));
         } else {
             $container->setAlias(sprintf('swiftmailer.mailer.%s.transport', $name), sprintf('swiftmailer.mailer.transport.%s', $transport));
@@ -236,7 +230,8 @@ class SwiftmailerExtension extends Extension
         $definitionDecorator = $this->createChildDefinition('swiftmailer.mailer.abstract');
         $container
             ->setDefinition(sprintf('swiftmailer.mailer.%s', $name), $definitionDecorator)
-            ->replaceArgument(0, new Reference(sprintf('swiftmailer.mailer.%s.transport', $name)));
+            ->replaceArgument(0, new Reference(sprintf('swiftmailer.mailer.%s.transport', $name)))
+        ;
     }
 
     protected function configureMailerSpool($name, array $mailer, ContainerBuilder $container, $transport, $isDefaultMailer = false)
@@ -247,7 +242,7 @@ class SwiftmailerExtension extends Extension
                 $container->setAlias(sprintf('swiftmailer.mailer.%s.spool.service', $name), $mailer['spool']['id']);
             } else {
                 foreach (array('path') as $key) {
-                    $container->setParameter(sprintf('swiftmailer.spool.%s.%s.%s', $name, $type, $key), $mailer['spool'][$key] . '/' . $name);
+                    $container->setParameter(sprintf('swiftmailer.spool.%s.%s.%s', $name, $type, $key), $mailer['spool'][$key].'/'.$name);
                 }
             }
 
@@ -255,10 +250,12 @@ class SwiftmailerExtension extends Extension
             if ('file' === $type) {
                 $container
                     ->setDefinition(sprintf('swiftmailer.mailer.%s.spool.file', $name), $definitionDecorator)
-                    ->replaceArgument(0, sprintf('%%swiftmailer.spool.%s.file.path%%', $name));
+                    ->replaceArgument(0, sprintf('%%swiftmailer.spool.%s.file.path%%', $name))
+                ;
             } elseif ('memory' === $type) {
                 $container
-                    ->setDefinition(sprintf('swiftmailer.mailer.%s.spool.memory', $name), $definitionDecorator);
+                    ->setDefinition(sprintf('swiftmailer.mailer.%s.spool.memory', $name), $definitionDecorator)
+                ;
             }
             $container->setAlias(sprintf('swiftmailer.mailer.%s.spool', $name), sprintf('swiftmailer.mailer.%s.spool.%s', $name, $type));
 
@@ -268,7 +265,8 @@ class SwiftmailerExtension extends Extension
                 ->setArguments(array(
                     new Reference(sprintf('swiftmailer.mailer.%s.transport.eventdispatcher', $name)),
                     new Reference(sprintf('swiftmailer.mailer.%s.spool', $name)),
-                ));
+                ))
+            ;
 
             $container->setAlias(sprintf('swiftmailer.mailer.%s.transport.real', $name), $transport);
             $container->setAlias(sprintf('swiftmailer.mailer.%s.transport', $name), sprintf('swiftmailer.mailer.%s.transport.spool', $name));
@@ -291,7 +289,8 @@ class SwiftmailerExtension extends Extension
                 ->setDefinition(sprintf('swiftmailer.mailer.%s.plugin.impersonate', $name), $definitionDecorator)
                 ->setArguments(array(
                     sprintf('%%swiftmailer.mailer.%s.sender_address%%', $name),
-                ));
+                ))
+            ;
             $container->getDefinition(sprintf('swiftmailer.mailer.%s.plugin.impersonate', $name))->addTag(sprintf('swiftmailer.%s.plugin', $name));
             if (true === $isDefaultMailer) {
                 $container->setAlias('swiftmailer.plugin.impersonate', sprintf('swiftmailer.mailer.%s.plugin.impersonate', $name));
@@ -313,7 +312,8 @@ class SwiftmailerExtension extends Extension
                 ->setArguments(array(
                     sprintf('%%swiftmailer.mailer.%s.antiflood.threshold%%', $name),
                     sprintf('%%swiftmailer.mailer.%s.antiflood.sleep%%', $name),
-                ));
+                ))
+            ;
             $container->getDefinition(sprintf('swiftmailer.mailer.%s.plugin.antiflood', $name))->addTag(sprintf('swiftmailer.%s.plugin', $name));
             if (true === $isDefaultMailer) {
                 $container->setAlias('swiftmailer.mailer.plugin.antiflood', sprintf('swiftmailer.mailer.%s.plugin.antiflood', $name));
@@ -333,7 +333,8 @@ class SwiftmailerExtension extends Extension
                 ->setArguments(array(
                     sprintf('%%swiftmailer.mailer.%s.delivery_addresses%%', $name),
                     sprintf('%%swiftmailer.mailer.%s.delivery_whitelist%%', $name),
-                ));
+                ))
+            ;
             $container->getDefinition(sprintf('swiftmailer.mailer.%s.plugin.redirecting', $name))->addTag(sprintf('swiftmailer.%s.plugin', $name));
             if (true === $isDefaultMailer) {
                 $container->setAlias('swiftmailer.plugin.redirecting', sprintf('swiftmailer.mailer.%s.plugin.redirecting', $name));
@@ -349,7 +350,8 @@ class SwiftmailerExtension extends Extension
             $container->getDefinition('swiftmailer.plugin.messagelogger.abstract');
             $definitionDecorator = $this->createChildDefinition('swiftmailer.plugin.messagelogger.abstract');
             $container
-                ->setDefinition(sprintf('swiftmailer.mailer.%s.plugin.messagelogger', $name), $definitionDecorator);
+                ->setDefinition(sprintf('swiftmailer.mailer.%s.plugin.messagelogger', $name), $definitionDecorator)
+            ;
             $container->getDefinition(sprintf('swiftmailer.mailer.%s.plugin.messagelogger', $name))->addTag(sprintf('swiftmailer.%s.plugin', $name));
             if (true === $isDefaultMailer) {
                 $container->setAlias('swiftmailer.plugin.messagelogger', sprintf('swiftmailer.mailer.%s.plugin.messagelogger', $name));
@@ -364,7 +366,7 @@ class SwiftmailerExtension extends Extension
      */
     public function getXsdValidationBasePath()
     {
-        return __DIR__ . '/../Resources/config/schema';
+        return __DIR__.'/../Resources/config/schema';
     }
 
     /**
@@ -375,5 +377,19 @@ class SwiftmailerExtension extends Extension
     public function getNamespace()
     {
         return 'http://symfony.com/schema/dic/swiftmailer';
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameter('kernel.debug'));
+    }
+
+    private function createChildDefinition($id)
+    {
+        if (class_exists('Symfony\Component\DependencyInjection\ChildDefinition')) {
+            return new ChildDefinition($id);
+        }
+
+        return new DefinitionDecorator($id);
     }
 }

@@ -34,6 +34,18 @@ abstract class ServerCommand extends ContainerAwareCommand
         return parent::isEnabled();
     }
 
+    /**
+     * Determines the name of the lock file for a particular PHP web server process.
+     *
+     * @param string $address An address/port tuple
+     *
+     * @return string The filename
+     */
+    protected function getLockFile($address)
+    {
+        return sys_get_temp_dir().'/'.strtr($address, '.:', '--').'.pid';
+    }
+
     protected function isOtherServerProcessRunning($address)
     {
         $lockFile = $this->getLockFile($address);
@@ -55,17 +67,5 @@ abstract class ServerCommand extends ContainerAwareCommand
         }
 
         return false;
-    }
-
-    /**
-     * Determines the name of the lock file for a particular PHP web server process.
-     *
-     * @param string $address An address/port tuple
-     *
-     * @return string The filename
-     */
-    protected function getLockFile($address)
-    {
-        return sys_get_temp_dir() . '/' . strtr($address, '.:', '--') . '.pid';
     }
 }

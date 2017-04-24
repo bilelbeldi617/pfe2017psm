@@ -26,7 +26,7 @@ class Node
     /**
      * Constructor.
      *
-     * @param array $nodes An array of nodes
+     * @param array $nodes      An array of nodes
      * @param array $attributes An array of attributes
      */
     public function __construct(array $nodes = array(), array $attributes = array())
@@ -42,12 +42,12 @@ class Node
             $attributes[] = sprintf('%s: %s', $name, str_replace("\n", '', var_export($value, true)));
         }
 
-        $repr = array(str_replace('Symfony\Component\ExpressionLanguage\Node\\', '', get_class($this)) . '(' . implode(', ', $attributes));
+        $repr = array(str_replace('Symfony\Component\ExpressionLanguage\Node\\', '', get_class($this)).'('.implode(', ', $attributes));
 
         if (count($this->nodes)) {
             foreach ($this->nodes as $node) {
-                foreach (explode("\n", (string)$node) as $line) {
-                    $repr[] = '    ' . $line;
+                foreach (explode("\n", (string) $node) as $line) {
+                    $repr[] = '    '.$line;
                 }
             }
 

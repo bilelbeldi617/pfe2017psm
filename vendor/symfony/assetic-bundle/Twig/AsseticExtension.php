@@ -45,15 +45,6 @@ class AsseticExtension extends BaseAsseticExtension
         );
     }
 
-    private function createTokenParser($tag, $output, $single = false)
-    {
-        $tokenParser = new AsseticTokenParser($this->factory, $tag, $output, $single, array('package'));
-        $tokenParser->setTemplateNameParser($this->templateNameParser);
-        $tokenParser->setEnabledBundles($this->enabledBundles);
-
-        return $tokenParser;
-    }
-
     public function getNodeVisitors()
     {
         return array(
@@ -67,5 +58,14 @@ class AsseticExtension extends BaseAsseticExtension
         $globals['assetic']['use_controller'] = $this->useController;
 
         return $globals;
+    }
+
+    private function createTokenParser($tag, $output, $single = false)
+    {
+        $tokenParser = new AsseticTokenParser($this->factory, $tag, $output, $single, array('package'));
+        $tokenParser->setTemplateNameParser($this->templateNameParser);
+        $tokenParser->setEnabledBundles($this->enabledBundles);
+
+        return $tokenParser;
     }
 }

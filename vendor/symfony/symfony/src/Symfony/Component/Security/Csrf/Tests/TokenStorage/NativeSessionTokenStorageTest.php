@@ -37,6 +37,13 @@ class NativeSessionTokenStorageTest extends TestCase
         parent::setUpBeforeClass();
     }
 
+    protected function setUp()
+    {
+        $_SESSION = array();
+
+        $this->storage = new NativeSessionTokenStorage(self::SESSION_NAMESPACE);
+    }
+
     public function testStoreTokenInClosedSession()
     {
         $this->storage->setToken('token_id', 'TOKEN');
@@ -116,12 +123,5 @@ class NativeSessionTokenStorageTest extends TestCase
 
         $this->assertSame('TOKEN', $this->storage->removeToken('token_id'));
         $this->assertFalse($this->storage->hasToken('token_id'));
-    }
-
-    protected function setUp()
-    {
-        $_SESSION = array();
-
-        $this->storage = new NativeSessionTokenStorage(self::SESSION_NAMESPACE);
     }
 }

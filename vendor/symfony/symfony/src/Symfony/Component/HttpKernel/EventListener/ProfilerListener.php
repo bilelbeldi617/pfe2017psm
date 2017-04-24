@@ -41,11 +41,11 @@ class ProfilerListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param Profiler $profiler A Profiler instance
-     * @param RequestStack $requestStack A RequestStack instance
-     * @param RequestMatcherInterface|null $matcher A RequestMatcher instance
-     * @param bool $onlyException true if the profiler only collects data when an exception occurs, false otherwise
-     * @param bool $onlyMasterRequests true if the profiler only collects data when the request is a master request, false otherwise
+     * @param Profiler                     $profiler           A Profiler instance
+     * @param RequestStack                 $requestStack       A RequestStack instance
+     * @param RequestMatcherInterface|null $matcher            A RequestMatcher instance
+     * @param bool                         $onlyException      true if the profiler only collects data when an exception occurs, false otherwise
+     * @param bool                         $onlyMasterRequests true if the profiler only collects data when the request is a master request, false otherwise
      */
     public function __construct(Profiler $profiler, $requestStack = null, $matcher = null, $onlyException = false, $onlyMasterRequests = false)
     {
@@ -56,9 +56,9 @@ class ProfilerListener implements EventSubscriberInterface
             $matcher = $requestStack;
             $requestStack = func_num_args() < 5 ? null : $tmp;
 
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack to be given as second argument as ' . __CLASS__ . '::onKernelRequest method will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack to be given as second argument as '.__CLASS__.'::onKernelRequest method will be removed in 3.0.', E_USER_DEPRECATED);
         } elseif (!$requestStack instanceof RequestStack) {
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack instance as ' . __CLASS__ . '::onKernelRequest method will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack instance as '.__CLASS__.'::onKernelRequest method will be removed in 3.0.', E_USER_DEPRECATED);
         }
 
         if (null !== $requestStack && !$requestStack instanceof RequestStack) {
@@ -70,23 +70,11 @@ class ProfilerListener implements EventSubscriberInterface
 
         $this->profiler = $profiler;
         $this->matcher = $matcher;
-        $this->onlyException = (bool)$onlyException;
-        $this->onlyMasterRequests = (bool)$onlyMasterRequests;
+        $this->onlyException = (bool) $onlyException;
+        $this->onlyMasterRequests = (bool) $onlyMasterRequests;
         $this->profiles = new \SplObjectStorage();
         $this->parents = new \SplObjectStorage();
         $this->requestStack = $requestStack;
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            // kernel.request must be registered as early as possible to not break
-            // when an exception is thrown in any other kernel.request listener
-            KernelEvents::REQUEST => array('onKernelRequest', 1024),
-            KernelEvents::RESPONSE => array('onKernelResponse', -100),
-            KernelEvents::EXCEPTION => 'onKernelException',
-            KernelEvents::TERMINATE => array('onKernelTerminate', -1024),
-        );
     }
 
     /**
@@ -173,5 +161,17 @@ class ProfilerListener implements EventSubscriberInterface
         $this->profiles = new \SplObjectStorage();
         $this->parents = new \SplObjectStorage();
         $this->requests = array();
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            // kernel.request must be registered as early as possible to not break
+            // when an exception is thrown in any other kernel.request listener
+            KernelEvents::REQUEST => array('onKernelRequest', 1024),
+            KernelEvents::RESPONSE => array('onKernelResponse', -100),
+            KernelEvents::EXCEPTION => 'onKernelException',
+            KernelEvents::TERMINATE => array('onKernelTerminate', -1024),
+        );
     }
 }

@@ -27,13 +27,13 @@ class ScopeWideningInjectionException extends RuntimeException
     {
         parent::__construct(sprintf(
             'Scope Widening Injection detected: The definition "%s" references the service "%s" which belongs to a narrower scope. '
-            . 'Generally, it is safer to either move "%s" to scope "%s" or alternatively rely on the provider pattern by injecting the container itself, and requesting the service "%s" each time it is needed. '
-            . 'In rare, special cases however that might not be necessary, then you can set the reference to strict=false to get rid of this error.',
-            $sourceServiceId,
-            $destServiceId,
-            $sourceServiceId,
-            $destScope,
-            $destServiceId
+           .'Generally, it is safer to either move "%s" to scope "%s" or alternatively rely on the provider pattern by injecting the container itself, and requesting the service "%s" each time it is needed. '
+           .'In rare, special cases however that might not be necessary, then you can set the reference to strict=false to get rid of this error.',
+           $sourceServiceId,
+           $destServiceId,
+           $sourceServiceId,
+           $destScope,
+           $destServiceId
         ), 0, $previous);
 
         $this->sourceServiceId = $sourceServiceId;

@@ -25,6 +25,35 @@ class ChainEncoderTest extends TestCase
     private $encoder1;
     private $encoder2;
 
+    protected function setUp()
+    {
+        $this->encoder1 = $this
+            ->getMockBuilder('Symfony\Component\Serializer\Encoder\EncoderInterface')
+            ->getMock();
+
+        $this->encoder1
+            ->method('supportsEncoding')
+            ->will($this->returnValueMap(array(
+                array(self::FORMAT_1, true),
+                array(self::FORMAT_2, false),
+                array(self::FORMAT_3, false),
+            )));
+
+        $this->encoder2 = $this
+            ->getMockBuilder('Symfony\Component\Serializer\Encoder\EncoderInterface')
+            ->getMock();
+
+        $this->encoder2
+            ->method('supportsEncoding')
+            ->will($this->returnValueMap(array(
+                array(self::FORMAT_1, false),
+                array(self::FORMAT_2, true),
+                array(self::FORMAT_3, false),
+            )));
+
+        $this->chainEncoder = new ChainEncoder(array($this->encoder1, $this->encoder2));
+    }
+
     public function testSupportsEncoding()
     {
         $this->assertTrue($this->chainEncoder->supportsEncoding(self::FORMAT_1));
@@ -85,35 +114,6 @@ class ChainEncoderTest extends TestCase
             array(true),
             array(false),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->encoder1 = $this
-            ->getMockBuilder('Symfony\Component\Serializer\Encoder\EncoderInterface')
-            ->getMock();
-
-        $this->encoder1
-            ->method('supportsEncoding')
-            ->will($this->returnValueMap(array(
-                array(self::FORMAT_1, true),
-                array(self::FORMAT_2, false),
-                array(self::FORMAT_3, false),
-            )));
-
-        $this->encoder2 = $this
-            ->getMockBuilder('Symfony\Component\Serializer\Encoder\EncoderInterface')
-            ->getMock();
-
-        $this->encoder2
-            ->method('supportsEncoding')
-            ->will($this->returnValueMap(array(
-                array(self::FORMAT_1, false),
-                array(self::FORMAT_2, true),
-                array(self::FORMAT_3, false),
-            )));
-
-        $this->chainEncoder = new ChainEncoder(array($this->encoder1, $this->encoder2));
     }
 }
 

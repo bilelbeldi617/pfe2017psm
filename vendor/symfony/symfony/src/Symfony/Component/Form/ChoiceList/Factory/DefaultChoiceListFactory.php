@@ -46,7 +46,7 @@ class DefaultChoiceListFactory implements ChoiceListFactoryInterface
     public function createListFromFlippedChoices($choices, $value = null, $triggerDeprecationNotice = true)
     {
         if ($triggerDeprecationNotice) {
-            @trigger_error('The ' . __METHOD__ . ' is deprecated since version 2.7 and will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' is deprecated since version 2.7 and will be removed in 3.0.', E_USER_DEPRECATED);
         }
 
         return new ArrayKeyChoiceList($choices, $value);
@@ -67,8 +67,7 @@ class DefaultChoiceListFactory implements ChoiceListFactoryInterface
     {
         // Backwards compatibility
         if ($list instanceof LegacyChoiceListAdapter && empty($preferredChoices)
-            && null === $label && null === $index && null === $groupBy && null === $attr
-        ) {
+            && null === $label && null === $index && null === $groupBy && null === $attr) {
             $mapToNonLegacyChoiceView = function (LegacyChoiceView &$choiceView) {
                 $choiceView = new ChoiceView($choiceView->data, $choiceView->value, $choiceView->label);
             };
@@ -107,7 +106,7 @@ class DefaultChoiceListFactory implements ChoiceListFactoryInterface
                 self::addChoiceViewGroupedBy(
                     $groupBy,
                     $choice,
-                    (string)$value,
+                    (string) $value,
                     $label,
                     $keys,
                     $index,
@@ -149,49 +148,6 @@ class DefaultChoiceListFactory implements ChoiceListFactoryInterface
         return new ChoiceListView($otherViews, $preferredViews);
     }
 
-    private static function addChoiceViewGroupedBy($groupBy, $choice, $value, $label, $keys, &$index, $attr, $isPreferred, &$preferredViews, &$otherViews)
-    {
-        $groupLabel = call_user_func($groupBy, $choice, $keys[$value], $value);
-
-        if (null === $groupLabel) {
-            // If the callable returns null, don't group the choice
-            self::addChoiceView(
-                $choice,
-                $value,
-                $label,
-                $keys,
-                $index,
-                $attr,
-                $isPreferred,
-                $preferredViews,
-                $otherViews
-            );
-
-            return;
-        }
-
-        $groupLabel = (string)$groupLabel;
-
-        // Initialize the group views if necessary. Unnecessarily built group
-        // views will be cleaned up at the end of createView()
-        if (!isset($preferredViews[$groupLabel])) {
-            $preferredViews[$groupLabel] = new ChoiceGroupView($groupLabel);
-            $otherViews[$groupLabel] = new ChoiceGroupView($groupLabel);
-        }
-
-        self::addChoiceView(
-            $choice,
-            $value,
-            $label,
-            $keys,
-            $index,
-            $attr,
-            $isPreferred,
-            $preferredViews[$groupLabel]->choices,
-            $otherViews[$groupLabel]->choices
-        );
-    }
-
     private static function addChoiceView($choice, $value, $label, $keys, &$index, $attr, $isPreferred, &$preferredViews, &$otherViews)
     {
         // $value may be an integer or a string, since it's stored in the array
@@ -202,12 +158,12 @@ class DefaultChoiceListFactory implements ChoiceListFactoryInterface
         // BC normalize label to accept a false value
         if (null === $label) {
             // If the labels are null, use the original choice key by default
-            $label = (string)$key;
+            $label = (string) $key;
         } elseif (false !== $label) {
             // If "choice_label" is set to false and "expanded" is true, the value false
             // should be passed on to the "label" option of the checkboxes/radio buttons
             $dynamicLabel = call_user_func($label, $choice, $key, $value);
-            $label = false === $dynamicLabel ? false : (string)$dynamicLabel;
+            $label = false === $dynamicLabel ? false : (string) $dynamicLabel;
         }
 
         $view = new ChoiceView(
@@ -275,5 +231,48 @@ class DefaultChoiceListFactory implements ChoiceListFactoryInterface
                 $otherViews
             );
         }
+    }
+
+    private static function addChoiceViewGroupedBy($groupBy, $choice, $value, $label, $keys, &$index, $attr, $isPreferred, &$preferredViews, &$otherViews)
+    {
+        $groupLabel = call_user_func($groupBy, $choice, $keys[$value], $value);
+
+        if (null === $groupLabel) {
+            // If the callable returns null, don't group the choice
+            self::addChoiceView(
+                $choice,
+                $value,
+                $label,
+                $keys,
+                $index,
+                $attr,
+                $isPreferred,
+                $preferredViews,
+                $otherViews
+            );
+
+            return;
+        }
+
+        $groupLabel = (string) $groupLabel;
+
+        // Initialize the group views if necessary. Unnecessarily built group
+        // views will be cleaned up at the end of createView()
+        if (!isset($preferredViews[$groupLabel])) {
+            $preferredViews[$groupLabel] = new ChoiceGroupView($groupLabel);
+            $otherViews[$groupLabel] = new ChoiceGroupView($groupLabel);
+        }
+
+        self::addChoiceView(
+            $choice,
+            $value,
+            $label,
+            $keys,
+            $index,
+            $attr,
+            $isPreferred,
+            $preferredViews[$groupLabel]->choices,
+            $otherViews[$groupLabel]->choices
+        );
     }
 }

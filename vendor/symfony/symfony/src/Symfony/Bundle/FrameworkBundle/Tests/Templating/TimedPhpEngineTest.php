@@ -72,6 +72,16 @@ class TimedPhpEngineTest extends TestCase
     }
 
     /**
+     * @return \Symfony\Component\Templating\Storage\StringStorage
+     */
+    private function getStorage()
+    {
+        return $this->getMockBuilder('Symfony\Component\Templating\Storage\StringStorage')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+    }
+
+    /**
      * @param \Symfony\Component\Templating\Storage\StringStorage $storage
      *
      * @return \Symfony\Component\Templating\Loader\Loader
@@ -87,13 +97,13 @@ class TimedPhpEngineTest extends TestCase
     }
 
     /**
-     * @return \Symfony\Component\Templating\Storage\StringStorage
+     * @return \Symfony\Component\Stopwatch\StopwatchEvent
      */
-    private function getStorage()
+    private function getStopwatchEvent()
     {
-        return $this->getMockBuilder('Symfony\Component\Templating\Storage\StringStorage')
+        return $this->getMockBuilder('Symfony\Component\Stopwatch\StopwatchEvent')
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
     }
 
     /**
@@ -102,15 +112,5 @@ class TimedPhpEngineTest extends TestCase
     private function getStopwatch()
     {
         return $this->getMockBuilder('Symfony\Component\Stopwatch\Stopwatch')->getMock();
-    }
-
-    /**
-     * @return \Symfony\Component\Stopwatch\StopwatchEvent
-     */
-    private function getStopwatchEvent()
-    {
-        return $this->getMockBuilder('Symfony\Component\Stopwatch\StopwatchEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

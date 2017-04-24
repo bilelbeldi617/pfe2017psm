@@ -19,12 +19,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /** @Entity */
 class User implements UserInterface
 {
-    /** @Column(type="string") */
-    public $name;
     /** @Id @Column(type="integer") */
     protected $id1;
+
     /** @Id @Column(type="integer") */
     protected $id2;
+
+    /** @Column(type="string") */
+    public $name;
 
     public function __construct($id1, $id2, $name)
     {

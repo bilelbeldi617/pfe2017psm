@@ -19,8 +19,8 @@ class FileTest extends TestCase
 {
     /**
      * @param mixed $maxSize
-     * @param int $bytes
-     * @param bool $binaryFormat
+     * @param int   $bytes
+     * @param bool  $binaryFormat
      * @dataProvider provideValidSizes
      */
     public function testMaxSize($maxSize, $bytes, $binaryFormat)
@@ -35,8 +35,8 @@ class FileTest extends TestCase
      * @dataProvider provideValidSizes
      *
      * @param int|string $maxSize
-     * @param int $bytes
-     * @param string $binaryFormat
+     * @param int        $bytes
+     * @param string     $binaryFormat
      */
     public function testMaxSizeCanBeSetAfterInitialization($maxSize, $bytes, $binaryFormat)
     {
@@ -122,8 +122,8 @@ class FileTest extends TestCase
 
     /**
      * @param mixed $maxSize
-     * @param bool $guessedFormat
-     * @param bool $binaryFormat
+     * @param bool  $guessedFormat
+     * @param bool  $binaryFormat
      * @dataProvider provideFormats
      */
     public function testBinaryFormat($maxSize, $guessedFormat, $binaryFormat)

@@ -43,26 +43,26 @@ class YamlDriver extends AbstractFileDriver
         $metadata->fileResources[] = $file;
         $metadata->fileResources[] = $class->getFileName();
         $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
-        $excludeAll = isset($config['exclude']) ? (Boolean)$config['exclude'] : false;
+        $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
         $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
-        $readOnlyClass = isset($config['read_only']) ? (Boolean)$config['read_only'] : false;
+        $readOnlyClass =  isset($config['read_only']) ? (Boolean) $config['read_only'] : false;
         $this->addClassProperties($metadata, $config);
 
         $propertiesMetadata = array();
-        if (array_key_exists('virtual_properties', $config)) {
-            foreach ($config['virtual_properties'] as $methodName => $propertySettings) {
-                if (!$class->hasMethod($methodName)) {
-                    throw new RuntimeException('The method ' . $methodName . ' not found in class ' . $class->name);
+        if (array_key_exists('virtual_properties', $config) ) {
+            foreach ( $config['virtual_properties'] as $methodName => $propertySettings ) {
+                if ( ! $class->hasMethod( $methodName ) ) {
+                    throw new RuntimeException('The method '.$methodName.' not found in class ' . $class->name);
                 }
 
-                $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
+                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $methodName );
 
                 $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
                 $config['properties'][$methodName] = $propertySettings;
             }
         }
 
-        if (!$excludeAll) {
+        if ( ! $excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($name !== $property->class) {
                     continue;
@@ -81,27 +81,27 @@ class YamlDriver extends AbstractFileDriver
                     $pConfig = $config['properties'][$pName];
 
                     if (isset($pConfig['exclude'])) {
-                        $isExclude = (Boolean)$pConfig['exclude'];
+                        $isExclude = (Boolean) $pConfig['exclude'];
                     }
 
                     if (isset($pConfig['expose'])) {
-                        $isExpose = (Boolean)$pConfig['expose'];
+                        $isExpose = (Boolean) $pConfig['expose'];
                     }
 
                     if (isset($pConfig['since_version'])) {
-                        $pMetadata->sinceVersion = (string)$pConfig['since_version'];
+                        $pMetadata->sinceVersion = (string) $pConfig['since_version'];
                     }
 
                     if (isset($pConfig['until_version'])) {
-                        $pMetadata->untilVersion = (string)$pConfig['until_version'];
+                        $pMetadata->untilVersion = (string) $pConfig['until_version'];
                     }
 
                     if (isset($pConfig['serialized_name'])) {
-                        $pMetadata->serializedName = (string)$pConfig['serialized_name'];
+                        $pMetadata->serializedName = (string) $pConfig['serialized_name'];
                     }
 
                     if (isset($pConfig['type'])) {
-                        $pMetadata->setType((string)$pConfig['type']);
+                        $pMetadata->setType((string) $pConfig['type']);
                     }
 
                     if (isset($pConfig['groups'])) {
@@ -113,11 +113,11 @@ class YamlDriver extends AbstractFileDriver
 
                         $colConfig = $pConfig['xml_list'];
                         if (isset($colConfig['inline'])) {
-                            $pMetadata->xmlCollectionInline = (Boolean)$colConfig['inline'];
+                            $pMetadata->xmlCollectionInline = (Boolean) $colConfig['inline'];
                         }
 
                         if (isset($colConfig['entry_name'])) {
-                            $pMetadata->xmlEntryName = (string)$colConfig['entry_name'];
+                            $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
                         }
                     }
 
@@ -126,11 +126,11 @@ class YamlDriver extends AbstractFileDriver
 
                         $colConfig = $pConfig['xml_map'];
                         if (isset($colConfig['inline'])) {
-                            $pMetadata->xmlCollectionInline = (Boolean)$colConfig['inline'];
+                            $pMetadata->xmlCollectionInline = (Boolean) $colConfig['inline'];
                         }
 
                         if (isset($colConfig['entry_name'])) {
-                            $pMetadata->xmlEntryName = (string)$colConfig['entry_name'];
+                            $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
                         }
 
                         if (isset($colConfig['key_attribute_name'])) {
@@ -141,33 +141,33 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['xml_element'])) {
                         $colConfig = $pConfig['xml_element'];
                         if (isset($colConfig['cdata'])) {
-                            $pMetadata->xmlElementCData = (Boolean)$colConfig['cdata'];
+                            $pMetadata->xmlElementCData = (Boolean) $colConfig['cdata'];
                         }
 
                         if (isset($colConfig['namespace'])) {
-                            $pMetadata->xmlNamespace = (string)$colConfig['namespace'];
+                            $pMetadata->xmlNamespace = (string) $colConfig['namespace'];
                         }
                     }
 
                     if (isset($pConfig['xml_attribute'])) {
-                        $pMetadata->xmlAttribute = (Boolean)$pConfig['xml_attribute'];
+                        $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute'];
                     }
 
                     if (isset($pConfig['xml_attribute_map'])) {
-                        $pMetadata->xmlAttributeMap = (Boolean)$pConfig['xml_attribute_map'];
+                        $pMetadata->xmlAttributeMap = (Boolean) $pConfig['xml_attribute_map'];
                     }
 
                     if (isset($pConfig['xml_value'])) {
-                        $pMetadata->xmlValue = (Boolean)$pConfig['xml_value'];
+                        $pMetadata->xmlValue = (Boolean) $pConfig['xml_value'];
                     }
 
                     if (isset($pConfig['xml_key_value_pairs'])) {
-                        $pMetadata->xmlKeyValuePairs = (Boolean)$pConfig['xml_key_value_pairs'];
+                        $pMetadata->xmlKeyValuePairs = (Boolean) $pConfig['xml_key_value_pairs'];
                     }
 
                     //we need read_only before setter and getter set, because that method depends on flag being set
                     if (isset($pConfig['read_only'])) {
-                        $pMetadata->readOnly = (Boolean)$pConfig['read_only'];
+                          $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
                     } else {
                         $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
                     }
@@ -179,16 +179,15 @@ class YamlDriver extends AbstractFileDriver
                     );
 
                     if (isset($pConfig['inline'])) {
-                        $pMetadata->inline = (Boolean)$pConfig['inline'];
+                        $pMetadata->inline = (Boolean) $pConfig['inline'];
                     }
 
                     if (isset($pConfig['max_depth'])) {
-                        $pMetadata->maxDepth = (int)$pConfig['max_depth'];
+                        $pMetadata->maxDepth = (int) $pConfig['max_depth'];
                     }
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
-                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
-                ) {
+                        || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $metadata->addPropertyMetadata($pMetadata);
                 }
             }
@@ -220,9 +219,14 @@ class YamlDriver extends AbstractFileDriver
         return $metadata;
     }
 
+    protected function getExtension()
+    {
+        return 'yml';
+    }
+
     private function addClassProperties(ClassMetadata $metadata, array $config)
     {
-        if (isset($config['custom_accessor_order']) && !isset($config['accessor_order'])) {
+        if (isset($config['custom_accessor_order']) && ! isset($config['accessor_order'])) {
             $config['accessor_order'] = 'custom';
         }
 
@@ -231,16 +235,16 @@ class YamlDriver extends AbstractFileDriver
         }
 
         if (isset($config['xml_root_name'])) {
-            $metadata->xmlRootName = (string)$config['xml_root_name'];
+            $metadata->xmlRootName = (string) $config['xml_root_name'];
         }
 
         if (isset($config['xml_root_namespace'])) {
-            $metadata->xmlRootNamespace = (string)$config['xml_root_namespace'];
+            $metadata->xmlRootNamespace = (string) $config['xml_root_namespace'];
         }
 
-        if (array_key_exists('xml_namespaces', $config)) {
+        if (array_key_exists('xml_namespaces', $config) ) {
 
-            foreach ($config['xml_namespaces'] as $prefix => $uri) {
+            foreach ( $config['xml_namespaces'] as $prefix => $uri) {
                 $metadata->registerNamespace($uri, $prefix);
             }
 
@@ -250,11 +254,11 @@ class YamlDriver extends AbstractFileDriver
             if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
                 $metadata->discriminatorDisabled = true;
             } else {
-                if (!isset($config['discriminator']['field_name'])) {
+                if ( ! isset($config['discriminator']['field_name'])) {
                     throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
                 }
 
-                if (!isset($config['discriminator']['map']) || !is_array($config['discriminator']['map'])) {
+                if ( ! isset($config['discriminator']['map']) || ! is_array($config['discriminator']['map'])) {
                     throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
                 }
 
@@ -281,10 +285,5 @@ class YamlDriver extends AbstractFileDriver
         }
 
         return $methods;
-    }
-
-    protected function getExtension()
-    {
-        return 'yml';
     }
 }

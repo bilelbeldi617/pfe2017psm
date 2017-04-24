@@ -21,6 +21,18 @@ use Symfony\Component\Validator\Validation;
 
 abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new CollectionValidator();
+    }
+
+    abstract protected function prepareTestData(array $contents);
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Collection(array('fields' => array(
@@ -45,8 +57,6 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
         $this->assertNoViolation();
     }
 
-    abstract protected function prepareTestData(array $contents);
-
     /**
      * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
      */
@@ -69,7 +79,7 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
         $i = 0;
 
         foreach ($array as $key => $value) {
-            $this->expectValidateValueAt($i++, '[' . $key . ']', $value, array($constraint));
+            $this->expectValidateValueAt($i++, '['.$key.']', $value, array($constraint));
         }
 
         $data = $this->prepareTestData($array);
@@ -99,7 +109,7 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
         $i = 0;
 
         foreach ($array as $key => $value) {
-            $this->expectValidateValueAt($i++, '[' . $key . ']', $value, $constraints);
+            $this->expectValidateValueAt($i++, '['.$key.']', $value, $constraints);
         }
 
         $data = $this->prepareTestData($array);
@@ -140,6 +150,7 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
             ->assertRaised();
     }
 
+    // bug fix
     public function testNullNotConsideredExtraField()
     {
         $data = $this->prepareTestData(array(
@@ -179,8 +190,6 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
 
         $this->assertNoViolation();
     }
-
-    // bug fix
 
     public function testMissingFieldsDisallowed()
     {
@@ -375,16 +384,6 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
 
         $this->assertEquals(array(
             'foo' => 3,
-        ), (array)$value);
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new CollectionValidator();
+        ), (array) $value);
     }
 }

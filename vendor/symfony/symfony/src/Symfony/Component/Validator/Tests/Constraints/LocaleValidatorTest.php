@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class LocaleValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new LocaleValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Locale());
@@ -73,7 +83,7 @@ class LocaleValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($locale, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $locale . '"')
+            ->setParameter('{{ value }}', '"'.$locale.'"')
             ->setCode(Locale::NO_SUCH_LOCALE_ERROR)
             ->assertRaised();
     }
@@ -84,15 +94,5 @@ class LocaleValidatorTest extends AbstractConstraintValidatorTest
             array('EN'),
             array('foobar'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new LocaleValidator();
     }
 }

@@ -11,6 +11,20 @@ class ScriptHandlerTest extends ProphecyTestCase
     private $io;
     private $package;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->event = $this->prophesize('Composer\Script\Event');
+        $this->io = $this->prophesize('Composer\IO\IOInterface');
+        $this->package = $this->prophesize('Composer\Package\PackageInterface');
+        $composer = $this->prophesize('Composer\Composer');
+
+        $composer->getPackage()->willReturn($this->package);
+        $this->event->getComposer()->willReturn($composer);
+        $this->event->getIO()->willReturn($this->io);
+    }
+
     /**
      * @dataProvider provideInvalidConfiguration
      */
@@ -45,19 +59,5 @@ class ScriptHandlerTest extends ProphecyTestCase
                 'The extra.incenteev-parameters.file setting is required to use this script handler.',
             ),
         );
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->event = $this->prophesize('Composer\Script\Event');
-        $this->io = $this->prophesize('Composer\IO\IOInterface');
-        $this->package = $this->prophesize('Composer\Package\PackageInterface');
-        $composer = $this->prophesize('Composer\Composer');
-
-        $composer->getPackage()->willReturn($this->package);
-        $this->event->getComposer()->willReturn($composer);
-        $this->event->getIO()->willReturn($this->io);
     }
 }

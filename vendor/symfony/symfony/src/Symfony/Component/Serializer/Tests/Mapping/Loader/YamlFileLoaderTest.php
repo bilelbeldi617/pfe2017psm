@@ -30,6 +30,12 @@ class YamlFileLoaderTest extends TestCase
      */
     private $metadata;
 
+    protected function setUp()
+    {
+        $this->loader = new YamlFileLoader(__DIR__.'/../../Fixtures/serialization.yml');
+        $this->metadata = new ClassMetadata('Symfony\Component\Serializer\Tests\Fixtures\GroupDummy');
+    }
+
     public function testInterface()
     {
         $this->assertInstanceOf('Symfony\Component\Serializer\Mapping\Loader\LoaderInterface', $this->loader);
@@ -42,7 +48,7 @@ class YamlFileLoaderTest extends TestCase
 
     public function testLoadClassMetadataReturnsFalseWhenEmpty()
     {
-        $loader = new YamlFileLoader(__DIR__ . '/../../Fixtures/empty-mapping.yml');
+        $loader = new YamlFileLoader(__DIR__.'/../../Fixtures/empty-mapping.yml');
         $this->assertFalse($loader->loadClassMetadata($this->metadata));
     }
 
@@ -51,7 +57,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testLoadClassMetadataReturnsThrowsInvalidMapping()
     {
-        $loader = new YamlFileLoader(__DIR__ . '/../../Fixtures/invalid-mapping.yml');
+        $loader = new YamlFileLoader(__DIR__.'/../../Fixtures/invalid-mapping.yml');
         $loader->loadClassMetadata($this->metadata);
     }
 
@@ -60,11 +66,5 @@ class YamlFileLoaderTest extends TestCase
         $this->loader->loadClassMetadata($this->metadata);
 
         $this->assertEquals(TestClassMetadataFactory::createXmlCLassMetadata(), $this->metadata);
-    }
-
-    protected function setUp()
-    {
-        $this->loader = new YamlFileLoader(__DIR__ . '/../../Fixtures/serialization.yml');
-        $this->metadata = new ClassMetadata('Symfony\Component\Serializer\Tests\Fixtures\GroupDummy');
     }
 }

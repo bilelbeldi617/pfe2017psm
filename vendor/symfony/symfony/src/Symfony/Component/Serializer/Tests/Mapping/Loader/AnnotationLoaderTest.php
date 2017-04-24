@@ -27,6 +27,11 @@ class AnnotationLoaderTest extends TestCase
      */
     private $loader;
 
+    protected function setUp()
+    {
+        $this->loader = new AnnotationLoader(new AnnotationReader());
+    }
+
     public function testInterface()
     {
         $this->assertInstanceOf('Symfony\Component\Serializer\Mapping\Loader\LoaderInterface', $this->loader);
@@ -58,10 +63,5 @@ class AnnotationLoaderTest extends TestCase
         $this->loader->loadClassMetadata($classMetadata);
 
         $this->assertEquals(TestClassMetadataFactory::createClassMetadata(true), $classMetadata);
-    }
-
-    protected function setUp()
-    {
-        $this->loader = new AnnotationLoader(new AnnotationReader());
     }
 }

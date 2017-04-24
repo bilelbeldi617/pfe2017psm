@@ -24,7 +24,6 @@ use Symfony\Component\Templating\Loader\LoaderInterface;
  */
 class PhpEngine implements EngineInterface, \ArrayAccess
 {
-    protected static $escaperCache = array();
     protected $loader;
     protected $current;
     /**
@@ -36,6 +35,7 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     protected $charset = 'UTF-8';
     protected $cache = array();
     protected $escapers = array();
+    protected static $escaperCache = array();
     protected $globals = array();
     protected $parser;
 
@@ -45,9 +45,9 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     /**
      * Constructor.
      *
-     * @param TemplateNameParserInterface $parser A TemplateNameParserInterface instance
-     * @param LoaderInterface $loader A loader instance
-     * @param HelperInterface[] $helpers An array of helper instances
+     * @param TemplateNameParserInterface $parser  A TemplateNameParserInterface instance
+     * @param LoaderInterface             $loader  A loader instance
+     * @param HelperInterface[]           $helpers An array of helper instances
      */
     public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, array $helpers = array())
     {
@@ -60,157 +60,6 @@ class PhpEngine implements EngineInterface, \ArrayAccess
         foreach ($this->escapers as $context => $escaper) {
             $this->setEscaper($context, $escaper);
         }
-    }
-
-    /**
-     * Adds some helpers.
-     *
-     * @param HelperInterface[] $helpers An array of helper
-     */
-    public function addHelpers(array $helpers)
-    {
-        foreach ($helpers as $alias => $helper) {
-            $this->set($helper, is_int($alias) ? null : $alias);
-        }
-    }
-
-    /**
-     * Sets a helper.
-     *
-     * @param HelperInterface $helper The helper instance
-     * @param string $alias An alias
-     */
-    public function set(HelperInterface $helper, $alias = null)
-    {
-        $this->helpers[$helper->getName()] = $helper;
-        if (null !== $alias) {
-            $this->helpers[$alias] = $helper;
-        }
-
-        $helper->setCharset($this->charset);
-    }
-
-    /**
-     * Initializes the built-in escapers.
-     *
-     * Each function specifies a way for applying a transformation to a string
-     * passed to it. The purpose is for the string to be "escaped" so it is
-     * suitable for the format it is being displayed in.
-     *
-     * For example, the string: "It's required that you enter a username & password.\n"
-     * If this were to be displayed as HTML it would be sensible to turn the
-     * ampersand into '&amp;' and the apostrophe into '&aps;'. However if it were
-     * going to be used as a string in JavaScript to be displayed in an alert box
-     * it would be right to leave the string as-is, but c-escape the apostrophe and
-     * the new line.
-     *
-     * For each function there is a define to avoid problems with strings being
-     * incorrectly specified.
-     */
-    protected function initializeEscapers()
-    {
-        $that = $this;
-        if (PHP_VERSION_ID >= 50400) {
-            $flags = ENT_QUOTES | ENT_SUBSTITUTE;
-        } else {
-            $flags = ENT_QUOTES;
-        }
-
-        $this->escapers = array(
-            'html' =>
-            /**
-             * Runs the PHP function htmlspecialchars on the value passed.
-             *
-             * @param string $value the value to escape
-             *
-             * @return string the escaped value
-             */
-                function ($value) use ($that, $flags) {
-                    // Numbers and Boolean values get turned into strings which can cause problems
-                    // with type comparisons (e.g. === or is_int() etc).
-                    return is_string($value) ? htmlspecialchars($value, $flags, $that->getCharset(), false) : $value;
-                },
-
-            'js' =>
-            /**
-             * A function that escape all non-alphanumeric characters
-             * into their \xHH or \uHHHH representations.
-             *
-             * @param string $value the value to escape
-             *
-             * @return string the escaped value
-             */
-                function ($value) use ($that) {
-                    if ('UTF-8' != $that->getCharset()) {
-                        $value = iconv($that->getCharset(), 'UTF-8', $value);
-                    }
-
-                    $callback = function ($matches) {
-                        $char = $matches[0];
-
-                        // \xHH
-                        if (!isset($char[1])) {
-                            return '\\x' . substr('00' . bin2hex($char), -2);
-                        }
-
-                        // \uHHHH
-                        $char = iconv('UTF-8', 'UTF-16BE', $char);
-
-                        return '\\u' . substr('0000' . bin2hex($char), -4);
-                    };
-
-                    if (null === $value = preg_replace_callback('#[^\p{L}\p{N} ]#u', $callback, $value)) {
-                        throw new \InvalidArgumentException('The string to escape is not a valid UTF-8 string.');
-                    }
-
-                    if ('UTF-8' != $that->getCharset()) {
-                        $value = iconv('UTF-8', $that->getCharset(), $value);
-                    }
-
-                    return $value;
-                },
-        );
-
-        self::$escaperCache = array();
-    }
-
-    /**
-     * Gets the current charset.
-     *
-     * @return string The current charset
-     */
-    public function getCharset()
-    {
-        return $this->charset;
-    }
-
-    /**
-     * Sets the charset to use.
-     *
-     * @param string $charset The charset
-     */
-    public function setCharset($charset)
-    {
-        if ('UTF8' === $charset = strtoupper($charset)) {
-            $charset = 'UTF-8'; // iconv on Windows requires "UTF-8" instead of "UTF8"
-        }
-        $this->charset = $charset;
-
-        foreach ($this->helpers as $helper) {
-            $helper->setCharset($this->charset);
-        }
-    }
-
-    /**
-     * Adds an escaper for the given context.
-     *
-     * @param string $context The escaper context (html, js, ...)
-     * @param callable $escaper A PHP callable
-     */
-    public function setEscaper($context, $escaper)
-    {
-        $this->escapers[$context] = $escaper;
-        self::$escaperCache[$context] = array();
     }
 
     /**
@@ -247,47 +96,34 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     }
 
     /**
-     * Loads the given template.
-     *
-     * @param string|TemplateReferenceInterface $name A template name or a TemplateReferenceInterface instance
-     *
-     * @return Storage A Storage instance
-     *
-     * @throws \InvalidArgumentException if the template cannot be found
+     * {@inheritdoc}
      */
-    protected function load($name)
+    public function exists($name)
     {
-        $template = $this->parser->parse($name);
-
-        $key = $template->getLogicalName();
-        if (isset($this->cache[$key])) {
-            return $this->cache[$key];
+        try {
+            $this->load($name);
+        } catch (\InvalidArgumentException $e) {
+            return false;
         }
 
-        $storage = $this->loader->load($template);
-
-        if (false === $storage) {
-            throw new \InvalidArgumentException(sprintf('The template "%s" does not exist.', $template));
-        }
-
-        return $this->cache[$key] = $storage;
+        return true;
     }
 
     /**
-     * Returns the assigned globals.
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function getGlobals()
+    public function supports($name)
     {
-        return $this->globals;
+        $template = $this->parser->parse($name);
+
+        return 'php' === $template->get('engine');
     }
 
     /**
      * Evaluates a template.
      *
-     * @param Storage $template The template to render
-     * @param array $parameters An array of parameters to pass to the template
+     * @param Storage $template   The template to render
+     * @param array   $parameters An array of parameters to pass to the template
      *
      * @return string|false The evaluated template, or false if the engine is unable to render the template
      *
@@ -323,7 +159,7 @@ class PhpEngine implements EngineInterface, \ArrayAccess
             $this->evalParameters = null;
 
             ob_start();
-            eval('; ?>' . $this->evalTemplate . '<?php ;');
+            eval('; ?>'.$this->evalTemplate.'<?php ;');
 
             $this->evalTemplate = null;
 
@@ -331,48 +167,6 @@ class PhpEngine implements EngineInterface, \ArrayAccess
         }
 
         return false;
-    }
-
-    /**
-     * Gets a helper value.
-     *
-     * @param string $name The helper name
-     *
-     * @return HelperInterface The helper instance
-     *
-     * @throws \InvalidArgumentException if the helper is not defined
-     */
-    public function get($name)
-    {
-        if (!isset($this->helpers[$name])) {
-            throw new \InvalidArgumentException(sprintf('The helper "%s" is not defined.', $name));
-        }
-
-        return $this->helpers[$name];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function exists($name)
-    {
-        try {
-            $this->load($name);
-        } catch (\InvalidArgumentException $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supports($name)
-    {
-        $template = $this->parser->parse($name);
-
-        return 'php' === $template->get('engine');
     }
 
     /**
@@ -404,8 +198,8 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     /**
      * Sets a helper.
      *
-     * @param HelperInterface $name The helper instance
-     * @param string $value An alias
+     * @param HelperInterface $name  The helper instance
+     * @param string          $value An alias
      */
     public function offsetSet($name, $value)
     {
@@ -425,6 +219,18 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     }
 
     /**
+     * Adds some helpers.
+     *
+     * @param HelperInterface[] $helpers An array of helper
+     */
+    public function addHelpers(array $helpers)
+    {
+        foreach ($helpers as $alias => $helper) {
+            $this->set($helper, is_int($alias) ? null : $alias);
+        }
+    }
+
+    /**
      * Sets the helpers.
      *
      * @param HelperInterface[] $helpers An array of helper
@@ -433,6 +239,22 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     {
         $this->helpers = array();
         $this->addHelpers($helpers);
+    }
+
+    /**
+     * Sets a helper.
+     *
+     * @param HelperInterface $helper The helper instance
+     * @param string          $alias  An alias
+     */
+    public function set(HelperInterface $helper, $alias = null)
+    {
+        $this->helpers[$helper->getName()] = $helper;
+        if (null !== $alias) {
+            $this->helpers[$alias] = $helper;
+        }
+
+        $helper->setCharset($this->charset);
     }
 
     /**
@@ -448,6 +270,24 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     }
 
     /**
+     * Gets a helper value.
+     *
+     * @param string $name The helper name
+     *
+     * @return HelperInterface The helper instance
+     *
+     * @throws \InvalidArgumentException if the helper is not defined
+     */
+    public function get($name)
+    {
+        if (!isset($this->helpers[$name])) {
+            throw new \InvalidArgumentException(sprintf('The helper "%s" is not defined.', $name));
+        }
+
+        return $this->helpers[$name];
+    }
+
+    /**
      * Decorates the current template with another one.
      *
      * @param string $template The decorator logical name
@@ -460,7 +300,7 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     /**
      * Escapes a string by using the current charset.
      *
-     * @param mixed $value A variable to escape
+     * @param mixed  $value   A variable to escape
      * @param string $context The context name
      *
      * @return string The escaped value
@@ -485,6 +325,45 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     }
 
     /**
+     * Sets the charset to use.
+     *
+     * @param string $charset The charset
+     */
+    public function setCharset($charset)
+    {
+        if ('UTF8' === $charset = strtoupper($charset)) {
+            $charset = 'UTF-8'; // iconv on Windows requires "UTF-8" instead of "UTF8"
+        }
+        $this->charset = $charset;
+
+        foreach ($this->helpers as $helper) {
+            $helper->setCharset($this->charset);
+        }
+    }
+
+    /**
+     * Gets the current charset.
+     *
+     * @return string The current charset
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+    /**
+     * Adds an escaper for the given context.
+     *
+     * @param string   $context The escaper context (html, js, ...)
+     * @param callable $escaper A PHP callable
+     */
+    public function setEscaper($context, $escaper)
+    {
+        $this->escapers[$context] = $escaper;
+        self::$escaperCache[$context] = array();
+    }
+
+    /**
      * Gets an escaper for a given context.
      *
      * @param string $context The context name
@@ -504,7 +383,7 @@ class PhpEngine implements EngineInterface, \ArrayAccess
 
     /**
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function addGlobal($name, $value)
     {
@@ -512,11 +391,105 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     }
 
     /**
+     * Returns the assigned globals.
+     *
+     * @return array
+     */
+    public function getGlobals()
+    {
+        return $this->globals;
+    }
+
+    /**
+     * Initializes the built-in escapers.
+     *
+     * Each function specifies a way for applying a transformation to a string
+     * passed to it. The purpose is for the string to be "escaped" so it is
+     * suitable for the format it is being displayed in.
+     *
+     * For example, the string: "It's required that you enter a username & password.\n"
+     * If this were to be displayed as HTML it would be sensible to turn the
+     * ampersand into '&amp;' and the apostrophe into '&aps;'. However if it were
+     * going to be used as a string in JavaScript to be displayed in an alert box
+     * it would be right to leave the string as-is, but c-escape the apostrophe and
+     * the new line.
+     *
+     * For each function there is a define to avoid problems with strings being
+     * incorrectly specified.
+     */
+    protected function initializeEscapers()
+    {
+        $that = $this;
+        if (PHP_VERSION_ID >= 50400) {
+            $flags = ENT_QUOTES | ENT_SUBSTITUTE;
+        } else {
+            $flags = ENT_QUOTES;
+        }
+
+        $this->escapers = array(
+            'html' =>
+                /**
+                 * Runs the PHP function htmlspecialchars on the value passed.
+                 *
+                 * @param string $value the value to escape
+                 *
+                 * @return string the escaped value
+                 */
+                function ($value) use ($that, $flags) {
+                    // Numbers and Boolean values get turned into strings which can cause problems
+                    // with type comparisons (e.g. === or is_int() etc).
+                    return is_string($value) ? htmlspecialchars($value, $flags, $that->getCharset(), false) : $value;
+                },
+
+            'js' =>
+                /**
+                 * A function that escape all non-alphanumeric characters
+                 * into their \xHH or \uHHHH representations.
+                 *
+                 * @param string $value the value to escape
+                 *
+                 * @return string the escaped value
+                 */
+                function ($value) use ($that) {
+                    if ('UTF-8' != $that->getCharset()) {
+                        $value = iconv($that->getCharset(), 'UTF-8', $value);
+                    }
+
+                    $callback = function ($matches) {
+                        $char = $matches[0];
+
+                        // \xHH
+                        if (!isset($char[1])) {
+                            return '\\x'.substr('00'.bin2hex($char), -2);
+                        }
+
+                        // \uHHHH
+                        $char = iconv('UTF-8', 'UTF-16BE', $char);
+
+                        return '\\u'.substr('0000'.bin2hex($char), -4);
+                    };
+
+                    if (null === $value = preg_replace_callback('#[^\p{L}\p{N} ]#u', $callback, $value)) {
+                        throw new \InvalidArgumentException('The string to escape is not a valid UTF-8 string.');
+                    }
+
+                    if ('UTF-8' != $that->getCharset()) {
+                        $value = iconv('UTF-8', $that->getCharset(), $value);
+                    }
+
+                    return $value;
+                },
+        );
+
+        self::$escaperCache = array();
+    }
+
+    /**
      * Convert a string from one encoding to another.
      *
      * @param string $string The string to convert
-     * @param string $to The input encoding
-     * @param string $from The output encoding
+     * @param string $to     The input encoding
+     * @param string $from   The output encoding
      *
      * @return string The string with the new encoding
      *
@@ -524,7 +497,7 @@ class PhpEngine implements EngineInterface, \ArrayAccess
      */
     public function convertEncoding($string, $to, $from)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0. Use iconv() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Use iconv() instead.', E_USER_DEPRECATED);
 
         return iconv($from, $to, $string);
     }
@@ -537,5 +510,32 @@ class PhpEngine implements EngineInterface, \ArrayAccess
     public function getLoader()
     {
         return $this->loader;
+    }
+
+    /**
+     * Loads the given template.
+     *
+     * @param string|TemplateReferenceInterface $name A template name or a TemplateReferenceInterface instance
+     *
+     * @return Storage A Storage instance
+     *
+     * @throws \InvalidArgumentException if the template cannot be found
+     */
+    protected function load($name)
+    {
+        $template = $this->parser->parse($name);
+
+        $key = $template->getLogicalName();
+        if (isset($this->cache[$key])) {
+            return $this->cache[$key];
+        }
+
+        $storage = $this->loader->load($template);
+
+        if (false === $storage) {
+            throw new \InvalidArgumentException(sprintf('The template "%s" does not exist.', $template));
+        }
+
+        return $this->cache[$key] = $storage;
     }
 }

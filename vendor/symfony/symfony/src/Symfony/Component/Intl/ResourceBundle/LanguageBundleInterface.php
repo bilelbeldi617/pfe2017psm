@@ -21,9 +21,9 @@ interface LanguageBundleInterface extends ResourceBundleInterface
     /**
      * Returns the name of a language.
      *
-     * @param string $language A language code (e.g. "en")
-     * @param string|null $region Optional. A region code (e.g. "US")
-     * @param string $displayLocale Optional. The locale to return the name in
+     * @param string      $language      A language code (e.g. "en")
+     * @param string|null $region        Optional. A region code (e.g. "US")
+     * @param string      $displayLocale Optional. The locale to return the name in
      *                                   Defaults to {@link \Locale::getDefault()}.
      *
      * @return string|null The name of the language or NULL if not found
@@ -43,8 +43,8 @@ interface LanguageBundleInterface extends ResourceBundleInterface
     /**
      * Returns the name of a script.
      *
-     * @param string $script A script code (e.g. "Hans")
-     * @param string $language Optional. A language code (e.g. "zh")
+     * @param string $script        A script code (e.g. "Hans")
+     * @param string $language      Optional. A language code (e.g. "zh")
      * @param string $displayLocale Optional. The locale to return the name in
      *                              Defaults to {@link \Locale::getDefault()}.
      *

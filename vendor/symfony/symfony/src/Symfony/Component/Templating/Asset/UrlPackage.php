@@ -28,15 +28,15 @@ class UrlPackage extends Package
      * Constructor.
      *
      * @param string|array $baseUrls Base asset URLs
-     * @param string $version The package version
-     * @param string $format The format used to apply the version
+     * @param string       $version  The package version
+     * @param string       $format   The format used to apply the version
      */
     public function __construct($baseUrls = array(), $version = null, $format = null)
     {
         parent::__construct($version, $format);
 
         if (!is_array($baseUrls)) {
-            $baseUrls = (array)$baseUrls;
+            $baseUrls = (array) $baseUrls;
         }
 
         $this->baseUrls = array();
@@ -57,10 +57,10 @@ class UrlPackage extends Package
         $url = $this->applyVersion($path, $version);
 
         if ($url && '/' != $url[0]) {
-            $url = '/' . $url;
+            $url = '/'.$url;
         }
 
-        return $this->getBaseUrl($path) . $url;
+        return $this->getBaseUrl($path).$url;
     }
 
     /**

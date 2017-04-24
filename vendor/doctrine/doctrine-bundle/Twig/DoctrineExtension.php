@@ -44,110 +44,9 @@ class DoctrineExtension extends \Twig_Extension
     }
 
     /**
-     * Minify the query
-     *
-     * @param string $query
-     *
-     * @return string
-     */
-    public function minifyQuery($query)
-    {
-        $result = '';
-        $keywords = array();
-        $required = 1;
-
-        // Check if we can match the query against any of the major types
-        switch (true) {
-            case stripos($query, 'SELECT') !== false:
-                $keywords = array('SELECT', 'FROM', 'WHERE', 'HAVING', 'ORDER BY', 'LIMIT');
-                $required = 2;
-                break;
-
-            case stripos($query, 'DELETE') !== false:
-                $keywords = array('DELETE', 'FROM', 'WHERE', 'ORDER BY', 'LIMIT');
-                $required = 2;
-                break;
-
-            case stripos($query, 'UPDATE') !== false:
-                $keywords = array('UPDATE', 'SET', 'WHERE', 'ORDER BY', 'LIMIT');
-                $required = 2;
-                break;
-
-            case stripos($query, 'INSERT') !== false:
-                $keywords = array('INSERT', 'INTO', 'VALUE', 'VALUES');
-                $required = 2;
-                break;
-
-            // If there's no match so far just truncate it to the maximum allowed by the interface
-            default:
-                $result = substr($query, 0, $this->maxCharWidth);
-        }
-
-        // If we had a match then we should minify it
-        if ($result == '') {
-            $result = $this->composeMiniQuery($query, $keywords, $required);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Attempt to compose the best scenario minified query so that a user could find it without expanding it
-     *
-     * @param string $query
-     * @param array $keywords
-     * @param integer $required
-     *
-     * @return string
-     */
-    private function composeMiniQuery($query, array $keywords, $required)
-    {
-        // Extract the mandatory keywords and consider the rest as optional keywords
-        $mandatoryKeywords = array_splice($keywords, 0, $required);
-
-        $combinations = array();
-        $combinationsCount = count($keywords);
-
-        // Compute all the possible combinations of keywords to match the query for
-        while ($combinationsCount > 0) {
-            $combinations = array_merge($combinations, $this->getPossibleCombinations($keywords, $combinationsCount));
-            $combinationsCount--;
-        }
-
-        // Try and match the best case query pattern
-        foreach ($combinations as $combination) {
-            $combination = array_merge($mandatoryKeywords, $combination);
-
-            $regexp = implode('(.*) ', $combination) . ' (.*)';
-            $regexp = '/^' . $regexp . '/is';
-
-            if (preg_match($regexp, $query, $matches)) {
-                $result = $this->shrinkParameters($matches, $combination);
-
-                return $result;
-            }
-        }
-
-        // Try and match the simplest query form that contains only the mandatory keywords
-        $regexp = implode(' (.*)', $mandatoryKeywords) . ' (.*)';
-        $regexp = '/^' . $regexp . '/is';
-
-        if (preg_match($regexp, $query, $matches)) {
-            $result = $this->shrinkParameters($matches, $mandatoryKeywords);
-
-            return $result;
-        }
-
-        // Fallback in case we didn't managed to find any good match (can we actually have that happen?!)
-        $result = substr($query, 0, $this->maxCharWidth);
-
-        return $result;
-    }
-
-    /**
      * Get the possible combinations of elements from the given array
      *
-     * @param array $elements
+     * @param array   $elements
      * @param integer $combinationsLevel
      *
      * @return array
@@ -226,10 +125,111 @@ class DoctrineExtension extends \Twig_Extension
                 $value .= ' [...]';
             }
 
-            $result .= ' ' . $combination[$key] . ' ' . $value;
+            $result .= ' '.$combination[$key].' '.$value;
         }
 
         return trim($result);
+    }
+
+    /**
+     * Attempt to compose the best scenario minified query so that a user could find it without expanding it
+     *
+     * @param string  $query
+     * @param array   $keywords
+     * @param integer $required
+     *
+     * @return string
+     */
+    private function composeMiniQuery($query, array $keywords, $required)
+    {
+        // Extract the mandatory keywords and consider the rest as optional keywords
+        $mandatoryKeywords = array_splice($keywords, 0, $required);
+
+        $combinations = array();
+        $combinationsCount = count($keywords);
+
+        // Compute all the possible combinations of keywords to match the query for
+        while ($combinationsCount > 0) {
+            $combinations = array_merge($combinations, $this->getPossibleCombinations($keywords, $combinationsCount));
+            $combinationsCount--;
+        }
+
+        // Try and match the best case query pattern
+        foreach ($combinations as $combination) {
+            $combination = array_merge($mandatoryKeywords, $combination);
+
+            $regexp = implode('(.*) ', $combination).' (.*)';
+            $regexp = '/^'.$regexp.'/is';
+
+            if (preg_match($regexp, $query, $matches)) {
+                $result = $this->shrinkParameters($matches, $combination);
+
+                return $result;
+            }
+        }
+
+        // Try and match the simplest query form that contains only the mandatory keywords
+        $regexp = implode(' (.*)', $mandatoryKeywords).' (.*)';
+        $regexp = '/^'.$regexp.'/is';
+
+        if (preg_match($regexp, $query, $matches)) {
+            $result = $this->shrinkParameters($matches, $mandatoryKeywords);
+
+            return $result;
+        }
+
+        // Fallback in case we didn't managed to find any good match (can we actually have that happen?!)
+        $result = substr($query, 0, $this->maxCharWidth);
+
+        return $result;
+    }
+
+    /**
+     * Minify the query
+     *
+     * @param string $query
+     *
+     * @return string
+     */
+    public function minifyQuery($query)
+    {
+        $result = '';
+        $keywords = array();
+        $required = 1;
+
+        // Check if we can match the query against any of the major types
+        switch (true) {
+            case stripos($query, 'SELECT') !== false:
+                $keywords = array('SELECT', 'FROM', 'WHERE', 'HAVING', 'ORDER BY', 'LIMIT');
+                $required = 2;
+                break;
+
+            case stripos($query, 'DELETE') !== false:
+                $keywords = array('DELETE', 'FROM', 'WHERE', 'ORDER BY', 'LIMIT');
+                $required = 2;
+                break;
+
+            case stripos($query, 'UPDATE') !== false:
+                $keywords = array('UPDATE', 'SET', 'WHERE', 'ORDER BY', 'LIMIT');
+                $required = 2;
+                break;
+
+            case stripos($query, 'INSERT') !== false:
+                $keywords = array('INSERT', 'INTO', 'VALUE', 'VALUES');
+                $required = 2;
+                break;
+
+            // If there's no match so far just truncate it to the maximum allowed by the interface
+            default:
+                $result = substr($query, 0, $this->maxCharWidth);
+        }
+
+        // If we had a match then we should minify it
+        if ($result == '') {
+            $result = $this->composeMiniQuery($query, $keywords, $required);
+        }
+
+        return $result;
     }
 
     /**
@@ -248,7 +248,7 @@ class DoctrineExtension extends \Twig_Extension
 
         switch (true) {
             case is_string($result):
-                $result = "'" . addslashes($result) . "'";
+                $result = "'".addslashes($result)."'";
                 break;
 
             case is_array($result):
@@ -260,7 +260,7 @@ class DoctrineExtension extends \Twig_Extension
                 break;
 
             case is_object($result):
-                $result = addslashes((string)$result);
+                $result = addslashes((string) $result);
                 break;
 
             case null === $result:
@@ -279,7 +279,7 @@ class DoctrineExtension extends \Twig_Extension
      * Return a query with the parameters replaced
      *
      * @param string $query
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return string
      */
@@ -311,7 +311,7 @@ class DoctrineExtension extends \Twig_Extension
      * Formats and/or highlights the given SQL statement.
      *
      * @param  string $sql
-     * @param  bool $highlightOnly If true the query is not formatted, just highlighted
+     * @param  bool   $highlightOnly If true the query is not formatted, just highlighted
      *
      * @return string
      */

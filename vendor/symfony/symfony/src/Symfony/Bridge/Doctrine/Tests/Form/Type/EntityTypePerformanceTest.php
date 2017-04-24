@@ -30,64 +30,6 @@ class EntityTypePerformanceTest extends FormPerformanceTestCase
      */
     private $em;
 
-    /**
-     * This test case is realistic in collection forms where each
-     * row contains the same entity field.
-     *
-     * @group benchmark
-     */
-    public function testCollapsedEntityField()
-    {
-        $this->setMaxRunningTime(1);
-
-        for ($i = 0; $i < 40; ++$i) {
-            $form = $this->factory->create('Symfony\Bridge\Doctrine\Form\Type\EntityType', null, array(
-                'class' => self::ENTITY_CLASS,
-            ));
-
-            // force loading of the choice list
-            $form->createView();
-        }
-    }
-
-    /**
-     * @group benchmark
-     */
-    public function testCollapsedEntityFieldWithChoices()
-    {
-        $choices = $this->em->createQuery('SELECT c FROM ' . self::ENTITY_CLASS . ' c')->getResult();
-        $this->setMaxRunningTime(1);
-
-        for ($i = 0; $i < 40; ++$i) {
-            $form = $this->factory->create('Symfony\Bridge\Doctrine\Form\Type\EntityType', null, array(
-                'class' => self::ENTITY_CLASS,
-                'choices' => $choices,
-            ));
-
-            // force loading of the choice list
-            $form->createView();
-        }
-    }
-
-    /**
-     * @group benchmark
-     */
-    public function testCollapsedEntityFieldWithPreferredChoices()
-    {
-        $choices = $this->em->createQuery('SELECT c FROM ' . self::ENTITY_CLASS . ' c')->getResult();
-        $this->setMaxRunningTime(1);
-
-        for ($i = 0; $i < 40; ++$i) {
-            $form = $this->factory->create('Symfony\Bridge\Doctrine\Form\Type\EntityType', null, array(
-                'class' => self::ENTITY_CLASS,
-                'preferred_choices' => $choices,
-            ));
-
-            // force loading of the choice list
-            $form->createView();
-        }
-    }
-
     protected function getExtensions()
     {
         $manager = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
@@ -130,10 +72,68 @@ class EntityTypePerformanceTest extends FormPerformanceTestCase
         $ids = range(1, 300);
 
         foreach ($ids as $id) {
-            $name = 65 + (int)chr($id % 57);
+            $name = 65 + (int) chr($id % 57);
             $this->em->persist(new SingleIntIdEntity($id, $name));
         }
 
         $this->em->flush();
+    }
+
+    /**
+     * This test case is realistic in collection forms where each
+     * row contains the same entity field.
+     *
+     * @group benchmark
+     */
+    public function testCollapsedEntityField()
+    {
+        $this->setMaxRunningTime(1);
+
+        for ($i = 0; $i < 40; ++$i) {
+            $form = $this->factory->create('Symfony\Bridge\Doctrine\Form\Type\EntityType', null, array(
+                'class' => self::ENTITY_CLASS,
+            ));
+
+            // force loading of the choice list
+            $form->createView();
+        }
+    }
+
+    /**
+     * @group benchmark
+     */
+    public function testCollapsedEntityFieldWithChoices()
+    {
+        $choices = $this->em->createQuery('SELECT c FROM '.self::ENTITY_CLASS.' c')->getResult();
+        $this->setMaxRunningTime(1);
+
+        for ($i = 0; $i < 40; ++$i) {
+            $form = $this->factory->create('Symfony\Bridge\Doctrine\Form\Type\EntityType', null, array(
+                'class' => self::ENTITY_CLASS,
+                'choices' => $choices,
+            ));
+
+            // force loading of the choice list
+            $form->createView();
+        }
+    }
+
+    /**
+     * @group benchmark
+     */
+    public function testCollapsedEntityFieldWithPreferredChoices()
+    {
+        $choices = $this->em->createQuery('SELECT c FROM '.self::ENTITY_CLASS.' c')->getResult();
+        $this->setMaxRunningTime(1);
+
+        for ($i = 0; $i < 40; ++$i) {
+            $form = $this->factory->create('Symfony\Bridge\Doctrine\Form\Type\EntityType', null, array(
+                    'class' => self::ENTITY_CLASS,
+                    'preferred_choices' => $choices,
+                ));
+
+            // force loading of the choice list
+            $form->createView();
+        }
     }
 }

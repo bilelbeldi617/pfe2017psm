@@ -17,8 +17,8 @@ class Alias
     private $public;
 
     /**
-     * @param string $id Alias identifier
-     * @param bool $public If this alias is public
+     * @param string $id     Alias identifier
+     * @param bool   $public If this alias is public
      */
     public function __construct($id, $public = true)
     {
@@ -43,7 +43,7 @@ class Alias
      */
     public function setPublic($boolean)
     {
-        $this->public = (bool)$boolean;
+        $this->public = (bool) $boolean;
     }
 
     /**

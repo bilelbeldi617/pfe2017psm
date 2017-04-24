@@ -14,9 +14,9 @@ namespace Symfony\Component\Form\Tests\Fixtures;
 class Author
 {
     public $firstName;
-    public $child;
     private $lastName;
     private $australian;
+    public $child;
     private $readPermissions;
 
     private $privateProperty;
@@ -27,14 +27,19 @@ class Author
         $this->lastName = $lastName;
     }
 
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
     public function getLastName()
     {
         return $this->lastName;
     }
 
-    public function setLastName($lastName)
+    private function getPrivateGetter()
     {
-        $this->lastName = $lastName;
+        return 'foobar';
     }
 
     public function setAustralian($australian)
@@ -57,18 +62,13 @@ class Author
         return $this->readPermissions;
     }
 
-    public function getPrivateSetter()
-    {
-    }
-
-    private function getPrivateGetter()
-    {
-        return 'foobar';
-    }
-
     private function isPrivateIsser()
     {
         return true;
+    }
+
+    public function getPrivateSetter()
+    {
     }
 
     private function setPrivateSetter($data)

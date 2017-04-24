@@ -77,25 +77,25 @@ class Regex extends Constraint
         $delimiter = $this->pattern[0];
 
         // Unescape the delimiter
-        $pattern = str_replace('\\' . $delimiter, $delimiter, substr($this->pattern, 1, -1));
+        $pattern = str_replace('\\'.$delimiter, $delimiter, substr($this->pattern, 1, -1));
 
         // If the pattern is inverted, we can simply wrap it in
         // ((?!pattern).)*
         if (!$this->match) {
-            return '((?!' . $pattern . ').)*';
+            return '((?!'.$pattern.').)*';
         }
 
         // If the pattern contains an or statement, wrap the pattern in
         // .*(pattern).* and quit. Otherwise we'd need to parse the pattern
         if (false !== strpos($pattern, '|')) {
-            return '.*(' . $pattern . ').*';
+            return '.*('.$pattern.').*';
         }
 
         // Trim leading ^, otherwise prepend .*
-        $pattern = '^' === $pattern[0] ? substr($pattern, 1) : '.*' . $pattern;
+        $pattern = '^' === $pattern[0] ? substr($pattern, 1) : '.*'.$pattern;
 
         // Trim trailing $, otherwise append .*
-        $pattern = '$' === $pattern[strlen($pattern) - 1] ? substr($pattern, 0, -1) : $pattern . '.*';
+        $pattern = '$' === $pattern[strlen($pattern) - 1] ? substr($pattern, 0, -1) : $pattern.'.*';
 
         return $pattern;
     }

@@ -121,12 +121,7 @@ class ResponseHeaderBagTest extends TestCase
 
         $bag->clearCookie('foo');
 
-        $this->assertSetCookieHeader('foo=deleted; expires=' . gmdate('D, d-M-Y H:i:s T', time() - 31536001) . '; path=/; httponly', $bag);
-    }
-
-    private function assertSetCookieHeader($expected, ResponseHeaderBag $actual)
-    {
-        $this->assertRegExp('#^Set-Cookie:\s+' . preg_quote($expected, '#') . '$#m', str_replace("\r\n", "\n", (string)$actual));
+        $this->assertSetCookieHeader('foo=deleted; expires='.gmdate('D, d-M-Y H:i:s T', time() - 31536001).'; path=/; httponly', $bag);
     }
 
     public function testClearCookieSecureNotHttpOnly()
@@ -135,7 +130,7 @@ class ResponseHeaderBagTest extends TestCase
 
         $bag->clearCookie('foo', '/', null, true, false);
 
-        $this->assertSetCookieHeader('foo=deleted; expires=' . gmdate('D, d-M-Y H:i:s T', time() - 31536001) . '; path=/; secure', $bag);
+        $this->assertSetCookieHeader('foo=deleted; expires='.gmdate('D, d-M-Y H:i:s T', time() - 31536001).'; path=/; secure', $bag);
     }
 
     public function testReplace()
@@ -258,7 +253,7 @@ class ResponseHeaderBagTest extends TestCase
         $headers->set('Location', 'http://www.symfony.com');
         $headers->set('Content-type', 'text/html');
 
-        (string)$headers;
+        (string) $headers;
 
         $allHeaders = $headers->allPreserveCase();
         $this->assertEquals(array('http://www.symfony.com'), $allHeaders['Location']);
@@ -298,5 +293,10 @@ class ResponseHeaderBagTest extends TestCase
             array('attachment', '\foo.html'),
             array('attachment', 'föö.html'),
         );
+    }
+
+    private function assertSetCookieHeader($expected, ResponseHeaderBag $actual)
+    {
+        $this->assertRegExp('#^Set-Cookie:\s+'.preg_quote($expected, '#').'$#m', str_replace("\r\n", "\n", (string) $actual));
     }
 }

@@ -22,6 +22,16 @@ function choice_callback()
 
 class ChoiceValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new ChoiceValidator();
+    }
+
     public static function staticCallback()
     {
         return array('foo', 'bar');
@@ -74,7 +84,7 @@ class ChoiceValidatorTest extends AbstractConstraintValidatorTest
 
     public function testValidChoiceCallbackFunction()
     {
-        $constraint = new Choice(array('callback' => __NAMESPACE__ . '\choice_callback'));
+        $constraint = new Choice(array('callback' => __NAMESPACE__.'\choice_callback'));
 
         $this->validator->validate('bar', $constraint);
 
@@ -290,15 +300,5 @@ class ChoiceValidatorTest extends AbstractConstraintValidatorTest
             ->setInvalidValue('3')
             ->setCode(Choice::NO_SUCH_CHOICE_ERROR)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new ChoiceValidator();
     }
 }

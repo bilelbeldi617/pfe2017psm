@@ -2,6 +2,6 @@ Cookbook
 ========
 
 .. toctree ::
-:glob:
+    :glob:
 
     cookbook/*

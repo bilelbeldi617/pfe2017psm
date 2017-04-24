@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Form\Extension\Csrf\CsrfProvider;
 
-@trigger_error('The ' . __NAMESPACE__ . '\DefaultCsrfProvider is deprecated since version 2.4 and will be removed in version 3.0. Use the \Symfony\Component\Security\Csrf\TokenStorage\NativeSessionTokenStorage class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\DefaultCsrfProvider is deprecated since version 2.4 and will be removed in version 3.0. Use the \Symfony\Component\Security\Csrf\TokenStorage\NativeSessionTokenStorage class instead.', E_USER_DEPRECATED);
 
 /**
  * Default implementation of CsrfProviderInterface.
@@ -51,19 +51,19 @@ class DefaultCsrfProvider implements CsrfProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function isCsrfTokenValid($intention, $token)
+    public function generateCsrfToken($intention)
     {
-        $expectedToken = $this->generateCsrfToken($intention);
-
-        return hash_equals($expectedToken, $token);
+        return sha1($this->secret.$intention.$this->getSessionId());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateCsrfToken($intention)
+    public function isCsrfTokenValid($intention, $token)
     {
-        return sha1($this->secret . $intention . $this->getSessionId());
+        $expectedToken = $this->generateCsrfToken($intention);
+
+        return hash_equals($expectedToken, $token);
     }
 
     /**

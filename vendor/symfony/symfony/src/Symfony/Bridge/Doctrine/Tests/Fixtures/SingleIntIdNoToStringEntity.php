@@ -18,10 +18,11 @@ use Doctrine\ORM\Mapping\Entity;
 /** @Entity */
 class SingleIntIdNoToStringEntity
 {
-    /** @Column(type="string", nullable=true) */
-    public $name;
     /** @Id @Column(type="integer") */
     protected $id;
+
+    /** @Column(type="string", nullable=true) */
+    public $name;
 
     public function __construct($id, $name)
     {

@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class BlankValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new BlankValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Blank());
@@ -56,15 +66,5 @@ class BlankValidatorTest extends AbstractConstraintValidatorTest
             array(false, 'false'),
             array(1234, '1234'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new BlankValidator();
     }
 }

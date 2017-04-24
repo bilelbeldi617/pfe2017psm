@@ -9,56 +9,14 @@ class __TwigTemplate_c7a88135c192f78956e70c0690e316b1e63b030c5b3e2984d2373882d41
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(69 => 19, 60 => 15, 52 => 12, 48 => 11, 45 => 10, 40 => 9, 33 => 5, 29 => 4, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<table class=\"{{ class|default('') }}\">
-    <thead>
-        <tr>
-            <th scope=\"col\" class=\"key\">{{ labels is defined ? labels[0] : 'Key' }}</th>
-            <th scope=\"col\">{{ labels is defined ? labels[1] : 'Value' }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for key in bag.keys|sort %}
-            <tr>
-                <th>{{ key }}</th>
-                <td>{{ profiler_dump(bag.get(key)) }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan=\"2\">(no data)</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-", "@WebProfiler/Profiler/bag.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Profiler\\bag.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_01efc8c24686a11467117346957c697c0195e5709257ca6b7e6da0a9b4b67b88 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_01efc8c24686a11467117346957c697c0195e5709257ca6b7e6da0a9b4b67b88->enter($__internal_01efc8c24686a11467117346957c697c0195e5709257ca6b7e6da0a9b4b67b88_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/bag.html.twig"));
+        $__internal_ed0593bde27904e38efa9fa396607efabe99f471b1cf16c32ddac8270f9c1f26 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_ed0593bde27904e38efa9fa396607efabe99f471b1cf16c32ddac8270f9c1f26->enter($__internal_ed0593bde27904e38efa9fa396607efabe99f471b1cf16c32ddac8270f9c1f26_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/bag.html.twig"));
 
         // line 1
         echo "<table class=\"";
@@ -111,13 +69,56 @@ class __TwigTemplate_c7a88135c192f78956e70c0690e316b1e63b030c5b3e2984d2373882d41
         echo "    </tbody>
 </table>
 ";
-
-        $__internal_01efc8c24686a11467117346957c697c0195e5709257ca6b7e6da0a9b4b67b88->leave($__internal_01efc8c24686a11467117346957c697c0195e5709257ca6b7e6da0a9b4b67b88_prof);
+        
+        $__internal_ed0593bde27904e38efa9fa396607efabe99f471b1cf16c32ddac8270f9c1f26->leave($__internal_ed0593bde27904e38efa9fa396607efabe99f471b1cf16c32ddac8270f9c1f26_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@WebProfiler/Profiler/bag.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  69 => 19,  60 => 15,  52 => 12,  48 => 11,  45 => 10,  40 => 9,  33 => 5,  29 => 4,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<table class=\"{{ class|default('') }}\">
+    <thead>
+        <tr>
+            <th scope=\"col\" class=\"key\">{{ labels is defined ? labels[0] : 'Key' }}</th>
+            <th scope=\"col\">{{ labels is defined ? labels[1] : 'Value' }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key in bag.keys|sort %}
+            <tr>
+                <th>{{ key }}</th>
+                <td>{{ profiler_dump(bag.get(key)) }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan=\"2\">(no data)</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+", "@WebProfiler/Profiler/bag.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Profiler\\bag.html.twig");
     }
 }

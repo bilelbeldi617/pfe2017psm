@@ -22,6 +22,10 @@ abstract class CompleteConfigurationTest extends TestCase
 {
     private static $containerCache = array();
 
+    abstract protected function getLoader(ContainerBuilder $container);
+
+    abstract protected function getFileExtension();
+
     public function testRolesHierarchy()
     {
         $container = $this->getContainer('container1');
@@ -32,39 +36,11 @@ abstract class CompleteConfigurationTest extends TestCase
         ), $container->getParameter('security.role_hierarchy.roles'));
     }
 
-    protected function getContainer($file)
-    {
-        $file = $file . '.' . $this->getFileExtension();
-
-        if (isset(self::$containerCache[$file])) {
-            return self::$containerCache[$file];
-        }
-        $container = new ContainerBuilder();
-        $security = new SecurityExtension();
-        $container->registerExtension($security);
-
-        $bundle = new SecurityBundle();
-        $bundle->build($container); // Attach all default factories
-        $this->getLoader($container)->load($file);
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->compile();
-
-        return self::$containerCache[$file] = $container;
-    }
-
-    abstract protected function getFileExtension();
-
-    abstract protected function getLoader(ContainerBuilder $container);
-
     public function testUserProviders()
     {
         $container = $this->getContainer('container1');
 
-        $providers = array_values(array_filter($container->getServiceIds(), function ($key) {
-            return 0 === strpos($key, 'security.user.provider.concrete');
-        }));
+        $providers = array_values(array_filter($container->getServiceIds(), function ($key) { return 0 === strpos($key, 'security.user.provider.concrete'); }));
 
         $expectedProviders = array(
             'security.user.provider.concrete.default',
@@ -97,9 +73,7 @@ abstract class CompleteConfigurationTest extends TestCase
         foreach (array_keys($arguments[1]) as $contextId) {
             $contextDef = $container->getDefinition($contextId);
             $arguments = $contextDef->getArguments();
-            $listeners[] = array_map(function ($ref) {
-                return (string)$ref;
-            }, $arguments['index_0']);
+            $listeners[] = array_map(function ($ref) { return (string) $ref; }, $arguments['index_0']);
         }
 
         $this->assertEquals(array(
@@ -143,7 +117,7 @@ abstract class CompleteConfigurationTest extends TestCase
 
         foreach ($arguments[1] as $reference) {
             if ($reference instanceof Reference) {
-                $definition = $container->getDefinition((string)$reference);
+                $definition = $container->getDefinition((string) $reference);
                 $matchers[] = $definition->getArguments();
             }
         }
@@ -167,7 +141,7 @@ abstract class CompleteConfigurationTest extends TestCase
         $rules = array();
         foreach ($container->getDefinition('security.access_map')->getMethodCalls() as $call) {
             if ($call[0] == 'add') {
-                $rules[] = array((string)$call[1][0], $call[1][1], $call[1][2]);
+                $rules[] = array((string) $call[1][0], $call[1][1], $call[1][2]);
             }
         }
 
@@ -196,7 +170,7 @@ abstract class CompleteConfigurationTest extends TestCase
                 );
             } elseif (3 === $i) {
                 $this->assertEquals('IS_AUTHENTICATED_ANONYMOUSLY', $attributes[0]);
-                $expression = $container->getDefinition((string)$attributes[1])->getArgument(0);
+                $expression = $container->getDefinition((string) $attributes[1])->getArgument(0);
                 $this->assertEquals("token.getUsername() matches '/^admin/'", $expression);
             }
         }
@@ -246,7 +220,7 @@ abstract class CompleteConfigurationTest extends TestCase
         $container = $this->getContainer('container1');
 
         $this->assertTrue($container->hasDefinition('security.acl.dbal.provider'));
-        $this->assertEquals('security.acl.dbal.provider', (string)$container->getAlias('security.acl.provider'));
+        $this->assertEquals('security.acl.dbal.provider', (string) $container->getAlias('security.acl.provider'));
     }
 
     public function testCustomAclProvider()
@@ -254,7 +228,7 @@ abstract class CompleteConfigurationTest extends TestCase
         $container = $this->getContainer('custom_acl_provider');
 
         $this->assertFalse($container->hasDefinition('security.acl.dbal.provider'));
-        $this->assertEquals('foo', (string)$container->getAlias('security.acl.provider'));
+        $this->assertEquals('foo', (string) $container->getAlias('security.acl.provider'));
     }
 
     public function testRememberMeThrowExceptionsDefault()
@@ -284,5 +258,27 @@ abstract class CompleteConfigurationTest extends TestCase
     public function testUserCheckerConfigWithNoCheckers()
     {
         $this->assertEquals('security.user_checker', $this->getContainer('container1')->getAlias('security.user_checker.secure'));
+    }
+
+    protected function getContainer($file)
+    {
+        $file = $file.'.'.$this->getFileExtension();
+
+        if (isset(self::$containerCache[$file])) {
+            return self::$containerCache[$file];
+        }
+        $container = new ContainerBuilder();
+        $security = new SecurityExtension();
+        $container->registerExtension($security);
+
+        $bundle = new SecurityBundle();
+        $bundle->build($container); // Attach all default factories
+        $this->getLoader($container)->load($file);
+
+        $container->getCompilerPassConfig()->setOptimizationPasses(array());
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->compile();
+
+        return self::$containerCache[$file] = $container;
     }
 }

@@ -24,13 +24,6 @@ use PHPUnit\Framework\TestCase;
 class DoctrineTestHelper
 {
     /**
-     * This class cannot be instantiated.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Returns an entity manager for testing.
      *
      * @return EntityManager
@@ -56,5 +49,12 @@ class DoctrineTestHelper
         );
 
         return EntityManager::create($params, $config);
+    }
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

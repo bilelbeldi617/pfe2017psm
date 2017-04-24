@@ -30,9 +30,9 @@ class TemplateManager
     /**
      * Constructor.
      *
-     * @param Profiler $profiler
+     * @param Profiler          $profiler
      * @param \Twig_Environment $twig
-     * @param array $templates
+     * @param array             $templates
      */
     public function __construct(Profiler $profiler, \Twig_Environment $twig, array $templates)
     {
@@ -45,7 +45,7 @@ class TemplateManager
      * Gets the template name for a given panel.
      *
      * @param Profile $profile
-     * @param string $panel
+     * @param string  $panel
      *
      * @return mixed
      *
@@ -60,6 +60,26 @@ class TemplateManager
         }
 
         return $templates[$panel];
+    }
+
+    /**
+     * Gets the templates for a given profile.
+     *
+     * @param Profile $profile
+     *
+     * @return \Twig_Template[]
+     *
+     * @deprecated not used anymore internally
+     */
+    public function getTemplates(Profile $profile)
+    {
+        $templates = $this->getNames($profile);
+
+        foreach ($templates as $name => $template) {
+            $templates[$name] = $this->twig->loadTemplate($template);
+        }
+
+        return $templates;
     }
 
     /**
@@ -90,16 +110,17 @@ class TemplateManager
                 $template = substr($template, 0, -10);
             }
 
-            if (!$this->templateExists($template . '.html.twig')) {
+            if (!$this->templateExists($template.'.html.twig')) {
                 throw new \UnexpectedValueException(sprintf('The profiler template "%s.html.twig" for data collector "%s" does not exist.', $template, $name));
             }
 
-            $templates[$name] = $template . '.html.twig';
+            $templates[$name] = $template.'.html.twig';
         }
 
         return $templates;
     }
 
+    // to be removed when the minimum required version of Twig is >= 2.0
     protected function templateExists($template)
     {
         $loader = $this->twig->getLoader();
@@ -119,27 +140,5 @@ class TemplateManager
         }
 
         return false;
-    }
-
-    // to be removed when the minimum required version of Twig is >= 2.0
-
-    /**
-     * Gets the templates for a given profile.
-     *
-     * @param Profile $profile
-     *
-     * @return \Twig_Template[]
-     *
-     * @deprecated not used anymore internally
-     */
-    public function getTemplates(Profile $profile)
-    {
-        $templates = $this->getNames($profile);
-
-        foreach ($templates as $name => $template) {
-            $templates[$name] = $this->twig->loadTemplate($template);
-        }
-
-        return $templates;
     }
 }

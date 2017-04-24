@@ -45,11 +45,6 @@ class FormTypeValidatorExtensionTest extends BaseValidatorExtensionTest
         $this->assertSame(array($valid), $form->getConfig()->getOption('constraints'));
     }
 
-    protected function createForm(array $options = array())
-    {
-        return $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, $options);
-    }
-
     /**
      * @group legacy
      */
@@ -94,5 +89,10 @@ class FormTypeValidatorExtensionTest extends BaseValidatorExtensionTest
     public function testInvalidValidatorInterface()
     {
         new FormTypeValidatorExtension(null);
+    }
+
+    protected function createForm(array $options = array())
+    {
+        return $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, $options);
     }
 }

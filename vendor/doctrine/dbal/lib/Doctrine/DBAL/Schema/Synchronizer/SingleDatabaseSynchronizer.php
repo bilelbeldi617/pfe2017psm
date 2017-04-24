@@ -48,26 +48,11 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
     /**
      * {@inheritdoc}
      */
-    public function createSchema(Schema $createSchema)
-    {
-        $this->processSql($this->getCreateSchema($createSchema));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getCreateSchema(Schema $createSchema)
     {
         return $createSchema->toSql($this->platform);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function updateSchema(Schema $toSchema, $noDrops = false)
-    {
-        $this->processSql($this->getUpdateSchema($toSchema, $noDrops));
-    }
 
     /**
      * {@inheritdoc}
@@ -75,7 +60,7 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
     public function getUpdateSchema(Schema $toSchema, $noDrops = false)
     {
         $comparator = new Comparator();
-        $sm = $this->conn->getSchemaManager();
+        $sm         = $this->conn->getSchemaManager();
 
         $fromSchema = $sm->createSchema();
         $schemaDiff = $comparator->compare($fromSchema, $toSchema);
@@ -90,18 +75,10 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
     /**
      * {@inheritdoc}
      */
-    public function dropSchema(Schema $dropSchema)
-    {
-        $this->processSqlSafely($this->getDropSchema($dropSchema));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDropSchema(Schema $dropSchema)
     {
-        $visitor = new DropSchemaSqlCollector($this->platform);
-        $sm = $this->conn->getSchemaManager();
+        $visitor    = new DropSchemaSqlCollector($this->platform);
+        $sm         = $this->conn->getSchemaManager();
 
         $fullSchema = $sm->createSchema();
 
@@ -111,11 +88,11 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
             }
 
             foreach ($table->getForeignKeys() as $foreignKey) {
-                if (!$dropSchema->hasTable($table->getName())) {
+                if ( ! $dropSchema->hasTable($table->getName())) {
                     continue;
                 }
 
-                if (!$dropSchema->hasTable($foreignKey->getForeignTableName())) {
+                if ( ! $dropSchema->hasTable($foreignKey->getForeignTableName())) {
                     continue;
                 }
 
@@ -123,7 +100,7 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
             }
         }
 
-        if (!$this->platform->supportsSequences()) {
+        if ( ! $this->platform->supportsSequences()) {
             return $visitor->getQueries();
         }
 
@@ -132,7 +109,7 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
         }
 
         foreach ($dropSchema->getTables() as $table) {
-            if (!$table->hasPrimaryKey()) {
+            if ( ! $table->hasPrimaryKey()) {
                 continue;
             }
 
@@ -153,23 +130,47 @@ class SingleDatabaseSynchronizer extends AbstractSchemaSynchronizer
     /**
      * {@inheritdoc}
      */
-    public function dropAllSchema()
+    public function getDropAllSchema()
     {
-        $this->processSql($this->getDropAllSchema());
+        $sm      = $this->conn->getSchemaManager();
+        $visitor = new DropSchemaSqlCollector($this->platform);
+
+        /* @var $schema \Doctrine\DBAL\Schema\Schema */
+        $schema  = $sm->createSchema();
+        $schema->visit($visitor);
+
+        return $visitor->getQueries();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDropAllSchema()
+    public function createSchema(Schema $createSchema)
     {
-        $sm = $this->conn->getSchemaManager();
-        $visitor = new DropSchemaSqlCollector($this->platform);
+        $this->processSql($this->getCreateSchema($createSchema));
+    }
 
-        /* @var $schema \Doctrine\DBAL\Schema\Schema */
-        $schema = $sm->createSchema();
-        $schema->visit($visitor);
+    /**
+     * {@inheritdoc}
+     */
+    public function updateSchema(Schema $toSchema, $noDrops = false)
+    {
+        $this->processSql($this->getUpdateSchema($toSchema, $noDrops));
+    }
 
-        return $visitor->getQueries();
+    /**
+     * {@inheritdoc}
+     */
+    public function dropSchema(Schema $dropSchema)
+    {
+        $this->processSqlSafely($this->getDropSchema($dropSchema));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function dropAllSchema()
+    {
+        $this->processSql($this->getDropAllSchema());
     }
 }

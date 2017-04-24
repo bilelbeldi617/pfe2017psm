@@ -37,38 +37,6 @@ class ResponseListenerTest extends TestCase
         $listener->onKernelResponse($this->getEvent($request, $response));
     }
 
-    private function getRequest(array $attributes = array())
-    {
-        $request = new Request();
-
-        foreach ($attributes as $name => $value) {
-            $request->attributes->set($name, $value);
-        }
-
-        return $request;
-    }
-
-    private function getResponse()
-    {
-        $response = new Response();
-        $response->headers = $this->getMockBuilder('Symfony\Component\HttpFoundation\ResponseHeaderBag')->getMock();
-
-        return $response;
-    }
-
-    private function getEvent($request, $response, $type = HttpKernelInterface::MASTER_REQUEST)
-    {
-        $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\FilterResponseEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $event->expects($this->any())->method('getRequest')->will($this->returnValue($request));
-        $event->expects($this->any())->method('isMasterRequest')->will($this->returnValue($type === HttpKernelInterface::MASTER_REQUEST));
-        $event->expects($this->any())->method('getResponse')->will($this->returnValue($response));
-
-        return $event;
-    }
-
     public function testRememberMeCookieIsNotSendWithResponseForSubRequests()
     {
         $cookie = new Cookie('rememberme');
@@ -100,5 +68,37 @@ class ResponseListenerTest extends TestCase
         $listener = new ResponseListener();
 
         $this->assertSame(array(KernelEvents::RESPONSE => 'onKernelResponse'), ResponseListener::getSubscribedEvents());
+    }
+
+    private function getRequest(array $attributes = array())
+    {
+        $request = new Request();
+
+        foreach ($attributes as $name => $value) {
+            $request->attributes->set($name, $value);
+        }
+
+        return $request;
+    }
+
+    private function getResponse()
+    {
+        $response = new Response();
+        $response->headers = $this->getMockBuilder('Symfony\Component\HttpFoundation\ResponseHeaderBag')->getMock();
+
+        return $response;
+    }
+
+    private function getEvent($request, $response, $type = HttpKernelInterface::MASTER_REQUEST)
+    {
+        $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\FilterResponseEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $event->expects($this->any())->method('getRequest')->will($this->returnValue($request));
+        $event->expects($this->any())->method('isMasterRequest')->will($this->returnValue($type === HttpKernelInterface::MASTER_REQUEST));
+        $event->expects($this->any())->method('getResponse')->will($this->returnValue($response));
+
+        return $event;
     }
 }

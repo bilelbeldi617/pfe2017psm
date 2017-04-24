@@ -1,13 +1,13 @@
 {
-  "Version": "2.1.27.99",
-  "Names": {
-    "JPY": [
-      "¥",
-      "yen"
-    ],
-    "USD": [
-      "$",
-      "dólar estadounidense"
-    ]
-  }
+    "Version": "2.1.27.99",
+    "Names": {
+        "JPY": [
+            "¥",
+            "yen"
+        ],
+        "USD": [
+            "$",
+            "dólar estadounidense"
+        ]
+    }
 }

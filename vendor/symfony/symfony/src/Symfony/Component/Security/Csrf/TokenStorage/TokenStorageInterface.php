@@ -33,7 +33,7 @@ interface TokenStorageInterface
      * Stores a CSRF token.
      *
      * @param string $tokenId The token ID
-     * @param string $token The CSRF token
+     * @param string $token   The CSRF token
      */
     public function setToken($tokenId, $token);
 

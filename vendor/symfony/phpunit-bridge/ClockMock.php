@@ -24,7 +24,7 @@ class ClockMock
             return null !== self::$now;
         }
 
-        self::$now = is_numeric($enable) ? (float)$enable : ($enable ? microtime(true) : null);
+        self::$now = is_numeric($enable) ? (float) $enable : ($enable ? microtime(true) : null);
     }
 
     public static function time()
@@ -33,7 +33,7 @@ class ClockMock
             return \time();
         }
 
-        return (int)self::$now;
+        return (int) self::$now;
     }
 
     public static function sleep($s)
@@ -42,7 +42,7 @@ class ClockMock
             return \sleep($s);
         }
 
-        self::$now += (int)$s;
+        self::$now += (int) $s;
 
         return 0;
     }
@@ -66,7 +66,7 @@ class ClockMock
             return self::$now;
         }
 
-        return sprintf("%0.6f %d\n", self::$now - (int)self::$now, (int)self::$now);
+        return sprintf("%0.6f %d\n", self::$now - (int) self::$now, (int) self::$now);
     }
 
     public static function register($class)
@@ -79,7 +79,7 @@ class ClockMock
             $mockedNs[] = substr($ns, 0, strrpos($ns, '\\'));
         }
         foreach ($mockedNs as $ns) {
-            if (function_exists($ns . '\time')) {
+            if (function_exists($ns.'\time')) {
                 continue;
             }
             eval(<<<EOPHP

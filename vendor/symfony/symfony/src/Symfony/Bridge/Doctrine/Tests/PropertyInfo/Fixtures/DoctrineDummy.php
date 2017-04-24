@@ -39,45 +39,56 @@ class DoctrineDummy
      * @ManyToMany(targetEntity="DoctrineRelation")
      */
     public $bar;
-    public $notMapped;
+
     /**
      * @ManyToMany(targetEntity="DoctrineRelation", indexBy="rguid")
      */
     protected $indexedBar;
+
     /**
      * @Column(type="guid")
      */
     protected $guid;
+
     /**
      * @Column(type="time")
      */
     private $time;
+
     /**
      * @Column(type="json_array")
      */
     private $json;
+
     /**
      * @Column(type="simple_array")
      */
     private $simpleArray;
+
     /**
      * @Column(type="float")
      */
     private $float;
+
     /**
      * @Column(type="decimal", precision=10, scale=2)
      */
     private $decimal;
+
     /**
      * @Column(type="boolean")
      */
     private $bool;
+
     /**
      * @Column(type="binary")
      */
     private $binary;
+
     /**
      * @Column(type="custom_foo")
      */
     private $customFoo;
+
+    public $notMapped;
 }

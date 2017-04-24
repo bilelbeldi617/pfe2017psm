@@ -38,22 +38,6 @@ class FilesystemLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function isFresh(TemplateReferenceInterface $template, $time)
-    {
-        if (false === $storage = $this->load($template)) {
-            return false;
-        }
-
-        if (!is_readable((string)$storage)) {
-            return false;
-        }
-
-        return filemtime((string)$storage) < $time;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function load(TemplateReferenceInterface $template)
     {
         try {
@@ -63,5 +47,21 @@ class FilesystemLoader implements LoaderInterface
         }
 
         return new FileStorage($file);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isFresh(TemplateReferenceInterface $template, $time)
+    {
+        if (false === $storage = $this->load($template)) {
+            return false;
+        }
+
+        if (!is_readable((string) $storage)) {
+            return false;
+        }
+
+        return filemtime((string) $storage) < $time;
     }
 }

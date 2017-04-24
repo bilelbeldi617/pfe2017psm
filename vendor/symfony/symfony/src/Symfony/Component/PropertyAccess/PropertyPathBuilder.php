@@ -44,10 +44,10 @@ class PropertyPathBuilder
     /**
      * Appends a (sub-) path to the current path.
      *
-     * @param PropertyPathInterface|string $path The path to append
-     * @param int $offset The offset where the appended
+     * @param PropertyPathInterface|string $path   The path to append
+     * @param int                          $offset The offset where the appended
      *                                             piece starts in $path.
-     * @param int $length The length of the appended piece
+     * @param int                          $length The length of the appended piece
      *                                             If 0, the full path is appended.
      */
     public function append($path, $offset = 0, $length = 0)
@@ -108,12 +108,136 @@ class PropertyPathBuilder
     }
 
     /**
+     * Replaces a sub-path by a different (sub-) path.
+     *
+     * @param int                          $offset     The offset at which to replace
+     * @param int                          $length     The length of the piece to replace
+     * @param PropertyPathInterface|string $path       The path to insert
+     * @param int                          $pathOffset The offset where the inserted piece
+     *                                                 starts in $path.
+     * @param int                          $pathLength The length of the inserted piece
+     *                                                 If 0, the full path is inserted.
+     *
+     * @throws OutOfBoundsException If the offset is invalid
+     */
+    public function replace($offset, $length, $path, $pathOffset = 0, $pathLength = 0)
+    {
+        if (is_string($path)) {
+            $path = new PropertyPath($path);
+        }
+
+        if ($offset < 0 && abs($offset) <= $this->getLength()) {
+            $offset = $this->getLength() + $offset;
+        } elseif (!isset($this->elements[$offset])) {
+            throw new OutOfBoundsException('The offset '.$offset.' is not within the property path');
+        }
+
+        if (0 === $pathLength) {
+            $pathLength = $path->getLength() - $pathOffset;
+        }
+
+        $this->resize($offset, $length, $pathLength);
+
+        for ($i = 0; $i < $pathLength; ++$i) {
+            $this->elements[$offset + $i] = $path->getElement($pathOffset + $i);
+            $this->isIndex[$offset + $i] = $path->isIndex($pathOffset + $i);
+        }
+        ksort($this->elements);
+    }
+
+    /**
+     * Replaces a property element by an index element.
+     *
+     * @param int    $offset The offset at which to replace
+     * @param string $name   The new name of the element. Optional
+     *
+     * @throws OutOfBoundsException If the offset is invalid
+     */
+    public function replaceByIndex($offset, $name = null)
+    {
+        if (!isset($this->elements[$offset])) {
+            throw new OutOfBoundsException(sprintf('The offset %s is not within the property path', $offset));
+        }
+
+        if (null !== $name) {
+            $this->elements[$offset] = $name;
+        }
+
+        $this->isIndex[$offset] = true;
+    }
+
+    /**
+     * Replaces an index element by a property element.
+     *
+     * @param int    $offset The offset at which to replace
+     * @param string $name   The new name of the element. Optional
+     *
+     * @throws OutOfBoundsException If the offset is invalid
+     */
+    public function replaceByProperty($offset, $name = null)
+    {
+        if (!isset($this->elements[$offset])) {
+            throw new OutOfBoundsException(sprintf('The offset %s is not within the property path', $offset));
+        }
+
+        if (null !== $name) {
+            $this->elements[$offset] = $name;
+        }
+
+        $this->isIndex[$offset] = false;
+    }
+
+    /**
+     * Returns the length of the current path.
+     *
+     * @return int The path length
+     */
+    public function getLength()
+    {
+        return count($this->elements);
+    }
+
+    /**
+     * Returns the current property path.
+     *
+     * @return PropertyPathInterface The constructed property path
+     */
+    public function getPropertyPath()
+    {
+        $pathAsString = $this->__toString();
+
+        return '' !== $pathAsString ? new PropertyPath($pathAsString) : null;
+    }
+
+    /**
+     * Returns the current property path as string.
+     *
+     * @return string The property path as string
+     */
+    public function __toString()
+    {
+        $string = '';
+
+        foreach ($this->elements as $offset => $element) {
+            if ($this->isIndex[$offset]) {
+                $element = '['.$element.']';
+            } elseif ('' !== $string) {
+                $string .= '.';
+            }
+
+            $string .= $element;
+        }
+
+        return $string;
+    }
+
+    /**
      * Resizes the path so that a chunk of length $cutLength is
      * removed at $offset and another chunk of length $insertionLength
      * can be inserted.
      *
-     * @param int $offset The offset where the removed chunk starts
-     * @param int $cutLength The length of the removed chunk
+     * @param int $offset          The offset where the removed chunk starts
+     * @param int $cutLength       The length of the removed chunk
      * @param int $insertionLength The length of the inserted chunk
      */
     private function resize($offset, $cutLength, $insertionLength)
@@ -178,129 +302,5 @@ class PropertyPathBuilder
                 $this->isIndex[$i] = $this->isIndex[$i - $diff];
             }
         }
-    }
-
-    /**
-     * Replaces a sub-path by a different (sub-) path.
-     *
-     * @param int $offset The offset at which to replace
-     * @param int $length The length of the piece to replace
-     * @param PropertyPathInterface|string $path The path to insert
-     * @param int $pathOffset The offset where the inserted piece
-     *                                                 starts in $path.
-     * @param int $pathLength The length of the inserted piece
-     *                                                 If 0, the full path is inserted.
-     *
-     * @throws OutOfBoundsException If the offset is invalid
-     */
-    public function replace($offset, $length, $path, $pathOffset = 0, $pathLength = 0)
-    {
-        if (is_string($path)) {
-            $path = new PropertyPath($path);
-        }
-
-        if ($offset < 0 && abs($offset) <= $this->getLength()) {
-            $offset = $this->getLength() + $offset;
-        } elseif (!isset($this->elements[$offset])) {
-            throw new OutOfBoundsException('The offset ' . $offset . ' is not within the property path');
-        }
-
-        if (0 === $pathLength) {
-            $pathLength = $path->getLength() - $pathOffset;
-        }
-
-        $this->resize($offset, $length, $pathLength);
-
-        for ($i = 0; $i < $pathLength; ++$i) {
-            $this->elements[$offset + $i] = $path->getElement($pathOffset + $i);
-            $this->isIndex[$offset + $i] = $path->isIndex($pathOffset + $i);
-        }
-        ksort($this->elements);
-    }
-
-    /**
-     * Returns the length of the current path.
-     *
-     * @return int The path length
-     */
-    public function getLength()
-    {
-        return count($this->elements);
-    }
-
-    /**
-     * Replaces a property element by an index element.
-     *
-     * @param int $offset The offset at which to replace
-     * @param string $name The new name of the element. Optional
-     *
-     * @throws OutOfBoundsException If the offset is invalid
-     */
-    public function replaceByIndex($offset, $name = null)
-    {
-        if (!isset($this->elements[$offset])) {
-            throw new OutOfBoundsException(sprintf('The offset %s is not within the property path', $offset));
-        }
-
-        if (null !== $name) {
-            $this->elements[$offset] = $name;
-        }
-
-        $this->isIndex[$offset] = true;
-    }
-
-    /**
-     * Replaces an index element by a property element.
-     *
-     * @param int $offset The offset at which to replace
-     * @param string $name The new name of the element. Optional
-     *
-     * @throws OutOfBoundsException If the offset is invalid
-     */
-    public function replaceByProperty($offset, $name = null)
-    {
-        if (!isset($this->elements[$offset])) {
-            throw new OutOfBoundsException(sprintf('The offset %s is not within the property path', $offset));
-        }
-
-        if (null !== $name) {
-            $this->elements[$offset] = $name;
-        }
-
-        $this->isIndex[$offset] = false;
-    }
-
-    /**
-     * Returns the current property path.
-     *
-     * @return PropertyPathInterface The constructed property path
-     */
-    public function getPropertyPath()
-    {
-        $pathAsString = $this->__toString();
-
-        return '' !== $pathAsString ? new PropertyPath($pathAsString) : null;
-    }
-
-    /**
-     * Returns the current property path as string.
-     *
-     * @return string The property path as string
-     */
-    public function __toString()
-    {
-        $string = '';
-
-        foreach ($this->elements as $offset => $element) {
-            if ($this->isIndex[$offset]) {
-                $element = '[' . $element . ']';
-            } elseif ('' !== $string) {
-                $string .= '.';
-            }
-
-            $string .= $element;
-        }
-
-        return $string;
     }
 }

@@ -49,7 +49,7 @@ class CoalescingDirectoryResourceTest extends \PHPUnit_Framework_TestCase
 
         $actual = array();
         foreach ($resource as $file) {
-            $actual[] = (string)$file;
+            $actual[] = (string) $file;
         }
 
         $expected = array(

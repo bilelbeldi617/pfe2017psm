@@ -42,7 +42,7 @@ final class Query extends AbstractQuery
     /**
      * A query object is in CLEAN state when it has NO unparsed/unprocessed DQL parts.
      */
-    const STATE_CLEAN = 1;
+    const STATE_CLEAN  = 1;
 
     /**
      * A query object is in state DIRTY when it has DQL parts that have not yet been
@@ -201,6 +201,20 @@ final class Query extends AbstractQuery
     }
 
     /**
+     * Returns the corresponding AST for this DQL query.
+     *
+     * @return \Doctrine\ORM\Query\AST\SelectStatement |
+     *         \Doctrine\ORM\Query\AST\UpdateStatement |
+     *         \Doctrine\ORM\Query\AST\DeleteStatement
+     */
+    public function getAST()
+    {
+        $parser = new Parser($this);
+
+        return $parser->getAST();
+    }
+
+    /**
      * Parses the DQL query, if necessary, and stores the parser result.
      *
      * Note: Populates $this->_parserResult as a side-effect.
@@ -217,7 +231,7 @@ final class Query extends AbstractQuery
         $this->_state = self::STATE_CLEAN;
 
         // Check query cache.
-        if (!($this->_useQueryCache && ($queryCache = $this->getQueryCacheDriver()))) {
+        if ( ! ($this->_useQueryCache && ($queryCache = $this->getQueryCacheDriver()))) {
             $parser = new Parser($this);
 
             $this->_parserResult = $parser->parse();
@@ -225,7 +239,7 @@ final class Query extends AbstractQuery
             return $this->_parserResult;
         }
 
-        $hash = $this->_getQueryCacheId();
+        $hash   = $this->_getQueryCacheId();
         $cached = $this->_expireQueryCache ? false : $queryCache->fetch($hash);
 
         if ($cached instanceof ParserResult) {
@@ -246,78 +260,92 @@ final class Query extends AbstractQuery
     }
 
     /**
-     * Returns the cache driver used for query caching.
-     *
-     * @return \Doctrine\Common\Cache\Cache|null The cache driver used for query caching or NULL, if
-     *                                           this Query does not use query caching.
+     * {@inheritdoc}
      */
-    public function getQueryCacheDriver()
+    protected function _doExecute()
     {
-        if ($this->_queryCache) {
-            return $this->_queryCache;
+        $executor = $this->_parse()->getSqlExecutor();
+
+        if ($this->_queryCacheProfile) {
+            $executor->setQueryCacheProfile($this->_queryCacheProfile);
         }
 
-        return $this->_em->getConfiguration()->getQueryCacheImpl();
-    }
-
-    /**
-     * Generate a cache id for the query cache - reusing the Result-Cache-Id generator.
-     *
-     * The query cache
-     *
-     * @return string
-     */
-    protected function _getQueryCacheId()
-    {
-        ksort($this->_hints);
-
-        return md5(
-            $this->getDql() . var_export($this->_hints, true) .
-            ($this->_em->hasFilters() ? $this->_em->getFilters()->getHash() : '') .
-            '&firstResult=' . $this->_firstResult . '&maxResult=' . $this->_maxResults .
-            '&hydrationMode=' . $this->_hydrationMode . 'DOCTRINE_QUERY_CACHE_SALT'
-        );
-    }
-
-    /**
-     * Returns the DQL query that is represented by this query object.
-     *
-     * @return string DQL query.
-     */
-    public function getDQL()
-    {
-        return $this->_dql;
-    }
-
-    /**
-     * Sets a DQL query string.
-     *
-     * @param string $dqlQuery DQL Query.
-     *
-     * @return \Doctrine\ORM\AbstractQuery
-     */
-    public function setDQL($dqlQuery)
-    {
-        if ($dqlQuery !== null) {
-            $this->_dql = $dqlQuery;
-            $this->_state = self::STATE_DIRTY;
+        if ($this->_resultSetMapping === null) {
+            $this->_resultSetMapping = $this->_parserResult->getResultSetMapping();
         }
 
-        return $this;
+        // Prepare parameters
+        $paramMappings = $this->_parserResult->getParameterMappings();
+
+        if (count($paramMappings) != count($this->parameters)) {
+            throw QueryException::invalidParameterNumber();
+        }
+
+        list($sqlParams, $types) = $this->processParameterMappings($paramMappings);
+
+        return $executor->execute($this->_em->getConnection(), $sqlParams, $types);
     }
 
     /**
-     * Returns the corresponding AST for this DQL query.
+     * Processes query parameter mappings.
      *
-     * @return \Doctrine\ORM\Query\AST\SelectStatement |
-     *         \Doctrine\ORM\Query\AST\UpdateStatement |
-     *         \Doctrine\ORM\Query\AST\DeleteStatement
+     * @param array $paramMappings
+     *
+     * @return array
+     *
+     * @throws Query\QueryException
      */
-    public function getAST()
+    private function processParameterMappings($paramMappings)
     {
-        $parser = new Parser($this);
+        $sqlParams = array();
+        $types     = array();
 
-        return $parser->getAST();
+        foreach ($this->parameters as $parameter) {
+            $key    = $parameter->getName();
+            $value  = $parameter->getValue();
+
+            if ( ! isset($paramMappings[$key])) {
+                throw QueryException::unknownParameter($key);
+            }
+
+            if (isset($this->_resultSetMapping->metadataParameterMapping[$key]) && $value instanceof ClassMetadata) {
+                $value = $value->getMetadataValue($this->_resultSetMapping->metadataParameterMapping[$key]);
+            }
+
+            $value = $this->processParameterValue($value);
+            $type  = ($parameter->getValue() === $value)
+                ? $parameter->getType()
+                : ParameterTypeInferer::inferType($value);
+
+            foreach ($paramMappings[$key] as $position) {
+                $types[$position] = $type;
+            }
+
+            $sqlPositions = $paramMappings[$key];
+
+            // optimized multi value sql positions away for now,
+            // they are not allowed in DQL anyways.
+            $value = array($value);
+            $countValue = count($value);
+
+            for ($i = 0, $l = count($sqlPositions); $i < $l; $i++) {
+                $sqlParams[$sqlPositions[$i]] = $value[($i % $countValue)];
+            }
+        }
+
+        if (count($sqlParams) != count($types)) {
+            throw QueryException::parameterTypeMismatch();
+        }
+
+        if ($sqlParams) {
+            ksort($sqlParams);
+            $sqlParams = array_values($sqlParams);
+
+            ksort($types);
+            $types = array_values($types);
+        }
+
+        return array($sqlParams, $types);
     }
 
     /**
@@ -349,6 +377,21 @@ final class Query extends AbstractQuery
     }
 
     /**
+     * Returns the cache driver used for query caching.
+     *
+     * @return \Doctrine\Common\Cache\Cache|null The cache driver used for query caching or NULL, if
+     *                                           this Query does not use query caching.
+     */
+    public function getQueryCacheDriver()
+    {
+        if ($this->_queryCache) {
+            return $this->_queryCache;
+        }
+
+        return $this->_em->getConfiguration()->getQueryCacheImpl();
+    }
+
+    /**
      * Defines how long the query cache will be active before expire.
      *
      * @param integer $timeToLive How long the cache entry is valid.
@@ -358,7 +401,7 @@ final class Query extends AbstractQuery
     public function setQueryCacheLifetime($timeToLive)
     {
         if ($timeToLive !== null) {
-            $timeToLive = (int)$timeToLive;
+            $timeToLive = (int) $timeToLive;
         }
 
         $this->_queryCacheTTL = $timeToLive;
@@ -412,6 +455,33 @@ final class Query extends AbstractQuery
     }
 
     /**
+     * Sets a DQL query string.
+     *
+     * @param string $dqlQuery DQL Query.
+     *
+     * @return \Doctrine\ORM\AbstractQuery
+     */
+    public function setDQL($dqlQuery)
+    {
+        if ($dqlQuery !== null) {
+            $this->_dql = $dqlQuery;
+            $this->_state = self::STATE_DIRTY;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the DQL query that is represented by this query object.
+     *
+     * @return string DQL query.
+     */
+    public function getDQL()
+    {
+        return $this->_dql;
+    }
+
+    /**
      * Returns the state of this query object
      * By default the type is Doctrine_ORM_Query_Abstract::STATE_CLEAN but if it appears any unprocessed DQL
      * part, it is switched to Doctrine_ORM_Query_Abstract::STATE_DIRTY.
@@ -439,6 +509,21 @@ final class Query extends AbstractQuery
     }
 
     /**
+     * Sets the position of the first result to retrieve (the "offset").
+     *
+     * @param integer $firstResult The first result to return.
+     *
+     * @return Query This query object.
+     */
+    public function setFirstResult($firstResult)
+    {
+        $this->_firstResult = $firstResult;
+        $this->_state       = self::STATE_DIRTY;
+
+        return $this;
+    }
+
+    /**
      * Gets the position of the first result the query object was set to retrieve (the "offset").
      * Returns NULL if {@link setFirstResult} was not applied to this query.
      *
@@ -450,16 +535,16 @@ final class Query extends AbstractQuery
     }
 
     /**
-     * Sets the position of the first result to retrieve (the "offset").
+     * Sets the maximum number of results to retrieve (the "limit").
      *
-     * @param integer $firstResult The first result to return.
+     * @param integer $maxResults
      *
      * @return Query This query object.
      */
-    public function setFirstResult($firstResult)
+    public function setMaxResults($maxResults)
     {
-        $this->_firstResult = $firstResult;
-        $this->_state = self::STATE_DIRTY;
+        $this->_maxResults = $maxResults;
+        $this->_state      = self::STATE_DIRTY;
 
         return $this;
     }
@@ -476,26 +561,11 @@ final class Query extends AbstractQuery
     }
 
     /**
-     * Sets the maximum number of results to retrieve (the "limit").
-     *
-     * @param integer $maxResults
-     *
-     * @return Query This query object.
-     */
-    public function setMaxResults($maxResults)
-    {
-        $this->_maxResults = $maxResults;
-        $this->_state = self::STATE_DIRTY;
-
-        return $this;
-    }
-
-    /**
      * Executes the query and returns an IterableResult that can be used to incrementally
      * iterated over the result.
      *
-     * @param ArrayCollection|array|null $parameters The query parameters.
-     * @param integer $hydrationMode The hydration mode to use.
+     * @param ArrayCollection|array|null $parameters    The query parameters.
+     * @param integer                    $hydrationMode The hydration mode to use.
      *
      * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
@@ -540,7 +610,7 @@ final class Query extends AbstractQuery
     public function setLockMode($lockMode)
     {
         if (in_array($lockMode, array(LockMode::PESSIMISTIC_READ, LockMode::PESSIMISTIC_WRITE))) {
-            if (!$this->_em->getConnection()->isTransactionActive()) {
+            if ( ! $this->_em->getConnection()->isTransactionActive()) {
                 throw TransactionRequiredException::transactionRequired();
             }
         }
@@ -559,11 +629,30 @@ final class Query extends AbstractQuery
     {
         $lockMode = $this->getHint(self::HINT_LOCK_MODE);
 
-        if (!$lockMode) {
+        if ( ! $lockMode) {
             return LockMode::NONE;
         }
 
         return $lockMode;
+    }
+
+    /**
+     * Generate a cache id for the query cache - reusing the Result-Cache-Id generator.
+     *
+     * The query cache
+     *
+     * @return string
+     */
+    protected function _getQueryCacheId()
+    {
+        ksort($this->_hints);
+
+        return md5(
+            $this->getDql() . var_export($this->_hints, true) .
+            ($this->_em->hasFilters() ? $this->_em->getFilters()->getHash() : '') .
+            '&firstResult=' . $this->_firstResult . '&maxResult=' . $this->_maxResults .
+            '&hydrationMode='.$this->_hydrationMode.'DOCTRINE_QUERY_CACHE_SALT'
+        );
     }
 
     /**
@@ -576,94 +665,5 @@ final class Query extends AbstractQuery
         parent::__clone();
 
         $this->_state = self::STATE_DIRTY;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function _doExecute()
-    {
-        $executor = $this->_parse()->getSqlExecutor();
-
-        if ($this->_queryCacheProfile) {
-            $executor->setQueryCacheProfile($this->_queryCacheProfile);
-        }
-
-        if ($this->_resultSetMapping === null) {
-            $this->_resultSetMapping = $this->_parserResult->getResultSetMapping();
-        }
-
-        // Prepare parameters
-        $paramMappings = $this->_parserResult->getParameterMappings();
-
-        if (count($paramMappings) != count($this->parameters)) {
-            throw QueryException::invalidParameterNumber();
-        }
-
-        list($sqlParams, $types) = $this->processParameterMappings($paramMappings);
-
-        return $executor->execute($this->_em->getConnection(), $sqlParams, $types);
-    }
-
-    /**
-     * Processes query parameter mappings.
-     *
-     * @param array $paramMappings
-     *
-     * @return array
-     *
-     * @throws Query\QueryException
-     */
-    private function processParameterMappings($paramMappings)
-    {
-        $sqlParams = array();
-        $types = array();
-
-        foreach ($this->parameters as $parameter) {
-            $key = $parameter->getName();
-            $value = $parameter->getValue();
-
-            if (!isset($paramMappings[$key])) {
-                throw QueryException::unknownParameter($key);
-            }
-
-            if (isset($this->_resultSetMapping->metadataParameterMapping[$key]) && $value instanceof ClassMetadata) {
-                $value = $value->getMetadataValue($this->_resultSetMapping->metadataParameterMapping[$key]);
-            }
-
-            $value = $this->processParameterValue($value);
-            $type = ($parameter->getValue() === $value)
-                ? $parameter->getType()
-                : ParameterTypeInferer::inferType($value);
-
-            foreach ($paramMappings[$key] as $position) {
-                $types[$position] = $type;
-            }
-
-            $sqlPositions = $paramMappings[$key];
-
-            // optimized multi value sql positions away for now,
-            // they are not allowed in DQL anyways.
-            $value = array($value);
-            $countValue = count($value);
-
-            for ($i = 0, $l = count($sqlPositions); $i < $l; $i++) {
-                $sqlParams[$sqlPositions[$i]] = $value[($i % $countValue)];
-            }
-        }
-
-        if (count($sqlParams) != count($types)) {
-            throw QueryException::parameterTypeMismatch();
-        }
-
-        if ($sqlParams) {
-            ksort($sqlParams);
-            $sqlParams = array_values($sqlParams);
-
-            ksort($types);
-            $types = array_values($types);
-        }
-
-        return array($sqlParams, $types);
     }
 }

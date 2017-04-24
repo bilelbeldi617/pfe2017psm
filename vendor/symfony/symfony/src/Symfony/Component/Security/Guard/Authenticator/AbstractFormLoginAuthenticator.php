@@ -27,9 +27,26 @@ use Symfony\Component\Security\Core\Security;
 abstract class AbstractFormLoginAuthenticator extends AbstractGuardAuthenticator
 {
     /**
+     * Return the URL to the login page.
+     *
+     * @return string
+     */
+    abstract protected function getLoginUrl();
+
+    /**
+     * The user will be redirected to the secure page they originally tried
+     * to access. But if no such page exists (i.e. the user went to the
+     * login page directly), this returns the URL the user should be redirected
+     * to after logging in successfully (e.g. your homepage).
+     *
+     * @return string
+     */
+    abstract protected function getDefaultSuccessRedirectUrl();
+
+    /**
      * Override to change what happens after a bad username/password is submitted.
      *
-     * @param Request $request
+     * @param Request                 $request
      * @param AuthenticationException $exception
      *
      * @return RedirectResponse
@@ -46,18 +63,11 @@ abstract class AbstractFormLoginAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Return the URL to the login page.
-     *
-     * @return string
-     */
-    abstract protected function getLoginUrl();
-
-    /**
      * Override to change what happens after successful authentication.
      *
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
-     * @param string $providerKey
+     * @param string         $providerKey
      *
      * @return RedirectResponse
      */
@@ -68,7 +78,7 @@ abstract class AbstractFormLoginAuthenticator extends AbstractGuardAuthenticator
         // if the user hit a secure page and start() was called, this was
         // the URL they were on, and probably where you want to redirect to
         if ($request->getSession() instanceof SessionInterface) {
-            $targetPath = $request->getSession()->get('_security.' . $providerKey . '.target_path');
+            $targetPath = $request->getSession()->get('_security.'.$providerKey.'.target_path');
         }
 
         if (!$targetPath) {
@@ -77,16 +87,6 @@ abstract class AbstractFormLoginAuthenticator extends AbstractGuardAuthenticator
 
         return new RedirectResponse($targetPath);
     }
-
-    /**
-     * The user will be redirected to the secure page they originally tried
-     * to access. But if no such page exists (i.e. the user went to the
-     * login page directly), this returns the URL the user should be redirected
-     * to after logging in successfully (e.g. your homepage).
-     *
-     * @return string
-     */
-    abstract protected function getDefaultSuccessRedirectUrl();
 
     public function supportsRememberMe()
     {
@@ -97,7 +97,7 @@ abstract class AbstractFormLoginAuthenticator extends AbstractGuardAuthenticator
      * Override to control what happens when the user hits a secure page
      * but isn't logged in yet.
      *
-     * @param Request $request
+     * @param Request                      $request
      * @param AuthenticationException|null $authException
      *
      * @return RedirectResponse

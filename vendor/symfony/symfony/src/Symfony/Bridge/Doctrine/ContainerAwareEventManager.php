@@ -41,7 +41,7 @@ class ContainerAwareEventManager extends EventManager
     /**
      * Dispatches an event to all registered listeners.
      *
-     * @param string $eventName The name of the event to dispatch. The name of the event is
+     * @param string    $eventName The name of the event to dispatch. The name of the event is
      *                             the name of the method that is invoked on listeners.
      * @param EventArgs $eventArgs The event arguments to pass to the event handlers/listeners.
      *                             If not supplied, the single empty EventArgs instance is used.
@@ -93,7 +93,7 @@ class ContainerAwareEventManager extends EventManager
     /**
      * Adds an event listener that listens on the specified events.
      *
-     * @param string|array $events The event(s) to listen on
+     * @param string|array  $events   The event(s) to listen on
      * @param object|string $listener The listener object
      *
      * @throws \RuntimeException
@@ -105,13 +105,13 @@ class ContainerAwareEventManager extends EventManager
                 throw new \RuntimeException('Adding lazy-loading listeners after construction is not supported.');
             }
 
-            $hash = '_service_' . $listener;
+            $hash = '_service_'.$listener;
         } else {
             // Picks the hash code related to that listener
             $hash = spl_object_hash($listener);
         }
 
-        foreach ((array)$events as $event) {
+        foreach ((array) $events as $event) {
             // Overrides listener if a previous one was associated already
             // Prevents duplicate listeners on same event (same instance only)
             $this->listeners[$event][$hash] = $listener;
@@ -121,19 +121,19 @@ class ContainerAwareEventManager extends EventManager
     /**
      * Removes an event listener from the specified events.
      *
-     * @param string|array $events
+     * @param string|array  $events
      * @param object|string $listener
      */
     public function removeEventListener($events, $listener)
     {
         if (is_string($listener)) {
-            $hash = '_service_' . $listener;
+            $hash = '_service_'.$listener;
         } else {
             // Picks the hash code related to that listener
             $hash = spl_object_hash($listener);
         }
 
-        foreach ((array)$events as $event) {
+        foreach ((array) $events as $event) {
             // Check if actually have this listener associated
             if (isset($this->listeners[$event][$hash])) {
                 unset($this->listeners[$event][$hash]);

@@ -38,7 +38,7 @@ class AsseticController
     {
         $this->am = $am;
         $this->cache = $cache;
-        $this->enableProfiler = (boolean)$enableProfiler;
+        $this->enableProfiler = (boolean) $enableProfiler;
         $this->profiler = $profiler;
     }
 
@@ -92,19 +92,14 @@ class AsseticController
         return $response;
     }
 
-    private function findAssetLeaf(\Traversable $asset, $pos)
-    {
-        $i = 0;
-        foreach ($asset as $leaf) {
-            if ($pos == $i++) {
-                return $leaf;
-            }
-        }
-    }
-
     protected function createResponse()
     {
         return new Response();
+    }
+
+    protected function cachifyAsset(AssetInterface $asset)
+    {
+        return new AssetCache($asset, $this->cache);
     }
 
     protected function configureAssetValues(AssetInterface $asset, Request $request)
@@ -116,8 +111,13 @@ class AsseticController
         return $this;
     }
 
-    protected function cachifyAsset(AssetInterface $asset)
+    private function findAssetLeaf(\Traversable $asset, $pos)
     {
-        return new AssetCache($asset, $this->cache);
+        $i = 0;
+        foreach ($asset as $leaf) {
+            if ($pos == $i++) {
+                return $leaf;
+            }
+        }
     }
 }

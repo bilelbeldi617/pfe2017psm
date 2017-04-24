@@ -28,7 +28,7 @@ class CacheWarmingTest extends TestCase
         $warmer->enableOptionalWarmers();
         $warmer->warmUp($kernel->getCacheDir());
 
-        $this->assertFileExists($kernel->getCacheDir() . '/twig');
+        $this->assertFileExists($kernel->getCacheDir().'/twig');
     }
 
     public function testCacheIsProperlyWarmedWhenTemplatingIsDisabled()
@@ -40,7 +40,7 @@ class CacheWarmingTest extends TestCase
         $warmer->enableOptionalWarmers();
         $warmer->warmUp($kernel->getCacheDir());
 
-        $this->assertFileExists($kernel->getCacheDir() . '/twig');
+        $this->assertFileExists($kernel->getCacheDir().'/twig');
     }
 
     protected function setUp()
@@ -48,19 +48,19 @@ class CacheWarmingTest extends TestCase
         $this->deleteTempDir();
     }
 
+    protected function tearDown()
+    {
+        $this->deleteTempDir();
+    }
+
     private function deleteTempDir()
     {
-        if (!file_exists($dir = sys_get_temp_dir() . '/' . Kernel::VERSION . '/CacheWarmingKernel')) {
+        if (!file_exists($dir = sys_get_temp_dir().'/'.Kernel::VERSION.'/CacheWarmingKernel')) {
             return;
         }
 
         $fs = new Filesystem();
         $fs->remove($dir);
-    }
-
-    protected function tearDown()
-    {
-        $this->deleteTempDir();
     }
 }
 
@@ -72,7 +72,7 @@ class CacheWarmingKernel extends Kernel
     {
         $this->withTemplating = $withTemplating;
 
-        parent::__construct(($withTemplating ? 'with' : 'without') . '_templating', true);
+        parent::__construct(($withTemplating ? 'with' : 'without').'_templating', true);
     }
 
     public function getName()
@@ -106,11 +106,11 @@ class CacheWarmingKernel extends Kernel
 
     public function getCacheDir()
     {
-        return sys_get_temp_dir() . '/' . Kernel::VERSION . '/CacheWarmingKernel/cache/' . $this->environment;
+        return sys_get_temp_dir().'/'.Kernel::VERSION.'/CacheWarmingKernel/cache/'.$this->environment;
     }
 
     public function getLogDir()
     {
-        return sys_get_temp_dir() . '/' . Kernel::VERSION . '/CacheWarmingKernel/logs';
+        return sys_get_temp_dir().'/'.Kernel::VERSION.'/CacheWarmingKernel/logs';
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 /* WebProfilerBundle:Profiler:bag.html.twig */
-
 class __TwigTemplate_81c8059686df029cfb3fdf9e3d23dd895b7fced8fa9c5d21570fe3a74206b599 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,56 +9,14 @@ class __TwigTemplate_81c8059686df029cfb3fdf9e3d23dd895b7fced8fa9c5d21570fe3a7420
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(69 => 19, 60 => 15, 52 => 12, 48 => 11, 45 => 10, 40 => 9, 33 => 5, 29 => 4, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<table class=\"{{ class|default('') }}\">
-    <thead>
-        <tr>
-            <th scope=\"col\" class=\"key\">{{ labels is defined ? labels[0] : 'Key' }}</th>
-            <th scope=\"col\">{{ labels is defined ? labels[1] : 'Value' }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for key in bag.keys|sort %}
-            <tr>
-                <th>{{ key }}</th>
-                <td>{{ profiler_dump(bag.get(key)) }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan=\"2\">(no data)</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-", "WebProfilerBundle:Profiler:bag.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Profiler/bag.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_2fffc9976c583f6fee54d8e82112af5f424ac92dbda8564cd6ea8af46b2cc5af = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_2fffc9976c583f6fee54d8e82112af5f424ac92dbda8564cd6ea8af46b2cc5af->enter($__internal_2fffc9976c583f6fee54d8e82112af5f424ac92dbda8564cd6ea8af46b2cc5af_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Profiler:bag.html.twig"));
+        $__internal_e92764f1d2e4bce98b997b7423317d45e52dffe6209c56c9724d6cda5fb226c2 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_e92764f1d2e4bce98b997b7423317d45e52dffe6209c56c9724d6cda5fb226c2->enter($__internal_e92764f1d2e4bce98b997b7423317d45e52dffe6209c56c9724d6cda5fb226c2_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Profiler:bag.html.twig"));
 
         // line 1
         echo "<table class=\"";
@@ -112,13 +69,56 @@ class __TwigTemplate_81c8059686df029cfb3fdf9e3d23dd895b7fced8fa9c5d21570fe3a7420
         echo "    </tbody>
 </table>
 ";
-
-        $__internal_2fffc9976c583f6fee54d8e82112af5f424ac92dbda8564cd6ea8af46b2cc5af->leave($__internal_2fffc9976c583f6fee54d8e82112af5f424ac92dbda8564cd6ea8af46b2cc5af_prof);
+        
+        $__internal_e92764f1d2e4bce98b997b7423317d45e52dffe6209c56c9724d6cda5fb226c2->leave($__internal_e92764f1d2e4bce98b997b7423317d45e52dffe6209c56c9724d6cda5fb226c2_prof);
 
     }
 
     public function getTemplateName()
     {
         return "WebProfilerBundle:Profiler:bag.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  69 => 19,  60 => 15,  52 => 12,  48 => 11,  45 => 10,  40 => 9,  33 => 5,  29 => 4,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<table class=\"{{ class|default('') }}\">
+    <thead>
+        <tr>
+            <th scope=\"col\" class=\"key\">{{ labels is defined ? labels[0] : 'Key' }}</th>
+            <th scope=\"col\">{{ labels is defined ? labels[1] : 'Value' }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key in bag.keys|sort %}
+            <tr>
+                <th>{{ key }}</th>
+                <td>{{ profiler_dump(bag.get(key)) }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan=\"2\">(no data)</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+", "WebProfilerBundle:Profiler:bag.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Profiler/bag.html.twig");
     }
 }

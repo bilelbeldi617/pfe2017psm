@@ -72,8 +72,8 @@ interface ExecutionContextInterface extends LegacyExecutionContextInterface
      *         ->setTranslationDomain('number_validation')
      *         ->addViolation();
      *
-     * @param string $message The error message
-     * @param array $parameters The parameters substituted in the error message
+     * @param string $message    The error message
+     * @param array  $parameters The parameters substituted in the error message
      *
      * @return ConstraintViolationBuilderInterface The violation builder
      */
@@ -116,10 +116,10 @@ interface ExecutionContextInterface extends LegacyExecutionContextInterface
     /**
      * Sets the currently validated value.
      *
-     * @param mixed $value The validated value
-     * @param object|null $object The currently validated object
-     * @param MetadataInterface|null $metadata The validation metadata
-     * @param string $propertyPath The property path to the current value
+     * @param mixed                  $value        The validated value
+     * @param object|null            $object       The currently validated object
+     * @param MetadataInterface|null $metadata     The validation metadata
+     * @param string                 $propertyPath The property path to the current value
      *
      * @internal Used by the validator engine. Should not be called by user
      *           code.
@@ -149,7 +149,7 @@ interface ExecutionContextInterface extends LegacyExecutionContextInterface
     /**
      * Marks an object as validated in a specific validation group.
      *
-     * @param string $cacheKey The hash of the object
+     * @param string $cacheKey  The hash of the object
      * @param string $groupHash The group's name or hash, if it is group
      *                          sequence
      *
@@ -161,7 +161,7 @@ interface ExecutionContextInterface extends LegacyExecutionContextInterface
     /**
      * Returns whether an object was validated in a specific validation group.
      *
-     * @param string $cacheKey The hash of the object
+     * @param string $cacheKey  The hash of the object
      * @param string $groupHash The group's name or hash, if it is group
      *                          sequence
      *
@@ -176,7 +176,7 @@ interface ExecutionContextInterface extends LegacyExecutionContextInterface
     /**
      * Marks a constraint as validated for an object.
      *
-     * @param string $cacheKey The hash of the object
+     * @param string $cacheKey       The hash of the object
      * @param string $constraintHash The hash of the constraint
      *
      * @internal Used by the validator engine. Should not be called by user
@@ -187,7 +187,7 @@ interface ExecutionContextInterface extends LegacyExecutionContextInterface
     /**
      * Returns whether a constraint was validated for an object.
      *
-     * @param string $cacheKey The hash of the object
+     * @param string $cacheKey       The hash of the object
      * @param string $constraintHash The hash of the constraint
      *
      * @return bool Whether the constraint was already validated

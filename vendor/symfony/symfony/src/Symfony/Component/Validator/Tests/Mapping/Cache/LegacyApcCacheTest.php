@@ -20,6 +20,13 @@ use Symfony\Component\Validator\Mapping\Cache\ApcCache;
  */
 class LegacyApcCacheTest extends TestCase
 {
+    protected function setUp()
+    {
+        if (!ini_get('apc.enabled') || !ini_get('apc.enable_cli')) {
+            $this->markTestSkipped('APC is not enabled.');
+        }
+    }
+
     public function testWrite()
     {
         $meta = $this->getMockBuilder('Symfony\\Component\\Validator\\Mapping\\ClassMetadata')
@@ -72,12 +79,5 @@ class LegacyApcCacheTest extends TestCase
         $cache->write($meta);
 
         $this->assertInstanceOf('Symfony\\Component\\Validator\\Mapping\\ClassMetadata', $cache->read('bar'), '->read() returns metadata');
-    }
-
-    protected function setUp()
-    {
-        if (!ini_get('apc.enabled') || !ini_get('apc.enable_cli')) {
-            $this->markTestSkipped('APC is not enabled.');
-        }
     }
 }

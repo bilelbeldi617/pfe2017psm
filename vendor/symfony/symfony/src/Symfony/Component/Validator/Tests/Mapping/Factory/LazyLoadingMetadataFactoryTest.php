@@ -90,24 +90,24 @@ class LazyLoadingMetadataFactoryTest extends TestCase
         );
 
         $cache->expects($this->never())
-            ->method('has');
+              ->method('has');
         $cache->expects($this->exactly(2))
-            ->method('read')
-            ->withConsecutive(
-                array($this->equalTo(self::PARENT_CLASS)),
-                array($this->equalTo(self::INTERFACE_A_CLASS))
-            )
-            ->will($this->returnValue(false));
+              ->method('read')
+              ->withConsecutive(
+                  array($this->equalTo(self::PARENT_CLASS)),
+                  array($this->equalTo(self::INTERFACE_A_CLASS))
+              )
+              ->will($this->returnValue(false));
         $cache->expects($this->exactly(2))
-            ->method('write')
-            ->withConsecutive(
-                $this->callback(function ($metadata) use ($interfaceAConstraints) {
-                    return $interfaceAConstraints == $metadata->getConstraints();
-                }),
-                $this->callback(function ($metadata) use ($parentClassConstraints) {
-                    return $parentClassConstraints == $metadata->getConstraints();
-                })
-            );
+              ->method('write')
+              ->withConsecutive(
+                  $this->callback(function ($metadata) use ($interfaceAConstraints) {
+                      return $interfaceAConstraints == $metadata->getConstraints();
+                  }),
+                  $this->callback(function ($metadata) use ($parentClassConstraints) {
+                      return $parentClassConstraints == $metadata->getConstraints();
+                  })
+              );
 
         $metadata = $factory->getMetadataFor(self::PARENT_CLASS);
 
@@ -128,23 +128,23 @@ class LazyLoadingMetadataFactoryTest extends TestCase
         $interfaceClass = self::INTERFACE_A_CLASS;
 
         $loader->expects($this->never())
-            ->method('loadClassMetadata');
+               ->method('loadClassMetadata');
 
         $cache->expects($this->never())
-            ->method('has');
+              ->method('has');
         $cache->expects($this->exactly(2))
-            ->method('read')
-            ->withConsecutive(
-                array(self::PARENT_CLASS),
-                array(self::INTERFACE_A_CLASS)
-            )
-            ->willReturnCallback(function ($name) use ($metadata, $parentClass, $interfaceClass) {
-                if ($parentClass == $name) {
-                    return $metadata;
-                }
+              ->method('read')
+              ->withConsecutive(
+                  array(self::PARENT_CLASS),
+                  array(self::INTERFACE_A_CLASS)
+              )
+              ->willReturnCallback(function ($name) use ($metadata, $parentClass, $interfaceClass) {
+                  if ($parentClass == $name) {
+                      return $metadata;
+                  }
 
-                return new ClassMetadata($interfaceClass);
-            });
+                  return new ClassMetadata($interfaceClass);
+              });
 
         $this->assertEquals($metadata, $factory->getMetadataFor(self::PARENT_CLASS));
     }
@@ -157,17 +157,15 @@ class LazyLoadingMetadataFactoryTest extends TestCase
         $cache
             ->expects($this->any())
             ->method('write')
-            ->will($this->returnCallback(function ($metadata) {
-                serialize($metadata);
-            }));
+            ->will($this->returnCallback(function ($metadata) { serialize($metadata); }))
+        ;
 
         $cache->expects($this->any())
             ->method('read')
             ->will($this->returnValue(false));
 
         $metadata = $factory->getMetadataFor(self::PARENT_CLASS);
-        $metadata->addConstraint(new Callback(function () {
-        }));
+        $metadata->addConstraint(new Callback(function () {}));
 
         $metadata = $factory->getMetadataFor(self::CLASS_NAME);
     }

@@ -34,19 +34,19 @@ class NoTemplatingEntryTest extends TestCase
         $this->deleteTempDir();
     }
 
+    protected function tearDown()
+    {
+        $this->deleteTempDir();
+    }
+
     protected function deleteTempDir()
     {
-        if (!file_exists($dir = sys_get_temp_dir() . '/' . Kernel::VERSION . '/NoTemplatingEntryKernel')) {
+        if (!file_exists($dir = sys_get_temp_dir().'/'.Kernel::VERSION.'/NoTemplatingEntryKernel')) {
             return;
         }
 
         $fs = new Filesystem();
         $fs->remove($dir);
-    }
-
-    protected function tearDown()
-    {
-        $this->deleteTempDir();
     }
 }
 
@@ -68,11 +68,11 @@ class NoTemplatingEntryKernel extends Kernel
 
     public function getCacheDir()
     {
-        return sys_get_temp_dir() . '/' . Kernel::VERSION . '/NoTemplatingEntryKernel/cache/' . $this->environment;
+        return sys_get_temp_dir().'/'.Kernel::VERSION.'/NoTemplatingEntryKernel/cache/'.$this->environment;
     }
 
     public function getLogDir()
     {
-        return sys_get_temp_dir() . '/' . Kernel::VERSION . '/NoTemplatingEntryKernel/logs';
+        return sys_get_temp_dir().'/'.Kernel::VERSION.'/NoTemplatingEntryKernel/logs';
     }
 }

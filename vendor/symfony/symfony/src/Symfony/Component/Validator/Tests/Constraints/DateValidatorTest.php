@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class DateValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new DateValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Date());
@@ -77,7 +87,7 @@ class DateValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($date, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $date . '"')
+            ->setParameter('{{ value }}', '"'.$date.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -92,15 +102,5 @@ class DateValidatorTest extends AbstractConstraintValidatorTest
             array('2010-04-32', Date::INVALID_DATE_ERROR),
             array('2010-02-29', Date::INVALID_DATE_ERROR),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new DateValidator();
     }
 }

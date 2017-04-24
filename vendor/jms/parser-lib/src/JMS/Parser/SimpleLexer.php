@@ -38,7 +38,7 @@ class SimpleLexer extends AbstractLexer
 
     public function getName($type)
     {
-        if (!isset($this->tokenNames[$type])) {
+        if ( ! isset($this->tokenNames[$type])) {
             throw new \InvalidArgumentException(sprintf('There is no token with type %s.', json_encode($type)));
         }
 

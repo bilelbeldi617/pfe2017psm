@@ -28,7 +28,7 @@ class FilterManager extends BaseFilterManager
      * Constructor.
      *
      * @param ContainerInterface $container The service container
-     * @param array $mappings A hash of filter names to service ids
+     * @param array              $mappings  A hash of filter names to service ids
      */
     public function __construct(ContainerInterface $container, array $mappings)
     {

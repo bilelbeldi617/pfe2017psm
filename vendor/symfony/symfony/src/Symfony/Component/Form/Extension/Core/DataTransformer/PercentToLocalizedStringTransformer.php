@@ -40,8 +40,8 @@ class PercentToLocalizedStringTransformer implements DataTransformerInterface
      *
      * @see self::$types for a list of supported types
      *
-     * @param int $scale The scale
-     * @param string $type One of the supported types
+     * @param int    $scale The scale
+     * @param string $type  One of the supported types
      *
      * @throws UnexpectedTypeException if the given value of type is unknown
      */
@@ -99,20 +99,6 @@ class PercentToLocalizedStringTransformer implements DataTransformerInterface
     }
 
     /**
-     * Returns a preconfigured \NumberFormatter instance.
-     *
-     * @return \NumberFormatter
-     */
-    protected function getNumberFormatter()
-    {
-        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
-
-        $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->scale);
-
-        return $formatter;
-    }
-
-    /**
      * Transforms between a percentage value into a normalized format (integer or float).
      *
      * @param string $value Percentage value
@@ -145,5 +131,19 @@ class PercentToLocalizedStringTransformer implements DataTransformerInterface
         }
 
         return $value;
+    }
+
+    /**
+     * Returns a preconfigured \NumberFormatter instance.
+     *
+     * @return \NumberFormatter
+     */
+    protected function getNumberFormatter()
+    {
+        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+
+        $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->scale);
+
+        return $formatter;
     }
 }

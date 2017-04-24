@@ -17,6 +17,27 @@ class ProcessorTest extends ProphecyTestCase
      */
     private $processor;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->io = $this->prophesize('Composer\IO\IOInterface');
+        $this->processor = new Processor($this->io->reveal());
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        foreach ($this->environmentBackup as $var => $value) {
+            if (false === $value) {
+                putenv($var);
+            } else {
+                putenv($var.'='.$value);
+            }
+        }
+    }
+
     /**
      * @dataProvider provideInvalidConfiguration
      */
@@ -69,7 +90,7 @@ class ProcessorTest extends ProphecyTestCase
      */
     public function testParameterHandling($testCaseName)
     {
-        $dataDir = __DIR__ . '/fixtures/testcases/' . $testCaseName;
+        $dataDir = __DIR__.'/fixtures/testcases/'.$testCaseName;
 
         $testCase = array_replace_recursive(
             array(
@@ -81,7 +102,7 @@ class ProcessorTest extends ProphecyTestCase
                 'environment' => array(),
                 'interactive' => false,
             ),
-            (array)Yaml::parse(file_get_contents($dataDir . '/setup.yml'))
+            (array) Yaml::parse(file_get_contents($dataDir.'/setup.yml'))
         );
 
         $workingDir = sys_get_temp_dir() . '/incenteev_parameter_handler';
@@ -94,7 +115,7 @@ class ProcessorTest extends ProphecyTestCase
 
         $this->processor->processFile($testCase['config']);
 
-        $this->assertFileEquals($dataDir . '/expected.yml', $workingDir . '/' . $testCase['config']['file'], $testCase['title']);
+        $this->assertFileEquals($dataDir.'/expected.yml', $workingDir.'/'.$testCase['config']['file'], $testCase['title']);
     }
 
     private function initializeTestCase(array $testCase, $dataDir, $workingDir)
@@ -105,15 +126,15 @@ class ProcessorTest extends ProphecyTestCase
             $fs->remove($workingDir);
         }
 
-        $fs->copy($dataDir . '/dist.yml', $workingDir . '/' . $testCase['dist-file']);
+        $fs->copy($dataDir.'/dist.yml', $workingDir.'/'. $testCase['dist-file']);
 
-        if ($exists = file_exists($dataDir . '/existing.yml')) {
-            $fs->copy($dataDir . '/existing.yml', $workingDir . '/' . $testCase['config']['file']);
+        if ($exists = file_exists($dataDir.'/existing.yml')) {
+            $fs->copy($dataDir.'/existing.yml', $workingDir.'/'.$testCase['config']['file']);
         }
 
         foreach ($testCase['environment'] as $var => $value) {
             $this->environmentBackup[$var] = getenv($var);
-            putenv($var . '=' . $value);
+            putenv($var.'='.$value);
         };
 
         chdir($workingDir);
@@ -144,31 +165,10 @@ class ProcessorTest extends ProphecyTestCase
     {
         $tests = array();
 
-        foreach (glob(__DIR__ . '/fixtures/testcases/*/') as $folder) {
+        foreach (glob(__DIR__.'/fixtures/testcases/*/') as $folder) {
             $tests[] = array(basename($folder));
         }
 
         return $tests;
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->io = $this->prophesize('Composer\IO\IOInterface');
-        $this->processor = new Processor($this->io->reveal());
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        foreach ($this->environmentBackup as $var => $value) {
-            if (false === $value) {
-                putenv($var);
-            } else {
-                putenv($var . '=' . $value);
-            }
-        }
     }
 }

@@ -56,14 +56,14 @@ class Twig_SimpleFilter
         return $this->options['node_class'];
     }
 
-    public function getArguments()
-    {
-        return $this->arguments;
-    }
-
     public function setArguments($arguments)
     {
         $this->arguments = $arguments;
+    }
+
+    public function getArguments()
+    {
+        return $this->arguments;
     }
 
     public function needsEnvironment()
@@ -104,7 +104,7 @@ class Twig_SimpleFilter
 
     public function isDeprecated()
     {
-        return (bool)$this->options['deprecated'];
+        return (bool) $this->options['deprecated'];
     }
 
     public function getDeprecatedVersion()

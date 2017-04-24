@@ -39,44 +39,51 @@ class SymfonyBridgeAdpterTest extends TestCase
      */
     private $adapter;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->adapter = new SymfonyBridgeAdapter(new CacheProviderLoader(), 'doctrine.orm', 'orm');
+    }
+
     public function providerBasicDrivers()
     {
         return array(
-            array('%doctrine_cache.apc.class%', array('type' => 'apc')),
-            array('%doctrine_cache.array.class%', array('type' => 'array')),
-            array('%doctrine_cache.xcache.class%', array('type' => 'xcache')),
-            array('%doctrine_cache.wincache.class%', array('type' => 'wincache')),
-            array('%doctrine_cache.zenddata.class%', array('type' => 'zenddata')),
-            array('%doctrine_cache.redis.class%', array('type' => 'redis'), array('setRedis')),
-            array('%doctrine_cache.memcache.class%', array('type' => 'memcache'), array('setMemcache')),
+            array('%doctrine_cache.apc.class%',       array('type' => 'apc')),
+            array('%doctrine_cache.array.class%',     array('type' => 'array')),
+            array('%doctrine_cache.xcache.class%',    array('type' => 'xcache')),
+            array('%doctrine_cache.wincache.class%',  array('type' => 'wincache')),
+            array('%doctrine_cache.zenddata.class%',  array('type' => 'zenddata')),
+            array('%doctrine_cache.redis.class%',     array('type' => 'redis'),     array('setRedis')),
+            array('%doctrine_cache.memcache.class%',  array('type' => 'memcache'),  array('setMemcache')),
             array('%doctrine_cache.memcached.class%', array('type' => 'memcached'), array('setMemcached')),
         );
     }
 
     /**
      * @param string $class
-     * @param array $config
+     * @param array  $config
      *
      * @dataProvider providerBasicDrivers
      */
     public function testLoadBasicCacheDriver($class, array $config, array $expectedCalls = array())
     {
-        $container = $this->createServiceContainer();
-        $cacheName = 'metadata_cache';
-        $objectManager = array(
-            'name' => 'default',
+        $container      = $this->createServiceContainer();
+        $cacheName      = 'metadata_cache';
+        $objectManager  = array(
+            'name'                  => 'default',
             'metadata_cache_driver' => $config
         );
 
         $this->adapter->loadObjectManagerCacheDriver($objectManager, $container, $cacheName);
         $this->assertTrue($container->hasAlias('doctrine.orm.default_metadata_cache'));
 
-        $alias = $container->getAlias('doctrine.orm.default_metadata_cache');
-        $decorator = $container->getDefinition($alias);
-        $definition = $container->getDefinition($decorator->getParent());
-        $defCalls = $decorator->getMethodCalls();
+        $alias           = $container->getAlias('doctrine.orm.default_metadata_cache');
+        $decorator       = $container->getDefinition($alias);
+        $definition      = $container->getDefinition($decorator->getParent());
+        $defCalls        = $decorator->getMethodCalls();
         $expectedCalls[] = 'setNamespace';
-        $actualCalls = array_map(function ($call) {
+        $actualCalls     = array_map(function ($call) {
             return $call[0];
         }, $defCalls);
 
@@ -89,14 +96,14 @@ class SymfonyBridgeAdpterTest extends TestCase
 
     public function testServiceCacheDriver()
     {
-        $cacheName = 'metadata_cache';
-        $container = $this->createServiceContainer();
-        $definition = new Definition('%doctrine.orm.cache.apc.class%');
-        $objectManager = array(
-            'name' => 'default',
+        $cacheName      = 'metadata_cache';
+        $container      = $this->createServiceContainer();
+        $definition     = new Definition('%doctrine.orm.cache.apc.class%');
+        $objectManager  = array(
+            'name'                  => 'default',
             'metadata_cache_driver' => array(
                 'type' => 'service',
-                'id' => 'service_driver'
+                'id'   => 'service_driver'
             )
         );
 
@@ -113,10 +120,10 @@ class SymfonyBridgeAdpterTest extends TestCase
      */
     public function testUnrecognizedCacheDriverException()
     {
-        $cacheName = 'metadata_cache';
-        $container = $this->createServiceContainer();
-        $objectManager = array(
-            'name' => 'default',
+        $cacheName      = 'metadata_cache';
+        $container      = $this->createServiceContainer();
+        $objectManager  = array(
+            'name'                  => 'default',
             'metadata_cache_driver' => array(
                 'type' => 'unrecognized_type'
             )
@@ -132,12 +139,5 @@ class SymfonyBridgeAdpterTest extends TestCase
         $this->assertFalse($container->hasParameter('doctrine_cache.array.class'));
         $this->adapter->loadServicesConfiguration($container);
         $this->assertTrue($container->hasParameter('doctrine_cache.array.class'));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->adapter = new SymfonyBridgeAdapter(new CacheProviderLoader(), 'doctrine.orm', 'orm');
     }
 }

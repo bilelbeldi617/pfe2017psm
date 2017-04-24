@@ -9,54 +9,14 @@ class __TwigTemplate_5b8ca7b93349a446df42d792970bc5f43e47de1b4cda41fbdf8aa155808
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(60 => 16, 54 => 15, 45 => 14, 41 => 13, 36 => 10, 29 => 5, 27 => 4, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<div class=\"block\">
-    <h2>
-        Stack Trace (Plain Text)&nbsp;
-        {% spaceless %}
-        <a href=\"#\" onclick=\"toggle('traces-text'); switchIcons('icon-traces-text-open', 'icon-traces-text-close'); return false;\">
-            <img class=\"toggle\" id=\"icon-traces-text-close\" alt=\"-\" src=\"data:image/gif;base64,R0lGODlhEgASAMQSANft94TG57Hb8GS44ez1+mC24IvK6ePx+Wa44dXs92+942e54o3L6W2844/M6dnu+P/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAASABIAQAVCoCQBTBOd6Kk4gJhGBCTPxysJb44K0qD/ER/wlxjmisZkMqBEBW5NHrMZmVKvv9hMVsO+hE0EoNAstEYGxG9heIhCADs=\" style=\"display: none\" />
-            <img class=\"toggle\" id=\"icon-traces-text-open\" alt=\"+\" src=\"data:image/gif;base64,R0lGODlhEgASAMQTANft99/v+Ga44bHb8ITG52S44dXs9+z1+uPx+YvK6WC24G+944/M6W28443L6dnu+Ge54v/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABMALAAAAAASABIAQAVS4DQBTiOd6LkwgJgeUSzHSDoNaZ4PU6FLgYBA5/vFID/DbylRGiNIZu74I0h1hNsVxbNuUV4d9SsZM2EzWe1qThVzwWFOAFCQFa1RQq6DJB4iIQA7\" style=\"display: inline\" />
-        </a>
-        {% endspaceless %}
-    </h2>
-
-    <div id=\"traces-text\" class=\"trace\" style=\"display: none;\">
-<pre>{% for i, e in exception.toarray %}
-[{{ i + 1 }}] {{ e.class }}: {{ e.message }}
-{% include '@Twig/Exception/traces.txt.twig' with { 'exception': e } only %}
-{% endfor %}</pre>
-    </div>
-</div>
-", "@Twig/Exception/traces_text.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\traces_text.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_9cca99fc23968ab124c745df4b8f4c374fffc99a86c574232cf2afc3c5434946 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_9cca99fc23968ab124c745df4b8f4c374fffc99a86c574232cf2afc3c5434946->enter($__internal_9cca99fc23968ab124c745df4b8f4c374fffc99a86c574232cf2afc3c5434946_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/traces_text.html.twig"));
+        $__internal_dd65eb0c9f6303cd5fcfe6da19e8c675e5d9e4844d6aedd85dc39c5b7f2cb2a1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_dd65eb0c9f6303cd5fcfe6da19e8c675e5d9e4844d6aedd85dc39c5b7f2cb2a1->enter($__internal_dd65eb0c9f6303cd5fcfe6da19e8c675e5d9e4844d6aedd85dc39c5b7f2cb2a1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/traces_text.html.twig"));
 
         // line 1
         echo "<div class=\"block\">
@@ -101,13 +61,54 @@ class __TwigTemplate_5b8ca7b93349a446df42d792970bc5f43e47de1b4cda41fbdf8aa155808
     </div>
 </div>
 ";
-
-        $__internal_9cca99fc23968ab124c745df4b8f4c374fffc99a86c574232cf2afc3c5434946->leave($__internal_9cca99fc23968ab124c745df4b8f4c374fffc99a86c574232cf2afc3c5434946_prof);
+        
+        $__internal_dd65eb0c9f6303cd5fcfe6da19e8c675e5d9e4844d6aedd85dc39c5b7f2cb2a1->leave($__internal_dd65eb0c9f6303cd5fcfe6da19e8c675e5d9e4844d6aedd85dc39c5b7f2cb2a1_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@Twig/Exception/traces_text.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  60 => 16,  54 => 15,  45 => 14,  41 => 13,  36 => 10,  29 => 5,  27 => 4,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<div class=\"block\">
+    <h2>
+        Stack Trace (Plain Text)&nbsp;
+        {% spaceless %}
+        <a href=\"#\" onclick=\"toggle('traces-text'); switchIcons('icon-traces-text-open', 'icon-traces-text-close'); return false;\">
+            <img class=\"toggle\" id=\"icon-traces-text-close\" alt=\"-\" src=\"data:image/gif;base64,R0lGODlhEgASAMQSANft94TG57Hb8GS44ez1+mC24IvK6ePx+Wa44dXs92+942e54o3L6W2844/M6dnu+P/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAASABIAQAVCoCQBTBOd6Kk4gJhGBCTPxysJb44K0qD/ER/wlxjmisZkMqBEBW5NHrMZmVKvv9hMVsO+hE0EoNAstEYGxG9heIhCADs=\" style=\"display: none\" />
+            <img class=\"toggle\" id=\"icon-traces-text-open\" alt=\"+\" src=\"data:image/gif;base64,R0lGODlhEgASAMQTANft99/v+Ga44bHb8ITG52S44dXs9+z1+uPx+YvK6WC24G+944/M6W28443L6dnu+Ge54v/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABMALAAAAAASABIAQAVS4DQBTiOd6LkwgJgeUSzHSDoNaZ4PU6FLgYBA5/vFID/DbylRGiNIZu74I0h1hNsVxbNuUV4d9SsZM2EzWe1qThVzwWFOAFCQFa1RQq6DJB4iIQA7\" style=\"display: inline\" />
+        </a>
+        {% endspaceless %}
+    </h2>
+
+    <div id=\"traces-text\" class=\"trace\" style=\"display: none;\">
+<pre>{% for i, e in exception.toarray %}
+[{{ i + 1 }}] {{ e.class }}: {{ e.message }}
+{% include '@Twig/Exception/traces.txt.twig' with { 'exception': e } only %}
+{% endfor %}</pre>
+    </div>
+</div>
+", "@Twig/Exception/traces_text.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\traces_text.html.twig");
     }
 }

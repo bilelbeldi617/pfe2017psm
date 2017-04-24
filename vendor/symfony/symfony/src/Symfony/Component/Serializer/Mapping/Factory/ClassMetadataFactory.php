@@ -40,7 +40,7 @@ class ClassMetadataFactory implements ClassMetadataFactoryInterface
 
     /**
      * @param LoaderInterface $loader
-     * @param Cache|null $cache
+     * @param Cache|null      $cache
      */
     public function __construct(LoaderInterface $loader, Cache $cache = null)
     {
@@ -93,6 +93,16 @@ class ClassMetadataFactory implements ClassMetadataFactoryInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function hasMetadataFor($value)
+    {
+        $class = $this->getClass($value);
+
+        return class_exists($class) || interface_exists($class);
+    }
+
+    /**
      * Gets a class name for a given class or instance.
      *
      * @param mixed $value
@@ -106,15 +116,5 @@ class ClassMetadataFactory implements ClassMetadataFactoryInterface
         }
 
         return ltrim(is_object($value) ? get_class($value) : $value, '\\');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasMetadataFor($value)
-    {
-        $class = $this->getClass($value);
-
-        return class_exists($class) || interface_exists($class);
     }
 }

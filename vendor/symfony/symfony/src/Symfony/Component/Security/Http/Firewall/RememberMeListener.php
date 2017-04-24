@@ -41,12 +41,12 @@ class RememberMeListener implements ListenerInterface
     /**
      * Constructor.
      *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RememberMeServicesInterface $rememberMeServices
-     * @param AuthenticationManagerInterface $authenticationManager
-     * @param LoggerInterface $logger
-     * @param EventDispatcherInterface $dispatcher
-     * @param bool $catchExceptions
+     * @param TokenStorageInterface                  $tokenStorage
+     * @param RememberMeServicesInterface            $rememberMeServices
+     * @param AuthenticationManagerInterface         $authenticationManager
+     * @param LoggerInterface                        $logger
+     * @param EventDispatcherInterface               $dispatcher
+     * @param bool                                   $catchExceptions
      * @param SessionAuthenticationStrategyInterface $sessionStrategy
      */
     public function __construct(TokenStorageInterface $tokenStorage, RememberMeServicesInterface $rememberMeServices, AuthenticationManagerInterface $authenticationManager, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, $catchExceptions = true, SessionAuthenticationStrategyInterface $sessionStrategy = null)
@@ -95,8 +95,8 @@ class RememberMeListener implements ListenerInterface
             if (null !== $this->logger) {
                 $this->logger->warning(
                     'The token storage was not populated with remember-me token as the'
-                    . ' AuthenticationManager rejected the AuthenticationToken returned'
-                    . ' by the RememberMeServices.', array('exception' => $e)
+                   .' AuthenticationManager rejected the AuthenticationToken returned'
+                   .' by the RememberMeServices.', array('exception' => $e)
                 );
             }
 

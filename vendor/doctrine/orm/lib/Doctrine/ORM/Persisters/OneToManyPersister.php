@@ -39,8 +39,8 @@ class OneToManyPersister extends AbstractCollectionPersister
      */
     public function get(PersistentCollection $coll, $index)
     {
-        $mapping = $coll->getMapping();
-        $uow = $this->em->getUnitOfWork();
+        $mapping   = $coll->getMapping();
+        $uow       = $this->em->getUnitOfWork();
         $persister = $uow->getEntityPersister($mapping['targetEntity']);
 
         if (!isset($mapping['indexBy'])) {
@@ -48,129 +48,6 @@ class OneToManyPersister extends AbstractCollectionPersister
         }
 
         return $persister->load(array($mapping['mappedBy'] => $coll->getOwner(), $mapping['indexBy'] => $index), null, null, array(), 0, 1);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function count(PersistentCollection $coll)
-    {
-        $mapping = $coll->getMapping();
-        $targetClass = $this->em->getClassMetadata($mapping['targetEntity']);
-        $sourceClass = $this->em->getClassMetadata($mapping['sourceEntity']);
-        $id = $this->em->getUnitOfWork()->getEntityIdentifier($coll->getOwner());
-
-        $whereClauses = array();
-        $params = array();
-
-        $joinColumns = $targetClass->associationMappings[$mapping['mappedBy']]['joinColumns'];
-        foreach ($joinColumns as $joinColumn) {
-            $whereClauses[] = $joinColumn['name'] . ' = ?';
-
-            $params[] = ($targetClass->containsForeignIdentifier)
-                ? $id[$sourceClass->getFieldForColumn($joinColumn['referencedColumnName'])]
-                : $id[$sourceClass->fieldNames[$joinColumn['referencedColumnName']]];
-        }
-
-        $filterTargetClass = $this->em->getClassMetadata($targetClass->rootEntityName);
-        foreach ($this->em->getFilters()->getEnabledFilters() as $filter) {
-            if ($filterExpr = $filter->addFilterConstraint($filterTargetClass, 't')) {
-                $whereClauses[] = '(' . $filterExpr . ')';
-            }
-        }
-
-        $sql = 'SELECT count(*)'
-            . ' FROM ' . $this->quoteStrategy->getTableName($targetClass, $this->platform) . ' t'
-            . ' WHERE ' . implode(' AND ', $whereClauses);
-
-        return $this->conn->fetchColumn($sql, $params);
-    }
-
-    /**
-     * @param \Doctrine\ORM\PersistentCollection $coll
-     * @param int $offset
-     * @param int|null $length
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function slice(PersistentCollection $coll, $offset, $length = null)
-    {
-        $mapping = $coll->getMapping();
-        $uow = $this->em->getUnitOfWork();
-        $persister = $uow->getEntityPersister($mapping['targetEntity']);
-
-        return $persister->getOneToManyCollection($mapping, $coll->getOwner(), $offset, $length);
-    }
-
-    /**
-     * @param \Doctrine\ORM\PersistentCollection $coll
-     * @param object $element
-     *
-     * @return boolean
-     */
-    public function contains(PersistentCollection $coll, $element)
-    {
-        $mapping = $coll->getMapping();
-        $uow = $this->em->getUnitOfWork();
-
-        // shortcut for new entities
-        $entityState = $uow->getEntityState($element, UnitOfWork::STATE_NEW);
-
-        if ($entityState === UnitOfWork::STATE_NEW) {
-            return false;
-        }
-
-        // Entity is scheduled for inclusion
-        if ($entityState === UnitOfWork::STATE_MANAGED && $uow->isScheduledForInsert($element)) {
-            return false;
-        }
-
-        $persister = $uow->getEntityPersister($mapping['targetEntity']);
-
-        // only works with single id identifier entities. Will throw an
-        // exception in Entity Persisters if that is not the case for the
-        // 'mappedBy' field.
-        $id = current($uow->getEntityIdentifier($coll->getOwner()));
-
-        return $persister->exists($element, array($mapping['mappedBy'] => $id));
-    }
-
-    /**
-     * @param \Doctrine\ORM\PersistentCollection $coll
-     * @param object $element
-     *
-     * @return boolean
-     */
-    public function removeElement(PersistentCollection $coll, $element)
-    {
-        $mapping = $coll->getMapping();
-
-        if (!$mapping['orphanRemoval']) {
-            // no-op: this is not the owning side, therefore no operations should be applied
-            return false;
-        }
-
-        $uow = $this->em->getUnitOfWork();
-
-        // shortcut for new entities
-        $entityState = $uow->getEntityState($element, UnitOfWork::STATE_NEW);
-
-        if ($entityState === UnitOfWork::STATE_NEW) {
-            return false;
-        }
-
-        // If Entity is scheduled for inclusion, it is not in this collection.
-        // We can assure that because it would have return true before on array check
-        if ($entityState === UnitOfWork::STATE_MANAGED && $uow->isScheduledForInsert($element)) {
-            return false;
-        }
-
-        $this
-            ->uow
-            ->getEntityPersister($mapping['targetEntity'])
-            ->delete($element);
-
-        return true;
     }
 
     /**
@@ -185,13 +62,13 @@ class OneToManyPersister extends AbstractCollectionPersister
      */
     protected function getDeleteRowSQL(PersistentCollection $coll)
     {
-        $mapping = $coll->getMapping();
-        $class = $this->em->getClassMetadata($mapping['targetEntity']);
-        $tableName = $this->quoteStrategy->getTableName($class, $this->platform);
-        $idColumns = $class->getIdentifierColumnNames();
+        $mapping    = $coll->getMapping();
+        $class      = $this->em->getClassMetadata($mapping['targetEntity']);
+        $tableName  = $this->quoteStrategy->getTableName($class, $this->platform);
+        $idColumns  = $class->getIdentifierColumnNames();
 
         return 'DELETE FROM ' . $tableName
-            . ' WHERE ' . implode('= ? AND ', $idColumns) . ' = ?';
+             . ' WHERE ' . implode('= ? AND ', $idColumns) . ' = ?';
     }
 
     /**
@@ -250,5 +127,128 @@ class OneToManyPersister extends AbstractCollectionPersister
     protected function getDeleteSQLParameters(PersistentCollection $coll)
     {
         throw new \BadMethodCallException("Update Row SQL is not used for OneToManyPersister");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count(PersistentCollection $coll)
+    {
+        $mapping     = $coll->getMapping();
+        $targetClass = $this->em->getClassMetadata($mapping['targetEntity']);
+        $sourceClass = $this->em->getClassMetadata($mapping['sourceEntity']);
+        $id          = $this->em->getUnitOfWork()->getEntityIdentifier($coll->getOwner());
+
+        $whereClauses = array();
+        $params       = array();
+
+        $joinColumns = $targetClass->associationMappings[$mapping['mappedBy']]['joinColumns'];
+        foreach ($joinColumns as $joinColumn) {
+            $whereClauses[] = $joinColumn['name'] . ' = ?';
+
+            $params[] = ($targetClass->containsForeignIdentifier)
+                ? $id[$sourceClass->getFieldForColumn($joinColumn['referencedColumnName'])]
+                : $id[$sourceClass->fieldNames[$joinColumn['referencedColumnName']]];
+        }
+
+        $filterTargetClass = $this->em->getClassMetadata($targetClass->rootEntityName);
+        foreach ($this->em->getFilters()->getEnabledFilters() as $filter) {
+            if ($filterExpr = $filter->addFilterConstraint($filterTargetClass, 't')) {
+                $whereClauses[] = '(' . $filterExpr . ')';
+            }
+        }
+
+        $sql = 'SELECT count(*)'
+             . ' FROM ' . $this->quoteStrategy->getTableName($targetClass, $this->platform) . ' t'
+             . ' WHERE ' . implode(' AND ', $whereClauses);
+
+        return $this->conn->fetchColumn($sql, $params);
+    }
+
+    /**
+     * @param \Doctrine\ORM\PersistentCollection $coll
+     * @param int                                $offset
+     * @param int|null                           $length
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function slice(PersistentCollection $coll, $offset, $length = null)
+    {
+        $mapping   = $coll->getMapping();
+        $uow       = $this->em->getUnitOfWork();
+        $persister = $uow->getEntityPersister($mapping['targetEntity']);
+
+        return $persister->getOneToManyCollection($mapping, $coll->getOwner(), $offset, $length);
+    }
+
+    /**
+     * @param \Doctrine\ORM\PersistentCollection $coll
+     * @param object                             $element
+     *
+     * @return boolean
+     */
+    public function contains(PersistentCollection $coll, $element)
+    {
+        $mapping = $coll->getMapping();
+        $uow     = $this->em->getUnitOfWork();
+
+        // shortcut for new entities
+        $entityState = $uow->getEntityState($element, UnitOfWork::STATE_NEW);
+
+        if ($entityState === UnitOfWork::STATE_NEW) {
+            return false;
+        }
+
+        // Entity is scheduled for inclusion
+        if ($entityState === UnitOfWork::STATE_MANAGED && $uow->isScheduledForInsert($element)) {
+            return false;
+        }
+
+        $persister = $uow->getEntityPersister($mapping['targetEntity']);
+
+        // only works with single id identifier entities. Will throw an
+        // exception in Entity Persisters if that is not the case for the
+        // 'mappedBy' field.
+        $id = current( $uow->getEntityIdentifier($coll->getOwner()));
+
+        return $persister->exists($element, array($mapping['mappedBy'] => $id));
+    }
+
+    /**
+     * @param \Doctrine\ORM\PersistentCollection $coll
+     * @param object                             $element
+     *
+     * @return boolean
+     */
+    public function removeElement(PersistentCollection $coll, $element)
+    {
+        $mapping = $coll->getMapping();
+
+        if ( ! $mapping['orphanRemoval']) {
+            // no-op: this is not the owning side, therefore no operations should be applied
+            return false;
+        }
+
+        $uow = $this->em->getUnitOfWork();
+
+        // shortcut for new entities
+        $entityState = $uow->getEntityState($element, UnitOfWork::STATE_NEW);
+
+        if ($entityState === UnitOfWork::STATE_NEW) {
+            return false;
+        }
+
+        // If Entity is scheduled for inclusion, it is not in this collection.
+        // We can assure that because it would have return true before on array check
+        if ($entityState === UnitOfWork::STATE_MANAGED && $uow->isScheduledForInsert($element)) {
+            return false;
+        }
+
+        $this
+            ->uow
+            ->getEntityPersister($mapping['targetEntity'])
+            ->delete($element);
+
+        return true;
     }
 }

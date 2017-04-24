@@ -24,8 +24,7 @@ class CheckCssEmbedFilterPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         if ($container->hasDefinition('assetic.filter.cssembed') &&
-            !$container->getParameterBag()->resolveValue($container->getParameter('assetic.filter.cssembed.jar'))
-        ) {
+            !$container->getParameterBag()->resolveValue($container->getParameter('assetic.filter.cssembed.jar'))) {
             throw new \RuntimeException('The "assetic.filters.cssembed" configuration requires a "jar" value.');
         }
     }

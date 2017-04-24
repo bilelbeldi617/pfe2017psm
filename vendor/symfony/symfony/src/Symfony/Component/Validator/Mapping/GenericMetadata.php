@@ -130,7 +130,7 @@ class GenericMetadata implements MetadataInterface
     {
         if ($constraint instanceof Traverse) {
             throw new ConstraintDefinitionException(sprintf(
-                'The constraint "%s" can only be put on classes. Please use ' .
+                'The constraint "%s" can only be put on classes. Please use '.
                 '"Symfony\Component\Validator\Constraints\Valid" instead.',
                 get_class($constraint)
             ));

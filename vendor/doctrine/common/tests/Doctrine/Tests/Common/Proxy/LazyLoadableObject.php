@@ -31,34 +31,41 @@ class LazyLoadableObject
      * @var string
      */
     public $publicIdentifierField;
-    /**
-     * @var string
-     */
-    public $publicTransientField = 'publicTransientFieldValue';
-    /**
-     * @var string
-     */
-    public $publicPersistentField = 'publicPersistentFieldValue';
-    /**
-     * @var string
-     */
-    public $publicAssociation = 'publicAssociationValue';
+
     /**
      * @var string
      */
     protected $protectedIdentifierField;
+
     /**
      * @var string
      */
-    protected $protectedTransientField = 'protectedTransientFieldValue';
+    public $publicTransientField            = 'publicTransientFieldValue';
+
     /**
      * @var string
      */
-    protected $protectedPersistentField = 'protectedPersistentFieldValue';
+    protected $protectedTransientField      = 'protectedTransientFieldValue';
+
     /**
      * @var string
      */
-    protected $protectedAssociation = 'protectedAssociationValue';
+    public $publicPersistentField           = 'publicPersistentFieldValue';
+
+    /**
+     * @var string
+     */
+    protected $protectedPersistentField     = 'protectedPersistentFieldValue';
+
+    /**
+     * @var string
+     */
+    public $publicAssociation               = 'publicAssociationValue';
+
+    /**
+     * @var string
+     */
+    protected $protectedAssociation         = 'protectedAssociationValue';
 
     /**
      * @return string

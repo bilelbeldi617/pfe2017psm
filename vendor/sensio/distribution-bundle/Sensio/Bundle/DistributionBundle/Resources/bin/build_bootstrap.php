@@ -13,7 +13,7 @@
 use Sensio\Bundle\DistributionBundle\Composer\ScriptHandler;
 
 if (PHP_SAPI !== 'cli') {
-    echo 'Warning: ' . __FILE__ . ' should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
+    echo 'Warning: '.__FILE__.' should be invoked via the CLI version of PHP, not the '.PHP_SAPI.' SAPI'.PHP_EOL;
 }
 
 function getRealpath($path, $message = 'Directory %s does not seem to be valid.')
@@ -42,18 +42,18 @@ if (!empty($argv[3])) {
     $useNewDirectoryStructure = true;
 }
 
-$rootDir = __DIR__ . '/../../../../../../../..';
+$rootDir = __DIR__.'/../../../../../../../..';
 if (null === $autoloadDir) {
-    $autoloadDir = getRealpath($rootDir . '/app', 'Looks like you don\'t have a standard layout.');
+    $autoloadDir = getRealpath($rootDir.'/app', 'Looks like you don\'t have a standard layout.');
 }
 if (null === $bootstrapDir) {
     $bootstrapDir = $autoloadDir;
     if ($useNewDirectoryStructure) {
-        $bootstrapDir = getRealpath($rootDir . '/var');
+        $bootstrapDir = getRealpath($rootDir.'/var');
     }
 }
 
-require_once $autoloadDir . '/autoload.php';
+require_once $autoloadDir.'/autoload.php';
 
 // here we pass realpaths as resolution between absolute and relative path can be wrong
 ScriptHandler::doBuildBootstrap($bootstrapDir, $autoloadDir, $useNewDirectoryStructure);

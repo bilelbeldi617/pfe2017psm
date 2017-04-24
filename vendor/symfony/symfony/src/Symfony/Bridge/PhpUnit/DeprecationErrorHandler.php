@@ -50,7 +50,7 @@ class DeprecationErrorHandler
                 $mode = getenv('SYMFONY_DEPRECATIONS_HELPER');
             }
             if (DeprecationErrorHandler::MODE_WEAK !== $mode && (!isset($mode[0]) || '/' !== $mode[0])) {
-                $mode = preg_match('/^[1-9][0-9]*$/', $mode) ? (int)$mode : 0;
+                $mode = preg_match('/^[1-9][0-9]*$/', $mode) ? (int) $mode : 0;
             }
 
             return $memoizedMode = $mode;
@@ -103,10 +103,10 @@ class DeprecationErrorHandler
                     $r->setAccessible(true);
                     $r->setValue($e, array_slice($trace, 1, $i));
 
-                    echo "\n" . ucfirst($group) . ' deprecation triggered by ' . $class . '::' . $method . ':';
-                    echo "\n" . $msg;
+                    echo "\n".ucfirst($group).' deprecation triggered by '.$class.'::'.$method.':';
+                    echo "\n".$msg;
                     echo "\nStack trace:";
-                    echo "\n" . str_replace(' ' . getcwd() . DIRECTORY_SEPARATOR, ' ', $e->getTraceAsString());
+                    echo "\n".str_replace(' '.getcwd().DIRECTORY_SEPARATOR, ' ', $e->getTraceAsString());
                     echo "\n";
 
                     exit(1);
@@ -114,14 +114,14 @@ class DeprecationErrorHandler
                 if ('legacy' !== $group && DeprecationErrorHandler::MODE_WEAK !== $mode) {
                     $ref = &$deprecations[$group][$msg]['count'];
                     ++$ref;
-                    $ref = &$deprecations[$group][$msg][$class . '::' . $method];
+                    $ref = &$deprecations[$group][$msg][$class.'::'.$method];
                     ++$ref;
                 }
             } elseif (DeprecationErrorHandler::MODE_WEAK !== $mode) {
                 $ref = &$deprecations[$group][$msg]['count'];
                 ++$ref;
             }
-            ++$deprecations[$group . 'Count'];
+            ++$deprecations[$group.'Count'];
         };
         $oldErrorHandler = set_error_handler($deprecationHandler);
 
@@ -140,9 +140,7 @@ class DeprecationErrorHandler
                     return "\x1B[{$color}m{$str}\x1B[0m";
                 };
             } else {
-                $colorize = function ($str) {
-                    return $str;
-                };
+                $colorize = function ($str) { return $str; };
             }
             register_shutdown_function(function () use ($getMode, &$deprecations, $deprecationHandler, $colorize) {
                 $mode = $getMode();
@@ -153,9 +151,7 @@ class DeprecationErrorHandler
                 restore_error_handler();
 
                 if (DeprecationErrorHandler::MODE_WEAK === $mode) {
-                    $colorize = function ($str) {
-                        return $str;
-                    };
+                    $colorize = function ($str) { return $str; };
                 }
                 if ($currErrorHandler !== $deprecationHandler) {
                     echo "\n", $colorize('THE ERROR HANDLER HAS CHANGED!', true), "\n";
@@ -166,8 +162,8 @@ class DeprecationErrorHandler
                 };
 
                 foreach (array('unsilenced', 'remaining', 'legacy', 'other') as $group) {
-                    if ($deprecations[$group . 'Count']) {
-                        echo "\n", $colorize(sprintf('%s deprecation notices (%d)', ucfirst($group), $deprecations[$group . 'Count']), 'legacy' !== $group), "\n";
+                    if ($deprecations[$group.'Count']) {
+                        echo "\n", $colorize(sprintf('%s deprecation notices (%d)', ucfirst($group), $deprecations[$group.'Count']), 'legacy' !== $group), "\n";
 
                         uasort($deprecations[$group], $cmp);
 
@@ -199,7 +195,7 @@ class DeprecationErrorHandler
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
             return
-                '10.0.10586' === PHP_WINDOWS_VERSION_MAJOR . '.' . PHP_WINDOWS_VERSION_MINOR . '.' . PHP_WINDOWS_VERSION_BUILD
+                '10.0.10586' === PHP_WINDOWS_VERSION_MAJOR.'.'.PHP_WINDOWS_VERSION_MINOR.'.'.PHP_WINDOWS_VERSION_BUILD
                 || false !== getenv('ANSICON')
                 || 'ON' === getenv('ConEmuANSI')
                 || 'xterm' === getenv('TERM');

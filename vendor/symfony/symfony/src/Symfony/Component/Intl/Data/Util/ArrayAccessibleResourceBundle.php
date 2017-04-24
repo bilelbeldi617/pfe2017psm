@@ -32,6 +32,13 @@ class ArrayAccessibleResourceBundle implements \ArrayAccess, \IteratorAggregate,
         $this->bundleImpl = $bundleImpl;
     }
 
+    public function get($offset)
+    {
+        $value = $this->bundleImpl->get($offset);
+
+        return $value instanceof \ResourceBundle ? new static($value) : $value;
+    }
+
     public function offsetExists($offset)
     {
         return null !== $this->bundleImpl->get($offset);
@@ -40,13 +47,6 @@ class ArrayAccessibleResourceBundle implements \ArrayAccess, \IteratorAggregate,
     public function offsetGet($offset)
     {
         return $this->get($offset);
-    }
-
-    public function get($offset)
-    {
-        $value = $this->bundleImpl->get($offset);
-
-        return $value instanceof \ResourceBundle ? new static($value) : $value;
     }
 
     public function offsetSet($offset, $value)

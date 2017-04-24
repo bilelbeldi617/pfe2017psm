@@ -27,14 +27,14 @@ class RedirectableUrlMatcherTest extends TestCase
         $matcher = new RedirectableUrlMatcher($coll, $context = new RequestContext());
 
         $this->assertEquals(array(
-            '_controller' => 'Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction',
-            'path' => '/foo/',
-            'permanent' => true,
-            'scheme' => null,
-            'httpPort' => $context->getHttpPort(),
-            'httpsPort' => $context->getHttpsPort(),
-            '_route' => null,
-        ),
+                '_controller' => 'Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction',
+                'path' => '/foo/',
+                'permanent' => true,
+                'scheme' => null,
+                'httpPort' => $context->getHttpPort(),
+                'httpsPort' => $context->getHttpsPort(),
+                '_route' => null,
+            ),
             $matcher->match('/foo')
         );
     }
@@ -47,14 +47,14 @@ class RedirectableUrlMatcherTest extends TestCase
         $matcher = new RedirectableUrlMatcher($coll, $context = new RequestContext());
 
         $this->assertEquals(array(
-            '_controller' => 'Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction',
-            'path' => '/foo',
-            'permanent' => true,
-            'scheme' => 'https',
-            'httpPort' => $context->getHttpPort(),
-            'httpsPort' => $context->getHttpsPort(),
-            '_route' => 'foo',
-        ),
+                '_controller' => 'Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction',
+                'path' => '/foo',
+                'permanent' => true,
+                'scheme' => 'https',
+                'httpPort' => $context->getHttpPort(),
+                'httpsPort' => $context->getHttpsPort(),
+                '_route' => 'foo',
+            ),
             $matcher->match('/foo')
         );
     }

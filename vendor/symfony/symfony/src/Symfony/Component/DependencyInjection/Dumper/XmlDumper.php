@@ -80,83 +80,28 @@ class XmlDumper extends Dumper
     }
 
     /**
-     * Escapes arguments.
+     * Adds method calls.
      *
-     * @param array $arguments
-     *
-     * @return array
-     */
-    private function escape(array $arguments)
-    {
-        $args = array();
-        foreach ($arguments as $k => $v) {
-            if (is_array($v)) {
-                $args[$k] = $this->escape($v);
-            } elseif (is_string($v)) {
-                $args[$k] = str_replace('%', '%%', $v);
-            } else {
-                $args[$k] = $v;
-            }
-        }
-
-        return $args;
-    }
-
-    /**
-     * Converts parameters.
-     *
-     * @param array $parameters
-     * @param string $type
+     * @param array       $methodcalls
      * @param \DOMElement $parent
-     * @param string $keyAttribute
      */
-    private function convertParameters(array $parameters, $type, \DOMElement $parent, $keyAttribute = 'key')
+    private function addMethodCalls(array $methodcalls, \DOMElement $parent)
     {
-        $withKeys = array_keys($parameters) !== range(0, count($parameters) - 1);
-        foreach ($parameters as $key => $value) {
-            $element = $this->document->createElement($type);
-            if ($withKeys) {
-                $element->setAttribute($keyAttribute, $key);
+        foreach ($methodcalls as $methodcall) {
+            $call = $this->document->createElement('call');
+            $call->setAttribute('method', $methodcall[0]);
+            if (count($methodcall[1])) {
+                $this->convertParameters($methodcall[1], 'argument', $call);
             }
-
-            if (is_array($value)) {
-                $element->setAttribute('type', 'collection');
-                $this->convertParameters($value, $type, $element, 'key');
-            } elseif ($value instanceof Reference) {
-                $element->setAttribute('type', 'service');
-                $element->setAttribute('id', (string)$value);
-                $behaviour = $value->getInvalidBehavior();
-                if ($behaviour == ContainerInterface::NULL_ON_INVALID_REFERENCE) {
-                    $element->setAttribute('on-invalid', 'null');
-                } elseif ($behaviour == ContainerInterface::IGNORE_ON_INVALID_REFERENCE) {
-                    $element->setAttribute('on-invalid', 'ignore');
-                }
-                if (!$value->isStrict(false)) {
-                    $element->setAttribute('strict', 'false');
-                }
-            } elseif ($value instanceof Definition) {
-                $element->setAttribute('type', 'service');
-                $this->addService($value, null, $element);
-            } elseif ($value instanceof Expression) {
-                $element->setAttribute('type', 'expression');
-                $text = $this->document->createTextNode(self::phpToXml((string)$value));
-                $element->appendChild($text);
-            } else {
-                if (in_array($value, array('null', 'true', 'false'), true)) {
-                    $element->setAttribute('type', 'string');
-                }
-                $text = $this->document->createTextNode(self::phpToXml($value));
-                $element->appendChild($text);
-            }
-            $parent->appendChild($element);
+            $parent->appendChild($call);
         }
     }
 
     /**
      * Adds a service.
      *
-     * @param Definition $definition
-     * @param string $id
+     * @param Definition  $definition
+     * @param string      $id
      * @param \DOMElement $parent
      */
     private function addService($definition, $id, \DOMElement $parent)
@@ -289,48 +234,21 @@ class XmlDumper extends Dumper
     }
 
     /**
-     * Adds method calls.
+     * Adds a service alias.
      *
-     * @param array $methodcalls
+     * @param string      $alias
+     * @param Alias       $id
      * @param \DOMElement $parent
      */
-    private function addMethodCalls(array $methodcalls, \DOMElement $parent)
+    private function addServiceAlias($alias, Alias $id, \DOMElement $parent)
     {
-        foreach ($methodcalls as $methodcall) {
-            $call = $this->document->createElement('call');
-            $call->setAttribute('method', $methodcall[0]);
-            if (count($methodcall[1])) {
-                $this->convertParameters($methodcall[1], 'argument', $call);
-            }
-            $parent->appendChild($call);
+        $service = $this->document->createElement('service');
+        $service->setAttribute('id', $alias);
+        $service->setAttribute('alias', $id);
+        if (!$id->isPublic()) {
+            $service->setAttribute('public', 'false');
         }
-    }
-
-    /**
-     * Converts php types to xml types.
-     *
-     * @param mixed $value Value to convert
-     *
-     * @return string
-     *
-     * @throws RuntimeException When trying to dump object or resource
-     */
-    public static function phpToXml($value)
-    {
-        switch (true) {
-            case null === $value:
-                return 'null';
-            case true === $value:
-                return 'true';
-            case false === $value:
-                return 'false';
-            case $value instanceof Parameter:
-                return '%' . $value . '%';
-            case is_object($value) || is_resource($value):
-                throw new RuntimeException('Unable to dump a service container if a parameter is an object or a resource.');
-            default:
-                return (string)$value;
-        }
+        $parent->appendChild($service);
     }
 
     /**
@@ -352,8 +270,8 @@ class XmlDumper extends Dumper
 
         $aliases = $this->container->getAliases();
         foreach ($aliases as $alias => $id) {
-            while (isset($aliases[(string)$id])) {
-                $id = $aliases[(string)$id];
+            while (isset($aliases[(string) $id])) {
+                $id = $aliases[(string) $id];
             }
             $this->addServiceAlias($alias, $id, $services);
         }
@@ -361,20 +279,102 @@ class XmlDumper extends Dumper
     }
 
     /**
-     * Adds a service alias.
+     * Converts parameters.
      *
-     * @param string $alias
-     * @param Alias $id
+     * @param array       $parameters
+     * @param string      $type
      * @param \DOMElement $parent
+     * @param string      $keyAttribute
      */
-    private function addServiceAlias($alias, Alias $id, \DOMElement $parent)
+    private function convertParameters(array $parameters, $type, \DOMElement $parent, $keyAttribute = 'key')
     {
-        $service = $this->document->createElement('service');
-        $service->setAttribute('id', $alias);
-        $service->setAttribute('alias', $id);
-        if (!$id->isPublic()) {
-            $service->setAttribute('public', 'false');
+        $withKeys = array_keys($parameters) !== range(0, count($parameters) - 1);
+        foreach ($parameters as $key => $value) {
+            $element = $this->document->createElement($type);
+            if ($withKeys) {
+                $element->setAttribute($keyAttribute, $key);
+            }
+
+            if (is_array($value)) {
+                $element->setAttribute('type', 'collection');
+                $this->convertParameters($value, $type, $element, 'key');
+            } elseif ($value instanceof Reference) {
+                $element->setAttribute('type', 'service');
+                $element->setAttribute('id', (string) $value);
+                $behaviour = $value->getInvalidBehavior();
+                if ($behaviour == ContainerInterface::NULL_ON_INVALID_REFERENCE) {
+                    $element->setAttribute('on-invalid', 'null');
+                } elseif ($behaviour == ContainerInterface::IGNORE_ON_INVALID_REFERENCE) {
+                    $element->setAttribute('on-invalid', 'ignore');
+                }
+                if (!$value->isStrict(false)) {
+                    $element->setAttribute('strict', 'false');
+                }
+            } elseif ($value instanceof Definition) {
+                $element->setAttribute('type', 'service');
+                $this->addService($value, null, $element);
+            } elseif ($value instanceof Expression) {
+                $element->setAttribute('type', 'expression');
+                $text = $this->document->createTextNode(self::phpToXml((string) $value));
+                $element->appendChild($text);
+            } else {
+                if (in_array($value, array('null', 'true', 'false'), true)) {
+                    $element->setAttribute('type', 'string');
+                }
+                $text = $this->document->createTextNode(self::phpToXml($value));
+                $element->appendChild($text);
+            }
+            $parent->appendChild($element);
         }
-        $parent->appendChild($service);
+    }
+
+    /**
+     * Escapes arguments.
+     *
+     * @param array $arguments
+     *
+     * @return array
+     */
+    private function escape(array $arguments)
+    {
+        $args = array();
+        foreach ($arguments as $k => $v) {
+            if (is_array($v)) {
+                $args[$k] = $this->escape($v);
+            } elseif (is_string($v)) {
+                $args[$k] = str_replace('%', '%%', $v);
+            } else {
+                $args[$k] = $v;
+            }
+        }
+
+        return $args;
+    }
+
+    /**
+     * Converts php types to xml types.
+     *
+     * @param mixed $value Value to convert
+     *
+     * @return string
+     *
+     * @throws RuntimeException When trying to dump object or resource
+     */
+    public static function phpToXml($value)
+    {
+        switch (true) {
+            case null === $value:
+                return 'null';
+            case true === $value:
+                return 'true';
+            case false === $value:
+                return 'false';
+            case $value instanceof Parameter:
+                return '%'.$value.'%';
+            case is_object($value) || is_resource($value):
+                throw new RuntimeException('Unable to dump a service container if a parameter is an object or a resource.');
+            default:
+                return (string) $value;
+        }
     }
 }

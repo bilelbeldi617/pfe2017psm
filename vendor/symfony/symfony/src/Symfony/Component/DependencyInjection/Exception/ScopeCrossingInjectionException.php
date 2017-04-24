@@ -27,14 +27,14 @@ class ScopeCrossingInjectionException extends RuntimeException
     {
         parent::__construct(sprintf(
             'Scope Crossing Injection detected: The definition "%s" references the service "%s" which belongs to another scope hierarchy. '
-            . 'This service might not be available consistently. Generally, it is safer to either move the definition "%s" to scope "%s", or '
-            . 'declare "%s" as a child scope of "%s". If you can be sure that the other scope is always active, you can set the reference to strict=false to get rid of this error.',
-            $sourceServiceId,
-            $destServiceId,
-            $sourceServiceId,
-            $destScope,
-            $sourceScope,
-            $destScope
+           .'This service might not be available consistently. Generally, it is safer to either move the definition "%s" to scope "%s", or '
+           .'declare "%s" as a child scope of "%s". If you can be sure that the other scope is always active, you can set the reference to strict=false to get rid of this error.',
+           $sourceServiceId,
+           $destServiceId,
+           $sourceServiceId,
+           $destScope,
+           $sourceScope,
+           $destScope
         ), 0, $previous);
 
         $this->sourceServiceId = $sourceServiceId;

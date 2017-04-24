@@ -24,10 +24,6 @@ final class None extends Option
 {
     private static $instance;
 
-    private function __construct()
-    {
-    }
-
     public static function create()
     {
         if (null === self::$instance) {
@@ -129,4 +125,6 @@ final class None extends Option
     {
         return $initialValue;
     }
+
+    private function __construct() { }
 }

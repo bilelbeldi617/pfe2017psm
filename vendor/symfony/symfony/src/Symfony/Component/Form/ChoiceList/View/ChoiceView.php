@@ -45,7 +45,7 @@ class ChoiceView
     /**
      * Creates a new ChoiceView.
      *
-     * @param mixed $data The original choice
+     * @param mixed  $data  The original choice
      * @param string $value The view representation of the choice
      * @param string $label The label displayed to humans
      */
@@ -78,10 +78,10 @@ class ChoiceView extends LegacyChoiceView
     /**
      * Creates a new choice view.
      *
-     * @param mixed $data The original choice
+     * @param mixed  $data  The original choice
      * @param string $value The view representation of the choice
      * @param string $label The label displayed to humans
-     * @param array $attr Additional attributes for the HTML tag
+     * @param array  $attr  Additional attributes for the HTML tag
      */
     public function __construct($data, $value, $label, array $attr = array())
     {

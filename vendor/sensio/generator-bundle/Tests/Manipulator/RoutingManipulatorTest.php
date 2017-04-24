@@ -60,7 +60,7 @@ class RoutingManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function testHasResourceInAnnotation()
     {
-        $tmpDir = sys_get_temp_dir() . '/sf';
+        $tmpDir = sys_get_temp_dir().'/sf';
         @mkdir($tmpDir, 0777, true);
         $file = tempnam($tmpDir, 'routing');
 
@@ -78,7 +78,7 @@ DATA;
 
     public function testHasResourceInAnnotationReturnFalseIfOnlyOneControllerDefined()
     {
-        $tmpDir = sys_get_temp_dir() . '/sf';
+        $tmpDir = sys_get_temp_dir().'/sf';
         @mkdir($tmpDir, 0777, true);
         $file = tempnam($tmpDir, 'routing');
 

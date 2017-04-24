@@ -25,6 +25,11 @@ class LegacyOptionsResolverTest extends TestCase
      */
     private $resolver;
 
+    protected function setUp()
+    {
+        $this->resolver = new OptionsResolver();
+    }
+
     public function testResolve()
     {
         $this->resolver->setDefaults(array(
@@ -94,7 +99,7 @@ class LegacyOptionsResolverTest extends TestCase
         $this->resolver->setDefaults(array(
             'one' => '1',
             'two' => function (Options $options) {
-                return $options['one'] . '2';
+                return $options['one'].'2';
             },
         ));
 
@@ -145,7 +150,7 @@ class LegacyOptionsResolverTest extends TestCase
                 /* @var TestCase $test */
                 $test->assertTrue(isset($options['one']));
 
-                return $options['one'] . '2';
+                return $options['one'].'2';
             },
         ));
 
@@ -166,7 +171,7 @@ class LegacyOptionsResolverTest extends TestCase
         ));
         $this->resolver->setDefaults(array(
             'two' => function (Options $options) {
-                return $options['one'] . '2';
+                return $options['one'].'2';
             },
         ));
 
@@ -588,7 +593,7 @@ class LegacyOptionsResolverTest extends TestCase
         ));
         $this->resolver->setNormalizers(array(
             'foo' => function (Options $options, $value) {
-                return $options['bam'] . '[' . $value . ']';
+                return $options['bam'].'['.$value.']';
             },
         ));
 
@@ -725,10 +730,5 @@ class LegacyOptionsResolverTest extends TestCase
         $this->resolver->overload('foo', 'bar');
 
         $this->assertSame(array('foo' => 'bar'), $this->resolver->resolve());
-    }
-
-    protected function setUp()
-    {
-        $this->resolver = new OptionsResolver();
     }
 }

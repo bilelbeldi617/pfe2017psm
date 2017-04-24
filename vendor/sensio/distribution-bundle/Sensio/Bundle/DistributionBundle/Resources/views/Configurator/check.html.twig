@@ -19,18 +19,18 @@
 
         <p>
             {% if majors|length %}
-                Additionally, we
+            Additionally, we
             {% else %}
-                We
+            We
             {% endif %}
             have detected some minor problems that we <em>recommend</em> you to fix to have a better Symfony
             experience:
 
-        <ol>
-            {% for message in minors %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ol>
+            <ol>
+                {% for message in minors %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ol>
         </p>
 
     {% endif %}

@@ -134,7 +134,7 @@ class FormExtension extends \Twig_Extension implements \Twig_Extension_InitRunti
      * seems to be much more efficient at executing filters than at executing
      * methods of an object.
      *
-     * @param ChoiceView $choice The choice to check
+     * @param ChoiceView   $choice        The choice to check
      * @param string|array $selectedValue The selected value to compare
      *
      * @return bool Whether the choice is selected

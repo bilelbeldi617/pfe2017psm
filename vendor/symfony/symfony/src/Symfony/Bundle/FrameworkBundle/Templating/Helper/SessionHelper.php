@@ -35,7 +35,7 @@ class SessionHelper extends Helper
     public function __construct($requestStack)
     {
         if ($requestStack instanceof Request) {
-            @trigger_error('Since version 2.5, passing a Request instance into the ' . __METHOD__ . ' is deprecated and support for it will be removed in 3.0. Inject a Symfony\Component\HttpFoundation\RequestStack instance instead.', E_USER_DEPRECATED);
+            @trigger_error('Since version 2.5, passing a Request instance into the '.__METHOD__.' is deprecated and support for it will be removed in 3.0. Inject a Symfony\Component\HttpFoundation\RequestStack instance instead.', E_USER_DEPRECATED);
             $this->session = $requestStack->getSession();
         } elseif ($requestStack instanceof RequestStack) {
             $this->requestStack = $requestStack;
@@ -47,27 +47,14 @@ class SessionHelper extends Helper
     /**
      * Returns an attribute.
      *
-     * @param string $name The attribute name
-     * @param mixed $default The default value
+     * @param string $name    The attribute name
+     * @param mixed  $default The default value
      *
      * @return mixed
      */
     public function get($name, $default = null)
     {
         return $this->getSession()->get($name, $default);
-    }
-
-    private function getSession()
-    {
-        if (null === $this->session) {
-            if (!$this->requestStack->getMasterRequest()) {
-                throw new \LogicException('A Request must be available.');
-            }
-
-            $this->session = $this->requestStack->getMasterRequest()->getSession();
-        }
-
-        return $this->session;
     }
 
     public function getFlash($name, array $default = array())
@@ -83,6 +70,19 @@ class SessionHelper extends Helper
     public function hasFlash($name)
     {
         return $this->getSession()->getFlashBag()->has($name);
+    }
+
+    private function getSession()
+    {
+        if (null === $this->session) {
+            if (!$this->requestStack->getMasterRequest()) {
+                throw new \LogicException('A Request must be available.');
+            }
+
+            $this->session = $this->requestStack->getMasterRequest()->getSession();
+        }
+
+        return $this->session;
     }
 
     /**

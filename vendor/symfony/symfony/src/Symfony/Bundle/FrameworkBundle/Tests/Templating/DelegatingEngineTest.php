@@ -29,33 +29,6 @@ class DelegatingEngineTest extends TestCase
         $this->assertTrue($delegatingEngine->supports('template.php'));
     }
 
-    private function getContainerMock($services)
-    {
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
-
-        $i = 0;
-        foreach ($services as $id => $service) {
-            $container->expects($this->at($i++))
-                ->method('get')
-                ->with($id)
-                ->will($this->returnValue($service));
-        }
-
-        return $container;
-    }
-
-    private function getEngineMock($template, $supports)
-    {
-        $engine = $this->getMockBuilder('Symfony\Component\Templating\EngineInterface')->getMock();
-
-        $engine->expects($this->once())
-            ->method('supports')
-            ->with($template)
-            ->will($this->returnValue($supports));
-
-        return $engine;
-    }
-
     public function testGetExistingEngine()
     {
         $firstEngine = $this->getEngineMock('template.php', false);
@@ -102,6 +75,27 @@ class DelegatingEngineTest extends TestCase
         $this->assertSame($response, $delegatingEngine->renderResponse('template.php', array('foo' => 'bar')));
     }
 
+    public function testRenderResponseWithTemplatingEngine()
+    {
+        $engine = $this->getEngineMock('template.php', true);
+        $container = $this->getContainerMock(array('engine' => $engine));
+        $delegatingEngine = new DelegatingEngine($container, array('engine'));
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $delegatingEngine->renderResponse('template.php', array('foo' => 'bar')));
+    }
+
+    private function getEngineMock($template, $supports)
+    {
+        $engine = $this->getMockBuilder('Symfony\Component\Templating\EngineInterface')->getMock();
+
+        $engine->expects($this->once())
+            ->method('supports')
+            ->with($template)
+            ->will($this->returnValue($supports));
+
+        return $engine;
+    }
+
     private function getFrameworkEngineMock($template, $supports)
     {
         $engine = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface')->getMock();
@@ -114,12 +108,18 @@ class DelegatingEngineTest extends TestCase
         return $engine;
     }
 
-    public function testRenderResponseWithTemplatingEngine()
+    private function getContainerMock($services)
     {
-        $engine = $this->getEngineMock('template.php', true);
-        $container = $this->getContainerMock(array('engine' => $engine));
-        $delegatingEngine = new DelegatingEngine($container, array('engine'));
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $delegatingEngine->renderResponse('template.php', array('foo' => 'bar')));
+        $i = 0;
+        foreach ($services as $id => $service) {
+            $container->expects($this->at($i++))
+                ->method('get')
+                ->with($id)
+                ->will($this->returnValue($service));
+        }
+
+        return $container;
     }
 }

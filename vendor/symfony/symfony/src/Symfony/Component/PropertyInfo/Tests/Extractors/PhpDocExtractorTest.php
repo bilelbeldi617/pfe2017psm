@@ -25,6 +25,11 @@ class PhpDocExtractorTest extends TestCase
      */
     private $extractor;
 
+    protected function setUp()
+    {
+        $this->extractor = new PhpDocExtractor();
+    }
+
     /**
      * @dataProvider typesProvider
      */
@@ -67,10 +72,5 @@ class PhpDocExtractorTest extends TestCase
             array('staticGetter', null, null, null),
             array('staticSetter', null, null, null),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->extractor = new PhpDocExtractor();
     }
 }

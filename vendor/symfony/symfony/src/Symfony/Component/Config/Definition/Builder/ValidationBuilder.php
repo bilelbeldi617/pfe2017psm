@@ -18,8 +18,8 @@ namespace Symfony\Component\Config\Definition\Builder;
  */
 class ValidationBuilder
 {
-    public $rules = array();
     protected $node;
+    public $rules = array();
 
     /**
      * Constructor.

@@ -99,16 +99,16 @@ class AsseticLoader extends Loader
      * target URL will be removed before set as a route pattern.
      *
      * @param RouteCollection $routes The route collection
-     * @param AssetInterface $asset The asset
-     * @param string $name The name to use
-     * @param integer $pos The leaf index
+     * @param AssetInterface  $asset  The asset
+     * @param string          $name   The name to use
+     * @param integer         $pos    The leaf index
      */
     private function loadRouteForAsset(RouteCollection $routes, AssetInterface $asset, $name, $pos = null)
     {
         $defaults = array(
             '_controller' => 'assetic.controller:render',
-            'name' => $name,
-            'pos' => $pos,
+            'name'        => $name,
+            'pos'         => $pos,
         );
         $requirements = array();
 
@@ -119,9 +119,9 @@ class AsseticLoader extends Loader
             $defaults['_format'] = $format;
         }
 
-        $route = '_assetic_' . $name;
+        $route = '_assetic_'.$name;
         if (null !== $pos) {
-            $route .= '_' . $pos;
+            $route .= '_'.$pos;
         }
 
         foreach ($asset->getVars() as $var) {

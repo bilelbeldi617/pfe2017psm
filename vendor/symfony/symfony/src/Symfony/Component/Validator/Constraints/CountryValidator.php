@@ -30,7 +30,7 @@ class CountryValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Country) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Country');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Country');
         }
 
         if (null === $value || '' === $value) {
@@ -41,7 +41,7 @@ class CountryValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         $countries = Intl::getRegionBundle()->getCountryNames();
 
         if (!isset($countries[$value])) {

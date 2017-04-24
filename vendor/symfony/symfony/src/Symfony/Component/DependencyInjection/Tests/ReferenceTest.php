@@ -19,12 +19,12 @@ class ReferenceTest extends TestCase
     public function testConstructor()
     {
         $ref = new Reference('foo');
-        $this->assertEquals('foo', (string)$ref, '__construct() sets the id of the reference, which is used for the __toString() method');
+        $this->assertEquals('foo', (string) $ref, '__construct() sets the id of the reference, which is used for the __toString() method');
     }
 
     public function testCaseInsensitive()
     {
         $ref = new Reference('FooBar');
-        $this->assertEquals('foobar', (string)$ref, 'the id is lowercased as the container is case insensitive');
+        $this->assertEquals('foobar', (string) $ref, 'the id is lowercased as the container is case insensitive');
     }
 }

@@ -21,7 +21,7 @@ class CookieTest extends TestCase
      */
     public function testToFromString($cookie, $url = null)
     {
-        $this->assertEquals($cookie, (string)Cookie::fromString($cookie, $url));
+        $this->assertEquals($cookie, (string) Cookie::fromString($cookie, $url));
     }
 
     public function getTestsForToFromString()
@@ -68,19 +68,19 @@ class CookieTest extends TestCase
 
     public function testFromStringWithCapitalization()
     {
-        $this->assertEquals('Foo=Bar; path=/', (string)Cookie::fromString('Foo=Bar'));
-        $this->assertEquals('foo=bar; expires=Fri, 31 Dec 2010 23:59:59 GMT; path=/', (string)Cookie::fromString('foo=bar; Expires=Fri, 31 Dec 2010 23:59:59 GMT'));
-        $this->assertEquals('foo=bar; domain=www.example.org; path=/; httponly', (string)Cookie::fromString('foo=bar; DOMAIN=www.example.org; HttpOnly'));
+        $this->assertEquals('Foo=Bar; path=/', (string) Cookie::fromString('Foo=Bar'));
+        $this->assertEquals('foo=bar; expires=Fri, 31 Dec 2010 23:59:59 GMT; path=/', (string) Cookie::fromString('foo=bar; Expires=Fri, 31 Dec 2010 23:59:59 GMT'));
+        $this->assertEquals('foo=bar; domain=www.example.org; path=/; httponly', (string) Cookie::fromString('foo=bar; DOMAIN=www.example.org; HttpOnly'));
     }
 
     public function testFromStringWithUrl()
     {
-        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string)Cookie::fromString('foo=bar', 'http://www.example.com/'));
-        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string)Cookie::fromString('foo=bar', 'http://www.example.com'));
-        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string)Cookie::fromString('foo=bar', 'http://www.example.com?foo'));
-        $this->assertEquals('foo=bar; domain=www.example.com; path=/foo', (string)Cookie::fromString('foo=bar', 'http://www.example.com/foo/bar'));
-        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string)Cookie::fromString('foo=bar; path=/', 'http://www.example.com/foo/bar'));
-        $this->assertEquals('foo=bar; domain=www.myotherexample.com; path=/', (string)Cookie::fromString('foo=bar; domain=www.myotherexample.com', 'http://www.example.com/'));
+        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string) Cookie::fromString('foo=bar', 'http://www.example.com/'));
+        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string) Cookie::fromString('foo=bar', 'http://www.example.com'));
+        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string) Cookie::fromString('foo=bar', 'http://www.example.com?foo'));
+        $this->assertEquals('foo=bar; domain=www.example.com; path=/foo', (string) Cookie::fromString('foo=bar', 'http://www.example.com/foo/bar'));
+        $this->assertEquals('foo=bar; domain=www.example.com; path=/', (string) Cookie::fromString('foo=bar; path=/', 'http://www.example.com/foo/bar'));
+        $this->assertEquals('foo=bar; domain=www.myotherexample.com; path=/', (string) Cookie::fromString('foo=bar; domain=www.myotherexample.com', 'http://www.example.com/'));
     }
 
     public function testFromStringThrowsAnExceptionIfCookieIsNotValid()

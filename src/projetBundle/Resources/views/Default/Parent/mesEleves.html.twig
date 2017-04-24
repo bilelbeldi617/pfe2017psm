@@ -5,8 +5,8 @@
 
 {% block script %}
     <script language="JavaScript">
-        $("document").ready(function () {
-            $("#tableEleves").dataTable();
+        $("document").ready(function(){
+           $("#tableEleves").dataTable();
         });
     </script>
 {% endblock %}
@@ -33,23 +33,20 @@
                         <td>{{ e.groupe.nomGroupe }} {{ e.groupe.numGroupe }}</td>
                         <td>{{ e.matriculeEleve }}</td>
                         <td>
-                            <a href="{{ path('consulterNotes') }}?matEleve={{ e.matriculeEleve }}">Notes <i
-                                        class="menu-icon fa fa-calculator"></i></a> |
+                            <a href="{{ path('consulterNotes') }}?matEleve={{ e.matriculeEleve }}">Notes <i class="menu-icon fa fa-calculator"></i></a> |
                             <a href="">Absences <i class="menu-icon fa fa-thumbs-down"></i></a> |
                             <a href="">Emploi <i class="menu-icon fa fa-calendar"></i></a> |
-                            <a href="{{ path('consulterPaiement') }}?matEleve={{ e.matriculeEleve }}">Paiements <i
-                                        class="menu-icon fa fa-money"></i></a> |
-                            <a href="{{ path('consulterHistorique') }}?matEleve={{ e.matriculeEleve }}">Historique <i
-                                        class="menu-icon fa fa-history"></i></a>
+                            <a href="{{ path('consulterPaiement') }}?matEleve={{ e.matriculeEleve }}">Paiements <i class="menu-icon fa fa-money"></i></a> |
+                            <a href="{{ path('consulterHistorique') }}?matEleve={{ e.matriculeEleve }}">Historique <i class="menu-icon fa fa-history"></i></a>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
                 <tfoot>
-                <th>Prenom</th>
-                <th>Nom</th>
-                <th>Groupe</th>
-                <th>Matricule</th>
+                    <th>Prenom</th>
+                    <th>Nom</th>
+                    <th>Groupe</th>
+                    <th>Matricule</th>
                 <th>Opérations</th>
                 </tfoot>
             </table>

@@ -41,7 +41,7 @@ class PostgreSQL92Platform extends PostgreSQL91Platform
      */
     public function getSmallIntTypeDeclarationSQL(array $field)
     {
-        if (!empty($field['autoincrement'])) {
+        if ( ! empty($field['autoincrement'])) {
             return 'SMALLSERIAL';
         }
 
@@ -59,16 +59,6 @@ class PostgreSQL92Platform extends PostgreSQL91Platform
     /**
      * {@inheritdoc}
      */
-    public function getCloseActiveDatabaseConnectionsSQL($database)
-    {
-        $database = $this->quoteStringLiteral($database);
-
-        return "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = $database";
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getReservedKeywordsClass()
     {
         return 'Doctrine\DBAL\Platforms\Keywords\PostgreSQL92Keywords';
@@ -81,5 +71,15 @@ class PostgreSQL92Platform extends PostgreSQL91Platform
     {
         parent::initializeDoctrineTypeMappings();
         $this->doctrineTypeMapping['json'] = 'json_array';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCloseActiveDatabaseConnectionsSQL($database)
+    {
+        $database = $this->quoteStringLiteral($database);
+
+        return "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = $database";
     }
 }

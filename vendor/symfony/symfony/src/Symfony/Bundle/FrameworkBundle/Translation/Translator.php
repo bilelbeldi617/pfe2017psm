@@ -47,9 +47,9 @@ class Translator extends BaseTranslator implements WarmableInterface
      *   * resource_files: List of translation resources available grouped by locale.
      *
      * @param ContainerInterface $container A ContainerInterface instance
-     * @param MessageSelector $selector The message selector for pluralization
-     * @param array $loaderIds An array of loader Ids
-     * @param array $options An array of options
+     * @param MessageSelector    $selector  The message selector for pluralization
+     * @param array              $loaderIds An array of loader Ids
+     * @param array              $options   An array of options
      *
      * @throws \InvalidArgumentException
      */
@@ -70,18 +70,6 @@ class Translator extends BaseTranslator implements WarmableInterface
         }
 
         parent::__construct($container->getParameter('kernel.default_locale'), $selector, $this->options['cache_dir'], $this->options['debug']);
-    }
-
-    private function loadResources()
-    {
-        foreach ($this->options['resource_files'] as $locale => $files) {
-            foreach ($files as $key => $file) {
-                // filename is domain.locale.format
-                list($domain, $locale, $format) = explode('.', basename($file), 3);
-                $this->addResource($format, $file, $locale, $domain);
-                unset($this->options['resource_files'][$locale][$key]);
-            }
-        }
     }
 
     /**
@@ -120,6 +108,18 @@ class Translator extends BaseTranslator implements WarmableInterface
         foreach ($this->loaderIds as $id => $aliases) {
             foreach ($aliases as $alias) {
                 $this->addLoader($alias, $this->container->get($id));
+            }
+        }
+    }
+
+    private function loadResources()
+    {
+        foreach ($this->options['resource_files'] as $locale => $files) {
+            foreach ($files as $key => $file) {
+                // filename is domain.locale.format
+                list($domain, $locale, $format) = explode('.', basename($file), 3);
+                $this->addResource($format, $file, $locale, $domain);
+                unset($this->options['resource_files'][$locale][$key]);
             }
         }
     }

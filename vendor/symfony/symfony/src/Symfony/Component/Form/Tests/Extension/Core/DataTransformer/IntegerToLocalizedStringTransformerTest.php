@@ -17,6 +17,13 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class IntegerToLocalizedStringTransformerTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        \Locale::setDefault('en');
+    }
+
     public function transformWithRoundingProvider()
     {
         return array(
@@ -234,12 +241,5 @@ class IntegerToLocalizedStringTransformerTest extends TestCase
         $transformer = new IntegerToLocalizedStringTransformer();
 
         $transformer->reverseTransform('-∞');
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        \Locale::setDefault('en');
     }
 }

@@ -55,7 +55,7 @@ class ObjectWithXmlNamespaces
      * @XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     private $author;
-
+    
     /**
      * @Type("string")
      * @XmlAttribute(namespace="http://purl.org/dc/elements/1.1/");

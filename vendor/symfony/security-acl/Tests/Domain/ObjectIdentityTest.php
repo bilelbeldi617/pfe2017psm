@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Security\Acl\Tests\Domain {
-
+namespace Symfony\Component\Security\Acl\Tests\Domain
+{
     use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 
     class ObjectIdentityTest extends \PHPUnit_Framework_TestCase
@@ -38,11 +38,13 @@ namespace Symfony\Component\Security\Acl\Tests\Domain {
             $domainObject
                 ->expects($this->once())
                 ->method('getObjectIdentifier')
-                ->will($this->returnValue('getObjectIdentifier()'));
+                ->will($this->returnValue('getObjectIdentifier()'))
+            ;
             $domainObject
                 ->expects($this->never())
                 ->method('getId')
-                ->will($this->returnValue('getId()'));
+                ->will($this->returnValue('getId()'))
+            ;
 
             $id = ObjectIdentity::fromDomainObject($domainObject);
             $this->assertEquals('getObjectIdentifier()', $id->getIdentifier());
@@ -121,7 +123,8 @@ namespace Symfony\Component\Security\Acl\Tests\Domain {
     }
 }
 
-namespace Acme\DemoBundle\Proxy\__CG__\Symfony\Component\Security\Acl\Tests\Domain {
+namespace Acme\DemoBundle\Proxy\__CG__\Symfony\Component\Security\Acl\Tests\Domain
+{
     class TestDomainObject extends \Symfony\Component\Security\Acl\Tests\Domain\TestDomainObject
     {
     }

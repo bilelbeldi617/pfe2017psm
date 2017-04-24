@@ -54,7 +54,7 @@ class RoutingManipulator extends Manipulator
             $current = file_get_contents($this->file);
 
             // Don't add same bundle twice
-            if (false !== strpos($current, '@' . $bundle)) {
+            if (false !== strpos($current, '@'.$bundle)) {
                 throw new \RuntimeException(sprintf('Bundle "%s" is already imported.', $bundle));
             }
         } elseif (!is_dir($dir = dirname($this->file))) {
@@ -75,14 +75,6 @@ class RoutingManipulator extends Manipulator
         }
 
         return true;
-    }
-
-    public function getImportedResourceYamlKey($bundle, $prefix)
-    {
-        $snakeCasedBundleName = Container::underscore(substr($bundle, 0, -6));
-        $routePrefix = DoctrineCrudGenerator::getRouteNamePrefix($prefix);
-
-        return sprintf('%s%s%s', $snakeCasedBundleName, '' !== $routePrefix ? '_' : '', $routePrefix);
     }
 
     /**
@@ -129,7 +121,7 @@ class RoutingManipulator extends Manipulator
             mkdir($dir, 0777, true);
         }
 
-        $code = sprintf("%s:\n", Container::underscore(substr($bundle, 0, -6)) . '_' . Container::underscore($controller));
+        $code = sprintf("%s:\n", Container::underscore(substr($bundle, 0, -6)).'_'.Container::underscore($controller));
 
         $code .= sprintf("    resource: \"@%s/Controller/%sController.php\"\n    type:     annotation\n", $bundle, $controller);
 
@@ -137,5 +129,13 @@ class RoutingManipulator extends Manipulator
         $code .= $current;
 
         return false !== file_put_contents($this->file, $code);
+    }
+
+    public function getImportedResourceYamlKey($bundle, $prefix)
+    {
+        $snakeCasedBundleName = Container::underscore(substr($bundle, 0, -6));
+        $routePrefix = DoctrineCrudGenerator::getRouteNamePrefix($prefix);
+
+        return sprintf('%s%s%s', $snakeCasedBundleName, '' !== $routePrefix ? '_' : '', $routePrefix);
     }
 }

@@ -106,11 +106,6 @@ class FlattenException extends LegacyFlattenException
         return $e;
     }
 
-    public function setTraceFromException(\Exception $exception)
-    {
-        $this->setTrace($exception->getTrace(), $exception->getFile(), $exception->getLine());
-    }
-
     public function toArray()
     {
         $exceptions = array();
@@ -123,27 +118,6 @@ class FlattenException extends LegacyFlattenException
         }
 
         return $exceptions;
-    }
-
-    public function getAllPrevious()
-    {
-        $exceptions = array();
-        $e = $this;
-        while ($e = $e->getPrevious()) {
-            $exceptions[] = $e;
-        }
-
-        return $exceptions;
-    }
-
-    public function getPrevious()
-    {
-        return $this->previous;
-    }
-
-    public function setPrevious(FlattenException $previous)
-    {
-        $this->previous = $previous;
     }
 
     public function getStatusCode()
@@ -216,9 +190,35 @@ class FlattenException extends LegacyFlattenException
         $this->code = $code;
     }
 
+    public function getPrevious()
+    {
+        return $this->previous;
+    }
+
+    public function setPrevious(FlattenException $previous)
+    {
+        $this->previous = $previous;
+    }
+
+    public function getAllPrevious()
+    {
+        $exceptions = array();
+        $e = $this;
+        while ($e = $e->getPrevious()) {
+            $exceptions[] = $e;
+        }
+
+        return $exceptions;
+    }
+
     public function getTrace()
     {
         return $this->trace;
+    }
+
+    public function setTraceFromException(\Exception $exception)
+    {
+        $this->setTrace($exception->getTrace(), $exception->getFile(), $exception->getLine());
     }
 
     public function setTrace($trace, $file, $line)
@@ -281,7 +281,7 @@ class FlattenException extends LegacyFlattenException
             } elseif (is_resource($value)) {
                 $result[$key] = array('resource', get_resource_type($value));
             } else {
-                $result[$key] = array('string', (string)$value);
+                $result[$key] = array('string', (string) $value);
             }
         }
 

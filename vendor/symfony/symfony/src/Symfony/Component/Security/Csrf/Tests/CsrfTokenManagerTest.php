@@ -35,6 +35,20 @@ class CsrfTokenManagerTest extends TestCase
      */
     private $manager;
 
+    protected function setUp()
+    {
+        $this->generator = $this->getMockBuilder('Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface')->getMock();
+        $this->storage = $this->getMockBuilder('Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface')->getMock();
+        $this->manager = new CsrfTokenManager($this->generator, $this->storage);
+    }
+
+    protected function tearDown()
+    {
+        $this->generator = null;
+        $this->storage = null;
+        $this->manager = null;
+    }
+
     public function testGetNonExistingToken()
     {
         $this->storage->expects($this->once())
@@ -147,19 +161,5 @@ class CsrfTokenManagerTest extends TestCase
             ->will($this->returnValue('REMOVED_TOKEN'));
 
         $this->assertSame('REMOVED_TOKEN', $this->manager->removeToken('token_id'));
-    }
-
-    protected function setUp()
-    {
-        $this->generator = $this->getMockBuilder('Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface')->getMock();
-        $this->storage = $this->getMockBuilder('Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface')->getMock();
-        $this->manager = new CsrfTokenManager($this->generator, $this->storage);
-    }
-
-    protected function tearDown()
-    {
-        $this->generator = null;
-        $this->storage = null;
-        $this->manager = null;
     }
 }

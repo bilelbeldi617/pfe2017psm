@@ -102,27 +102,6 @@ class TextDescriptor extends Descriptor
     }
 
     /**
-     * @param array $config
-     *
-     * @return string
-     */
-    private function formatRouterConfig(array $config)
-    {
-        if (empty($config)) {
-            return 'NONE';
-        }
-
-        ksort($config);
-
-        $configAsString = '';
-        foreach ($config as $key => $value) {
-            $configAsString .= sprintf("\n%s: %s", $key, $this->formatValue($value));
-        }
-
-        return trim($configAsString);
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function describeContainerParameters(ParameterBag $parameters, array $options = array())
@@ -179,94 +158,6 @@ class TextDescriptor extends Descriptor
                 )
             );
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function describeContainerAlias(Alias $alias, array $options = array())
-    {
-        $options['output']->comment(sprintf('This service is an alias for the service <info>%s</info>', (string)$alias));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function describeContainerDefinition(Definition $definition, array $options = array())
-    {
-        if (isset($options['id'])) {
-            $options['output']->title(sprintf('Information for Service "<info>%s</info>"', $options['id']));
-        }
-
-        $tableHeaders = array('Option', 'Value');
-
-        $tableRows[] = array('Service ID', isset($options['id']) ? $options['id'] : '-');
-        $tableRows[] = array('Class', $definition->getClass() ?: '-');
-
-        if ($tags = $definition->getTags()) {
-            $tagInformation = '';
-            foreach ($tags as $tagName => $tagData) {
-                foreach ($tagData as $tagParameters) {
-                    $parameters = array_map(function ($key, $value) {
-                        return sprintf('<info>%s</info>: %s', $key, $value);
-                    }, array_keys($tagParameters), array_values($tagParameters));
-                    $parameters = implode(', ', $parameters);
-
-                    if ('' === $parameters) {
-                        $tagInformation .= sprintf('%s', $tagName);
-                    } else {
-                        $tagInformation .= sprintf('%s (%s)', $tagName, $parameters);
-                    }
-                }
-            }
-        } else {
-            $tagInformation = '-';
-        }
-        $tableRows[] = array('Tags', $tagInformation);
-
-        $tableRows[] = array('Scope', $definition->getScope(false));
-        $tableRows[] = array('Public', $definition->isPublic() ? 'yes' : 'no');
-        $tableRows[] = array('Synthetic', $definition->isSynthetic() ? 'yes' : 'no');
-        $tableRows[] = array('Lazy', $definition->isLazy() ? 'yes' : 'no');
-        $tableRows[] = array('Synchronized', $definition->isSynchronized(false) ? 'yes' : 'no');
-        $tableRows[] = array('Abstract', $definition->isAbstract() ? 'yes' : 'no');
-        $tableRows[] = array('Autowired', $definition->isAutowired() ? 'yes' : 'no');
-
-        $autowiringTypes = $definition->getAutowiringTypes();
-        $tableRows[] = array('Autowiring Types', $autowiringTypes ? implode(', ', $autowiringTypes) : '-');
-
-        if ($definition->getFile()) {
-            $tableRows[] = array('Required File', $definition->getFile() ? $definition->getFile() : '-');
-        }
-
-        if ($definition->getFactoryClass(false)) {
-            $tableRows[] = array('Factory Class', $definition->getFactoryClass(false));
-        }
-
-        if ($definition->getFactoryService(false)) {
-            $tableRows[] = array('Factory Service', $definition->getFactoryService(false));
-        }
-
-        if ($definition->getFactoryMethod(false)) {
-            $tableRows[] = array('Factory Method', $definition->getFactoryMethod(false));
-        }
-
-        if ($factory = $definition->getFactory()) {
-            if (is_array($factory)) {
-                if ($factory[0] instanceof Reference) {
-                    $tableRows[] = array('Factory Service', $factory[0]);
-                } elseif ($factory[0] instanceof Definition) {
-                    throw new \InvalidArgumentException('Factory is not describable.');
-                } else {
-                    $tableRows[] = array('Factory Class', $factory[0]);
-                }
-                $tableRows[] = array('Factory Method', $factory[1]);
-            } else {
-                $tableRows[] = array('Factory Function', $factory);
-            }
-        }
-
-        $options['output']->table($tableHeaders, $tableRows);
     }
 
     /**
@@ -353,14 +244,102 @@ class TextDescriptor extends Descriptor
     /**
      * {@inheritdoc}
      */
+    protected function describeContainerDefinition(Definition $definition, array $options = array())
+    {
+        if (isset($options['id'])) {
+            $options['output']->title(sprintf('Information for Service "<info>%s</info>"', $options['id']));
+        }
+
+        $tableHeaders = array('Option', 'Value');
+
+        $tableRows[] = array('Service ID', isset($options['id']) ? $options['id'] : '-');
+        $tableRows[] = array('Class', $definition->getClass() ?: '-');
+
+        if ($tags = $definition->getTags()) {
+            $tagInformation = '';
+            foreach ($tags as $tagName => $tagData) {
+                foreach ($tagData as $tagParameters) {
+                    $parameters = array_map(function ($key, $value) {
+                        return sprintf('<info>%s</info>: %s', $key, $value);
+                    }, array_keys($tagParameters), array_values($tagParameters));
+                    $parameters = implode(', ', $parameters);
+
+                    if ('' === $parameters) {
+                        $tagInformation .= sprintf('%s', $tagName);
+                    } else {
+                        $tagInformation .= sprintf('%s (%s)', $tagName, $parameters);
+                    }
+                }
+            }
+        } else {
+            $tagInformation = '-';
+        }
+        $tableRows[] = array('Tags', $tagInformation);
+
+        $tableRows[] = array('Scope', $definition->getScope(false));
+        $tableRows[] = array('Public', $definition->isPublic() ? 'yes' : 'no');
+        $tableRows[] = array('Synthetic', $definition->isSynthetic() ? 'yes' : 'no');
+        $tableRows[] = array('Lazy', $definition->isLazy() ? 'yes' : 'no');
+        $tableRows[] = array('Synchronized', $definition->isSynchronized(false) ? 'yes' : 'no');
+        $tableRows[] = array('Abstract', $definition->isAbstract() ? 'yes' : 'no');
+        $tableRows[] = array('Autowired', $definition->isAutowired() ? 'yes' : 'no');
+
+        $autowiringTypes = $definition->getAutowiringTypes();
+        $tableRows[] = array('Autowiring Types', $autowiringTypes ? implode(', ', $autowiringTypes) : '-');
+
+        if ($definition->getFile()) {
+            $tableRows[] = array('Required File', $definition->getFile() ? $definition->getFile() : '-');
+        }
+
+        if ($definition->getFactoryClass(false)) {
+            $tableRows[] = array('Factory Class', $definition->getFactoryClass(false));
+        }
+
+        if ($definition->getFactoryService(false)) {
+            $tableRows[] = array('Factory Service', $definition->getFactoryService(false));
+        }
+
+        if ($definition->getFactoryMethod(false)) {
+            $tableRows[] = array('Factory Method', $definition->getFactoryMethod(false));
+        }
+
+        if ($factory = $definition->getFactory()) {
+            if (is_array($factory)) {
+                if ($factory[0] instanceof Reference) {
+                    $tableRows[] = array('Factory Service', $factory[0]);
+                } elseif ($factory[0] instanceof Definition) {
+                    throw new \InvalidArgumentException('Factory is not describable.');
+                } else {
+                    $tableRows[] = array('Factory Class', $factory[0]);
+                }
+                $tableRows[] = array('Factory Method', $factory[1]);
+            } else {
+                $tableRows[] = array('Factory Function', $factory);
+            }
+        }
+
+        $options['output']->table($tableHeaders, $tableRows);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function describeContainerAlias(Alias $alias, array $options = array())
+    {
+        $options['output']->comment(sprintf('This service is an alias for the service <info>%s</info>', (string) $alias));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function describeContainerParameter($parameter, array $options = array())
     {
         $options['output']->table(
             array('Parameter', 'Value'),
             array(
                 array($options['parameter'], $this->formatParameter($parameter),
-                ),
-            ));
+            ),
+        ));
     }
 
     /**
@@ -391,6 +370,14 @@ class TextDescriptor extends Descriptor
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function describeCallable($callable, array $options = array())
+    {
+        $this->writeText($this->formatCallable($callable), $options);
+    }
+
+    /**
      * @param array $array
      */
     private function renderEventListenerTable(EventDispatcherInterface $eventDispatcher, $event, array $eventListeners, SymfonyStyle $io)
@@ -404,6 +391,27 @@ class TextDescriptor extends Descriptor
         }
 
         $io->table($tableHeaders, $tableRows);
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return string
+     */
+    private function formatRouterConfig(array $config)
+    {
+        if (empty($config)) {
+            return 'NONE';
+        }
+
+        ksort($config);
+
+        $configAsString = '';
+        foreach ($config as $key => $value) {
+            $configAsString .= sprintf("\n%s: %s", $key, $this->formatValue($value));
+        }
+
+        return trim($configAsString);
     }
 
     /**
@@ -437,16 +445,8 @@ class TextDescriptor extends Descriptor
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function describeCallable($callable, array $options = array())
-    {
-        $this->writeText($this->formatCallable($callable), $options);
-    }
-
-    /**
      * @param string $content
-     * @param array $options
+     * @param array  $options
      */
     private function writeText($content, array $options = array())
     {

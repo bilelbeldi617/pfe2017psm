@@ -23,14 +23,14 @@ class TypeHinted
      */
     private $countable;
 
-    public function getDate()
-    {
-        return $this->date;
-    }
-
     public function setDate(\DateTime $date)
     {
         $this->date = $date;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
     }
 
     /**

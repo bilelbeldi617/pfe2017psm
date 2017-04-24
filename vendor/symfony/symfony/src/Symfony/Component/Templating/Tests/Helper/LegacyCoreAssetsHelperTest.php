@@ -21,6 +21,16 @@ class LegacyCoreAssetsHelperTest extends TestCase
 {
     protected $package;
 
+    protected function setUp()
+    {
+        $this->package = $this->getMockBuilder('Symfony\Component\Templating\Asset\PackageInterface')->getMock();
+    }
+
+    protected function tearDown()
+    {
+        $this->package = null;
+    }
+
     public function testAddGetPackage()
     {
         $helper = new CoreAssetsHelper($this->package);
@@ -44,15 +54,5 @@ class LegacyCoreAssetsHelperTest extends TestCase
         $helper = new CoreAssetsHelper($this->package);
 
         $this->assertEquals('assets', $helper->getName());
-    }
-
-    protected function setUp()
-    {
-        $this->package = $this->getMockBuilder('Symfony\Component\Templating\Asset\PackageInterface')->getMock();
-    }
-
-    protected function tearDown()
-    {
-        $this->package = null;
     }
 }

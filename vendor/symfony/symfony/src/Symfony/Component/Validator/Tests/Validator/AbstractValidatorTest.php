@@ -47,6 +47,28 @@ abstract class AbstractValidatorTest extends TestCase
      */
     public $referenceMetadata;
 
+    protected function setUp()
+    {
+        $this->metadataFactory = new FakeMetadataFactory();
+        $this->metadata = new ClassMetadata(self::ENTITY_CLASS);
+        $this->referenceMetadata = new ClassMetadata(self::REFERENCE_CLASS);
+        $this->metadataFactory->addMetadata($this->metadata);
+        $this->metadataFactory->addMetadata($this->referenceMetadata);
+    }
+
+    protected function tearDown()
+    {
+        $this->metadataFactory = null;
+        $this->metadata = null;
+        $this->referenceMetadata = null;
+    }
+
+    abstract protected function validate($value, $constraints = null, $groups = null);
+
+    abstract protected function validateProperty($object, $propertyName, $groups = null);
+
+    abstract protected function validatePropertyValue($object, $propertyName, $value, $groups = null);
+
     public function testValidate()
     {
         $test = $this;
@@ -81,8 +103,6 @@ abstract class AbstractValidatorTest extends TestCase
         $this->assertNull($violations[0]->getPlural());
         $this->assertNull($violations[0]->getCode());
     }
-
-    abstract protected function validate($value, $constraints = null, $groups = null);
 
     public function testClassConstraint()
     {
@@ -543,6 +563,7 @@ abstract class AbstractValidatorTest extends TestCase
         $this->assertNull($violations[0]->getCode());
     }
 
+    // https://github.com/symfony/symfony/issues/6246
     public function testRecursiveArrayReference()
     {
         $test = $this;
@@ -634,8 +655,6 @@ abstract class AbstractValidatorTest extends TestCase
         /* @var ConstraintViolationInterface[] $violations */
         $this->assertCount(0, $violations);
     }
-
-    // https://github.com/symfony/symfony/issues/6246
 
     public function testIgnoreNullDuringArrayTraversal()
     {
@@ -817,8 +836,6 @@ abstract class AbstractValidatorTest extends TestCase
         $this->assertNull($violations[0]->getCode());
     }
 
-    abstract protected function validateProperty($object, $propertyName, $groups = null);
-
     /**
      * Cannot be UnsupportedMetadataException for BC with Symfony < 2.5.
      *
@@ -898,8 +915,6 @@ abstract class AbstractValidatorTest extends TestCase
         $this->assertNull($violations[0]->getPlural());
         $this->assertNull($violations[0]->getCode());
     }
-
-    abstract protected function validatePropertyValue($object, $propertyName, $value, $groups = null);
 
     public function testValidatePropertyValueWithClassName()
     {
@@ -1077,8 +1092,7 @@ abstract class AbstractValidatorTest extends TestCase
         };
 
         $this->metadata->addConstraint(new Callback(array(
-            'callback' => function () {
-            },
+            'callback' => function () {},
             'groups' => 'Group 1',
         )));
         $this->metadata->addConstraint(new Callback(array(
@@ -1112,8 +1126,7 @@ abstract class AbstractValidatorTest extends TestCase
         };
 
         $this->metadata->addConstraint(new Callback(array(
-            'callback' => function () {
-            },
+            'callback' => function () {},
             'groups' => 'Group 1',
         )));
         $this->metadata->addConstraint(new Callback(array(
@@ -1211,8 +1224,7 @@ abstract class AbstractValidatorTest extends TestCase
 
         $metadata = new ClassMetadata(get_class($entity));
         $metadata->addConstraint(new Callback(array(
-            'callback' => function () {
-            },
+            'callback' => function () {},
             'groups' => 'Group 1',
         )));
         $metadata->addConstraint(new Callback(array(
@@ -1248,8 +1260,7 @@ abstract class AbstractValidatorTest extends TestCase
 
         $metadata = new ClassMetadata(get_class($entity));
         $metadata->addConstraint(new Callback(array(
-            'callback' => function () {
-            },
+            'callback' => function () {},
             'groups' => 'Group 1',
         )));
         $metadata->addConstraint(new Callback(array(
@@ -1269,21 +1280,5 @@ abstract class AbstractValidatorTest extends TestCase
         /* @var ConstraintViolationInterface[] $violations */
         $this->assertCount(1, $violations);
         $this->assertSame('Violation in Group 2', $violations[0]->getMessage());
-    }
-
-    protected function setUp()
-    {
-        $this->metadataFactory = new FakeMetadataFactory();
-        $this->metadata = new ClassMetadata(self::ENTITY_CLASS);
-        $this->referenceMetadata = new ClassMetadata(self::REFERENCE_CLASS);
-        $this->metadataFactory->addMetadata($this->metadata);
-        $this->metadataFactory->addMetadata($this->referenceMetadata);
-    }
-
-    protected function tearDown()
-    {
-        $this->metadataFactory = null;
-        $this->metadata = null;
-        $this->referenceMetadata = null;
     }
 }

@@ -81,10 +81,48 @@ abstract class Descriptor implements DescriptorInterface
     }
 
     /**
+     * Returns the output.
+     *
+     * @return OutputInterface The output
+     */
+    protected function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * Writes content to output.
+     *
+     * @param string $content
+     * @param bool   $decorated
+     */
+    protected function write($content, $decorated = false)
+    {
+        $this->output->write($content, false, $decorated ? OutputInterface::OUTPUT_NORMAL : OutputInterface::OUTPUT_RAW);
+    }
+
+    /**
+     * Writes content to output.
+     *
+     * @param Table $table
+     * @param bool  $decorated
+     */
+    protected function renderTable(Table $table, $decorated = false)
+    {
+        if (!$decorated) {
+            $table->getStyle()->setCellRowFormat('%s');
+            $table->getStyle()->setCellRowContentFormat('%s');
+            $table->getStyle()->setCellHeaderFormat('%s');
+        }
+
+        $table->render();
+    }
+
+    /**
      * Describes an InputArgument instance.
      *
      * @param RouteCollection $routes
-     * @param array $options
+     * @param array           $options
      */
     abstract protected function describeRouteCollection(RouteCollection $routes, array $options = array());
 
@@ -100,7 +138,7 @@ abstract class Descriptor implements DescriptorInterface
      * Describes container parameters.
      *
      * @param ParameterBag $parameters
-     * @param array $options
+     * @param array        $options
      */
     abstract protected function describeContainerParameters(ParameterBag $parameters, array $options = array());
 
@@ -108,7 +146,7 @@ abstract class Descriptor implements DescriptorInterface
      * Describes container tags.
      *
      * @param ContainerBuilder $builder
-     * @param array $options
+     * @param array            $options
      */
     abstract protected function describeContainerTags(ContainerBuilder $builder, array $options = array());
 
@@ -119,42 +157,9 @@ abstract class Descriptor implements DescriptorInterface
      * * name: name of described service
      *
      * @param Definition|Alias|object $service
-     * @param array $options
+     * @param array                   $options
      */
     abstract protected function describeContainerService($service, array $options = array());
-
-    /**
-     * @param ContainerBuilder $builder
-     * @param string $serviceId
-     *
-     * @return mixed
-     */
-    protected function resolveServiceDefinition(ContainerBuilder $builder, $serviceId)
-    {
-        if ($builder->hasDefinition($serviceId)) {
-            return $builder->getDefinition($serviceId);
-        }
-
-        // Some service IDs don't have a Definition, they're simply an Alias
-        if ($builder->hasAlias($serviceId)) {
-            return $builder->getAlias($serviceId);
-        }
-
-        if ('service_container' === $serviceId) {
-            return $builder;
-        }
-
-        // the service has been injected in some special way, just return the service
-        return $builder->get($serviceId);
-    }
-
-    /**
-     * Describes a container parameter.
-     *
-     * @param string $parameter
-     * @param array $options
-     */
-    abstract protected function describeContainerParameter($parameter, array $options = array());
 
     /**
      * Describes container services.
@@ -163,7 +168,7 @@ abstract class Descriptor implements DescriptorInterface
      * * tag: filters described services by given tag
      *
      * @param ContainerBuilder $builder
-     * @param array $options
+     * @param array            $options
      */
     abstract protected function describeContainerServices(ContainerBuilder $builder, array $options = array());
 
@@ -171,7 +176,7 @@ abstract class Descriptor implements DescriptorInterface
      * Describes a service definition.
      *
      * @param Definition $definition
-     * @param array $options
+     * @param array      $options
      */
     abstract protected function describeContainerDefinition(Definition $definition, array $options = array());
 
@@ -184,13 +189,21 @@ abstract class Descriptor implements DescriptorInterface
     abstract protected function describeContainerAlias(Alias $alias, array $options = array());
 
     /**
+     * Describes a container parameter.
+     *
+     * @param string $parameter
+     * @param array  $options
+     */
+    abstract protected function describeContainerParameter($parameter, array $options = array());
+
+    /**
      * Describes event dispatcher listeners.
      *
      * Common options are:
      * * name: name of listened event
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param array $options
+     * @param array                    $options
      */
     abstract protected function describeEventDispatcherListeners(EventDispatcherInterface $eventDispatcher, array $options = array());
 
@@ -198,47 +211,9 @@ abstract class Descriptor implements DescriptorInterface
      * Describes a callable.
      *
      * @param callable $callable
-     * @param array $options
+     * @param array    $options
      */
     abstract protected function describeCallable($callable, array $options = array());
-
-    /**
-     * Returns the output.
-     *
-     * @return OutputInterface The output
-     */
-    protected function getOutput()
-    {
-        return $this->output;
-    }
-
-    /**
-     * Writes content to output.
-     *
-     * @param string $content
-     * @param bool $decorated
-     */
-    protected function write($content, $decorated = false)
-    {
-        $this->output->write($content, false, $decorated ? OutputInterface::OUTPUT_NORMAL : OutputInterface::OUTPUT_RAW);
-    }
-
-    /**
-     * Writes content to output.
-     *
-     * @param Table $table
-     * @param bool $decorated
-     */
-    protected function renderTable(Table $table, $decorated = false)
-    {
-        if (!$decorated) {
-            $table->getStyle()->setCellRowFormat('%s');
-            $table->getStyle()->setCellRowContentFormat('%s');
-            $table->getStyle()->setCellHeaderFormat('%s');
-        }
-
-        $table->render();
-    }
 
     /**
      * Formats a value as string.
@@ -273,18 +248,43 @@ abstract class Descriptor implements DescriptorInterface
             $jsonString = json_encode($value);
 
             if (preg_match('/^(.{60})./us', $jsonString, $matches)) {
-                return $matches[1] . '...';
+                return $matches[1].'...';
             }
 
             return $jsonString;
         }
 
-        return (string)$value;
+        return (string) $value;
     }
 
     /**
      * @param ContainerBuilder $builder
-     * @param bool $showPrivate
+     * @param string           $serviceId
+     *
+     * @return mixed
+     */
+    protected function resolveServiceDefinition(ContainerBuilder $builder, $serviceId)
+    {
+        if ($builder->hasDefinition($serviceId)) {
+            return $builder->getDefinition($serviceId);
+        }
+
+        // Some service IDs don't have a Definition, they're simply an Alias
+        if ($builder->hasAlias($serviceId)) {
+            return $builder->getAlias($serviceId);
+        }
+
+        if ('service_container' === $serviceId) {
+            return $builder;
+        }
+
+        // the service has been injected in some special way, just return the service
+        return $builder->get($serviceId);
+    }
+
+    /**
+     * @param ContainerBuilder $builder
+     * @param bool             $showPrivate
      *
      * @return array
      */

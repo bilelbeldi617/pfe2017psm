@@ -30,7 +30,7 @@ class AsseticResource implements SymfonyResourceInterface
 
     public function __toString()
     {
-        return (string)$this->resource;
+        return (string) $this->resource;
     }
 
     public function isFresh($timestamp)
@@ -55,7 +55,7 @@ class AsseticResource implements SymfonyResourceInterface
 
     public function getId()
     {
-        return md5('assetic' . $this->resource);
+        return md5('assetic'.$this->resource);
     }
 
     public function getModificationTime()

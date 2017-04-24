@@ -37,24 +37,6 @@ class MonologExtensionTest extends DependencyInjectionTest
         $this->assertDICDefinitionMethodCallAt(0, $handler, 'pushProcessor', array(new Reference('monolog.processor.psr_log_message')));
     }
 
-    protected function getContainer(array $config = array(), array $thirdPartyDefinitions = array())
-    {
-        $container = new ContainerBuilder();
-        foreach ($thirdPartyDefinitions as $id => $definition) {
-            $container->setDefinition($id, $definition);
-        }
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->addCompilerPass(new LoggerChannelPass());
-
-        $loader = new MonologExtension();
-        $loader->load($config, $container);
-        $container->compile();
-
-        return $container;
-    }
-
     public function testLoadWithCustomValues()
     {
         $container = $this->getContainer(array(array('handlers' => array(
@@ -297,7 +279,7 @@ class MonologExtensionTest extends DependencyInjectionTest
         $this->assertDICDefinitionMethodCallAt(0, $logger, 'useMicrosecondTimestamps', array('%monolog.use_microseconds%'));
         $this->assertDICDefinitionMethodCallAt(1, $logger, 'pushHandler', array(new Reference('monolog.handler.raven')));
 
-        $this->assertTrue($container->hasDefinition('monolog.raven.client.' . sha1($dsn)));
+        $this->assertTrue($container->hasDefinition('monolog.raven.client.'.sha1($dsn)));
 
         $handler = $container->getDefinition('monolog.handler.raven');
         $this->assertDICDefinitionClass($handler, 'Monolog\Handler\RavenHandler');
@@ -399,5 +381,23 @@ class MonologExtensionTest extends DependencyInjectionTest
         $handler = $container->getDefinition('monolog.handler.main');
         $this->assertDICDefinitionClass($handler, 'Monolog\Handler\FingersCrossedHandler');
         $this->assertDICConstructorArguments($handler, array(new Reference('monolog.handler.nested'), new Reference('monolog.handler.main.not_found_strategy'), 0, true, true, null));
+    }
+
+    protected function getContainer(array $config = array(), array $thirdPartyDefinitions = array())
+    {
+        $container = new ContainerBuilder();
+        foreach ($thirdPartyDefinitions as $id => $definition) {
+            $container->setDefinition($id, $definition);
+        }
+
+        $container->getCompilerPassConfig()->setOptimizationPasses(array());
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->addCompilerPass(new LoggerChannelPass());
+
+        $loader = new MonologExtension();
+        $loader->load($config, $container);
+        $container->compile();
+
+        return $container;
     }
 }

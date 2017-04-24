@@ -29,6 +29,23 @@ class RouterDebugCommandTest extends TestCase
         $this->assertContains('Name   Method   Scheme   Host   Path', $tester->getDisplay());
     }
 
+    public function testDebugSingleRoute()
+    {
+        $tester = $this->createCommandTester();
+        $ret = $tester->execute(array('name' => 'foo'), array('decorated' => false));
+
+        $this->assertEquals(0, $ret, 'Returns 0 in case of success');
+        $this->assertContains('Route Name   | foo', $tester->getDisplay());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testDebugInvalidRoute()
+    {
+        $this->createCommandTester()->execute(array('name' => 'test'));
+    }
+
     /**
      * @return CommandTester
      */
@@ -51,18 +68,20 @@ class RouterDebugCommandTest extends TestCase
         $router
             ->expects($this->any())
             ->method('getRouteCollection')
-            ->will($this->returnValue($routeCollection));
+            ->will($this->returnValue($routeCollection))
+        ;
 
         $loader = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Routing\DelegatingLoader')
-            ->disableOriginalConstructor()
-            ->getMock();
+             ->disableOriginalConstructor()
+             ->getMock();
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
             ->expects($this->once())
             ->method('has')
             ->with('router')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $container
             ->method('get')
@@ -72,22 +91,5 @@ class RouterDebugCommandTest extends TestCase
             )));
 
         return $container;
-    }
-
-    public function testDebugSingleRoute()
-    {
-        $tester = $this->createCommandTester();
-        $ret = $tester->execute(array('name' => 'foo'), array('decorated' => false));
-
-        $this->assertEquals(0, $ret, 'Returns 0 in case of success');
-        $this->assertContains('Route Name   | foo', $tester->getDisplay());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testDebugInvalidRoute()
-    {
-        $this->createCommandTester()->execute(array('name' => 'test'));
     }
 }

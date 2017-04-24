@@ -62,9 +62,9 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->proxyLoader = $loader = $this->getMock('stdClass', array('load'), array(), '', false);
-        $this->initializerCallbackMock = $this->getMock('stdClass', array('__invoke'));
-        $identifier = $this->identifier;
+        $this->proxyLoader = $loader      = $this->getMock('stdClass', array('load'), array(), '', false);
+        $this->initializerCallbackMock    = $this->getMock('stdClass', array('__invoke'));
+        $identifier                       = $this->identifier;
         $this->lazyLoadableObjectMetadata = $metadata = new LazyLoadableObjectClassMetadata();
 
         // emulating what should happen in a proxy factory
@@ -113,56 +113,11 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->lazyObject->__isInitialized());
     }
 
-    /**
-     * Converts a given callable into a closure
-     *
-     * @param  callable $callable
-     * @return \Closure
-     */
-    public function getClosure($callable)
-    {
-        return function () use ($callable) {
-            call_user_func_array($callable, func_get_args());
-        };
-    }
-
     public function testFetchingPublicIdentifierDoesNotCauseLazyLoading()
     {
         $this->configureInitializerMock(0);
 
         $this->assertSame('publicIdentifierFieldValue', $this->lazyObject->publicIdentifierField);
-    }
-
-    /**
-     * Configures the current initializer callback mock with provided matcher params
-     *
-     * @param int $expectedCallCount the number of invocations to be expected. If a value< 0 is provided, `any` is used
-     * @param array $callParamsMatch an ordered array of parameters to be expected
-     * @param callable $callbackClosure a return callback closure
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|
-     */
-    protected function configureInitializerMock(
-        $expectedCallCount = 0,
-        array $callParamsMatch = null,
-        \Closure $callbackClosure = null
-    )
-    {
-        if (!$expectedCallCount) {
-            $invocationCountMatcher = $this->exactly((int)$expectedCallCount);
-        } else {
-            $invocationCountMatcher = $expectedCallCount < 0 ? $this->any() : $this->exactly($expectedCallCount);
-        }
-
-        $invocationMocker = $this->initializerCallbackMock->expects($invocationCountMatcher)->method('__invoke');
-
-        if (null !== $callParamsMatch) {
-            call_user_func_array(array($invocationMocker, 'with'), $callParamsMatch);
-        }
-
-        if ($callbackClosure) {
-            $invocationMocker->will($this->returnCallback($callbackClosure));
-        }
     }
 
     public function testFetchingIdentifiersViaPublicGetterDoesNotCauseLazyLoading()
@@ -199,25 +154,6 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('loadedValue', $this->lazyObject->publicPersistentField);
         $this->assertSame('loadedValue', $this->lazyObject->publicPersistentField);
-    }
-
-    /**
-     * Sets a value in the current proxy object without triggering lazy loading through `__set`
-     *
-     * @link https://bugs.php.net/bug.php?id=63463
-     *
-     * @param string $property
-     * @param mixed $value
-     */
-    public function setProxyValue($property, $value)
-    {
-        $reflectionProperty = new \ReflectionProperty($this->lazyObject, $property);
-        $initializer = $this->lazyObject->__getInitializer();
-
-        // disabling initializer since setting `publicPersistentField` triggers `__set`/`__get`
-        $this->lazyObject->__setInitializer(null);
-        $reflectionProperty->setValue($this->lazyObject, $value);
-        $this->lazyObject->__setInitializer($initializer);
     }
 
     public function testFetchingPublicAssociationCausesLazyLoading()
@@ -372,47 +308,6 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $this->assertSame('publicIdentifierFieldValue-test', $this->lazyObject->publicAssociation);
     }
 
-    /**
-     * Retrieves the suggested implementation of an initializer that proxy factories in O*M
-     * are currently following, and that should be used to initialize the current proxy object
-     *
-     * @return \Closure
-     */
-    protected function getSuggestedInitializerImplementation()
-    {
-        $loader = $this->proxyLoader;
-        $identifier = $this->identifier;
-
-        return function (LazyLoadableObject $proxy) use ($loader, $identifier) {
-            /* @var $proxy LazyLoadableObject|Proxy */
-            $proxy->__setInitializer(null);
-            $proxy->__setCloner(null);
-
-
-            if ($proxy->__isInitialized()) {
-                return;
-            }
-
-            $properties = $proxy->__getLazyProperties();
-
-            foreach ($properties as $propertyName => $property) {
-                if (!isset($proxy->$propertyName)) {
-                    $proxy->$propertyName = $properties[$propertyName];
-                }
-            }
-
-            $proxy->__setInitialized(true);
-
-            if (method_exists($proxy, '__wakeup')) {
-                $proxy->__wakeup();
-            }
-
-            if (null === $loader->load($identifier, $proxy)) {
-                throw new \UnexpectedValueException('Couldn\'t load');
-            }
-        };
-    }
-
     public function testFailedLoadingWillThrowException()
     {
         $this->proxyLoader->expects($this->any())->method('load')->will($this->returnValue(null));
@@ -430,14 +325,14 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
             ->expects($this->exactly(2))
             ->method('load')
             ->with(array(
-                'publicIdentifierField' => 'publicIdentifierFieldValue',
+                'publicIdentifierField'    => 'publicIdentifierFieldValue',
                 'protectedIdentifierField' => 'protectedIdentifierFieldValue',
             ))
             ->will($this->returnCallback(function () {
                 $blueprint = new LazyLoadableObject();
                 $blueprint->publicPersistentField = 'checked-persistent-field';
-                $blueprint->publicAssociation = 'checked-association-field';
-                $blueprint->publicTransientField = 'checked-transient-field';
+                $blueprint->publicAssociation     = 'checked-association-field';
+                $blueprint->publicTransientField  = 'checked-transient-field';
 
                 return $blueprint;
             }));
@@ -548,8 +443,8 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $this->lazyObject->__setInitializer($this->getSuggestedInitializerImplementation());
         $this->lazyObject->__load();
 
-        $serialized = serialize($this->lazyObject);
-        $reflClass = $this->lazyLoadableObjectMetadata->getReflectionClass();
+        $serialized   = serialize($this->lazyObject);
+        $reflClass    = $this->lazyLoadableObjectMetadata->getReflectionClass();
         /* @var $unserialized LazyLoadableObject|Proxy */
         $unserialized = unserialize($serialized);
 
@@ -731,8 +626,7 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
             function ($proxy, $method, $parameters) use ($invocationMock) {
                 $invocationMock($proxy, $method, $parameters);
             },
-            function () {
-            }
+            function () {}
         );
 
         $invocationMock
@@ -751,5 +645,108 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo', $lazyObject->foo);
         $this->assertSame('bar', $lazyObject->bar);
         $this->assertSame(array('baz1', 'baz2'), $lazyObject->baz);
+    }
+
+    /**
+     * Converts a given callable into a closure
+     *
+     * @param  callable $callable
+     * @return \Closure
+     */
+    public function getClosure($callable) {
+        return function () use ($callable) {
+            call_user_func_array($callable, func_get_args());
+        };
+    }
+
+    /**
+     * Configures the current initializer callback mock with provided matcher params
+     *
+     * @param int $expectedCallCount the number of invocations to be expected. If a value< 0 is provided, `any` is used
+     * @param array $callParamsMatch an ordered array of parameters to be expected
+     * @param callable $callbackClosure a return callback closure
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|
+     */
+    protected function configureInitializerMock(
+        $expectedCallCount = 0,
+        array $callParamsMatch = null,
+        \Closure $callbackClosure = null
+    ) {
+        if (!$expectedCallCount) {
+            $invocationCountMatcher = $this->exactly((int) $expectedCallCount);
+        } else {
+            $invocationCountMatcher = $expectedCallCount < 0 ? $this->any() : $this->exactly($expectedCallCount);
+        }
+
+        $invocationMocker = $this->initializerCallbackMock->expects($invocationCountMatcher)->method('__invoke');
+
+        if (null !== $callParamsMatch) {
+            call_user_func_array(array($invocationMocker, 'with'), $callParamsMatch);
+        }
+
+        if ($callbackClosure) {
+            $invocationMocker->will($this->returnCallback($callbackClosure));
+        }
+    }
+
+    /**
+     * Sets a value in the current proxy object without triggering lazy loading through `__set`
+     *
+     * @link https://bugs.php.net/bug.php?id=63463
+     *
+     * @param string $property
+     * @param mixed $value
+     */
+    public function setProxyValue($property, $value)
+    {
+        $reflectionProperty = new \ReflectionProperty($this->lazyObject, $property);
+        $initializer        = $this->lazyObject->__getInitializer();
+
+        // disabling initializer since setting `publicPersistentField` triggers `__set`/`__get`
+        $this->lazyObject->__setInitializer(null);
+        $reflectionProperty->setValue($this->lazyObject, $value);
+        $this->lazyObject->__setInitializer($initializer);
+    }
+
+    /**
+     * Retrieves the suggested implementation of an initializer that proxy factories in O*M
+     * are currently following, and that should be used to initialize the current proxy object
+     *
+     * @return \Closure
+     */
+    protected function getSuggestedInitializerImplementation()
+    {
+        $loader     = $this->proxyLoader;
+        $identifier = $this->identifier;
+
+        return function (LazyLoadableObject $proxy) use ($loader, $identifier) {
+            /* @var $proxy LazyLoadableObject|Proxy */
+            $proxy->__setInitializer(null);
+            $proxy->__setCloner(null);
+
+
+            if ($proxy->__isInitialized()) {
+                return;
+            }
+
+            $properties = $proxy->__getLazyProperties();
+
+            foreach ($properties as $propertyName => $property) {
+                if (!isset($proxy->$propertyName)) {
+                    $proxy->$propertyName = $properties[$propertyName];
+                }
+            }
+
+            $proxy->__setInitialized(true);
+
+            if (method_exists($proxy, '__wakeup')) {
+                $proxy->__wakeup();
+            }
+
+            if (null === $loader->load($identifier, $proxy)) {
+                throw new \UnexpectedValueException('Couldn\'t load');
+            }
+        };
     }
 }

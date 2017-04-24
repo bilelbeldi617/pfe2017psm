@@ -38,7 +38,7 @@ class MergeCollectionListener implements EventSubscriberInterface
     /**
      * Creates a new listener.
      *
-     * @param bool $allowAdd Whether values might be added to the
+     * @param bool $allowAdd    Whether values might be added to the
      *                          collection.
      * @param bool $allowDelete Whether values might be removed from the
      *                          collection.
@@ -54,19 +54,6 @@ class MergeCollectionListener implements EventSubscriberInterface
         return array(
             FormEvents::SUBMIT => 'onSubmit',
         );
-    }
-
-    /**
-     * Alias of {@link onSubmit()}.
-     *
-     * @deprecated since version 2.3, to be removed in 3.0.
-     *             Use {@link onSubmit()} instead.
-     */
-    public function onBind(FormEvent $event)
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the onSubmit() method instead.', E_USER_DEPRECATED);
-
-        $this->onSubmit($event);
     }
 
     public function onSubmit(FormEvent $event)
@@ -137,5 +124,18 @@ class MergeCollectionListener implements EventSubscriberInterface
         }
 
         $event->setData($dataToMergeInto);
+    }
+
+    /**
+     * Alias of {@link onSubmit()}.
+     *
+     * @deprecated since version 2.3, to be removed in 3.0.
+     *             Use {@link onSubmit()} instead.
+     */
+    public function onBind(FormEvent $event)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the onSubmit() method instead.', E_USER_DEPRECATED);
+
+        $this->onSubmit($event);
     }
 }

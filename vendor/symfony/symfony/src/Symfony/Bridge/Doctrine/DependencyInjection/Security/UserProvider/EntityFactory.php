@@ -39,7 +39,8 @@ class EntityFactory implements UserProviderFactoryInterface
             ->setDefinition($id, new DefinitionDecorator($this->providerId))
             ->addArgument($config['class'])
             ->addArgument($config['property'])
-            ->addArgument($config['manager_name']);
+            ->addArgument($config['manager_name'])
+        ;
     }
 
     public function getKey()
@@ -51,9 +52,10 @@ class EntityFactory implements UserProviderFactoryInterface
     {
         $node
             ->children()
-            ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
-            ->scalarNode('property')->defaultNull()->end()
-            ->scalarNode('manager_name')->defaultNull()->end()
-            ->end();
+                ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('property')->defaultNull()->end()
+                ->scalarNode('manager_name')->defaultNull()->end()
+            ->end()
+        ;
     }
 }

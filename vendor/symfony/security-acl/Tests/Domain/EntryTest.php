@@ -29,37 +29,6 @@ class EntryTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($ace->isAuditFailure());
     }
 
-    protected function getAce($acl = null, $sid = null)
-    {
-        if (null === $acl) {
-            $acl = $this->getAcl();
-        }
-        if (null === $sid) {
-            $sid = $this->getSid();
-        }
-
-        return new Entry(
-            123,
-            $acl,
-            $sid,
-            'foostrat',
-            123456,
-            true,
-            false,
-            true
-        );
-    }
-
-    protected function getAcl()
-    {
-        return $this->getMock('Symfony\Component\Security\Acl\Model\AclInterface');
-    }
-
-    protected function getSid()
-    {
-        return $this->getMock('Symfony\Component\Security\Acl\Model\SecurityIdentityInterface');
-    }
-
     public function testSetAuditSuccess()
     {
         $ace = $this->getAce();
@@ -115,5 +84,36 @@ class EntryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($ace->isGranting(), $uAce->isGranting());
         $this->assertEquals($ace->isAuditSuccess(), $uAce->isAuditSuccess());
         $this->assertEquals($ace->isAuditFailure(), $uAce->isAuditFailure());
+    }
+
+    protected function getAce($acl = null, $sid = null)
+    {
+        if (null === $acl) {
+            $acl = $this->getAcl();
+        }
+        if (null === $sid) {
+            $sid = $this->getSid();
+        }
+
+        return new Entry(
+            123,
+            $acl,
+            $sid,
+            'foostrat',
+            123456,
+            true,
+            false,
+            true
+        );
+    }
+
+    protected function getAcl()
+    {
+        return $this->getMock('Symfony\Component\Security\Acl\Model\AclInterface');
+    }
+
+    protected function getSid()
+    {
+        return $this->getMock('Symfony\Component\Security\Acl\Model\SecurityIdentityInterface');
     }
 }

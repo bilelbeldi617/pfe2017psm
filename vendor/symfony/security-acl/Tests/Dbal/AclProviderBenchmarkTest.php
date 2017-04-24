@@ -30,6 +30,26 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
     protected $insertOidStmt;
     protected $insertEntryStmt;
 
+    protected function setUp()
+    {
+        try {
+            $this->con = DriverManager::getConnection(array(
+                'driver' => 'pdo_mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'dbname' => 'testdb',
+            ));
+            $this->con->connect();
+        } catch (\Exception $e) {
+            $this->markTestSkipped('Unable to connect to the database: '.$e->getMessage());
+        }
+    }
+
+    protected function tearDown()
+    {
+        $this->con = null;
+    }
+
     public function testFindAcls()
     {
         // $this->generateTestData();
@@ -46,48 +66,7 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
         $start = microtime(true);
         $provider->findAcls($oids);
         $time = microtime(true) - $start;
-        echo 'Total Time: ' . $time . "s\n";
-    }
-
-    protected function getProvider()
-    {
-        return new AclProvider($this->con, $this->getStrategy(), $this->getOptions());
-    }
-
-    protected function getStrategy()
-    {
-        return new PermissionGrantingStrategy();
-    }
-
-    protected function getOptions()
-    {
-        return array(
-            'oid_table_name' => 'acl_object_identities',
-            'oid_ancestors_table_name' => 'acl_object_identity_ancestors',
-            'class_table_name' => 'acl_classes',
-            'sid_table_name' => 'acl_security_identities',
-            'entry_table_name' => 'acl_entries',
-        );
-    }
-
-    protected function setUp()
-    {
-        try {
-            $this->con = DriverManager::getConnection(array(
-                'driver' => 'pdo_mysql',
-                'host' => 'localhost',
-                'user' => 'root',
-                'dbname' => 'testdb',
-            ));
-            $this->con->connect();
-        } catch (\Exception $e) {
-            $this->markTestSkipped('Unable to connect to the database: ' . $e->getMessage());
-        }
-    }
-
-    protected function tearDown()
-    {
-        $this->con = null;
+        echo 'Total Time: '.$time."s\n";
     }
 
     /**
@@ -125,6 +104,32 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
         $this->generateAclLevel(rand(1, 15), $rootId, array($rootId));
     }
 
+    protected function generateAclLevel($depth, $parentId, $ancestors)
+    {
+        $level = count($ancestors);
+        for ($i = 0, $t = rand(1, 10); $i < $t; ++$i) {
+            $id = $this->generateAcl($this->chooseClassId(), $parentId, $ancestors);
+
+            if ($level < $depth) {
+                $this->generateAclLevel($depth, $id, array_merge($ancestors, array($id)));
+            }
+        }
+    }
+
+    protected function chooseClassId()
+    {
+        static $id = 1000;
+
+        if ($id === 1000 || ($id < 1500 && rand(0, 1))) {
+            $this->insertClassStmt->execute(array($id, $this->getRandomString(rand(20, 100), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\\_')));
+            ++$id;
+
+            return $id - 1;
+        } else {
+            return rand(1000, $id - 1);
+        }
+    }
+
     protected function generateAcl($classId, $parentId, $ancestors)
     {
         static $id = 1000;
@@ -148,16 +153,22 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
         return $id - 1;
     }
 
-    protected function getRandomString($length, $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+    protected function chooseSid()
     {
-        $s = '';
-        $cLength = strlen($chars);
+        static $id = 1000;
 
-        while (strlen($s) < $length) {
-            $s .= $chars[mt_rand(0, $cLength - 1)];
+        if ($id === 1000 || ($id < 11000 && rand(0, 1))) {
+            $this->insertSidStmt->execute(array(
+                $id,
+                $this->getRandomString(rand(5, 30)),
+                rand(0, 1),
+            ));
+            ++$id;
+
+            return $id - 1;
+        } else {
+            return rand(1000, $id - 1);
         }
-
-        return $s;
     }
 
     protected function generateAces($classId, $objectId)
@@ -208,24 +219,6 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    protected function chooseSid()
-    {
-        static $id = 1000;
-
-        if ($id === 1000 || ($id < 11000 && rand(0, 1))) {
-            $this->insertSidStmt->execute(array(
-                $id,
-                $this->getRandomString(rand(5, 30)),
-                rand(0, 1),
-            ));
-            ++$id;
-
-            return $id - 1;
-        } else {
-            return rand(1000, $id - 1);
-        }
-    }
-
     protected function generateMask()
     {
         $i = rand(1, 30);
@@ -239,29 +232,36 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
         return $mask;
     }
 
-    protected function chooseClassId()
+    protected function getRandomString($length, $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     {
-        static $id = 1000;
+        $s = '';
+        $cLength = strlen($chars);
 
-        if ($id === 1000 || ($id < 1500 && rand(0, 1))) {
-            $this->insertClassStmt->execute(array($id, $this->getRandomString(rand(20, 100), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\\_')));
-            ++$id;
-
-            return $id - 1;
-        } else {
-            return rand(1000, $id - 1);
+        while (strlen($s) < $length) {
+            $s .= $chars[mt_rand(0, $cLength - 1)];
         }
+
+        return $s;
     }
 
-    protected function generateAclLevel($depth, $parentId, $ancestors)
+    protected function getOptions()
     {
-        $level = count($ancestors);
-        for ($i = 0, $t = rand(1, 10); $i < $t; ++$i) {
-            $id = $this->generateAcl($this->chooseClassId(), $parentId, $ancestors);
+        return array(
+            'oid_table_name' => 'acl_object_identities',
+            'oid_ancestors_table_name' => 'acl_object_identity_ancestors',
+            'class_table_name' => 'acl_classes',
+            'sid_table_name' => 'acl_security_identities',
+            'entry_table_name' => 'acl_entries',
+        );
+    }
 
-            if ($level < $depth) {
-                $this->generateAclLevel($depth, $id, array_merge($ancestors, array($id)));
-            }
-        }
+    protected function getStrategy()
+    {
+        return new PermissionGrantingStrategy();
+    }
+
+    protected function getProvider()
+    {
+        return new AclProvider($this->con, $this->getStrategy(), $this->getOptions());
     }
 }

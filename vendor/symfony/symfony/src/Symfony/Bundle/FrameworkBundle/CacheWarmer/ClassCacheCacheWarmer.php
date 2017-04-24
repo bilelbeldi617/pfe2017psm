@@ -28,13 +28,13 @@ class ClassCacheCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $classmap = $cacheDir . '/classes.map';
+        $classmap = $cacheDir.'/classes.map';
 
         if (!is_file($classmap)) {
             return;
         }
 
-        if (file_exists($cacheDir . '/classes.php')) {
+        if (file_exists($cacheDir.'/classes.php')) {
             return;
         }
 

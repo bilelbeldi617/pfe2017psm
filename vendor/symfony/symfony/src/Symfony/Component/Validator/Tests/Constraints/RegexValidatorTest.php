@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class RegexValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new RegexValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Regex(array('pattern' => '/^[0-9]+$/')));
@@ -73,7 +83,7 @@ class RegexValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($value, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $value . '"')
+            ->setParameter('{{ value }}', '"'.$value.'"')
             ->setCode(Regex::REGEX_FAILED_ERROR)
             ->assertRaised();
     }
@@ -84,15 +94,5 @@ class RegexValidatorTest extends AbstractConstraintValidatorTest
             array('abcd'),
             array('090foo'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new RegexValidator();
     }
 }

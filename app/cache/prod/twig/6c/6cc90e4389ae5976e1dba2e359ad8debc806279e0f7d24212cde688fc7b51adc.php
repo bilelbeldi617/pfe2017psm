@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:exception.html.twig */
-
 class __TwigTemplate_aa8544896b95451e21986c23afeeefcdbcbd11832d3bf430052b75541fcc82a2 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,35 +9,8 @@ class __TwigTemplate_aa8544896b95451e21986c23afeeefcdbcbd11832d3bf430052b75541fc
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "TwigBundle:Exception:exception.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(199 => 90, 197 => 89, 194 => 88, 185 => 82, 181 => 80, 171 => 72, 169 => 71, 166 => 70, 164 => 69, 161 => 68, 156 => 65, 154 => 64, 149 => 61, 140 => 57, 136 => 55, 134 => 54, 131 => 53, 121 => 45, 119 => 44, 115 => 42, 113 => 41, 110 => 40, 103 => 38, 99 => 37, 89 => 29, 84 => 26, 67 => 23, 64 => 22, 60 => 21, 52 => 19, 49 => 18, 47 => 17, 37 => 14, 31 => 11, 19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "TwigBundle:Exception:exception.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -80,7 +52,7 @@ class __TwigTemplate_aa8544896b95451e21986c23afeeefcdbcbd11832d3bf430052b75541fc
             echo "                <div class=\"linked\"><span><strong>";
             echo twig_escape_filter($this->env, (isset($context["previous_count"]) ? $context["previous_count"] : null), "html", null, true);
             echo "</strong> linked Exception";
-            echo((((isset($context["previous_count"]) ? $context["previous_count"] : null) > 1)) ? ("s") : (""));
+            echo ((((isset($context["previous_count"]) ? $context["previous_count"] : null) > 1)) ? ("s") : (""));
             echo ":</span>
                     <ul>
                         ";
@@ -167,7 +139,7 @@ class __TwigTemplate_aa8544896b95451e21986c23afeeefcdbcbd11832d3bf430052b75541fc
                 // line 57
                 echo twig_escape_filter($this->env, $this->getAttribute((isset($context["logger"]) ? $context["logger"] : null), "counterrors", array()), "html", null, true);
                 echo " error";
-                echo((($this->getAttribute((isset($context["logger"]) ? $context["logger"] : null), "counterrors", array()) > 1)) ? ("s") : (""));
+                echo ((($this->getAttribute((isset($context["logger"]) ? $context["logger"] : null), "counterrors", array()) > 1)) ? ("s") : (""));
                 echo "
                     </span>
                 </div>
@@ -257,5 +229,33 @@ class __TwigTemplate_aa8544896b95451e21986c23afeeefcdbcbd11832d3bf430052b75541fc
     }
 //]]></script>
 ";
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle:Exception:exception.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  199 => 90,  197 => 89,  194 => 88,  185 => 82,  181 => 80,  171 => 72,  169 => 71,  166 => 70,  164 => 69,  161 => 68,  156 => 65,  154 => 64,  149 => 61,  140 => 57,  136 => 55,  134 => 54,  131 => 53,  121 => 45,  119 => 44,  115 => 42,  113 => 41,  110 => 40,  103 => 38,  99 => 37,  89 => 29,  84 => 26,  67 => 23,  64 => 22,  60 => 21,  52 => 19,  49 => 18,  47 => 17,  37 => 14,  31 => 11,  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "TwigBundle:Exception:exception.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.html.twig");
     }
 }

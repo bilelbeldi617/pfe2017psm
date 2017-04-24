@@ -17,13 +17,13 @@ class Reference
 
     private $privateValue;
 
-    public function getPrivateValue()
-    {
-        return $this->privateValue;
-    }
-
     public function setPrivateValue($privateValue)
     {
         $this->privateValue = $privateValue;
+    }
+
+    public function getPrivateValue()
+    {
+        return $this->privateValue;
     }
 }

@@ -21,7 +21,7 @@ interface LocaleBundleInterface extends ResourceBundleInterface
     /**
      * Returns the name of a locale.
      *
-     * @param string $locale The locale to return the name of (e.g. "de_AT")
+     * @param string $locale        The locale to return the name of (e.g. "de_AT")
      * @param string $displayLocale Optional. The locale to return the name in
      *                              Defaults to {@link \Locale::getDefault()}.
      *

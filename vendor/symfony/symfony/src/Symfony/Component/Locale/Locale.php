@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Locale;
 
-@trigger_error('The ' . __NAMESPACE__ . '\Locale class is deprecated since version 2.7, to be removed in Symfony 3.0. Use the methods provided by the \Symfony\Component\Intl\Intl class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\Locale class is deprecated since version 2.7, to be removed in Symfony 3.0. Use the methods provided by the \Symfony\Component\Intl\Intl class instead.', E_USER_DEPRECATED);
 
 use Symfony\Component\Intl\Intl;
 
@@ -47,18 +47,6 @@ class Locale extends \Locale
     protected static $locales = array();
 
     /**
-     * Returns all available country codes.
-     *
-     * @return array The country codes
-     *
-     * @throws \RuntimeException When the resource bundles cannot be loaded
-     */
-    public static function getCountries()
-    {
-        return array_keys(self::getDisplayCountries(self::getDefault()));
-    }
-
-    /**
      * Returns the country names for a locale.
      *
      * @param string $locale The locale to use for the country names
@@ -77,15 +65,15 @@ class Locale extends \Locale
     }
 
     /**
-     * Returns all available language codes.
+     * Returns all available country codes.
      *
-     * @return array The language codes
+     * @return array The country codes
      *
      * @throws \RuntimeException When the resource bundles cannot be loaded
      */
-    public static function getLanguages()
+    public static function getCountries()
     {
-        return array_keys(self::getDisplayLanguages(self::getDefault()));
+        return array_keys(self::getDisplayCountries(self::getDefault()));
     }
 
     /**
@@ -107,15 +95,15 @@ class Locale extends \Locale
     }
 
     /**
-     * Returns all available locale codes.
+     * Returns all available language codes.
      *
-     * @return array The locale codes
+     * @return array The language codes
      *
      * @throws \RuntimeException When the resource bundles cannot be loaded
      */
-    public static function getLocales()
+    public static function getLanguages()
     {
-        return array_keys(self::getDisplayLocales(self::getDefault()));
+        return array_keys(self::getDisplayLanguages(self::getDefault()));
     }
 
     /**
@@ -134,6 +122,18 @@ class Locale extends \Locale
         }
 
         return self::$locales[$locale];
+    }
+
+    /**
+     * Returns all available locale codes.
+     *
+     * @return array The locale codes
+     *
+     * @throws \RuntimeException When the resource bundles cannot be loaded
+     */
+    public static function getLocales()
+    {
+        return array_keys(self::getDisplayLocales(self::getDefault()));
     }
 
     /**

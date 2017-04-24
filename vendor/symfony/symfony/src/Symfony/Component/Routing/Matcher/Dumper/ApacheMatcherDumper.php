@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Routing\Matcher\Dumper;
 
-@trigger_error('The ' . __NAMESPACE__ . '\ApacheMatcherDumper class is deprecated since version 2.5 and will be removed in 3.0. It\'s hard to replicate the behaviour of the PHP implementation and the performance gains are minimal.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\ApacheMatcherDumper class is deprecated since version 2.5 and will be removed in 3.0. It\'s hard to replicate the behaviour of the PHP implementation and the performance gains are minimal.', E_USER_DEPRECATED);
 
 use Symfony\Component\Routing\Route;
 
@@ -106,62 +106,16 @@ class ApacheMatcherDumper extends MatcherDumper
             $rules[] = implode("\n", $rule);
         }
 
-        return implode("\n\n", $rules) . "\n";
-    }
-
-    /**
-     * Escapes a string.
-     *
-     * @param string $string The string to be escaped
-     * @param string $char The character to be escaped
-     * @param string $with The character to be used for escaping
-     *
-     * @return string The escaped string
-     */
-    private static function escape($string, $char, $with)
-    {
-        $escaped = false;
-        $output = '';
-        foreach (str_split($string) as $symbol) {
-            if ($escaped) {
-                $output .= $symbol;
-                $escaped = false;
-                continue;
-            }
-            if ($symbol === $char) {
-                $output .= $with . $char;
-                continue;
-            }
-            if ($symbol === $with) {
-                $escaped = true;
-            }
-            $output .= $symbol;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Converts a regex to make it suitable for mod_rewrite.
-     *
-     * @param string $regex The regex
-     *
-     * @return string The converted regex
-     */
-    private function regexToApacheRegex($regex)
-    {
-        $regexPatternEnd = strrpos($regex, $regex[0]);
-
-        return preg_replace('/\?P<.+?>/', '', substr($regex, 1, $regexPatternEnd - 1));
+        return implode("\n\n", $rules)."\n";
     }
 
     /**
      * Dumps a single route.
      *
-     * @param string $name Route name
-     * @param Route $route The route
-     * @param array $options Options
-     * @param bool $hostRegexUnique Unique identifier for the host regex
+     * @param string $name            Route name
+     * @param Route  $route           The route
+     * @param array  $options         Options
+     * @param bool   $hostRegexUnique Unique identifier for the host regex
      *
      * @return string The compiled route
      */
@@ -171,26 +125,26 @@ class ApacheMatcherDumper extends MatcherDumper
 
         // prepare the apache regex
         $regex = $this->regexToApacheRegex($compiledRoute->getRegex());
-        $regex = '^' . self::escape(preg_quote($options['base_uri']) . substr($regex, 1), ' ', '\\');
+        $regex = '^'.self::escape(preg_quote($options['base_uri']).substr($regex, 1), ' ', '\\');
 
         $methods = $this->getRouteMethods($route);
 
         $hasTrailingSlash = (!$methods || in_array('HEAD', $methods)) && '/$' === substr($regex, -2) && '^/$' !== $regex;
 
-        $variables = array('E=_ROUTING_route:' . $name);
+        $variables = array('E=_ROUTING_route:'.$name);
         foreach ($compiledRoute->getHostVariables() as $variable) {
             $variables[] = sprintf('E=_ROUTING_param_%s:%%{ENV:__ROUTING_host_%s_%s}', $variable, $hostRegexUnique, $variable);
         }
         foreach ($compiledRoute->getPathVariables() as $i => $variable) {
-            $variables[] = 'E=_ROUTING_param_' . $variable . ':%' . ($i + 1);
+            $variables[] = 'E=_ROUTING_param_'.$variable.':%'.($i + 1);
         }
         foreach ($this->normalizeValues($route->getDefaults()) as $key => $value) {
-            $variables[] = 'E=_ROUTING_default_' . $key . ':' . strtr($value, array(
-                    ':' => '\\:',
-                    '=' => '\\=',
-                    '\\' => '\\\\',
-                    ' ' => '\\ ',
-                ));
+            $variables[] = 'E=_ROUTING_default_'.$key.':'.strtr($value, array(
+                ':' => '\\:',
+                '=' => '\\=',
+                '\\' => '\\\\',
+                ' ' => '\\ ',
+            ));
         }
         $variables = implode(',', $variables);
 
@@ -200,7 +154,7 @@ class ApacheMatcherDumper extends MatcherDumper
         if (0 < count($methods)) {
             $allow = array();
             foreach ($methods as $method) {
-                $allow[] = 'E=_ROUTING_allow_' . $method . ':1';
+                $allow[] = 'E=_ROUTING_allow_'.$method.':1';
             }
 
             if ($compiledRoute->getHostRegex()) {
@@ -218,7 +172,7 @@ class ApacheMatcherDumper extends MatcherDumper
                 $rule[] = sprintf('RewriteCond %%{ENV:__ROUTING_host_%s} =1', $hostRegexUnique);
             }
 
-            $rule[] = 'RewriteCond %{REQUEST_URI} ' . substr($regex, 0, -2) . '$';
+            $rule[] = 'RewriteCond %{REQUEST_URI} '.substr($regex, 0, -2).'$';
             $rule[] = 'RewriteRule .* $0/ [QSA,L,R=301]';
         }
 
@@ -254,6 +208,52 @@ class ApacheMatcherDumper extends MatcherDumper
     }
 
     /**
+     * Converts a regex to make it suitable for mod_rewrite.
+     *
+     * @param string $regex The regex
+     *
+     * @return string The converted regex
+     */
+    private function regexToApacheRegex($regex)
+    {
+        $regexPatternEnd = strrpos($regex, $regex[0]);
+
+        return preg_replace('/\?P<.+?>/', '', substr($regex, 1, $regexPatternEnd - 1));
+    }
+
+    /**
+     * Escapes a string.
+     *
+     * @param string $string The string to be escaped
+     * @param string $char   The character to be escaped
+     * @param string $with   The character to be used for escaping
+     *
+     * @return string The escaped string
+     */
+    private static function escape($string, $char, $with)
+    {
+        $escaped = false;
+        $output = '';
+        foreach (str_split($string) as $symbol) {
+            if ($escaped) {
+                $output .= $symbol;
+                $escaped = false;
+                continue;
+            }
+            if ($symbol === $char) {
+                $output .= $with.$char;
+                continue;
+            }
+            if ($symbol === $with) {
+                $escaped = true;
+            }
+            $output .= $symbol;
+        }
+
+        return $output;
+    }
+
+    /**
      * Normalizes an array of values.
      *
      * @param array $values
@@ -269,7 +269,7 @@ class ApacheMatcherDumper extends MatcherDumper
                     $normalizedValues[sprintf('%s[%s]', $key, $index)] = $bit;
                 }
             } else {
-                $normalizedValues[$key] = (string)$value;
+                $normalizedValues[$key] = (string) $value;
             }
         }
 

@@ -70,7 +70,7 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
      * Sets the {@link ClassMetadataFactoryInterface} to use.
      *
      * @param ClassMetadataFactoryInterface|null $classMetadataFactory
-     * @param NameConverterInterface|null $nameConverter
+     * @param NameConverterInterface|null        $nameConverter
      */
     public function __construct(ClassMetadataFactoryInterface $classMetadataFactory = null, NameConverterInterface $nameConverter = null)
     {
@@ -172,7 +172,7 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
         $attributes = array();
         foreach ($camelizedAttributes as $camelizedAttribute) {
             $attributes[] = lcfirst(preg_replace_callback('/(^|_|\.)+(.)/', function ($match) {
-                return ('.' === $match[1] ? '_' : '') . strtoupper($match[2]);
+                return ('.' === $match[1] ? '_' : '').strtoupper($match[2]);
             }, $camelizedAttribute));
         }
 
@@ -185,7 +185,7 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
      * Detects if the configured circular reference limit is reached.
      *
      * @param object $object
-     * @param array $context
+     * @param array  $context
      *
      * @return bool
      *
@@ -251,8 +251,8 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
      * Gets attributes to normalize using groups.
      *
      * @param string|object $classOrObject
-     * @param array $context
-     * @param bool $attributesAsString If false, return an array of {@link AttributeMetadataInterface}
+     * @param array         $context
+     * @param bool          $attributesAsString If false, return an array of {@link AttributeMetadataInterface}
      *
      * @return string[]|AttributeMetadataInterface[]|bool
      */
@@ -282,7 +282,7 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
      */
     protected function prepareForDenormalization($data)
     {
-        return (array)$data;
+        return (array) $data;
     }
 
     /**
@@ -293,11 +293,11 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
      * is removed from the context before being returned to avoid side effects
      * when recursively normalizing an object graph.
      *
-     * @param array $data
-     * @param string $class
-     * @param array $context
+     * @param array            $data
+     * @param string           $class
+     * @param array            $context
      * @param \ReflectionClass $reflectionClass
-     * @param array|bool $allowedAttributes
+     * @param array|bool       $allowedAttributes
      *
      * @return object
      *

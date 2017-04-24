@@ -27,20 +27,20 @@ class PageRegistre
      * @ORM\JoinColumn(name="registre", referencedColumnName="id")
      *
      */
-    private $registre;
+    private $registre ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Eleve")
      *
      */
-    private $eleve;
+    private $eleve ;
 
 
     /**
      * @ORM\ManyToOne(targetEntity="Matiere")
      *
      */
-    private $matiere;
+    private $matiere ;
 
 
     /**
@@ -49,18 +49,6 @@ class PageRegistre
      * @ORM\Column(name="horaire_absence", type="string", length=100)
      */
     private $horaireAbsence;
-    /**
-     * @var date
-     *
-     * @ORM\Column(name="date_absence", type="date")
-     */
-    private $dateAbsence;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="etat", type="string", length=100)
-     */
-    private $etat;
 
     /**
      * @return date
@@ -77,6 +65,8 @@ class PageRegistre
     {
         $this->dateAbsence = $dateAbsence;
     }
+
+
 
     /**
      * @return mixed
@@ -143,9 +133,25 @@ class PageRegistre
     }
 
     /**
+     * @var date
+     *
+     * @ORM\Column(name="date_absence", type="date")
+     */
+    private $dateAbsence;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etat", type="string", length=100)
+     */
+    private $etat;
+
+
+    /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {

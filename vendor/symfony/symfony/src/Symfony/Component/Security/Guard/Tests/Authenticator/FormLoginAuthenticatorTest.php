@@ -23,12 +23,13 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
  */
 class FormLoginAuthenticatorTest extends TestCase
 {
-    const LOGIN_URL = 'http://login';
-    const DEFAULT_SUCCESS_URL = 'http://defaultsuccess';
-    const CUSTOM_SUCCESS_URL = 'http://customsuccess';
     private $requestWithoutSession;
     private $requestWithSession;
     private $authenticator;
+
+    const LOGIN_URL = 'http://login';
+    const DEFAULT_SUCCESS_URL = 'http://defaultsuccess';
+    const CUSTOM_SUCCESS_URL = 'http://customsuccess';
 
     public function testAuthenticationFailureWithoutSession()
     {
@@ -130,7 +131,8 @@ class FormLoginAuthenticatorTest extends TestCase
         $this->authenticator = new TestFormLoginAuthenticator();
         $this->authenticator
             ->setLoginUrl(self::LOGIN_URL)
-            ->setDefaultSuccessRedirectUrl(self::DEFAULT_SUCCESS_URL);
+            ->setDefaultSuccessRedirectUrl(self::DEFAULT_SUCCESS_URL)
+        ;
     }
 
     protected function tearDown()
@@ -144,6 +146,46 @@ class TestFormLoginAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $loginUrl;
     private $defaultSuccessRedirectUrl;
+
+    /**
+     * @param mixed $defaultSuccessRedirectUrl
+     *
+     * @return TestFormLoginAuthenticator
+     */
+    public function setDefaultSuccessRedirectUrl($defaultSuccessRedirectUrl)
+    {
+        $this->defaultSuccessRedirectUrl = $defaultSuccessRedirectUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $loginUrl
+     *
+     * @return TestFormLoginAuthenticator
+     */
+    public function setLoginUrl($loginUrl)
+    {
+        $this->loginUrl = $loginUrl;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getLoginUrl()
+    {
+        return $this->loginUrl;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultSuccessRedirectUrl()
+    {
+        return $this->defaultSuccessRedirectUrl;
+    }
 
     /**
      * {@inheritdoc}
@@ -167,45 +209,5 @@ class TestFormLoginAuthenticator extends AbstractFormLoginAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getLoginUrl()
-    {
-        return $this->loginUrl;
-    }
-
-    /**
-     * @param mixed $loginUrl
-     *
-     * @return TestFormLoginAuthenticator
-     */
-    public function setLoginUrl($loginUrl)
-    {
-        $this->loginUrl = $loginUrl;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDefaultSuccessRedirectUrl()
-    {
-        return $this->defaultSuccessRedirectUrl;
-    }
-
-    /**
-     * @param mixed $defaultSuccessRedirectUrl
-     *
-     * @return TestFormLoginAuthenticator
-     */
-    public function setDefaultSuccessRedirectUrl($defaultSuccessRedirectUrl)
-    {
-        $this->defaultSuccessRedirectUrl = $defaultSuccessRedirectUrl;
-
-        return $this;
     }
 }

@@ -58,7 +58,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
         $this->set->add('b');
         $this->assertEquals(array('a', 'b'), $this->set->all());
 
-        $newSet = $this->set->map(function ($char) {
+        $newSet = $this->set->map(function($char) {
             if ($char === 'a') {
                 return 'c';
             } elseif ($char === 'b') {
@@ -175,7 +175,7 @@ class ObjectThatImplementsBasics implements ObjectBasics
         if ($this === $other) {
             return true;
         }
-        if (!$other instanceof ObjectThatImplementsBasics) {
+        if ( ! $other instanceof ObjectThatImplementsBasics) {
             return false;
         }
 

@@ -30,9 +30,9 @@ class ContainsCommand extends CacheCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cacheName = $input->getArgument('cache-name');
+        $cacheName     = $input->getArgument('cache-name');
         $cacheProvider = $this->getCacheProvider($cacheName);
-        $cacheId = $input->getArgument('cache-id');
+        $cacheId       = $input->getArgument('cache-id');
 
         $message = $cacheProvider->contains($cacheId) ? '<info>TRUE</info>' : '<error>FALSE</error>';
         $output->writeln($message);

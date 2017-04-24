@@ -824,9 +824,9 @@ class CompoundFormTest extends AbstractFormTest
         $parent->add($this->getBuilder('foo')->getForm());
 
         $this->assertSame(
-            "name:\n" .
-            "    ERROR: Error!\n",
-            $parent->getErrorsAsString()
+             "name:\n".
+             "    ERROR: Error!\n",
+             $parent->getErrorsAsString()
         );
     }
 
@@ -846,9 +846,9 @@ class CompoundFormTest extends AbstractFormTest
         $parent->add($this->getBuilder('foo')->getForm());
 
         $this->assertSame(
-            "    name:\n" .
-            "        ERROR: Error!\n",
-            $parent->getErrorsAsString(4)
+             "    name:\n".
+             "        ERROR: Error!\n",
+             $parent->getErrorsAsString(4)
         );
     }
 
@@ -860,9 +860,9 @@ class CompoundFormTest extends AbstractFormTest
         $errors = $this->form->getErrors();
 
         $this->assertSame(
-            "ERROR: Error 1\n" .
-            "ERROR: Error 2\n",
-            (string)$errors
+             "ERROR: Error 1\n".
+             "ERROR: Error 2\n",
+             (string) $errors
         );
 
         $this->assertSame(array($error1, $error2), iterator_to_array($errors));
@@ -880,15 +880,15 @@ class CompoundFormTest extends AbstractFormTest
         $errors = $this->form->getErrors(true);
 
         $this->assertSame(
-            "ERROR: Error 1\n" .
-            "ERROR: Error 2\n" .
-            "ERROR: Nested Error\n",
-            (string)$errors
+             "ERROR: Error 1\n".
+             "ERROR: Error 2\n".
+             "ERROR: Nested Error\n",
+             (string) $errors
         );
 
         $this->assertSame(
-            array($error1, $error2, $nestedError),
-            iterator_to_array($errors)
+             array($error1, $error2, $nestedError),
+             iterator_to_array($errors)
         );
     }
 
@@ -904,11 +904,11 @@ class CompoundFormTest extends AbstractFormTest
         $errors = $this->form->getErrors(true, false);
 
         $this->assertSame(
-            "ERROR: Error 1\n" .
-            "ERROR: Error 2\n" .
-            "Child:\n" .
-            "    ERROR: Nested Error\n",
-            (string)$errors
+             "ERROR: Error 1\n".
+             "ERROR: Error 2\n".
+             "Child:\n".
+             "    ERROR: Nested Error\n",
+             (string) $errors
         );
 
         $errorsAsArray = iterator_to_array($errors);

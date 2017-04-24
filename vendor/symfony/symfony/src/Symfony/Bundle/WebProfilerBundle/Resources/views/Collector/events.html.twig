@@ -3,7 +3,7 @@
 {% import _self as helper %}
 
 {% block menu %}
-    <span class="label">
+<span class="label">
     <span class="icon">{{ include('@WebProfiler/Icon/event.svg') }}</span>
     <strong>Events</strong>
 </span>
@@ -19,8 +19,7 @@
     {% else %}
         <div class="sf-tabs">
             <div class="tab">
-                <h3 class="tab-title">Called Listeners <span class="badge">{{ collector.calledlisteners|length }}</span>
-                </h3>
+                <h3 class="tab-title">Called Listeners <span class="badge">{{ collector.calledlisteners|length }}</span></h3>
 
                 <div class="tab-content">
                     {{ helper.render_table(collector.calledlisteners) }}
@@ -28,8 +27,7 @@
             </div>
 
             <div class="tab">
-                <h3 class="tab-title">Not Called Listeners <span
-                            class="badge">{{ collector.notcalledlisteners|length }}</span></h3>
+                <h3 class="tab-title">Not Called Listeners <span class="badge">{{ collector.notcalledlisteners|length }}</span></h3>
                 <div class="tab-content">
                     {% if collector.notcalledlisteners is empty %}
                         <div class="empty">
@@ -54,10 +52,10 @@
 {% macro render_table(listeners) %}
     <table>
         <thead>
-        <tr>
-            <th class="text-right">Priority</th>
-            <th>Listener</th>
-        </tr>
+            <tr>
+                <th class="text-right">Priority</th>
+                <th>Listener</th>
+            </tr>
         </thead>
 
         {% set previous_event = (listeners|first).event %}
@@ -68,9 +66,9 @@
                 {% endif %}
 
                 <tbody>
-                <tr>
-                    <th colspan="2" class="colored font-normal">{{ listener.event }}</th>
-                </tr>
+                    <tr>
+                        <th colspan="2" class="colored font-normal">{{ listener.event }}</th>
+                    </tr>
 
                 {% set previous_event = listener.event %}
             {% endif %}
@@ -91,8 +89,7 @@
                             <span class="text-muted text-small">({{ listener.file }})</span>
                         {% else %}
                             {{ listener.function }}()
-                            <span class="text-muted newline text-small">{{ listener.file }} (line {{ listener.line }}
-                                )</span>
+                            <span class="text-muted newline text-small">{{ listener.file }} (line {{ listener.line }})</span>
                         {% endif %}
 
                     {% elseif listener.type == "Method" %}
@@ -101,14 +98,11 @@
                         {% set class_namespace = listener.class|split('\\', -1)|join('\\') %}
 
                         {% if link %}
-                            <a href="{{ link }}"><strong>{{ listener.class|abbr_class|striptags }}</strong>::{{ listener.method }}
-                                ()</a>
+                            <a href="{{ link }}"><strong>{{ listener.class|abbr_class|striptags }}</strong>::{{ listener.method }}()</a>
                             <span class="text-muted text-small">({{ listener.class }})</span>
                         {% else %}
-                            <span>{{ class_namespace }}\</span>
-                            <strong>{{ listener.class|abbr_class|striptags }}</strong>::{{ listener.method }}()
-                            <span class="text-muted newline text-small">{{ listener.file }} (line {{ listener.line }}
-                                )</span>
+                            <span>{{ class_namespace }}\</span><strong>{{ listener.class|abbr_class|striptags }}</strong>::{{ listener.method }}()
+                            <span class="text-muted newline text-small">{{ listener.file }} (line {{ listener.line }})</span>
                         {% endif %}
 
                     {% endif %}

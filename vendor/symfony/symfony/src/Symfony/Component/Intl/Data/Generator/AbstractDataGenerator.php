@@ -49,12 +49,12 @@ abstract class AbstractDataGenerator
         $reader = new IntlBundleReader();
 
         $writers = $config->getBundleWriters();
-        $tempDir = sys_get_temp_dir() . '/icu-data-' . $this->dirName;
+        $tempDir = sys_get_temp_dir().'/icu-data-'.$this->dirName;
 
         // Prepare filesystem directories
         foreach ($writers as $targetDir => $writer) {
-            $filesystem->remove($targetDir . '/' . $this->dirName);
-            $filesystem->mkdir($targetDir . '/' . $this->dirName);
+            $filesystem->remove($targetDir.'/'.$this->dirName);
+            $filesystem->mkdir($targetDir.'/'.$this->dirName);
         }
 
         $filesystem->remove($tempDir);
@@ -71,7 +71,7 @@ abstract class AbstractDataGenerator
 
             if (null !== $localeData) {
                 foreach ($writers as $targetDir => $writer) {
-                    $writer->write($targetDir . '/' . $this->dirName, $locale, $localeData);
+                    $writer->write($targetDir.'/'.$this->dirName, $locale, $localeData);
                 }
             }
         }
@@ -80,7 +80,7 @@ abstract class AbstractDataGenerator
 
         if (null !== $rootData) {
             foreach ($writers as $targetDir => $writer) {
-                $writer->write($targetDir . '/' . $this->dirName, 'root', $rootData);
+                $writer->write($targetDir.'/'.$this->dirName, 'root', $rootData);
             }
         }
 
@@ -88,7 +88,7 @@ abstract class AbstractDataGenerator
 
         if (null !== $metaData) {
             foreach ($writers as $targetDir => $writer) {
-                $writer->write($targetDir . '/' . $this->dirName, 'meta', $metaData);
+                $writer->write($targetDir.'/'.$this->dirName, 'meta', $metaData);
             }
         }
 
@@ -98,7 +98,7 @@ abstract class AbstractDataGenerator
 
     /**
      * @param LocaleScanner $scanner
-     * @param string $sourceDir
+     * @param string        $sourceDir
      *
      * @return string[]
      */
@@ -106,8 +106,8 @@ abstract class AbstractDataGenerator
 
     /**
      * @param GenrbCompiler $compiler
-     * @param string $sourceDir
-     * @param string $tempDir
+     * @param string        $sourceDir
+     * @param string        $tempDir
      */
     abstract protected function compileTemporaryBundles(GenrbCompiler $compiler, $sourceDir, $tempDir);
 
@@ -115,8 +115,8 @@ abstract class AbstractDataGenerator
 
     /**
      * @param BundleReaderInterface $reader
-     * @param string $tempDir
-     * @param string $displayLocale
+     * @param string                $tempDir
+     * @param string                $displayLocale
      *
      * @return array|null
      */
@@ -124,7 +124,7 @@ abstract class AbstractDataGenerator
 
     /**
      * @param BundleReaderInterface $reader
-     * @param string $tempDir
+     * @param string                $tempDir
      *
      * @return array|null
      */
@@ -132,7 +132,7 @@ abstract class AbstractDataGenerator
 
     /**
      * @param BundleReaderInterface $reader
-     * @param string $tempDir
+     * @param string                $tempDir
      *
      * @return array|null
      */

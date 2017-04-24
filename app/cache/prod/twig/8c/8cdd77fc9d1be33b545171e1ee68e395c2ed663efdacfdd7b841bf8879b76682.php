@@ -1,7 +1,6 @@
 <?php
 
 /* projetBundle:Default/Admin:ajouterEnseignant.html.twig */
-
 class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8badd803 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,6 +16,17 @@ class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8ba
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 2
     public function block_title($context, array $blocks = array())
     {
         // line 3
@@ -24,6 +34,7 @@ class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8ba
     ";
     }
 
+    // line 6
     public function block_script($context, array $blocks = array())
     {
         // line 7
@@ -60,8 +71,7 @@ class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8ba
     ";
     }
 
-    // line 2
-
+    // line 36
     public function block_mainContent($context, array $blocks = array())
     {
         // line 37
@@ -135,14 +145,10 @@ class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8ba
     ";
     }
 
-    // line 6
-
     public function getTemplateName()
     {
         return "projetBundle:Default/Admin:ajouterEnseignant.html.twig";
     }
-
-    // line 36
 
     public function isTraitable()
     {
@@ -151,13 +157,13 @@ class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8ba
 
     public function getDebugInfo()
     {
-        return array(106 => 51, 95 => 49, 91 => 48, 78 => 37, 75 => 36, 50 => 14, 41 => 7, 38 => 6, 33 => 3, 30 => 2, 11 => 1,);
+        return array (  106 => 51,  95 => 49,  91 => 48,  78 => 37,  75 => 36,  50 => 14,  41 => 7,  38 => 6,  33 => 3,  30 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -165,15 +171,5 @@ class __TwigTemplate_9ae1f5fc0cb5249724a64c2899c2c03fb6b4cc3cea109c18e8c9f3af8ba
     public function getSourceContext()
     {
         return new Twig_Source("", "projetBundle:Default/Admin:ajouterEnseignant.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle/Resources/views/Default/Admin/ajouterEnseignant.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

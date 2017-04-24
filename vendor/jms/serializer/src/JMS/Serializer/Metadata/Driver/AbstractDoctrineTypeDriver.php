@@ -35,26 +35,26 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * @var array
      */
     protected $fieldMapping = array(
-        'string' => 'string',
-        'text' => 'string',
-        'blob' => 'string',
+        'string'       => 'string',
+        'text'         => 'string',
+        'blob'         => 'string',
 
-        'integer' => 'integer',
-        'smallint' => 'integer',
-        'bigint' => 'integer',
+        'integer'      => 'integer',
+        'smallint'     => 'integer',
+        'bigint'       => 'integer',
 
-        'datetime' => 'DateTime',
-        'datetimetz' => 'DateTime',
-        'time' => 'DateTime',
-        'date' => 'DateTime',
+        'datetime'     => 'DateTime',
+        'datetimetz'   => 'DateTime',
+        'time'         => 'DateTime',
+        'date'         => 'DateTime',
 
-        'float' => 'float',
-        'decimal' => 'float',
+        'float'        => 'float',
+        'decimal'      => 'float',
 
-        'boolean' => 'boolean',
+        'boolean'      => 'boolean',
 
-        'array' => 'array',
-        'json_array' => 'array',
+        'array'        => 'array',
+        'json_array'   => 'array',
         'simple_array' => 'array<string>',
     );
 
@@ -107,24 +107,6 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
     }
 
     /**
-     * @param string $className
-     *
-     * @return null|DoctrineClassMetadata
-     */
-    protected function tryLoadingDoctrineMetadata($className)
-    {
-        if (!$manager = $this->registry->getManagerForClass($className)) {
-            return null;
-        }
-
-        if ($manager->getMetadataFactory()->isTransient($className)) {
-            return null;
-        }
-
-        return $manager->getClassMetadata($className);
-    }
-
-    /**
      * @param DoctrineClassMetadata $doctrineMetadata
      * @param ClassMetadata $classMetadata
      */
@@ -147,6 +129,24 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      */
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
     {
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return null|DoctrineClassMetadata
+     */
+    protected function tryLoadingDoctrineMetadata($className)
+    {
+        if (!$manager = $this->registry->getManagerForClass($className)) {
+            return null;
+        }
+
+        if ($manager->getMetadataFactory()->isTransient($className)) {
+            return null;
+        }
+
+        return $manager->getClassMetadata($className);
     }
 
     /**

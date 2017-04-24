@@ -31,13 +31,6 @@ abstract class AbstractCollatorTest extends TestCase
         $this->assertSame($expected, $array);
     }
 
-    /**
-     * @param string $locale
-     *
-     * @return \Collator
-     */
-    abstract protected function getCollator($locale);
-
     public function asortProvider()
     {
         return array(
@@ -50,7 +43,7 @@ abstract class AbstractCollatorTest extends TestCase
             array(
                 array('c', 'b', 'a'),
                 Collator::SORT_REGULAR,
-                array(2 => 'a', 1 => 'b', 0 => 'c'),
+                array(2 => 'a', 1 => 'b',  0 => 'c'),
             ),
             array(
                 array('b', 'c', 'a'),
@@ -59,4 +52,11 @@ abstract class AbstractCollatorTest extends TestCase
             ),
         );
     }
+
+    /**
+     * @param string $locale
+     *
+     * @return \Collator
+     */
+    abstract protected function getCollator($locale);
 }

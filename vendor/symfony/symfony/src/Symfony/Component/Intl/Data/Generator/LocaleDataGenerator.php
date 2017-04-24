@@ -66,12 +66,12 @@ class LocaleDataGenerator
 
         // Prepare filesystem directories
         foreach ($writers as $targetDir => $writer) {
-            $filesystem->remove($targetDir . '/' . $this->dirName);
-            $filesystem->mkdir($targetDir . '/' . $this->dirName);
+            $filesystem->remove($targetDir.'/'.$this->dirName);
+            $filesystem->mkdir($targetDir.'/'.$this->dirName);
         }
 
-        $locales = $localeScanner->scanLocales($config->getSourceDir() . '/locales');
-        $aliases = $localeScanner->scanAliases($config->getSourceDir() . '/locales');
+        $locales = $localeScanner->scanLocales($config->getSourceDir().'/locales');
+        $aliases = $localeScanner->scanAliases($config->getSourceDir().'/locales');
 
         // Flip to facilitate lookup
         $flippedLocales = array_flip($locales);
@@ -126,7 +126,7 @@ class LocaleDataGenerator
             }
 
             foreach ($writers as $targetDir => $writer) {
-                $writer->write($targetDir . '/' . $this->dirName, $displayLocale, array(
+                $writer->write($targetDir.'/'.$this->dirName, $displayLocale, array(
                     'Names' => $localeNames[$displayLocale],
                 ));
             }
@@ -136,7 +136,7 @@ class LocaleDataGenerator
         // target
         foreach ($aliases as $alias => $aliasOf) {
             foreach ($writers as $targetDir => $writer) {
-                $writer->write($targetDir . '/' . $this->dirName, $alias, array(
+                $writer->write($targetDir.'/'.$this->dirName, $alias, array(
                     '%%ALIAS' => $aliasOf,
                 ));
             }
@@ -144,36 +144,11 @@ class LocaleDataGenerator
 
         // Create root file which maps locale codes to locale codes, for fallback
         foreach ($writers as $targetDir => $writer) {
-            $writer->write($targetDir . '/' . $this->dirName, 'meta', array(
+            $writer->write($targetDir.'/'.$this->dirName, 'meta', array(
                 'Locales' => $locales,
                 'Aliases' => $aliases,
             ));
         }
-    }
-
-    private function generateFallbackMapping(array $displayLocales, array $aliases)
-    {
-        $mapping = array();
-
-        foreach ($displayLocales as $displayLocale => $_) {
-            $mapping[$displayLocale] = null;
-            $fallback = $displayLocale;
-
-            // Recursively search for a fallback locale until one is found
-            while (null !== ($fallback = Locale::getFallback($fallback))) {
-                // Currently, no locale has an alias as fallback locale.
-                // If this starts to be the case, we need to add code here.
-                assert(!isset($aliases[$fallback]));
-
-                // Check whether the fallback exists
-                if (isset($displayLocales[$fallback])) {
-                    $mapping[$displayLocale] = $fallback;
-                    break;
-                }
-            }
-        }
-
-        return $mapping;
     }
 
     private function generateLocaleName($locale, $displayLocale)
@@ -241,9 +216,34 @@ class LocaleDataGenerator
                 $name = $matches[1];
             }
 
-            $name .= ' (' . implode(', ', $extras) . ')';
+            $name .= ' ('.implode(', ', $extras).')';
         }
 
         return $name;
+    }
+
+    private function generateFallbackMapping(array $displayLocales, array $aliases)
+    {
+        $mapping = array();
+
+        foreach ($displayLocales as $displayLocale => $_) {
+            $mapping[$displayLocale] = null;
+            $fallback = $displayLocale;
+
+            // Recursively search for a fallback locale until one is found
+            while (null !== ($fallback = Locale::getFallback($fallback))) {
+                // Currently, no locale has an alias as fallback locale.
+                // If this starts to be the case, we need to add code here.
+                assert(!isset($aliases[$fallback]));
+
+                // Check whether the fallback exists
+                if (isset($displayLocales[$fallback])) {
+                    $mapping[$displayLocale] = $fallback;
+                    break;
+                }
+            }
+        }
+
+        return $mapping;
     }
 }

@@ -28,7 +28,7 @@ class DateTimeValidator extends DateValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof DateTime) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\DateTime');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\DateTime');
         }
 
         if (null === $value || '' === $value || $value instanceof \DateTime) {
@@ -39,7 +39,7 @@ class DateTimeValidator extends DateValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if (!preg_match(static::PATTERN, $value, $matches)) {
             if ($this->context instanceof ExecutionContextInterface) {

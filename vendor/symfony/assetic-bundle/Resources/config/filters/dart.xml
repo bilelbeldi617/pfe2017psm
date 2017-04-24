@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 
-<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns="http://symfony.com/schema/dic/services"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
         <parameter key="assetic.filter.dart.class">Assetic\Filter\DartFilter</parameter>
@@ -12,11 +12,9 @@
 
     <services>
         <service id="assetic.filter.dart" class="%assetic.filter.dart.class%">
-            <tag name="assetic.filter" alias="dart"/>
+            <tag name="assetic.filter" alias="dart" />
             <argument>%assetic.filter.dart.bin%</argument>
-            <call method="setTimeout">
-                <argument>%assetic.filter.dart.timeout%</argument>
-            </call>
+            <call method="setTimeout"><argument>%assetic.filter.dart.timeout%</argument></call>
         </service>
     </services>
 </container>

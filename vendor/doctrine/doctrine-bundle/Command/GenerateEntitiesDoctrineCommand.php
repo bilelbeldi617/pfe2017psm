@@ -79,7 +79,7 @@ class is supposed to extend which. You have to adjust the entity
 code manually for inheritance to work!
 
 EOT
-            );
+        );
     }
 
     /**
@@ -98,7 +98,7 @@ EOT
             $name = strtr($input->getArgument('name'), '/', '\\');
 
             if (false !== $pos = strpos($name, ':')) {
-                $name = $this->getContainer()->get('doctrine')->getAliasNamespace(substr($name, 0, $pos)) . '\\' . substr($name, $pos + 1);
+                $name = $this->getContainer()->get('doctrine')->getAliasNamespace(substr($name, 0, $pos)).'\\'.substr($name, $pos + 1);
             }
 
             if (class_exists($name)) {

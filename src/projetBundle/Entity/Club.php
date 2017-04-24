@@ -22,25 +22,13 @@ class Club
     private $id;
 
 
+
     /**
      * @ORM\ManyToMany(targetEntity="Eleve", mappedBy="clubs")
      */
     private $eleves;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titre_club", type="string", length=100)
-     */
-    private $titreClub;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nombre_adherant", type="integer")
-     */
-    private $nombreAdherant;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->eleves = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -60,24 +48,31 @@ class Club
         $this->eleves = $eleves;
     }
 
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="titre_club", type="string", length=100)
+     */
+    private $titreClub;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nombre_adherant", type="integer")
+     */
+    private $nombreAdherant;
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get titreClub
-     *
-     * @return string
-     */
-    public function getTitreClub()
-    {
-        return $this->titreClub;
     }
 
     /**
@@ -94,13 +89,13 @@ class Club
     }
 
     /**
-     * Get nombreAdherant
+     * Get titreClub
      *
-     * @return integer
+     * @return string 
      */
-    public function getNombreAdherant()
+    public function getTitreClub()
     {
-        return $this->nombreAdherant;
+        return $this->titreClub;
     }
 
     /**
@@ -114,5 +109,15 @@ class Club
         $this->nombreAdherant = $nombreAdherant;
 
         return $this;
+    }
+
+    /**
+     * Get nombreAdherant
+     *
+     * @return integer 
+     */
+    public function getNombreAdherant()
+    {
+        return $this->nombreAdherant;
     }
 }

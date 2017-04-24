@@ -71,7 +71,8 @@ To make symlink relative, add the <info>--relative</info> option:
   <info>php %command.full_name% web --symlink --relative</info>
 
 EOT
-            );
+            )
+        ;
     }
 
     /**
@@ -88,7 +89,7 @@ EOT
         $this->filesystem = $this->getContainer()->get('filesystem');
 
         // Create the bundles directory otherwise symlink will fail.
-        $bundlesDir = $targetArg . '/bundles/';
+        $bundlesDir = $targetArg.'/bundles/';
         $this->filesystem->mkdir($bundlesDir, 0777);
 
         $io = new SymfonyStyle($input, $output);
@@ -112,11 +113,11 @@ EOT
         $exitCode = 0;
         /** @var BundleInterface $bundle */
         foreach ($this->getContainer()->get('kernel')->getBundles() as $bundle) {
-            if (!is_dir($originDir = $bundle->getPath() . '/Resources/public')) {
+            if (!is_dir($originDir = $bundle->getPath().'/Resources/public')) {
                 continue;
             }
 
-            $targetDir = $bundlesDir . preg_replace('/bundle$/', '', strtolower($bundle->getName()));
+            $targetDir = $bundlesDir.preg_replace('/bundle$/', '', strtolower($bundle->getName()));
 
             if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
                 $message = sprintf("%s\n-> %s", $bundle->getName(), $targetDir);
@@ -187,26 +188,6 @@ EOT
     }
 
     /**
-     * Creates symbolic link.
-     *
-     * @param string $originDir
-     * @param string $targetDir
-     * @param bool $relative
-     *
-     * @throws IOException If link can not be created.
-     */
-    private function symlink($originDir, $targetDir, $relative = false)
-    {
-        if ($relative) {
-            $originDir = $this->filesystem->makePathRelative($originDir, realpath(dirname($targetDir)));
-        }
-        $this->filesystem->symlink($originDir, $targetDir);
-        if (!file_exists($targetDir)) {
-            throw new IOException(sprintf('Symbolic link "%s" was created but appears to be broken.', $targetDir), 0, null, $targetDir);
-        }
-    }
-
-    /**
      * Try to create absolute symlink.
      *
      * Falling back to hard copy.
@@ -227,6 +208,26 @@ EOT
         }
 
         return $method;
+    }
+
+    /**
+     * Creates symbolic link.
+     *
+     * @param string $originDir
+     * @param string $targetDir
+     * @param bool   $relative
+     *
+     * @throws IOException If link can not be created.
+     */
+    private function symlink($originDir, $targetDir, $relative = false)
+    {
+        if ($relative) {
+            $originDir = $this->filesystem->makePathRelative($originDir, realpath(dirname($targetDir)));
+        }
+        $this->filesystem->symlink($originDir, $targetDir);
+        if (!file_exists($targetDir)) {
+            throw new IOException(sprintf('Symbolic link "%s" was created but appears to be broken.', $targetDir), 0, null, $targetDir);
+        }
     }
 
     /**

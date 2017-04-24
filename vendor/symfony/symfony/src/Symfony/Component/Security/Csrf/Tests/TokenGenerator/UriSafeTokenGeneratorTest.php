@@ -43,16 +43,6 @@ class UriSafeTokenGeneratorTest extends TestCase
         self::$bytes = base64_decode('aMf+Tct/RLn2WQ==');
     }
 
-    public function testGenerateToken()
-    {
-        $token = $this->generator->generateToken();
-
-        $this->assertTrue(ctype_print($token), 'is printable');
-        $this->assertStringNotMatchesFormat('%S+%S', $token, 'is URI safe');
-        $this->assertStringNotMatchesFormat('%S/%S', $token, 'is URI safe');
-        $this->assertStringNotMatchesFormat('%S=%S', $token, 'is URI safe');
-    }
-
     protected function setUp()
     {
         $this->generator = new UriSafeTokenGenerator(self::ENTROPY);
@@ -62,5 +52,15 @@ class UriSafeTokenGeneratorTest extends TestCase
     {
         $this->random = null;
         $this->generator = null;
+    }
+
+    public function testGenerateToken()
+    {
+        $token = $this->generator->generateToken();
+
+        $this->assertTrue(ctype_print($token), 'is printable');
+        $this->assertStringNotMatchesFormat('%S+%S', $token, 'is URI safe');
+        $this->assertStringNotMatchesFormat('%S/%S', $token, 'is URI safe');
+        $this->assertStringNotMatchesFormat('%S=%S', $token, 'is URI safe');
     }
 }

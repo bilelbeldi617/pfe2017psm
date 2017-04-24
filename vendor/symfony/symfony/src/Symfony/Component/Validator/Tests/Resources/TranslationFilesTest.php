@@ -30,10 +30,8 @@ class TranslationFilesTest extends TestCase
     public function provideTranslationFiles()
     {
         return array_map(
-            function ($filePath) {
-                return (array)$filePath;
-            },
-            glob(dirname(dirname(__DIR__)) . '/Resources/translations/*.xlf')
+            function ($filePath) { return (array) $filePath; },
+            glob(dirname(dirname(__DIR__)).'/Resources/translations/*.xlf')
         );
     }
 }

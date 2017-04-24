@@ -17,7 +17,7 @@ class {{ controller }}ControllerTest extends WebTestCase
         $client = static::createClient();
 
         $crawler = $client->request('GET', '{{ action.route }}');
-}
+    }
 
 {% endfor -%}
 {% endblock class_body %}

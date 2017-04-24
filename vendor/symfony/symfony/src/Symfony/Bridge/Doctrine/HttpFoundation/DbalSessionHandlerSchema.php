@@ -27,6 +27,13 @@ final class DbalSessionHandlerSchema extends Schema
         $this->addSessionTable($tableName);
     }
 
+    public function addToSchema(Schema $schema)
+    {
+        foreach ($this->getTables() as $table) {
+            $schema->_addTable($table);
+        }
+    }
+
     private function addSessionTable($tableName)
     {
         $table = $this->createTable($tableName);
@@ -34,12 +41,5 @@ final class DbalSessionHandlerSchema extends Schema
         $table->addColumn('sess_data', 'text')->setNotNull(true);
         $table->addColumn('sess_time', 'integer')->setNotNull(true)->setUnsigned(true);
         $table->setPrimaryKey(array('sess_id'));
-    }
-
-    public function addToSchema(Schema $schema)
-    {
-        foreach ($this->getTables() as $table) {
-            $schema->_addTable($table);
-        }
     }
 }

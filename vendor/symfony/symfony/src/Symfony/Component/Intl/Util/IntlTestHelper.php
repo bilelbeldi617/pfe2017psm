@@ -28,10 +28,36 @@ use Symfony\Component\Intl\Intl;
 class IntlTestHelper
 {
     /**
-     * Must not be instantiated.
+     * Should be called before tests that work fine with the stub implementation.
      */
-    private function __construct()
+    public static function requireIntl(TestCase $testCase, $minimumIcuVersion = null)
     {
+        if (null === $minimumIcuVersion) {
+            $minimumIcuVersion = Intl::getIcuStubVersion();
+        }
+
+        // We only run tests if the version is *one specific version*.
+        // This condition is satisfied if
+        //
+        //   * the intl extension is loaded with version Intl::getIcuStubVersion()
+        //   * the intl extension is not loaded
+
+        if (($minimumIcuVersion || defined('HHVM_VERSION_ID')) && IcuVersion::compare(Intl::getIcuVersion(), $minimumIcuVersion, '<', 1)) {
+            $testCase->markTestSkipped('ICU version '.$minimumIcuVersion.' is required.');
+        }
+
+        // Normalize the default locale in case this is not done explicitly
+        // in the test
+        \Locale::setDefault('en');
+
+        // Consequently, tests will
+        //
+        //   * run only for one ICU version (see Intl::getIcuStubVersion())
+        //     there is no need to add control structures to your tests that
+        //     change the test depending on the ICU version.
+        //
+        // Tests should only rely on functionality that is implemented in the
+        // stub classes.
     }
 
     /**
@@ -56,39 +82,6 @@ class IntlTestHelper
     }
 
     /**
-     * Should be called before tests that work fine with the stub implementation.
-     */
-    public static function requireIntl(TestCase $testCase, $minimumIcuVersion = null)
-    {
-        if (null === $minimumIcuVersion) {
-            $minimumIcuVersion = Intl::getIcuStubVersion();
-        }
-
-        // We only run tests if the version is *one specific version*.
-        // This condition is satisfied if
-        //
-        //   * the intl extension is loaded with version Intl::getIcuStubVersion()
-        //   * the intl extension is not loaded
-
-        if (($minimumIcuVersion || defined('HHVM_VERSION_ID')) && IcuVersion::compare(Intl::getIcuVersion(), $minimumIcuVersion, '<', 1)) {
-            $testCase->markTestSkipped('ICU version ' . $minimumIcuVersion . ' is required.');
-        }
-
-        // Normalize the default locale in case this is not done explicitly
-        // in the test
-        \Locale::setDefault('en');
-
-        // Consequently, tests will
-        //
-        //   * run only for one ICU version (see Intl::getIcuStubVersion())
-        //     there is no need to add control structures to your tests that
-        //     change the test depending on the ICU version.
-        //
-        // Tests should only rely on functionality that is implemented in the
-        // stub classes.
-    }
-
-    /**
      * Skips the test unless the current system has a 32bit architecture.
      */
     public static function require32Bit(TestCase $testCase)
@@ -106,5 +99,12 @@ class IntlTestHelper
         if (8 !== PHP_INT_SIZE) {
             $testCase->markTestSkipped('PHP 64 bit is required.');
         }
+    }
+
+    /**
+     * Must not be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

@@ -18,6 +18,16 @@ use Symfony\Component\Validator\Validation;
 
 class RangeValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new RangeValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Range(array('min' => 10, 'max' => 20)));
@@ -389,15 +399,5 @@ class RangeValidatorTest extends AbstractConstraintValidatorTest
             ->setParameter('{{ value }}', '"abcd"')
             ->setCode(Range::INVALID_CHARACTERS_ERROR)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new RangeValidator();
     }
 }

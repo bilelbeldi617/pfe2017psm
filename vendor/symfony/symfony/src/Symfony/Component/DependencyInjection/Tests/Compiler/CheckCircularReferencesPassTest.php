@@ -32,19 +32,6 @@ class CheckCircularReferencesPassTest extends TestCase
         $this->process($container);
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $compiler = new Compiler();
-        $passConfig = $compiler->getPassConfig();
-        $passConfig->setOptimizationPasses(array(
-            new AnalyzeServiceReferencesPass(true),
-            new CheckCircularReferencesPass(),
-        ));
-        $passConfig->setRemovingPasses(array());
-
-        $compiler->compile($container);
-    }
-
     /**
      * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      */
@@ -127,5 +114,18 @@ class CheckCircularReferencesPassTest extends TestCase
         $container->register('b')->addMethodCall('setA', array(new Reference('a')));
 
         $this->process($container);
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $compiler = new Compiler();
+        $passConfig = $compiler->getPassConfig();
+        $passConfig->setOptimizationPasses(array(
+            new AnalyzeServiceReferencesPass(true),
+            new CheckCircularReferencesPass(),
+        ));
+        $passConfig->setRemovingPasses(array());
+
+        $compiler->compile($container);
     }
 }

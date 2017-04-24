@@ -30,13 +30,6 @@ class YamlDriverTest extends BaseDriverTest
         $this->assertEquals(array('age', 'name'), array_keys($m->propertyMetadata));
     }
 
-    private function getDriverForSubDir($subDir = null)
-    {
-        return new YamlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/yml' . ($subDir ? '/' . $subDir : ''),
-        )));
-    }
-
     public function testShortExposeSyntax()
     {
         $m = $this->getDriverForSubDir('short_expose')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
@@ -88,6 +81,13 @@ class YamlDriverTest extends BaseDriverTest
         $p->getter = 'getOtherTitle';
         $p->setter = 'setOtherTitle';
         $this->assertEquals($p, $m->propertyMetadata['title']);
+    }
+
+    private function getDriverForSubDir($subDir = null)
+    {
+        return new YamlDriver(new FileLocator(array(
+            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/yml' . ($subDir ? '/'.$subDir : ''),
+        )));
     }
 
     protected function getDriver()

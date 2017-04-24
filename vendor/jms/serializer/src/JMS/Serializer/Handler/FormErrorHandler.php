@@ -31,11 +31,6 @@ class FormErrorHandler implements SubscribingHandlerInterface
 {
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public static function getSubscribingMethods()
     {
         $methods = array();
@@ -53,6 +48,11 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         return $methods;
+    }
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
     }
 
     public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, array $type)
@@ -87,6 +87,16 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $formNode;
     }
 
+    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, array $type)
+    {
+        return $this->convertFormToArray($visitor, $form);
+    }
+
+    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, array $type)
+    {
+        return $this->convertFormToArray($visitor, $form);
+    }
+
     public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type)
     {
         if (null === $visitor->document) {
@@ -96,6 +106,16 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $visitor->document->createCDATASection($this->getErrorMessage($formError));
     }
 
+    public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, array $type)
+    {
+        return $this->getErrorMessage($formError);
+    }
+
+    public function serializeFormErrorToYml(YamlSerializationVisitor $visitor, FormError $formError, array $type)
+    {
+        return $this->getErrorMessage($formError);
+    }
+
     private function getErrorMessage(FormError $error)
     {
         if (null !== $error->getMessagePluralization()) {
@@ -103,11 +123,6 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
-    }
-
-    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, array $type)
-    {
-        return $this->convertFormToArray($visitor, $form);
     }
 
     private function convertFormToArray(GenericSerializationVisitor $visitor, Form $data)
@@ -139,20 +154,5 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         return $form;
-    }
-
-    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, array $type)
-    {
-        return $this->convertFormToArray($visitor, $form);
-    }
-
-    public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, array $type)
-    {
-        return $this->getErrorMessage($formError);
-    }
-
-    public function serializeFormErrorToYml(YamlSerializationVisitor $visitor, FormError $formError, array $type)
-    {
-        return $this->getErrorMessage($formError);
     }
 }

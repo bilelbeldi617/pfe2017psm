@@ -23,13 +23,23 @@ abstract class AbstractCommand extends ContainerAwareCommand
     protected $am;
     protected $basePath;
 
+    protected function initialize(InputInterface $input, OutputInterface $stdout)
+    {
+        $this->am = $this->getContainer()->get('assetic.asset_manager');
+
+        $this->basePath = $this->getContainer()->getParameter('assetic.write_to');
+        if ($input->hasArgument('write_to') && $basePath = $input->getArgument('write_to')) {
+            $this->basePath = $basePath;
+        }
+    }
+
     /**
      * Writes an asset.
      *
      * If the application or asset is in debug mode, each leaf asset will be
      * dumped as well.
      *
-     * @param string $name An asset name
+     * @param string          $name   An asset name
      * @param OutputInterface $stdout The command output
      */
     public function dumpAsset($name, OutputInterface $stdout)
@@ -54,7 +64,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
     /**
      * Performs the asset dump.
      *
-     * @param AssetInterface $asset An asset
+     * @param AssetInterface  $asset  An asset
      * @param OutputInterface $stdout The command output
      *
      * @throws RuntimeException If there is a problem writing the asset
@@ -70,7 +80,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
             $asset->setValues($combination);
 
             // resolve the target path
-            $target = rtrim($this->basePath, '/') . '/' . $asset->getTargetPath();
+            $target = rtrim($this->basePath, '/').'/'.$asset->getTargetPath();
             $target = str_replace('_controller/', '', $target);
             $target = VarUtils::resolve($target, $asset->getVars(), $asset->getValues());
 
@@ -82,7 +92,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
                 ));
 
                 if (false === @mkdir($dir, 0777, true)) {
-                    throw new \RuntimeException('Unable to create directory ' . $dir);
+                    throw new \RuntimeException('Unable to create directory '.$dir);
                 }
             }
 
@@ -107,18 +117,8 @@ abstract class AbstractCommand extends ContainerAwareCommand
             }
 
             if (false === @file_put_contents($target, $asset->dump())) {
-                throw new \RuntimeException('Unable to write file ' . $target);
+                throw new \RuntimeException('Unable to write file '.$target);
             }
-        }
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $stdout)
-    {
-        $this->am = $this->getContainer()->get('assetic.asset_manager');
-
-        $this->basePath = $this->getContainer()->getParameter('assetic.write_to');
-        if ($input->hasArgument('write_to') && $basePath = $input->getArgument('write_to')) {
-            $this->basePath = $basePath;
         }
     }
 }

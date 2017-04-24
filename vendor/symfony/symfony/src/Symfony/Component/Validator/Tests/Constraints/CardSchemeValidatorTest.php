@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class CardSchemeValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new CardSchemeValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new CardScheme(array('schemes' => array())));
@@ -54,7 +64,7 @@ class CardSchemeValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($number, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', is_string($number) ? '"' . $number . '"' : $number)
+            ->setParameter('{{ value }}', is_string($number) ? '"'.$number.'"' : $number)
             ->setCode($code)
             ->assertRaised();
     }
@@ -128,15 +138,5 @@ class CardSchemeValidatorTest extends AbstractConstraintValidatorTest
             array('MASTERCARD', '2721001234567890', CardScheme::INVALID_FORMAT_ERROR), // Not assigned yet
             array('MASTERCARD', '2220991234567890', CardScheme::INVALID_FORMAT_ERROR), // Not assigned yet
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new CardSchemeValidator();
     }
 }

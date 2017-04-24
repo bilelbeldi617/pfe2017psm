@@ -26,7 +26,7 @@ class DirectoryResourceDefinition extends Definition
      *
      * @param string $bundle A bundle name or empty string
      * @param string $engine The templating engine
-     * @param array $dirs An array of directories to merge
+     * @param array  $dirs   An array of directories to merge
      */
     public function __construct($bundle, $engine, array $dirs)
     {
@@ -37,8 +37,9 @@ class DirectoryResourceDefinition extends Definition
         parent::__construct();
 
         $this
-            ->addTag('assetic.templating.' . $engine)
-            ->addTag('assetic.formula_resource', array('loader' => $engine));;
+            ->addTag('assetic.templating.'.$engine)
+            ->addTag('assetic.formula_resource', array('loader' => $engine));
+        ;
 
         if (1 == count($dirs)) {
             // no need to coalesce
@@ -57,7 +58,8 @@ class DirectoryResourceDefinition extends Definition
         $this
             ->setClass('%assetic.coalescing_directory_resource.class%')
             ->addArgument($resources)
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
     }
 
     private static function configureDefinition(Definition $definition, $bundle, $engine, $dir)
@@ -67,7 +69,8 @@ class DirectoryResourceDefinition extends Definition
             ->addArgument(new Reference('templating.loader'))
             ->addArgument($bundle)
             ->addArgument($dir)
-            ->addArgument('/\.[^.]+\.' . $engine . '$/')
-            ->setPublic(false);
+            ->addArgument('/\.[^.]+\.'.$engine.'$/')
+            ->setPublic(false)
+        ;
     }
 }

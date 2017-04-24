@@ -32,12 +32,6 @@ class CheckReferenceValidityPassTest extends TestCase
         $this->process($container);
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new CheckReferenceValidityPass();
-        $pass->process($container);
-    }
-
     /**
      * @expectedException \RuntimeException
      * @group legacy
@@ -102,5 +96,11 @@ class CheckReferenceValidityPassTest extends TestCase
         $container->register('b');
 
         $this->process($container);
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new CheckReferenceValidityPass();
+        $pass->process($container);
     }
 }

@@ -25,6 +25,11 @@ class ReflectionExtractorTest extends TestCase
      */
     private $extractor;
 
+    protected function setUp()
+    {
+        $this->extractor = new ReflectionExtractor();
+    }
+
     public function testGetProperties()
     {
         $this->assertEquals(
@@ -136,10 +141,5 @@ class ReflectionExtractorTest extends TestCase
         $this->assertFalse($this->extractor->isWritable('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', 'd', array()));
         $this->assertTrue($this->extractor->isWritable('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', 'e', array()));
         $this->assertTrue($this->extractor->isWritable('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', 'f', array()));
-    }
-
-    protected function setUp()
-    {
-        $this->extractor = new ReflectionExtractor();
     }
 }

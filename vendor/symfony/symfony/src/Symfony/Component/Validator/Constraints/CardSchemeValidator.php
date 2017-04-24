@@ -88,13 +88,13 @@ class CardSchemeValidator extends ConstraintValidator
     /**
      * Validates a creditcard belongs to a specified scheme.
      *
-     * @param mixed $value
+     * @param mixed      $value
      * @param Constraint $constraint
      */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof CardScheme) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\CardScheme');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\CardScheme');
         }
 
         if (null === $value || '' === $value) {
@@ -117,7 +117,7 @@ class CardSchemeValidator extends ConstraintValidator
             return;
         }
 
-        $schemes = array_flip((array)$constraint->schemes);
+        $schemes = array_flip((array) $constraint->schemes);
         $schemeRegexes = array_intersect_key($this->schemes, $schemes);
 
         foreach ($schemeRegexes as $regexes) {

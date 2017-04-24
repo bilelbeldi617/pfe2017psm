@@ -78,6 +78,20 @@ class MessageDataCollector extends DataCollector
     }
 
     /**
+     * Returns the data collected of a mailer.
+     *
+     * @return array The data of the mailer.
+     */
+    public function getMailerData($name)
+    {
+        if (!isset($this->data['mailer'][$name])) {
+            throw new \LogicException(sprintf('Missing "%s" data in "%s".', $name, get_class($this)));
+        }
+
+        return $this->data['mailer'][$name];
+    }
+
+    /**
      * Returns the message count of a mailer or the total.
      *
      * @return int The number of messages.
@@ -91,20 +105,6 @@ class MessageDataCollector extends DataCollector
         }
 
         return;
-    }
-
-    /**
-     * Returns the data collected of a mailer.
-     *
-     * @return array The data of the mailer.
-     */
-    public function getMailerData($name)
-    {
-        if (!isset($this->data['mailer'][$name])) {
-            throw new \LogicException(sprintf('Missing "%s" data in "%s".', $name, get_class($this)));
-        }
-
-        return $this->data['mailer'][$name];
     }
 
     /**

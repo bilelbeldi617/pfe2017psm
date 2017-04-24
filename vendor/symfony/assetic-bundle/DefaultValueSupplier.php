@@ -38,7 +38,7 @@ class DefaultValueSupplier implements ValueSupplierInterface
 
         return array(
             'locale' => $request->getLocale(),
-            'env' => $this->container->getParameter('kernel.environment'),
+            'env'    => $this->container->getParameter('kernel.environment'),
         );
     }
 

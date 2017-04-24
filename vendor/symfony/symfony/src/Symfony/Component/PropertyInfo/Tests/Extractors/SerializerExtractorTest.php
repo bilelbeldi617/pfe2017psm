@@ -27,17 +27,17 @@ class SerializerExtractorTest extends TestCase
      */
     private $extractor;
 
+    protected function setUp()
+    {
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $this->extractor = new SerializerExtractor($classMetadataFactory);
+    }
+
     public function testGetProperties()
     {
         $this->assertEquals(
             array('collection'),
             $this->extractor->getProperties('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', array('serializer_groups' => array('a')))
         );
-    }
-
-    protected function setUp()
-    {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $this->extractor = new SerializerExtractor($classMetadataFactory);
     }
 }

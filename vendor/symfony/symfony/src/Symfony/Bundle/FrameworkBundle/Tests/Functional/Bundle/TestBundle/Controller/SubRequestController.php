@@ -41,25 +41,25 @@ class SubRequestController extends ContainerAware
         // ...and check that after the rendering, the original Request is back
         // and en is used as a locale
         // should use en/html instead of fr/json
-        $content .= '--' . $this->generateUrl('subrequest_fragment');
+        $content .= '--'.$this->generateUrl('subrequest_fragment');
 
         // The RouterListener is also tested as if it does not keep the right
         // Request in the context, a 301 would be generated
         return new Response($content);
     }
 
-    protected function generateUrl($name, $arguments = array())
-    {
-        return $this->container->get('router')->generate($name, $arguments);
-    }
-
     public function fragmentAction(Request $request)
     {
-        return new Response('--' . $request->getLocale() . '/' . $request->getRequestFormat());
+        return new Response('--'.$request->getLocale().'/'.$request->getRequestFormat());
     }
 
     public function fragmentErrorAction()
     {
         throw new \RuntimeException('error');
+    }
+
+    protected function generateUrl($name, $arguments = array())
+    {
+        return $this->container->get('router')->generate($name, $arguments);
     }
 }

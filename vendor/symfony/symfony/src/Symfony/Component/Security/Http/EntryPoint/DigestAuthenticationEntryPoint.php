@@ -43,8 +43,8 @@ class DigestAuthenticationEntryPoint implements AuthenticationEntryPointInterfac
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $expiryTime = microtime(true) + $this->nonceValiditySeconds * 1000;
-        $signatureValue = md5($expiryTime . ':' . $this->secret);
-        $nonceValue = $expiryTime . ':' . $signatureValue;
+        $signatureValue = md5($expiryTime.':'.$this->secret);
+        $nonceValue = $expiryTime.':'.$signatureValue;
         $nonceValueBase64 = base64_encode($nonceValue);
 
         $authenticateHeader = sprintf('Digest realm="%s", qop="auth", nonce="%s"', $this->realmName, $nonceValueBase64);
@@ -69,7 +69,7 @@ class DigestAuthenticationEntryPoint implements AuthenticationEntryPointInterfac
      */
     public function getKey()
     {
-        @trigger_error(__method__ . '() is deprecated since version 2.8 and will be removed in 3.0. Use getSecret() instead.', E_USER_DEPRECATED);
+        @trigger_error(__method__.'() is deprecated since version 2.8 and will be removed in 3.0. Use getSecret() instead.', E_USER_DEPRECATED);
 
         return $this->getSecret();
     }

@@ -35,16 +35,6 @@ class AccessDecisionManagerTest extends TestCase
         $this->assertFalse($manager->supportsClass('FooClass'));
     }
 
-    protected function getVoterSupportsClass($ret)
-    {
-        $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
-        $voter->expects($this->any())
-            ->method('supportsClass')
-            ->will($this->returnValue($ret));
-
-        return $voter;
-    }
-
     /**
      * @group legacy
      */
@@ -63,32 +53,12 @@ class AccessDecisionManagerTest extends TestCase
         $this->assertFalse($manager->supportsAttribute('foo'));
     }
 
-    protected function getVoterSupportsAttribute($ret)
-    {
-        $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
-        $voter->expects($this->any())
-            ->method('supportsAttribute')
-            ->will($this->returnValue($ret));
-
-        return $voter;
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
     public function testSetUnsupportedStrategy()
     {
         new AccessDecisionManager(array($this->getVoter(VoterInterface::ACCESS_GRANTED)), 'fooBar');
-    }
-
-    protected function getVoter($vote)
-    {
-        $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
-        $voter->expects($this->any())
-            ->method('vote')
-            ->will($this->returnValue($vote));
-
-        return $voter;
     }
 
     /**
@@ -134,11 +104,12 @@ class AccessDecisionManagerTest extends TestCase
     {
         $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
         $voter->expects($this->any())
-            ->method('vote')
-            ->will($this->returnValueMap(array(
-                array($token, null, array('ROLE_FOO'), $vote1),
-                array($token, null, array('ROLE_BAR'), $vote2),
-            )));
+              ->method('vote')
+              ->will($this->returnValueMap(array(
+                  array($token, null, array('ROLE_FOO'), $vote1),
+                  array($token, null, array('ROLE_BAR'), $vote2),
+              )))
+        ;
 
         return $voter;
     }
@@ -192,5 +163,35 @@ class AccessDecisionManagerTest extends TestCase
         }
 
         return $voters;
+    }
+
+    protected function getVoter($vote)
+    {
+        $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
+        $voter->expects($this->any())
+              ->method('vote')
+              ->will($this->returnValue($vote));
+
+        return $voter;
+    }
+
+    protected function getVoterSupportsClass($ret)
+    {
+        $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
+        $voter->expects($this->any())
+              ->method('supportsClass')
+              ->will($this->returnValue($ret));
+
+        return $voter;
+    }
+
+    protected function getVoterSupportsAttribute($ret)
+    {
+        $voter = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\Voter\VoterInterface')->getMock();
+        $voter->expects($this->any())
+              ->method('supportsAttribute')
+              ->will($this->returnValue($ret));
+
+        return $voter;
     }
 }

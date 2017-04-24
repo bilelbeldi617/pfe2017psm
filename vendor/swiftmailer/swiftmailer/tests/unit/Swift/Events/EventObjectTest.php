@@ -10,11 +10,6 @@ class Swift_Events_EventObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($source, $ref);
     }
 
-    private function _createEvent($source)
-    {
-        return new Swift_Events_EventObject($source);
-    }
-
     public function testEventDoesNotHaveCancelledBubbleWhenNew()
     {
         $source = new stdClass();
@@ -28,5 +23,10 @@ class Swift_Events_EventObjectTest extends \PHPUnit_Framework_TestCase
         $evt = $this->_createEvent($source);
         $evt->cancelBubble();
         $this->assertTrue($evt->bubbleCancelled());
+    }
+
+    private function _createEvent($source)
+    {
+        return new Swift_Events_EventObject($source);
     }
 }

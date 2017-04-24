@@ -33,6 +33,24 @@ class JsonBundleWriterTest extends TestCase
      */
     private $filesystem;
 
+    protected function setUp()
+    {
+        $this->writer = new JsonBundleWriter();
+        $this->directory = sys_get_temp_dir().'/JsonBundleWriterTest/'.mt_rand(1000, 9999);
+        $this->filesystem = new Filesystem();
+
+        $this->filesystem->mkdir($this->directory);
+    }
+
+    protected function tearDown()
+    {
+        if (PHP_VERSION_ID < 50400) {
+            return;
+        }
+
+        $this->filesystem->remove($this->directory);
+    }
+
     public function testWrite()
     {
         $this->writer->write($this->directory, 'en', array(
@@ -48,7 +66,7 @@ class JsonBundleWriterTest extends TestCase
             )),
         ));
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/en.json', $this->directory . '/en.json');
+        $this->assertFileEquals(__DIR__.'/Fixtures/en.json', $this->directory.'/en.json');
     }
 
     /**
@@ -56,28 +74,10 @@ class JsonBundleWriterTest extends TestCase
      */
     public function testWriteResourceBundle()
     {
-        $bundle = new \ResourceBundle('rb', __DIR__ . '/Fixtures', false);
+        $bundle = new \ResourceBundle('rb', __DIR__.'/Fixtures', false);
 
         $this->writer->write($this->directory, 'en', $bundle);
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/rb.json', $this->directory . '/en.json');
-    }
-
-    protected function setUp()
-    {
-        $this->writer = new JsonBundleWriter();
-        $this->directory = sys_get_temp_dir() . '/JsonBundleWriterTest/' . mt_rand(1000, 9999);
-        $this->filesystem = new Filesystem();
-
-        $this->filesystem->mkdir($this->directory);
-    }
-
-    protected function tearDown()
-    {
-        if (PHP_VERSION_ID < 50400) {
-            return;
-        }
-
-        $this->filesystem->remove($this->directory);
+        $this->assertFileEquals(__DIR__.'/Fixtures/rb.json', $this->directory.'/en.json');
     }
 }

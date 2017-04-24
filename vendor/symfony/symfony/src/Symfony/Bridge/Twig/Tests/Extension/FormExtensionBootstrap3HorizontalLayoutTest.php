@@ -44,8 +44,8 @@ class FormExtensionBootstrap3HorizontalLayoutTest extends AbstractBootstrap3Hori
         $this->extension = new FormExtension($renderer);
 
         $loader = new StubFilesystemLoader(array(
-            __DIR__ . '/../../Resources/views/Form',
-            __DIR__ . '/Fixtures/templates/form',
+            __DIR__.'/../../Resources/views/Form',
+            __DIR__.'/Fixtures/templates/form',
         ));
 
         $environment = new \Twig_Environment($loader, array('strict_variables' => true));
@@ -64,12 +64,12 @@ class FormExtensionBootstrap3HorizontalLayoutTest extends AbstractBootstrap3Hori
 
     protected function renderForm(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form', $vars);
     }
 
     protected function renderEnctype(FormView $view)
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'enctype');
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'enctype');
     }
 
     protected function renderLabel(FormView $view, $label = null, array $vars = array())
@@ -78,37 +78,37 @@ class FormExtensionBootstrap3HorizontalLayoutTest extends AbstractBootstrap3Hori
             $vars += array('label' => $label);
         }
 
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'label', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'label', $vars);
     }
 
     protected function renderErrors(FormView $view)
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'errors');
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'errors');
     }
 
     protected function renderWidget(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'widget', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'widget', $vars);
     }
 
     protected function renderRow(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'row', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'row', $vars);
     }
 
     protected function renderRest(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'rest', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'rest', $vars);
     }
 
     protected function renderStart(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form_start', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form_start', $vars);
     }
 
     protected function renderEnd(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form_end', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form_end', $vars);
     }
 
     protected function setTheme(FormView $view, array $themes)

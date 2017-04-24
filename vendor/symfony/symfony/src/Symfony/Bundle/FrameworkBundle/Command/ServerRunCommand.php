@@ -64,7 +64,8 @@ Specifing a router script is required when the used environment is not "dev",
 See also: http://www.php.net/manual/en/features.commandline.webserver.php
 
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -76,7 +77,7 @@ EOF
         $documentRoot = $input->getOption('docroot');
 
         if (null === $documentRoot) {
-            $documentRoot = $this->getContainer()->getParameter('kernel.root_dir') . '/../web';
+            $documentRoot = $this->getContainer()->getParameter('kernel.root_dir').'/../web';
         }
 
         if (!is_dir($documentRoot)) {
@@ -89,7 +90,7 @@ EOF
         $address = $input->getArgument('address');
 
         if (false === strpos($address, ':')) {
-            $address = $address . ':' . $input->getOption('port');
+            $address = $address.':'.$input->getOption('port');
         }
 
         if ($this->isOtherServerProcessRunning($address)) {
@@ -139,7 +140,8 @@ EOF
         $router = $router ?: $this
             ->getContainer()
             ->get('kernel')
-            ->locateResource(sprintf('@FrameworkBundle/Resources/config/router_%s.php', $env));
+            ->locateResource(sprintf('@FrameworkBundle/Resources/config/router_%s.php', $env))
+        ;
 
         if (!file_exists($router)) {
             $io->error(sprintf('The given router script "%s" does not exist.', $router));

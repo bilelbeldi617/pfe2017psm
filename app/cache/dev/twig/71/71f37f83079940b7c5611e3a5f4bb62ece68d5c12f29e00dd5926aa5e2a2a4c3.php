@@ -9,50 +9,14 @@ class __TwigTemplate_e9ba0a3687cde85f62d6935b4f9dedba20e8c1a52cc75670af21acebb51
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(61 => 14, 55 => 13, 51 => 11, 49 => 10, 46 => 9, 40 => 7, 34 => 5, 32 => 4, 29 => 3, 25 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<div class=\"symfony-block-steps\">
-    {% for i in 1..count %}
-
-      {% if i == index + 1 %}
-          <span class=\"selected\">Step {{ i }}</span>
-      {% else %}
-          <span>Step {{ i }}</span>
-      {% endif %}
-
-      {% if i != count %}
-        &gt;
-      {% endif %}
-    {% endfor %}
-</div>
-", "@SensioDistribution/Configurator/steps.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\sensio\\distribution-bundle\\Sensio\\Bundle\\DistributionBundle\\Resources\\views\\Configurator\\steps.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_18a8d4f3398669ccd39a892df1238cfe8b0741c7f8a8fcb1712a271eddc00582 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_18a8d4f3398669ccd39a892df1238cfe8b0741c7f8a8fcb1712a271eddc00582->enter($__internal_18a8d4f3398669ccd39a892df1238cfe8b0741c7f8a8fcb1712a271eddc00582_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@SensioDistribution/Configurator/steps.html.twig"));
+        $__internal_61bfe8438514a12f8894fced2d0d544bf1d408cb9666783d6dc7f5b775e9102a = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_61bfe8438514a12f8894fced2d0d544bf1d408cb9666783d6dc7f5b775e9102a->enter($__internal_61bfe8438514a12f8894fced2d0d544bf1d408cb9666783d6dc7f5b775e9102a_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@SensioDistribution/Configurator/steps.html.twig"));
 
         // line 1
         echo "<div class=\"symfony-block-steps\">
@@ -96,13 +60,50 @@ class __TwigTemplate_e9ba0a3687cde85f62d6935b4f9dedba20e8c1a52cc75670af21acebb51
         // line 14
         echo "</div>
 ";
-
-        $__internal_18a8d4f3398669ccd39a892df1238cfe8b0741c7f8a8fcb1712a271eddc00582->leave($__internal_18a8d4f3398669ccd39a892df1238cfe8b0741c7f8a8fcb1712a271eddc00582_prof);
+        
+        $__internal_61bfe8438514a12f8894fced2d0d544bf1d408cb9666783d6dc7f5b775e9102a->leave($__internal_61bfe8438514a12f8894fced2d0d544bf1d408cb9666783d6dc7f5b775e9102a_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@SensioDistribution/Configurator/steps.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  61 => 14,  55 => 13,  51 => 11,  49 => 10,  46 => 9,  40 => 7,  34 => 5,  32 => 4,  29 => 3,  25 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<div class=\"symfony-block-steps\">
+    {% for i in 1..count %}
+
+      {% if i == index + 1 %}
+          <span class=\"selected\">Step {{ i }}</span>
+      {% else %}
+          <span>Step {{ i }}</span>
+      {% endif %}
+
+      {% if i != count %}
+        &gt;
+      {% endif %}
+    {% endfor %}
+</div>
+", "@SensioDistribution/Configurator/steps.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\sensio\\distribution-bundle\\Sensio\\Bundle\\DistributionBundle\\Resources\\views\\Configurator\\steps.html.twig");
     }
 }

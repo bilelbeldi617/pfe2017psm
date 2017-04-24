@@ -66,11 +66,31 @@ class File extends Constraint
         }
     }
 
+    public function __set($option, $value)
+    {
+        if ('maxSize' === $option) {
+            $this->normalizeBinaryFormat($value);
+
+            return;
+        }
+
+        parent::__set($option, $value);
+    }
+
+    public function __get($option)
+    {
+        if ('maxSize' === $option) {
+            return $this->maxSize;
+        }
+
+        return parent::__get($option);
+    }
+
     private function normalizeBinaryFormat($maxSize)
     {
-        $sizeInt = (int)$maxSize;
+        $sizeInt = (int) $maxSize;
 
-        if (ctype_digit((string)$maxSize)) {
+        if (ctype_digit((string) $maxSize)) {
             $this->maxSize = $sizeInt;
             $this->binaryFormat = null === $this->binaryFormat ? false : $this->binaryFormat;
         } elseif (preg_match('/^\d++k$/i', $maxSize)) {
@@ -88,25 +108,5 @@ class File extends Constraint
         } else {
             throw new ConstraintDefinitionException(sprintf('"%s" is not a valid maximum size', $this->maxSize));
         }
-    }
-
-    public function __get($option)
-    {
-        if ('maxSize' === $option) {
-            return $this->maxSize;
-        }
-
-        return parent::__get($option);
-    }
-
-    public function __set($option, $value)
-    {
-        if ('maxSize' === $option) {
-            $this->normalizeBinaryFormat($value);
-
-            return;
-        }
-
-        parent::__set($option, $value);
     }
 }

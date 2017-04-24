@@ -33,11 +33,11 @@ class YamlFileLoaderTest extends TestCase
 
     public function testLoadDoesNothingIfEmpty()
     {
-        $loader = new YamlFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new YamlFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $collection = $loader->load('empty.yml');
 
         $this->assertEquals(array(), $collection->all());
-        $this->assertEquals(array(new FileResource(realpath(__DIR__ . '/../Fixtures/empty.yml'))), $collection->getResources());
+        $this->assertEquals(array(new FileResource(realpath(__DIR__.'/../Fixtures/empty.yml'))), $collection->getResources());
     }
 
     /**
@@ -46,7 +46,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testLoadThrowsExceptionWithInvalidFile($filePath)
     {
-        $loader = new YamlFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new YamlFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $loader->load($filePath);
     }
 
@@ -65,7 +65,7 @@ class YamlFileLoaderTest extends TestCase
 
     public function testLoadSpecialRouteName()
     {
-        $loader = new YamlFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new YamlFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $routeCollection = $loader->load('special_route_name.yml');
         $route = $routeCollection->get('#$péß^a|');
 
@@ -75,7 +75,7 @@ class YamlFileLoaderTest extends TestCase
 
     public function testLoadWithRoute()
     {
-        $loader = new YamlFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new YamlFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $routeCollection = $loader->load('validpattern.yml');
         $route = $routeCollection->get('blog_show');
 
@@ -95,7 +95,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testLegacyRouteDefinitionLoading()
     {
-        $loader = new YamlFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new YamlFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $routeCollection = $loader->load('legacy_validpattern.yml');
         $route = $routeCollection->get('blog_show_legacy');
 
@@ -112,7 +112,7 @@ class YamlFileLoaderTest extends TestCase
 
     public function testLoadWithResource()
     {
-        $loader = new YamlFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new YamlFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $routeCollection = $loader->load('validresource.yml');
         $routes = $routeCollection->all();
 

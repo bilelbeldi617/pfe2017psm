@@ -37,14 +37,6 @@ class TranslationDefaultDomainNodeVisitor extends \Twig_BaseNodeVisitor
     /**
      * {@inheritdoc}
      */
-    public function getPriority()
-    {
-        return -10;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if ($node instanceof \Twig_Node_Block || $node instanceof \Twig_Node_Module) {
@@ -94,9 +86,28 @@ class TranslationDefaultDomainNodeVisitor extends \Twig_BaseNodeVisitor
         return $node;
     }
 
-    private function getVarName()
+    /**
+     * {@inheritdoc}
+     */
+    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
-        return sprintf('__internal_%s', hash('sha256', uniqid(mt_rand(), true), false));
+        if ($node instanceof TransDefaultDomainNode) {
+            return false;
+        }
+
+        if ($node instanceof \Twig_Node_Block || $node instanceof \Twig_Node_Module) {
+            $this->scope = $this->scope->leave();
+        }
+
+        return $node;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority()
+    {
+        return -10;
     }
 
     /**
@@ -113,19 +124,8 @@ class TranslationDefaultDomainNodeVisitor extends \Twig_BaseNodeVisitor
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    private function getVarName()
     {
-        if ($node instanceof TransDefaultDomainNode) {
-            return false;
-        }
-
-        if ($node instanceof \Twig_Node_Block || $node instanceof \Twig_Node_Module) {
-            $this->scope = $this->scope->leave();
-        }
-
-        return $node;
+        return sprintf('__internal_%s', hash('sha256', uniqid(mt_rand(), true), false));
     }
 }

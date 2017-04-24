@@ -11,7 +11,7 @@
 
 namespace Symfony\Bridge\Doctrine\Form\ChoiceList;
 
-@trigger_error('The ' . __NAMESPACE__ . '\EntityChoiceList class is deprecated since version 2.7 and will be removed in 3.0. Use Symfony\Bridge\Doctrine\Form\ChoiceList\DoctrineChoiceLoader instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\EntityChoiceList class is deprecated since version 2.7 and will be removed in 3.0. Use Symfony\Bridge\Doctrine\Form\ChoiceList\DoctrineChoiceLoader instead.', E_USER_DEPRECATED);
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -100,16 +100,16 @@ class EntityChoiceList extends ObjectChoiceList
     /**
      * Creates a new entity choice list.
      *
-     * @param ObjectManager $manager An EntityManager instance
-     * @param string $class The class name
-     * @param string $labelPath The property path used for the label
-     * @param EntityLoaderInterface $entityLoader An optional query builder
-     * @param array|\Traversable|null $entities An array of choices or null to lazy load
-     * @param array $preferredEntities An array of preferred choices
-     * @param string $groupPath A property path pointing to the property used
+     * @param ObjectManager             $manager           An EntityManager instance
+     * @param string                    $class             The class name
+     * @param string                    $labelPath         The property path used for the label
+     * @param EntityLoaderInterface     $entityLoader      An optional query builder
+     * @param array|\Traversable|null   $entities          An array of choices or null to lazy load
+     * @param array                     $preferredEntities An array of preferred choices
+     * @param string                    $groupPath         A property path pointing to the property used
      *                                                     to group the choices. Only allowed if
      *                                                     the choices are given as flat array.
-     * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths
+     * @param PropertyAccessorInterface $propertyAccessor  The reflection graph for reading property paths
      */
     public function __construct(ObjectManager $manager, $class, $labelPath = null, EntityLoaderInterface $entityLoader = null, $entities = null, array $preferredEntities = array(), $groupPath = null, PropertyAccessorInterface $propertyAccessor = null)
     {
@@ -123,7 +123,7 @@ class EntityChoiceList extends ObjectChoiceList
             $this->idAsIndex,
             $this->idAsValue,
             $this->idField
-            ) = $this->getIdentifierInfoForClass($this->classMetadata);
+        ) = $this->getIdentifierInfoForClass($this->classMetadata);
 
         if (null !== $this->idField && $this->classMetadata->hasAssociation($this->idField)) {
             $this->idClassMetadata = $this->em->getClassMetadata(
@@ -133,7 +133,7 @@ class EntityChoiceList extends ObjectChoiceList
             list(
                 $this->idAsIndex,
                 $this->idAsValue
-                ) = $this->getIdentifierInfoForClass($this->idClassMetadata);
+            ) = $this->getIdentifierInfoForClass($this->idClassMetadata);
         }
 
         if (!$this->loaded) {
@@ -143,36 +143,6 @@ class EntityChoiceList extends ObjectChoiceList
         }
 
         parent::__construct($entities, $labelPath, $preferredEntities, $groupPath, null, $propertyAccessor);
-    }
-
-    /**
-     * Get identifier information for a class.
-     *
-     * @param ClassMetadata $classMetadata The entity metadata
-     *
-     * @return array Return an array with idAsIndex, idAsValue and identifier
-     */
-    private function getIdentifierInfoForClass(ClassMetadata $classMetadata)
-    {
-        $identifier = null;
-        $idAsIndex = false;
-        $idAsValue = false;
-
-        $identifiers = $classMetadata->getIdentifierFieldNames();
-
-        if (1 === count($identifiers)) {
-            $identifier = $identifiers[0];
-
-            if (!$classMetadata->hasAssociation($identifier)) {
-                $idAsValue = true;
-
-                if (in_array($classMetadata->getTypeOfField($identifier), array('integer', 'smallint', 'bigint'))) {
-                    $idAsIndex = true;
-                }
-            }
-        }
-
-        return array($idAsIndex, $idAsValue, $identifier);
     }
 
     /**
@@ -189,29 +159,6 @@ class EntityChoiceList extends ObjectChoiceList
         }
 
         return parent::getChoices();
-    }
-
-    /**
-     * Loads the list with entities.
-     *
-     * @throws StringCastException
-     */
-    private function load()
-    {
-        if ($this->entityLoader) {
-            $entities = $this->entityLoader->getEntities();
-        } else {
-            $entities = $this->em->getRepository($this->class)->findAll();
-        }
-
-        try {
-            // The second parameter $labels is ignored by ObjectChoiceList
-            parent::initialize($entities, array(), $this->preferredEntities);
-        } catch (StringCastException $e) {
-            throw new StringCastException(str_replace('argument $labelPath', 'option "property"', $e->getMessage()), null, $e);
-        }
-
-        $this->loaded = true;
     }
 
     /**
@@ -318,60 +265,6 @@ class EntityChoiceList extends ObjectChoiceList
     }
 
     /**
-     * Returns the first (and only) value of the identifier fields of an entity.
-     *
-     * Doctrine must know about this entity, that is, the entity must already
-     * be persisted or added to the identity map before. Otherwise an
-     * exception is thrown.
-     *
-     * @param object $entity The entity for which to get the identifier
-     *
-     * @return array The identifier values
-     *
-     * @throws RuntimeException If the entity does not exist in Doctrine's identity map
-     */
-    private function getSingleIdentifierValue($entity)
-    {
-        $value = current($this->getIdentifierValues($entity));
-
-        if ($this->idClassMetadata) {
-            $class = $this->idClassMetadata->getName();
-            if ($value instanceof $class) {
-                $value = current($this->idClassMetadata->getIdentifierValues($value));
-            }
-        }
-
-        return $value;
-    }
-
-    /**
-     * Returns the values of the identifier fields of an entity.
-     *
-     * Doctrine must know about this entity, that is, the entity must already
-     * be persisted or added to the identity map before. Otherwise an
-     * exception is thrown.
-     *
-     * @param object $entity The entity for which to get the identifier
-     *
-     * @return array The identifier values
-     *
-     * @throws RuntimeException If the entity does not exist in Doctrine's identity map
-     */
-    private function getIdentifierValues($entity)
-    {
-        if (!$this->em->contains($entity)) {
-            throw new RuntimeException(
-                'Entities passed to the choice field must be managed. Maybe ' .
-                'persist them in the entity manager?'
-            );
-        }
-
-        $this->em->initializeObject($entity);
-
-        return $this->classMetadata->getIdentifierValues($entity);
-    }
-
-    /**
      * Returns the values corresponding to the given entities.
      *
      * @param array $entities
@@ -423,7 +316,7 @@ class EntityChoiceList extends ObjectChoiceList
      */
     public function getIndicesForChoices(array $entities)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         // Performance optimization
         if (empty($entities)) {
@@ -455,23 +348,6 @@ class EntityChoiceList extends ObjectChoiceList
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function fixIndex($index)
-    {
-        $index = parent::fixIndex($index);
-
-        // If the ID is a single-field integer identifier, it is used as
-        // index. Replace any leading minus by underscore to make it a valid
-        // form name.
-        if ($this->idAsIndex && $index < 0) {
-            $index = strtr($index, '-', '_');
-        }
-
-        return $index;
-    }
-
-    /**
      * Returns the entities corresponding to the given values.
      *
      * @param array $values
@@ -483,7 +359,7 @@ class EntityChoiceList extends ObjectChoiceList
      */
     public function getIndicesForValues(array $values)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         // Performance optimization
         if (empty($values)) {
@@ -539,9 +415,133 @@ class EntityChoiceList extends ObjectChoiceList
     protected function createValue($entity)
     {
         if ($this->idAsValue) {
-            return (string)$this->getSingleIdentifierValue($entity);
+            return (string) $this->getSingleIdentifierValue($entity);
         }
 
         return parent::createValue($entity);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function fixIndex($index)
+    {
+        $index = parent::fixIndex($index);
+
+        // If the ID is a single-field integer identifier, it is used as
+        // index. Replace any leading minus by underscore to make it a valid
+        // form name.
+        if ($this->idAsIndex && $index < 0) {
+            $index = strtr($index, '-', '_');
+        }
+
+        return $index;
+    }
+
+    /**
+     * Get identifier information for a class.
+     *
+     * @param ClassMetadata $classMetadata The entity metadata
+     *
+     * @return array Return an array with idAsIndex, idAsValue and identifier
+     */
+    private function getIdentifierInfoForClass(ClassMetadata $classMetadata)
+    {
+        $identifier = null;
+        $idAsIndex = false;
+        $idAsValue = false;
+
+        $identifiers = $classMetadata->getIdentifierFieldNames();
+
+        if (1 === count($identifiers)) {
+            $identifier = $identifiers[0];
+
+            if (!$classMetadata->hasAssociation($identifier)) {
+                $idAsValue = true;
+
+                if (in_array($classMetadata->getTypeOfField($identifier), array('integer', 'smallint', 'bigint'))) {
+                    $idAsIndex = true;
+                }
+            }
+        }
+
+        return array($idAsIndex, $idAsValue, $identifier);
+    }
+
+    /**
+     * Loads the list with entities.
+     *
+     * @throws StringCastException
+     */
+    private function load()
+    {
+        if ($this->entityLoader) {
+            $entities = $this->entityLoader->getEntities();
+        } else {
+            $entities = $this->em->getRepository($this->class)->findAll();
+        }
+
+        try {
+            // The second parameter $labels is ignored by ObjectChoiceList
+            parent::initialize($entities, array(), $this->preferredEntities);
+        } catch (StringCastException $e) {
+            throw new StringCastException(str_replace('argument $labelPath', 'option "property"', $e->getMessage()), null, $e);
+        }
+
+        $this->loaded = true;
+    }
+
+    /**
+     * Returns the first (and only) value of the identifier fields of an entity.
+     *
+     * Doctrine must know about this entity, that is, the entity must already
+     * be persisted or added to the identity map before. Otherwise an
+     * exception is thrown.
+     *
+     * @param object $entity The entity for which to get the identifier
+     *
+     * @return array The identifier values
+     *
+     * @throws RuntimeException If the entity does not exist in Doctrine's identity map
+     */
+    private function getSingleIdentifierValue($entity)
+    {
+        $value = current($this->getIdentifierValues($entity));
+
+        if ($this->idClassMetadata) {
+            $class = $this->idClassMetadata->getName();
+            if ($value instanceof $class) {
+                $value = current($this->idClassMetadata->getIdentifierValues($value));
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Returns the values of the identifier fields of an entity.
+     *
+     * Doctrine must know about this entity, that is, the entity must already
+     * be persisted or added to the identity map before. Otherwise an
+     * exception is thrown.
+     *
+     * @param object $entity The entity for which to get the identifier
+     *
+     * @return array The identifier values
+     *
+     * @throws RuntimeException If the entity does not exist in Doctrine's identity map
+     */
+    private function getIdentifierValues($entity)
+    {
+        if (!$this->em->contains($entity)) {
+            throw new RuntimeException(
+                'Entities passed to the choice field must be managed. Maybe '.
+                'persist them in the entity manager?'
+            );
+        }
+
+        $this->em->initializeObject($entity);
+
+        return $this->classMetadata->getIdentifierValues($entity);
     }
 }

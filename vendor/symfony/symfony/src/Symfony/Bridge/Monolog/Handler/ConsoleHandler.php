@@ -58,10 +58,10 @@ class ConsoleHandler extends AbstractProcessingHandler implements EventSubscribe
     /**
      * Constructor.
      *
-     * @param OutputInterface|null $output The console output to use (the handler remains disabled when passing null
+     * @param OutputInterface|null $output            The console output to use (the handler remains disabled when passing null
      *                                                until the output is set, e.g. by using console events)
-     * @param bool $bubble Whether the messages that are handled can bubble up the stack
-     * @param array $verbosityLevelMap Array that maps the OutputInterface verbosity to a minimum logging
+     * @param bool                 $bubble            Whether the messages that are handled can bubble up the stack
+     * @param array                $verbosityLevelMap Array that maps the OutputInterface verbosity to a minimum logging
      *                                                level (leave empty to use the default mapping)
      */
     public function __construct(OutputInterface $output = null, $bubble = true, array $verbosityLevelMap = array())
@@ -72,6 +72,70 @@ class ConsoleHandler extends AbstractProcessingHandler implements EventSubscribe
         if ($verbosityLevelMap) {
             $this->verbosityLevelMap = $verbosityLevelMap;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isHandling(array $record)
+    {
+        return $this->updateLevel() && parent::isHandling($record);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(array $record)
+    {
+        // we have to update the logging level each time because the verbosity of the
+        // console output might have changed in the meantime (it is not immutable)
+        return $this->updateLevel() && parent::handle($record);
+    }
+
+    /**
+     * Sets the console output to use for printing logs.
+     *
+     * @param OutputInterface $output The console output to use
+     */
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    /**
+     * Disables the output.
+     */
+    public function close()
+    {
+        $this->output = null;
+
+        parent::close();
+    }
+
+    /**
+     * Before a command is executed, the handler gets activated and the console output
+     * is set in order to know where to write the logs.
+     *
+     * @param ConsoleCommandEvent $event
+     */
+    public function onCommand(ConsoleCommandEvent $event)
+    {
+        $output = $event->getOutput();
+        if ($output instanceof ConsoleOutputInterface) {
+            $output = $output->getErrorOutput();
+        }
+
+        $this->setOutput($output);
+    }
+
+    /**
+     * After a command has been executed, it disables the output.
+     *
+     * @param ConsoleTerminateEvent $event
+     */
+    public function onTerminate(ConsoleTerminateEvent $event)
+    {
+        $this->close();
     }
 
     /**
@@ -88,9 +152,17 @@ class ConsoleHandler extends AbstractProcessingHandler implements EventSubscribe
     /**
      * {@inheritdoc}
      */
-    public function isHandling(array $record)
+    protected function write(array $record)
     {
-        return $this->updateLevel() && parent::isHandling($record);
+        $this->output->write((string) $record['formatted']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultFormatter()
+    {
+        return new ConsoleFormatter();
     }
 
     /**
@@ -111,77 +183,5 @@ class ConsoleHandler extends AbstractProcessingHandler implements EventSubscribe
         }
 
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function handle(array $record)
-    {
-        // we have to update the logging level each time because the verbosity of the
-        // console output might have changed in the meantime (it is not immutable)
-        return $this->updateLevel() && parent::handle($record);
-    }
-
-    /**
-     * Before a command is executed, the handler gets activated and the console output
-     * is set in order to know where to write the logs.
-     *
-     * @param ConsoleCommandEvent $event
-     */
-    public function onCommand(ConsoleCommandEvent $event)
-    {
-        $output = $event->getOutput();
-        if ($output instanceof ConsoleOutputInterface) {
-            $output = $output->getErrorOutput();
-        }
-
-        $this->setOutput($output);
-    }
-
-    /**
-     * Sets the console output to use for printing logs.
-     *
-     * @param OutputInterface $output The console output to use
-     */
-    public function setOutput(OutputInterface $output)
-    {
-        $this->output = $output;
-    }
-
-    /**
-     * After a command has been executed, it disables the output.
-     *
-     * @param ConsoleTerminateEvent $event
-     */
-    public function onTerminate(ConsoleTerminateEvent $event)
-    {
-        $this->close();
-    }
-
-    /**
-     * Disables the output.
-     */
-    public function close()
-    {
-        $this->output = null;
-
-        parent::close();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function write(array $record)
-    {
-        $this->output->write((string)$record['formatted']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDefaultFormatter()
-    {
-        return new ConsoleFormatter();
     }
 }

@@ -26,8 +26,6 @@ abstract class BaseValidatorExtensionTest extends TypeTestCase
         $this->assertNull($form->getConfig()->getOption('validation_groups'));
     }
 
-    abstract protected function createForm(array $options = array());
-
     public function testValidationGroupsTransformedToArray()
     {
         $form = $this->createForm(array(
@@ -67,8 +65,7 @@ abstract class BaseValidatorExtensionTest extends TypeTestCase
     public function testValidationGroupsCanBeSetToClosure()
     {
         $form = $this->createForm(array(
-            'validation_groups' => function (FormInterface $form) {
-            },
+            'validation_groups' => function (FormInterface $form) { },
         ));
 
         $this->assertInternalType('callable', $form->getConfig()->getOption('validation_groups'));
@@ -82,4 +79,6 @@ abstract class BaseValidatorExtensionTest extends TypeTestCase
 
         $this->assertInstanceOf('Symfony\Component\Validator\Constraints\GroupSequence', $form->getConfig()->getOption('validation_groups'));
     }
+
+    abstract protected function createForm(array $options = array());
 }

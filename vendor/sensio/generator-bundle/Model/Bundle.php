@@ -28,17 +28,7 @@ class Bundle
         $this->targetDirectory = $targetDirectory;
         $this->configurationFormat = $configurationFormat;
         $this->isShared = $isShared;
-        $this->testsDirectory = $this->getTargetDirectory() . '/Tests';
-    }
-
-    /**
-     * Returns the directory where the bundle will be generated.
-     *
-     * @return string
-     */
-    public function getTargetDirectory()
-    {
-        return rtrim($this->targetDirectory, '/') . '/' . trim(strtr($this->namespace, '\\', '/'), '/');
+        $this->testsDirectory = $this->getTargetDirectory().'/Tests';
     }
 
     public function getNamespace()
@@ -51,19 +41,24 @@ class Bundle
         return $this->name;
     }
 
+    public function getConfigurationFormat()
+    {
+        return $this->configurationFormat;
+    }
+
     public function isShared()
     {
         return $this->isShared;
     }
 
     /**
-     * Returns the dependency injection extension alias for this bundle.
+     * Returns the directory where the bundle will be generated.
      *
      * @return string
      */
-    public function getExtensionAlias()
+    public function getTargetDirectory()
     {
-        return Container::underscore($this->getBasename());
+        return rtrim($this->targetDirectory, '/').'/'.trim(strtr($this->namespace, '\\', '/'), '/');
     }
 
     /**
@@ -74,6 +69,16 @@ class Bundle
     public function getBasename()
     {
         return substr($this->name, 0, -6);
+    }
+
+    /**
+     * Returns the dependency injection extension alias for this bundle.
+     *
+     * @return string
+     */
+    public function getExtensionAlias()
+    {
+        return Container::underscore($this->getBasename());
     }
 
     /**
@@ -96,13 +101,8 @@ class Bundle
         if ('yml' === $this->getConfigurationFormat() || 'annotation' === $this->configurationFormat) {
             return 'services.yml';
         } else {
-            return 'services.' . $this->getConfigurationFormat();
+            return 'services.'.$this->getConfigurationFormat();
         }
-    }
-
-    public function getConfigurationFormat()
-    {
-        return $this->configurationFormat;
     }
 
     /**
@@ -118,7 +118,7 @@ class Bundle
             return false;
         }
 
-        return 'routing.' . $this->getConfigurationFormat();
+        return 'routing.'.$this->getConfigurationFormat();
     }
 
     /**
@@ -128,16 +128,16 @@ class Bundle
      */
     public function getBundleClassName()
     {
-        return $this->namespace . '\\' . $this->name;
-    }
-
-    public function getTestsDirectory()
-    {
-        return $this->testsDirectory;
+        return $this->namespace.'\\'.$this->name;
     }
 
     public function setTestsDirectory($testsDirectory)
     {
         $this->testsDirectory = $testsDirectory;
+    }
+
+    public function getTestsDirectory()
+    {
+        return $this->testsDirectory;
     }
 }

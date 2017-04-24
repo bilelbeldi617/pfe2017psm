@@ -24,12 +24,28 @@ class TimeValidator extends ConstraintValidator
     const PATTERN = '/^(\d{2}):(\d{2}):(\d{2})$/';
 
     /**
+     * Checks whether a time is valid.
+     *
+     * @param int $hour   The hour
+     * @param int $minute The minute
+     * @param int $second The second
+     *
+     * @return bool Whether the time is valid
+     *
+     * @internal
+     */
+    public static function checkTime($hour, $minute, $second)
+    {
+        return $hour >= 0 && $hour < 24 && $minute >= 0 && $minute < 60 && $second >= 0 && $second < 60;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Time) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Time');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Time');
         }
 
         if (null === $value || '' === $value || $value instanceof \DateTime) {
@@ -40,7 +56,7 @@ class TimeValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if (!preg_match(static::PATTERN, $value, $matches)) {
             if ($this->context instanceof ExecutionContextInterface) {
@@ -71,21 +87,5 @@ class TimeValidator extends ConstraintValidator
                     ->addViolation();
             }
         }
-    }
-
-    /**
-     * Checks whether a time is valid.
-     *
-     * @param int $hour The hour
-     * @param int $minute The minute
-     * @param int $second The second
-     *
-     * @return bool Whether the time is valid
-     *
-     * @internal
-     */
-    public static function checkTime($hour, $minute, $second)
-    {
-        return $hour >= 0 && $hour < 24 && $minute >= 0 && $minute < 60 && $second >= 0 && $second < 60;
     }
 }

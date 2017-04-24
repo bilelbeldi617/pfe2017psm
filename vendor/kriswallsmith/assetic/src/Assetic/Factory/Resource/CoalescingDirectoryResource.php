@@ -45,6 +45,49 @@ class CoalescingDirectoryResource implements IteratorResourceInterface
         return true;
     }
 
+    public function getContent()
+    {
+        $parts = array();
+        foreach ($this->getFileResources() as $file) {
+            $parts[] = $file->getContent();
+        }
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * Returns a string to uniquely identify the current resource.
+     *
+     * @return string An identifying string
+     */
+    public function __toString()
+    {
+        $parts = array();
+        foreach ($this->directories as $directory) {
+            $parts[] = (string) $directory;
+        }
+
+        return implode(',', $parts);
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->getFileResources());
+    }
+
+    /**
+     * Returns the relative version of a filename.
+     *
+     * @param ResourceInterface $file      The file
+     * @param ResourceInterface $directory The directory
+     *
+     * @return string The name to compare with files from other directories
+     */
+    protected function getRelativeName(ResourceInterface $file, ResourceInterface $directory)
+    {
+        return substr((string) $file, strlen((string) $directory));
+    }
+
     /**
      * Performs the coalesce.
      *
@@ -65,48 +108,5 @@ class CoalescingDirectoryResource implements IteratorResourceInterface
         }
 
         return array_values($paths);
-    }
-
-    /**
-     * Returns the relative version of a filename.
-     *
-     * @param ResourceInterface $file The file
-     * @param ResourceInterface $directory The directory
-     *
-     * @return string The name to compare with files from other directories
-     */
-    protected function getRelativeName(ResourceInterface $file, ResourceInterface $directory)
-    {
-        return substr((string)$file, strlen((string)$directory));
-    }
-
-    public function getContent()
-    {
-        $parts = array();
-        foreach ($this->getFileResources() as $file) {
-            $parts[] = $file->getContent();
-        }
-
-        return implode("\n", $parts);
-    }
-
-    /**
-     * Returns a string to uniquely identify the current resource.
-     *
-     * @return string An identifying string
-     */
-    public function __toString()
-    {
-        $parts = array();
-        foreach ($this->directories as $directory) {
-            $parts[] = (string)$directory;
-        }
-
-        return implode(',', $parts);
-    }
-
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->getFileResources());
     }
 }

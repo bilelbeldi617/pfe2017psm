@@ -31,11 +31,6 @@ class ConsoleLoggerTest extends TestCase
      */
     protected $output;
 
-    public function testImplements()
-    {
-        $this->assertInstanceOf('Psr\Log\LoggerInterface', $this->getLogger());
-    }
-
     /**
      * @return LoggerInterface
      */
@@ -56,6 +51,21 @@ class ConsoleLoggerTest extends TestCase
     }
 
     /**
+     * Return the log messages in order.
+     *
+     * @return string[]
+     */
+    public function getLogs()
+    {
+        return $this->output->getLogs();
+    }
+
+    public function testImplements()
+    {
+        $this->assertInstanceOf('Psr\Log\LoggerInterface', $this->getLogger());
+    }
+
+    /**
      * @dataProvider provideLevelsAndMessages
      */
     public function testLogsAtAllLevels($level, $message)
@@ -65,20 +75,10 @@ class ConsoleLoggerTest extends TestCase
         $logger->log($level, $message, array('user' => 'Bob'));
 
         $expected = array(
-            $level . ' message of level ' . $level . ' with context: Bob',
-            $level . ' message of level ' . $level . ' with context: Bob',
+            $level.' message of level '.$level.' with context: Bob',
+            $level.' message of level '.$level.' with context: Bob',
         );
         $this->assertEquals($expected, $this->getLogs());
-    }
-
-    /**
-     * Return the log messages in order.
-     *
-     * @return string[]
-     */
-    public function getLogs()
-    {
-        return $this->output->getLogs();
     }
 
     public function provideLevelsAndMessages()

@@ -19,7 +19,7 @@ class CommandGeneratorTest extends GeneratorTest
     {
         $commandName = 'app:foo-bar';
         $commandFile = 'Command/AppFooBarCommand.php';
-        $commandPath = $this->tmpDir . '/' . $commandFile;
+        $commandPath = $this->tmpDir.'/'.$commandFile;
 
         $this->getGenerator()->generate($this->getBundle(), $commandName);
 
@@ -34,24 +34,6 @@ class CommandGeneratorTest extends GeneratorTest
         foreach ($strings as $string) {
             $this->assertContains($string, $commandContent);
         }
-    }
-
-    protected function getGenerator()
-    {
-        $generator = new CommandGenerator($this->filesystem);
-        $generator->setSkeletonDirs(__DIR__ . '/../../Resources/skeleton');
-
-        return $generator;
-    }
-
-    protected function getBundle()
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
-        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
-        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
-
-        return $bundle;
     }
 
     /**
@@ -75,5 +57,23 @@ class CommandGeneratorTest extends GeneratorTest
             array('app:foo:bar_baz', 'AppFooBarBaz'),
             array('app-foo:bar-baz:foo-bar', 'AppFooBarBazFooBar'),
         );
+    }
+
+    protected function getGenerator()
+    {
+        $generator = new CommandGenerator($this->filesystem);
+        $generator->setSkeletonDirs(__DIR__.'/../../Resources/skeleton');
+
+        return $generator;
+    }
+
+    protected function getBundle()
+    {
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
+        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
+        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
+
+        return $bundle;
     }
 }

@@ -16,7 +16,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FilesystemTestCase extends TestCase
 {
-    private static $symlinkOnWindows = null;
+    private $umask;
+
     protected $longPathNamesWindows = array();
 
     /**
@@ -28,13 +29,14 @@ class FilesystemTestCase extends TestCase
      * @var string
      */
     protected $workspace = null;
-    private $umask;
+
+    private static $symlinkOnWindows = null;
 
     public static function setUpBeforeClass()
     {
         if ('\\' === DIRECTORY_SEPARATOR && null === self::$symlinkOnWindows) {
             $target = tempnam(sys_get_temp_dir(), 'sl');
-            $link = sys_get_temp_dir() . '/sl' . microtime(true) . mt_rand();
+            $link = sys_get_temp_dir().'/sl'.microtime(true).mt_rand();
             self::$symlinkOnWindows = @symlink($target, $link) && is_link($link);
             @unlink($link);
             unlink($target);
@@ -45,7 +47,7 @@ class FilesystemTestCase extends TestCase
     {
         $this->umask = umask(0);
         $this->filesystem = new Filesystem();
-        $this->workspace = sys_get_temp_dir() . '/' . microtime(true) . '.' . mt_rand();
+        $this->workspace = sys_get_temp_dir().'/'.microtime(true).'.'.mt_rand();
         mkdir($this->workspace, 0777, true);
         $this->workspace = realpath($this->workspace);
     }
@@ -54,7 +56,7 @@ class FilesystemTestCase extends TestCase
     {
         if (!empty($this->longPathNamesWindows)) {
             foreach ($this->longPathNamesWindows as $path) {
-                exec('DEL ' . $path);
+                exec('DEL '.$path);
             }
             $this->longPathNamesWindows = array();
         }
@@ -64,12 +66,12 @@ class FilesystemTestCase extends TestCase
     }
 
     /**
-     * @param int $expectedFilePerms expected file permissions as three digits (i.e. 755)
+     * @param int    $expectedFilePerms expected file permissions as three digits (i.e. 755)
      * @param string $filePath
      */
     protected function assertFilePermissions($expectedFilePerms, $filePath)
     {
-        $actualFilePerms = (int)substr(sprintf('%o', fileperms($filePath)), -3);
+        $actualFilePerms = (int) substr(sprintf('%o', fileperms($filePath)), -3);
         $this->assertEquals(
             $expectedFilePerms,
             $actualFilePerms,
@@ -84,13 +86,6 @@ class FilesystemTestCase extends TestCase
         $infos = stat($filepath);
         if ($datas = posix_getpwuid($infos['uid'])) {
             return $datas['name'];
-        }
-    }
-
-    protected function markAsSkippedIfPosixIsMissing()
-    {
-        if (!function_exists('posix_isatty')) {
-            $this->markTestSkipped('Function posix_isatty is required.');
         }
     }
 
@@ -122,6 +117,13 @@ class FilesystemTestCase extends TestCase
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
             $this->markTestSkipped('chmod is not supported on Windows');
+        }
+    }
+
+    protected function markAsSkippedIfPosixIsMissing()
+    {
+        if (!function_exists('posix_isatty')) {
+            $this->markTestSkipped('Function posix_isatty is required.');
         }
     }
 }

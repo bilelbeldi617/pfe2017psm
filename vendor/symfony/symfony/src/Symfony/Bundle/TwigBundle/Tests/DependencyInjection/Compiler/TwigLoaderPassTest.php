@@ -30,6 +30,13 @@ class TwigLoaderPassTest extends TestCase
      */
     private $pass;
 
+    protected function setUp()
+    {
+        $this->builder = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('hasDefinition', 'findTaggedServiceIds', 'setAlias', 'getDefinition'))->getMock();
+        $this->chainLoader = new Definition('loader');
+        $this->pass = new TwigLoaderPass();
+    }
+
     public function testMapperPassWithOneTaggedLoaders()
     {
         $serviceIds = array(
@@ -85,8 +92,8 @@ class TwigLoaderPassTest extends TestCase
         $this->assertCount(2, $calls);
         $this->assertEquals('addLoader', $calls[0][0]);
         $this->assertEquals('addLoader', $calls[1][0]);
-        $this->assertEquals('test_loader_1', (string)$calls[0][1][0]);
-        $this->assertEquals('test_loader_2', (string)$calls[1][1][0]);
+        $this->assertEquals('test_loader_1', (string) $calls[0][1][0]);
+        $this->assertEquals('test_loader_2', (string) $calls[1][1][0]);
     }
 
     public function testMapperPassWithTwoTaggedLoadersWithPriority()
@@ -121,8 +128,8 @@ class TwigLoaderPassTest extends TestCase
         $this->assertCount(2, $calls);
         $this->assertEquals('addLoader', $calls[0][0]);
         $this->assertEquals('addLoader', $calls[1][0]);
-        $this->assertEquals('test_loader_2', (string)$calls[0][1][0]);
-        $this->assertEquals('test_loader_1', (string)$calls[1][1][0]);
+        $this->assertEquals('test_loader_2', (string) $calls[0][1][0]);
+        $this->assertEquals('test_loader_1', (string) $calls[1][1][0]);
     }
 
     /**
@@ -140,12 +147,5 @@ class TwigLoaderPassTest extends TestCase
             ->will($this->returnValue(array()));
 
         $this->pass->process($this->builder);
-    }
-
-    protected function setUp()
-    {
-        $this->builder = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('hasDefinition', 'findTaggedServiceIds', 'setAlias', 'getDefinition'))->getMock();
-        $this->chainLoader = new Definition('loader');
-        $this->pass = new TwigLoaderPass();
     }
 }

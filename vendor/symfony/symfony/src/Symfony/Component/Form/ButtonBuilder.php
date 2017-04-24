@@ -55,14 +55,14 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     /**
      * Creates a new button builder.
      *
-     * @param string $name The name of the button
-     * @param array $options The button's options
+     * @param string $name    The name of the button
+     * @param array  $options The button's options
      *
      * @throws InvalidArgumentException If the name is empty.
      */
     public function __construct($name, array $options = array())
     {
-        $name = (string)$name;
+        $name = (string) $name;
         if ('' === $name) {
             throw new InvalidArgumentException('Buttons cannot have empty names.');
         }
@@ -77,8 +77,8 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
      * This method should not be invoked.
      *
      * @param string|int|FormBuilderInterface $child
-     * @param string|FormTypeInterface $type
-     * @param array $options
+     * @param string|FormTypeInterface        $type
+     * @param array                           $options
      *
      * @throws BadMethodCallException
      */
@@ -92,9 +92,9 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
      *
      * This method should not be invoked.
      *
-     * @param string $name
+     * @param string                   $name
      * @param string|FormTypeInterface $type
-     * @param array $options
+     * @param array                    $options
      *
      * @throws BadMethodCallException
      */
@@ -164,27 +164,13 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     }
 
     /**
-     * Builds and returns the button configuration.
-     *
-     * @return FormConfigInterface
-     */
-    public function getFormConfig()
-    {
-        // This method should be idempotent, so clone the builder
-        $config = clone $this;
-        $config->locked = true;
-
-        return $config;
-    }
-
-    /**
      * Unsupported method.
      *
      * This method should not be invoked.
      *
-     * @param string $eventName
+     * @param string   $eventName
      * @param callable $listener
-     * @param int $priority
+     * @param int      $priority
      *
      * @throws BadMethodCallException
      */
@@ -213,7 +199,7 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
      * This method should not be invoked.
      *
      * @param DataTransformerInterface $viewTransformer
-     * @param bool $forcePrepend
+     * @param bool                     $forcePrepend
      *
      * @throws BadMethodCallException
      */
@@ -240,7 +226,7 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
      * This method should not be invoked.
      *
      * @param DataTransformerInterface $modelTransformer
-     * @param bool $forceAppend
+     * @param bool                     $forceAppend
      *
      * @throws BadMethodCallException
      */
@@ -272,6 +258,16 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
      * Unsupported method.
      *
      * This method should not be invoked.
@@ -283,6 +279,20 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     public function setDataMapper(DataMapperInterface $dataMapper = null)
     {
         throw new BadMethodCallException('Buttons do not support data mappers.');
+    }
+
+    /**
+     * Set whether the button is disabled.
+     *
+     * @param bool $disabled Whether the button is disabled
+     *
+     * @return $this
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+
+        return $this;
     }
 
     /**
@@ -401,6 +411,20 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     }
 
     /**
+     * Sets the type of the button.
+     *
+     * @param ResolvedFormTypeInterface $type The type of the button
+     *
+     * @return $this
+     */
+    public function setType(ResolvedFormTypeInterface $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
      * Unsupported method.
      *
      * This method should not be invoked.
@@ -509,6 +533,20 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     }
 
     /**
+     * Builds and returns the button configuration.
+     *
+     * @return FormConfigInterface
+     */
+    public function getFormConfig()
+    {
+        // This method should be idempotent, so clone the builder
+        $config = clone $this;
+        $config->locked = true;
+
+        return $config;
+    }
+
+    /**
      * Unsupported method.
      */
     public function getEventDispatcher()
@@ -560,7 +598,7 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
      */
     public function getVirtual()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the Symfony\Component\Form\FormConfigBuilder::getInheritData method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the Symfony\Component\Form\FormConfigBuilder::getInheritData method instead.', E_USER_DEPRECATED);
 
         return false;
     }
@@ -583,20 +621,6 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Sets the type of the button.
-     *
-     * @param ResolvedFormTypeInterface $type The type of the button
-     *
-     * @return $this
-     */
-    public function setType(ResolvedFormTypeInterface $type)
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     /**
@@ -647,20 +671,6 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     }
 
     /**
-     * Set whether the button is disabled.
-     *
-     * @param bool $disabled Whether the button is disabled
-     *
-     * @return $this
-     */
-    public function setDisabled($disabled)
-    {
-        $this->disabled = $disabled;
-
-        return $this;
-    }
-
-    /**
      * Unsupported method.
      *
      * @return bool Always returns false
@@ -688,16 +698,6 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setAttributes(array $attributes)
-    {
-        $this->attributes = $attributes;
-
-        return $this;
-    }
-
-    /**
      * Returns whether the attribute with the given name exists.
      *
      * @param string $name The attribute name
@@ -712,8 +712,8 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     /**
      * Returns the value of the given attribute.
      *
-     * @param string $name The attribute name
-     * @param mixed $default The value returned if the attribute does not exist
+     * @param string $name    The attribute name
+     * @param mixed  $default The value returned if the attribute does not exist
      *
      * @return mixed The attribute value
      */
@@ -819,8 +819,8 @@ class ButtonBuilder implements \IteratorAggregate, FormBuilderInterface
     /**
      * Returns the value of a specific option.
      *
-     * @param string $name The option name
-     * @param mixed $default The value returned if the option does not exist
+     * @param string $name    The option name
+     * @param mixed  $default The value returned if the option does not exist
      *
      * @return mixed The option value
      */

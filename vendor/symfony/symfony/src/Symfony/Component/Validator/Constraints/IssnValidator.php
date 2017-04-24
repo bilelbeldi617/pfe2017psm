@@ -32,7 +32,7 @@ class IssnValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Issn) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Issn');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Issn');
         }
 
         if (null === $value || '' === $value) {
@@ -43,14 +43,14 @@ class IssnValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         $canonical = $value;
 
         // 1234-567X
         //     ^
         if (isset($canonical[4]) && '-' === $canonical[4]) {
             // remove hyphen
-            $canonical = substr($canonical, 0, 4) . substr($canonical, 5);
+            $canonical = substr($canonical, 0, 4).substr($canonical, 5);
         } elseif ($constraint->requireHyphen) {
             if ($this->context instanceof ExecutionContextInterface) {
                 $this->context->buildViolation($constraint->message)
@@ -158,7 +158,7 @@ class IssnValidator extends ConstraintValidator
         // Calculate a checksum. "X" equals 10.
         $checkSum = 'X' === $canonical[7]
         || 'x' === $canonical[7]
-            ? 10
+        ? 10
             : $canonical[7];
 
         for ($i = 0; $i < 7; ++$i) {

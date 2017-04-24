@@ -17,6 +17,13 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class NumberToLocalizedStringTransformerTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        \Locale::setDefault('en');
+    }
+
     public function provideTransformations()
     {
         return array(
@@ -641,7 +648,7 @@ class NumberToLocalizedStringTransformerTest extends TestCase
     {
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertEquals(PHP_INT_MAX - 1, (int)$transformer->reverseTransform((string)(PHP_INT_MAX - 1)));
+        $this->assertEquals(PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (PHP_INT_MAX - 1)));
     }
 
     public function testReverseTransformSmallInt()
@@ -649,12 +656,5 @@ class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         $this->assertSame(1.0, $transformer->reverseTransform('1'));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        \Locale::setDefault('en');
     }
 }

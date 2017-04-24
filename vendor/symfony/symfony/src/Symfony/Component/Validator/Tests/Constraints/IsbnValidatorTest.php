@@ -20,12 +20,14 @@ use Symfony\Component\Validator\Validation;
  */
 class IsbnValidatorTest extends AbstractConstraintValidatorTest
 {
-    public function getValidIsbn()
+    protected function getApiVersion()
     {
-        return array_merge(
-            $this->getValidIsbn10(),
-            $this->getValidIsbn13()
-        );
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new IsbnValidator();
     }
 
     public function getValidIsbn10()
@@ -47,32 +49,6 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
         );
     }
 
-    public function getValidIsbn13()
-    {
-        return array(
-            array('978-2723442282'),
-            array('978-2723442275'),
-            array('978-2723455046'),
-            array('978-2070546817'),
-            array('978-2711858835'),
-            array('978-2756406763'),
-            array('978-2870971642'),
-            array('978-2266238540'),
-            array('978-2851806420'),
-            array('978-0321812704'),
-            array('978-0451225245'),
-            array('978-0471292319'),
-        );
-    }
-
-    public function getInvalidIsbn()
-    {
-        return array_merge(
-            $this->getInvalidIsbn10(),
-            $this->getInvalidIsbn13()
-        );
-    }
-
     public function getInvalidIsbn10()
     {
         return array(
@@ -89,7 +65,25 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
             array('1A34567890', Isbn::INVALID_CHARACTERS_ERROR),
             // chr(1) evaluates to 0
             // 2070546810 is valid
-            array('2' . chr(1) . '70546810', Isbn::INVALID_CHARACTERS_ERROR),
+            array('2'.chr(1).'70546810', Isbn::INVALID_CHARACTERS_ERROR),
+        );
+    }
+
+    public function getValidIsbn13()
+    {
+        return array(
+            array('978-2723442282'),
+            array('978-2723442275'),
+            array('978-2723455046'),
+            array('978-2070546817'),
+            array('978-2711858835'),
+            array('978-2756406763'),
+            array('978-2870971642'),
+            array('978-2266238540'),
+            array('978-2851806420'),
+            array('978-0321812704'),
+            array('978-0451225245'),
+            array('978-0471292319'),
         );
     }
 
@@ -109,7 +103,23 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
             array('978-272C442282', Isbn::INVALID_CHARACTERS_ERROR),
             // chr(1) evaluates to 0
             // 978-2070546817 is valid
-            array('978-2' . chr(1) . '70546817', Isbn::INVALID_CHARACTERS_ERROR),
+            array('978-2'.chr(1).'70546817', Isbn::INVALID_CHARACTERS_ERROR),
+        );
+    }
+
+    public function getValidIsbn()
+    {
+        return array_merge(
+            $this->getValidIsbn10(),
+            $this->getValidIsbn13()
+        );
+    }
+
+    public function getInvalidIsbn()
+    {
+        return array_merge(
+            $this->getInvalidIsbn10(),
+            $this->getInvalidIsbn13()
         );
     }
 
@@ -168,7 +178,7 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($isbn, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $isbn . '"')
+            ->setParameter('{{ value }}', '"'.$isbn.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -198,7 +208,7 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($isbn, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $isbn . '"')
+            ->setParameter('{{ value }}', '"'.$isbn.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -232,7 +242,7 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
         }
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $isbn . '"')
+            ->setParameter('{{ value }}', '"'.$isbn.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -254,18 +264,8 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
         }
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $isbn . '"')
+            ->setParameter('{{ value }}', '"'.$isbn.'"')
             ->setCode($code)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new IsbnValidator();
     }
 }

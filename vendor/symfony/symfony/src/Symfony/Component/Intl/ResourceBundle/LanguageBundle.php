@@ -39,10 +39,10 @@ class LanguageBundle extends LanguageDataProvider implements LanguageBundleInter
     /**
      * Creates a new language bundle.
      *
-     * @param string $path
+     * @param string                     $path
      * @param BundleEntryReaderInterface $reader
-     * @param LocaleDataProvider $localeProvider
-     * @param ScriptDataProvider $scriptProvider
+     * @param LocaleDataProvider         $localeProvider
+     * @param ScriptDataProvider         $scriptProvider
      */
     public function __construct($path, BundleEntryReaderInterface $reader, LocaleDataProvider $localeProvider, ScriptDataProvider $scriptProvider)
     {
@@ -61,7 +61,7 @@ class LanguageBundle extends LanguageDataProvider implements LanguageBundleInter
         // i.e. "en_GB" is translated as "British English"
         if (null !== $region) {
             try {
-                return $this->getName($language . '_' . $region, $displayLocale);
+                return $this->getName($language.'_'.$region, $displayLocale);
             } catch (MissingResourceException $e) {
             }
         }

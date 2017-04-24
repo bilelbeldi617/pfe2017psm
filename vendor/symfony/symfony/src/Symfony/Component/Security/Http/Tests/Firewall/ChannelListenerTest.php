@@ -23,28 +23,33 @@ class ChannelListenerTest extends TestCase
         $request
             ->expects($this->any())
             ->method('isSecure')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $accessMap = $this->getMockBuilder('Symfony\Component\Security\Http\AccessMapInterface')->getMock();
         $accessMap
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(array(), 'http')));
+            ->will($this->returnValue(array(array(), 'http')))
+        ;
 
         $entryPoint = $this->getMockBuilder('Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface')->getMock();
         $entryPoint
             ->expects($this->never())
-            ->method('start');
+            ->method('start')
+        ;
 
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseEvent')->disableOriginalConstructor()->getMock();
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
         $event
             ->expects($this->never())
-            ->method('setResponse');
+            ->method('setResponse')
+        ;
 
         $listener = new ChannelListener($accessMap, $entryPoint);
         $listener->handle($event);
@@ -56,28 +61,33 @@ class ChannelListenerTest extends TestCase
         $request
             ->expects($this->any())
             ->method('isSecure')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $accessMap = $this->getMockBuilder('Symfony\Component\Security\Http\AccessMapInterface')->getMock();
         $accessMap
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(array(), 'https')));
+            ->will($this->returnValue(array(array(), 'https')))
+        ;
 
         $entryPoint = $this->getMockBuilder('Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface')->getMock();
         $entryPoint
             ->expects($this->never())
-            ->method('start');
+            ->method('start')
+        ;
 
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseEvent')->disableOriginalConstructor()->getMock();
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
         $event
             ->expects($this->never())
-            ->method('setResponse');
+            ->method('setResponse')
+        ;
 
         $listener = new ChannelListener($accessMap, $entryPoint);
         $listener->handle($event);
@@ -89,7 +99,8 @@ class ChannelListenerTest extends TestCase
         $request
             ->expects($this->any())
             ->method('isSecure')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $response = new Response();
 
@@ -98,24 +109,28 @@ class ChannelListenerTest extends TestCase
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(array(), 'https')));
+            ->will($this->returnValue(array(array(), 'https')))
+        ;
 
         $entryPoint = $this->getMockBuilder('Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface')->getMock();
         $entryPoint
             ->expects($this->once())
             ->method('start')
             ->with($this->equalTo($request))
-            ->will($this->returnValue($response));
+            ->will($this->returnValue($response))
+        ;
 
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseEvent')->disableOriginalConstructor()->getMock();
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
         $event
             ->expects($this->once())
             ->method('setResponse')
-            ->with($this->equalTo($response));
+            ->with($this->equalTo($response))
+        ;
 
         $listener = new ChannelListener($accessMap, $entryPoint);
         $listener->handle($event);
@@ -127,7 +142,8 @@ class ChannelListenerTest extends TestCase
         $request
             ->expects($this->any())
             ->method('isSecure')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $response = new Response();
 
@@ -136,24 +152,28 @@ class ChannelListenerTest extends TestCase
             ->expects($this->any())
             ->method('getPatterns')
             ->with($this->equalTo($request))
-            ->will($this->returnValue(array(array(), 'http')));
+            ->will($this->returnValue(array(array(), 'http')))
+        ;
 
         $entryPoint = $this->getMockBuilder('Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface')->getMock();
         $entryPoint
             ->expects($this->once())
             ->method('start')
             ->with($this->equalTo($request))
-            ->will($this->returnValue($response));
+            ->will($this->returnValue($response))
+        ;
 
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseEvent')->disableOriginalConstructor()->getMock();
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
         $event
             ->expects($this->once())
             ->method('setResponse')
-            ->with($this->equalTo($response));
+            ->with($this->equalTo($response))
+        ;
 
         $listener = new ChannelListener($accessMap, $entryPoint);
         $listener->handle($event);

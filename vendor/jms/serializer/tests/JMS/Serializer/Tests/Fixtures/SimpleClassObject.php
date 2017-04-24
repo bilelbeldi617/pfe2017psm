@@ -35,7 +35,7 @@ class SimpleClassObject
      * @XmlAttribute(namespace="http://old.foo.example.org")
      */
     public $foo;
-
+    
     /**
      * @Type("string")
      * @XmlElement(namespace="http://foo.example.org")

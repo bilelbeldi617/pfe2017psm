@@ -104,17 +104,17 @@ class Button implements \IteratorAggregate, FormInterface
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function setParent(FormInterface $parent = null)
     {
-        return $this->parent;
+        $this->parent = $parent;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setParent(FormInterface $parent = null)
+    public function getParent()
     {
-        $this->parent = $parent;
+        return $this->parent;
     }
 
     /**
@@ -123,8 +123,8 @@ class Button implements \IteratorAggregate, FormInterface
      * This method should not be invoked.
      *
      * @param int|string|FormInterface $child
-     * @param null $type
-     * @param array $options
+     * @param null                     $type
+     * @param array                    $options
      *
      * @throws BadMethodCallException
      */
@@ -367,7 +367,7 @@ class Button implements \IteratorAggregate, FormInterface
      * Submits data to the button.
      *
      * @param null|string $submittedData The data
-     * @param bool $clearMissing Not used
+     * @param bool        $clearMissing  Not used
      *
      * @return $this
      *

@@ -168,29 +168,6 @@ class IntlDateFormatterTest extends AbstractIntlDateFormatterTest
         return $this->notImplemented(parent::parseStandaloneAmPmProvider());
     }
 
-    /**
-     * Just to document the differences between the stub and the intl
-     * implementations. The intl can parse any of the tested formats alone. The
-     * stub does not implement them as it would be needed to add more
-     * abstraction, passing more context to the transformers objects. Any of the
-     * formats are ignored alone or with date/time data (years, months, days,
-     * hours, minutes and seconds).
-     *
-     * Also in intl, format like 'ss E' for '10 2' (2nd day of year
-     * + 10 seconds) are added, then we have 86,400 seconds (24h * 60min * 60s)
-     * + 10 seconds
-     *
-     * @param array $dataSets
-     *
-     * @return array
-     */
-    private function notImplemented(array $dataSets)
-    {
-        return array_map(function ($row) {
-            return array($row[0], $row[1], 0);
-        }, $dataSets);
-    }
-
     public function parseDayOfWeekProvider()
     {
         return $this->notImplemented(parent::parseDayOfWeekProvider());
@@ -224,5 +201,28 @@ class IntlDateFormatterTest extends AbstractIntlDateFormatterTest
     protected function isIntlFailure($errorCode)
     {
         return IntlGlobals::isFailure($errorCode);
+    }
+
+    /**
+     * Just to document the differences between the stub and the intl
+     * implementations. The intl can parse any of the tested formats alone. The
+     * stub does not implement them as it would be needed to add more
+     * abstraction, passing more context to the transformers objects. Any of the
+     * formats are ignored alone or with date/time data (years, months, days,
+     * hours, minutes and seconds).
+     *
+     * Also in intl, format like 'ss E' for '10 2' (2nd day of year
+     * + 10 seconds) are added, then we have 86,400 seconds (24h * 60min * 60s)
+     * + 10 seconds
+     *
+     * @param array $dataSets
+     *
+     * @return array
+     */
+    private function notImplemented(array $dataSets)
+    {
+        return array_map(function ($row) {
+            return array($row[0], $row[1], 0);
+        }, $dataSets);
     }
 }

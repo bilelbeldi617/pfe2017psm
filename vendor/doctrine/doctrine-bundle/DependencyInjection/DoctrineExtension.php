@@ -97,26 +97,18 @@ class DoctrineExtension extends AbstractDoctrineExtension
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getConfiguration(array $config, ContainerBuilder $container)
-    {
-        return new Configuration($container->getParameter('kernel.debug'));
-    }
-
-    /**
      * Loads the DBAL configuration.
      *
      * Usage example:
      *
      *      <doctrine:dbal id="myconn" dbname="sfweb" user="root" />
      *
-     * @param array $config An array of configuration settings
+     * @param array            $config    An array of configuration settings
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
     protected function dbalLoad(array $config, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('dbal.xml');
 
         if (empty($config['default_connection'])) {
@@ -158,9 +150,9 @@ class DoctrineExtension extends AbstractDoctrineExtension
     /**
      * Loads a configured DBAL connection.
      *
-     * @param string $name The name of the connection
-     * @param array $connection A dbal connection configuration.
-     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param string           $name       The name of the connection
+     * @param array            $connection A dbal connection configuration.
+     * @param ContainerBuilder $container  A ContainerBuilder instance
      */
     protected function loadDbalConnection($name, array $connection, ContainerBuilder $container)
     {
@@ -172,7 +164,7 @@ class DoctrineExtension extends AbstractDoctrineExtension
         }
         unset ($connection['logging']);
         if ($connection['profiling']) {
-            $profilingLoggerId = 'doctrine.dbal.logger.profiling.' . $name;
+            $profilingLoggerId = 'doctrine.dbal.logger.profiling.'.$name;
             $container->setDefinition($profilingLoggerId, new DefinitionDecorator('doctrine.dbal.logger.profiling'));
             $profilingLogger = new Reference($profilingLoggerId);
             $container->getDefinition('data_collector.doctrine')->addMethodCall('addLogger', array($name, $profilingLogger));
@@ -181,7 +173,7 @@ class DoctrineExtension extends AbstractDoctrineExtension
                 $chainLogger = new DefinitionDecorator('doctrine.dbal.logger.chain');
                 $chainLogger->addMethodCall('addLogger', array($profilingLogger));
 
-                $loggerId = 'doctrine.dbal.logger.chain.' . $name;
+                $loggerId = 'doctrine.dbal.logger.chain.'.$name;
                 $container->setDefinition($loggerId, $chainLogger);
                 $logger = new Reference($loggerId);
             } else {
@@ -213,8 +205,7 @@ class DoctrineExtension extends AbstractDoctrineExtension
         // PDO ignores the charset property before 5.3.6 so the init listener has to be used instead.
         if (isset($connection['charset']) && version_compare(PHP_VERSION, '5.3.6', '<')) {
             if ((isset($connection['driver']) && stripos($connection['driver'], 'mysql') !== false) ||
-                (isset($connection['driver_class']) && stripos($connection['driver_class'], 'mysql') !== false)
-            ) {
+                 (isset($connection['driver_class']) && stripos($connection['driver_class'], 'mysql') !== false)) {
                 $mysqlSessionInit = new Definition('%doctrine.dbal.events.mysql_session_init.class%');
                 $mysqlSessionInit->setArguments(array($connection['charset']));
                 $mysqlSessionInit->setPublic(false);
@@ -237,7 +228,8 @@ class DoctrineExtension extends AbstractDoctrineExtension
                 new Reference(sprintf('doctrine.dbal.%s_connection.configuration', $name)),
                 new Reference(sprintf('doctrine.dbal.%s_connection.event_manager', $name)),
                 $connection['mapping_types'],
-            ));
+            ))
+        ;
 
         if (!empty($connection['use_savepoints'])) {
             $def->addMethodCall('setNestTransactionsWithSavepoints', array($connection['use_savepoints']));
@@ -268,15 +260,15 @@ class DoctrineExtension extends AbstractDoctrineExtension
         }
 
         foreach (array(
-                     'options' => 'driverOptions',
-                     'driver_class' => 'driverClass',
-                     'wrapper_class' => 'wrapperClass',
-                     'keep_slave' => 'keepSlave',
-                     'shard_choser' => 'shardChoser',
-                     'shard_manager_class' => 'shardManagerClass',
-                     'server_version' => 'serverVersion',
-                     'default_table_options' => 'defaultTableOptions',
-                 ) as $old => $new) {
+            'options' => 'driverOptions',
+            'driver_class' => 'driverClass',
+            'wrapper_class' => 'wrapperClass',
+            'keep_slave' => 'keepSlave',
+            'shard_choser' => 'shardChoser',
+            'shard_manager_class' => 'shardManagerClass',
+            'server_version' => 'serverVersion',
+            'default_table_options' => 'defaultTableOptions',
+        ) as $old => $new) {
             if (isset($options[$old])) {
                 $options[$new] = $options[$old];
                 unset($options[$old]);
@@ -349,12 +341,12 @@ class DoctrineExtension extends AbstractDoctrineExtension
      *
      *     <doctrine:orm id="mydm" connection="myconn" />
      *
-     * @param array $config An array of configuration settings
+     * @param array            $config    An array of configuration settings
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
     protected function ormLoad(array $config, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('orm.xml');
 
         $this->entityManagers = array();
@@ -371,7 +363,7 @@ class DoctrineExtension extends AbstractDoctrineExtension
 
         $options = array('auto_generate_proxy_classes', 'proxy_dir', 'proxy_namespace');
         foreach ($options as $key) {
-            $container->setParameter('doctrine.orm.' . $key, $config[$key]);
+            $container->setParameter('doctrine.orm.'.$key, $config[$key]);
         }
 
         $container->setAlias('doctrine.orm.entity_manager', sprintf('doctrine.orm.%s_entity_manager', $config['default_entity_manager']));
@@ -430,8 +422,8 @@ class DoctrineExtension extends AbstractDoctrineExtension
     /**
      * Loads a configured ORM entity manager.
      *
-     * @param array $entityManager A configured ORM entity manager.
-     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param array            $entityManager A configured ORM entity manager.
+     * @param ContainerBuilder $container     A ContainerBuilder instance
      */
     protected function loadOrmEntityManager(array $entityManager, ContainerBuilder $container)
     {
@@ -450,7 +442,7 @@ class DoctrineExtension extends AbstractDoctrineExtension
             'setMetadataCacheImpl' => new Reference(sprintf('doctrine.orm.%s_metadata_cache', $entityManager['name'])),
             'setQueryCacheImpl' => new Reference(sprintf('doctrine.orm.%s_query_cache', $entityManager['name'])),
             'setResultCacheImpl' => new Reference(sprintf('doctrine.orm.%s_result_cache', $entityManager['name'])),
-            'setMetadataDriverImpl' => new Reference('doctrine.orm.' . $entityManager['name'] . '_metadata_driver'),
+            'setMetadataDriverImpl' => new Reference('doctrine.orm.'.$entityManager['name'].'_metadata_driver'),
             'setProxyDir' => '%doctrine.orm.proxy_dir%',
             'setProxyNamespace' => '%doctrine.orm.proxy_namespace%',
             'setAutoGenerateProxyClasses' => '%doctrine.orm.auto_generate_proxy_classes%',
@@ -521,7 +513,8 @@ class DoctrineExtension extends AbstractDoctrineExtension
         $container
             ->setDefinition($managerConfiguratorName, new DefinitionDecorator('doctrine.orm.manager_configurator.abstract'))
             ->replaceArgument(0, $enabledFilters)
-            ->replaceArgument(1, $filtersParameters);
+            ->replaceArgument(1, $filtersParameters)
+        ;
 
         if (!isset($entityManager['connection'])) {
             $entityManager['connection'] = $this->defaultConnection;
@@ -533,7 +526,8 @@ class DoctrineExtension extends AbstractDoctrineExtension
                 new Reference(sprintf('doctrine.dbal.%s_connection', $entityManager['connection'])),
                 new Reference(sprintf('doctrine.orm.%s_configuration', $entityManager['name'])),
             ))
-            ->setConfigurator(array(new Reference($managerConfiguratorName), 'configure'));
+            ->setConfigurator(array(new Reference($managerConfiguratorName), 'configure'))
+        ;
 
         $container->setAlias(
             sprintf('doctrine.orm.%s_entity_manager.event_manager', $entityManager['name']),
@@ -592,9 +586,9 @@ class DoctrineExtension extends AbstractDoctrineExtension
      * In the case of bundles everything is really optional (which leads to autodetection for this bundle) but
      * in the mappings key everything except alias is a required argument.
      *
-     * @param array $entityManager A configured ORM entity manager
-     * @param Definition $ormConfigDef A Definition instance
-     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param array            $entityManager A configured ORM entity manager
+     * @param Definition       $ormConfigDef  A Definition instance
+     * @param ContainerBuilder $container     A ContainerBuilder instance
      */
     protected function loadOrmEntityManagerMappingInformation(array $entityManager, Definition $ormConfigDef, ContainerBuilder $container)
     {
@@ -606,44 +600,6 @@ class DoctrineExtension extends AbstractDoctrineExtension
         $this->registerMappingDrivers($entityManager, $container);
 
         $ormConfigDef->addMethodCall('setEntityNamespaces', array($this->aliasMap));
-    }
-
-    /**
-     * Loads a configured entity managers cache drivers.
-     *
-     * @param array $entityManager A configured ORM entity manager.
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     */
-    protected function loadOrmCacheDrivers(array $entityManager, ContainerBuilder $container)
-    {
-        $this->loadCacheDriver('metadata_cache', $entityManager['name'], $entityManager['metadata_cache_driver'], $container);
-        $this->loadCacheDriver('result_cache', $entityManager['name'], $entityManager['result_cache_driver'], $container);
-        $this->loadCacheDriver('query_cache', $entityManager['name'], $entityManager['query_cache_driver'], $container);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function loadCacheDriver($driverName, $entityManagerName, array $driverMap, ContainerBuilder $container)
-    {
-        if (!empty($driverMap['cache_provider'])) {
-            $aliasId = $this->getObjectManagerElementName(sprintf('%s_%s', $entityManagerName, $driverName));
-            $serviceId = sprintf('doctrine_cache.providers.%s', $driverMap['cache_provider']);
-
-            $container->setAlias($aliasId, new Alias($serviceId, false));
-
-            return $aliasId;
-        }
-
-        return $this->adapter->loadCacheDriver($driverName, $entityManagerName, $driverMap, $container);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function getObjectManagerElementName($name)
-    {
-        return 'doctrine.orm.' . $name;
     }
 
     /**
@@ -670,9 +626,9 @@ class DoctrineExtension extends AbstractDoctrineExtension
      *                      cache_driver:
      *                          type: apc
      *
-     * @param array $entityManager A configured ORM entity manager
-     * @param Definition $ormConfigDef A Definition instance
-     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param array            $entityManager A configured ORM entity manager
+     * @param Definition       $ormConfigDef  A Definition instance
+     * @param ContainerBuilder $container     A ContainerBuilder instance
      */
     protected function loadOrmSecondLevelCache(array $entityManager, Definition $ormConfigDef, ContainerBuilder $container)
     {
@@ -765,52 +721,11 @@ class DoctrineExtension extends AbstractDoctrineExtension
     }
 
     /**
-     * Loads a property info extractor for each defined entity manager.
-     *
-     * @param string $entityManagerName
-     * @param ContainerBuilder $container
-     */
-    private function loadPropertyInfoExtractor($entityManagerName, ContainerBuilder $container)
-    {
-        $metadataFactoryService = sprintf('doctrine.orm.%s_entity_manager.metadata_factory', $entityManagerName);
-
-        $metadataFactoryDefinition = $container->register($metadataFactoryService, 'Doctrine\Common\Persistence\Mapping\ClassMetadataFactory');
-        $metadataFactoryDefinition->setFactory(array(
-            new Reference(sprintf('doctrine.orm.%s_entity_manager', $entityManagerName)),
-            'getMetadataFactory'
-        ));
-        $metadataFactoryDefinition->setPublic(false);
-
-        $propertyExtractorDefinition = $container->register(sprintf('doctrine.orm.%s_entity_manager.property_info_extractor', $entityManagerName), 'Symfony\Bridge\Doctrine\PropertyInfo\DoctrineExtractor');
-        $propertyExtractorDefinition->addArgument(new Reference($metadataFactoryService));
-        $propertyExtractorDefinition->addTag('property_info.list_extractor', array('priority' => -1001));
-        $propertyExtractorDefinition->addTag('property_info.type_extractor', array('priority' => -999));
-    }
-
-    /**
-     * @param array $objectManager
-     * @param ContainerBuilder $container
-     * @param string $cacheName
-     */
-    public function loadObjectManagerCacheDriver(array $objectManager, ContainerBuilder $container, $cacheName)
-    {
-        $this->loadCacheDriver($cacheName, $objectManager['name'], $objectManager[$cacheName . '_driver'], $container);
-    }
-
-    /**
      * {@inheritDoc}
      */
-    public function getXsdValidationBasePath()
+    protected function getObjectManagerElementName($name)
     {
-        return __DIR__ . '/../Resources/config/schema';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getNamespace()
-    {
-        return 'http://symfony.com/schema/dic/doctrine';
+        return 'doctrine.orm.'.$name;
     }
 
     protected function getMappingObjectDefaultName()
@@ -832,5 +747,92 @@ class DoctrineExtension extends AbstractDoctrineExtension
     protected function getMappingResourceExtension()
     {
         return 'orm';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function loadCacheDriver($driverName, $entityManagerName, array $driverMap, ContainerBuilder $container)
+    {
+        if (!empty($driverMap['cache_provider'])) {
+            $aliasId = $this->getObjectManagerElementName(sprintf('%s_%s', $entityManagerName, $driverName));
+            $serviceId = sprintf('doctrine_cache.providers.%s', $driverMap['cache_provider']);
+
+            $container->setAlias($aliasId, new Alias($serviceId, false));
+
+            return $aliasId;
+        }
+
+        return $this->adapter->loadCacheDriver($driverName, $entityManagerName, $driverMap, $container);
+    }
+
+    /**
+     * Loads a configured entity managers cache drivers.
+     *
+     * @param array            $entityManager A configured ORM entity manager.
+     * @param ContainerBuilder $container     A ContainerBuilder instance
+     */
+    protected function loadOrmCacheDrivers(array $entityManager, ContainerBuilder $container)
+    {
+        $this->loadCacheDriver('metadata_cache', $entityManager['name'], $entityManager['metadata_cache_driver'], $container);
+        $this->loadCacheDriver('result_cache', $entityManager['name'], $entityManager['result_cache_driver'], $container);
+        $this->loadCacheDriver('query_cache', $entityManager['name'], $entityManager['query_cache_driver'], $container);
+    }
+
+    /**
+     * Loads a property info extractor for each defined entity manager.
+     *
+     * @param string           $entityManagerName
+     * @param ContainerBuilder $container
+     */
+    private function loadPropertyInfoExtractor($entityManagerName, ContainerBuilder $container)
+    {
+        $metadataFactoryService = sprintf('doctrine.orm.%s_entity_manager.metadata_factory', $entityManagerName);
+
+        $metadataFactoryDefinition = $container->register($metadataFactoryService, 'Doctrine\Common\Persistence\Mapping\ClassMetadataFactory');
+        $metadataFactoryDefinition->setFactory(array(
+            new Reference(sprintf('doctrine.orm.%s_entity_manager', $entityManagerName)),
+            'getMetadataFactory'
+        ));
+        $metadataFactoryDefinition->setPublic(false);
+
+        $propertyExtractorDefinition = $container->register(sprintf('doctrine.orm.%s_entity_manager.property_info_extractor', $entityManagerName), 'Symfony\Bridge\Doctrine\PropertyInfo\DoctrineExtractor');
+        $propertyExtractorDefinition->addArgument(new Reference($metadataFactoryService));
+        $propertyExtractorDefinition->addTag('property_info.list_extractor', array('priority' => -1001));
+        $propertyExtractorDefinition->addTag('property_info.type_extractor', array('priority' => -999));
+    }
+
+    /**
+     * @param array            $objectManager
+     * @param ContainerBuilder $container
+     * @param string           $cacheName
+     */
+    public function loadObjectManagerCacheDriver(array $objectManager, ContainerBuilder $container, $cacheName)
+    {
+        $this->loadCacheDriver($cacheName, $objectManager['name'], $objectManager[$cacheName.'_driver'], $container);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getXsdValidationBasePath()
+    {
+        return __DIR__.'/../Resources/config/schema';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNamespace()
+    {
+        return 'http://symfony.com/schema/dic/doctrine';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameter('kernel.debug'));
     }
 }

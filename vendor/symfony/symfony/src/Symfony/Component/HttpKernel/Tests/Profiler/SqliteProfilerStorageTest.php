@@ -28,7 +28,7 @@ class SqliteProfilerStorageTest extends AbstractProfilerStorageTest
         if (file_exists($this->dbFile)) {
             @unlink($this->dbFile);
         }
-        $this->storage = new SqliteProfilerStorage('sqlite:' . $this->dbFile);
+        $this->storage = new SqliteProfilerStorage('sqlite:'.$this->dbFile);
 
         $this->storage->purge();
     }

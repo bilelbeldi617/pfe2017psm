@@ -29,7 +29,7 @@ class IntegerType extends AbstractType
                 $options['scale'],
                 $options['grouping'],
                 $options['rounding_mode']
-            ));
+        ));
     }
 
     /**

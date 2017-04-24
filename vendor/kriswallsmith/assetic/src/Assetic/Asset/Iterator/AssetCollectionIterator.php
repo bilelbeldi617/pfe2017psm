@@ -31,45 +31,17 @@ class AssetCollectionIterator implements \RecursiveIterator
 
     public function __construct(AssetCollectionInterface $coll, \SplObjectStorage $clones)
     {
-        $this->assets = $coll->all();
+        $this->assets  = $coll->all();
         $this->filters = $coll->getFilters();
-        $this->vars = $coll->getVars();
-        $this->output = $coll->getTargetPath();
-        $this->clones = $clones;
+        $this->vars    = $coll->getVars();
+        $this->output  = $coll->getTargetPath();
+        $this->clones  = $clones;
 
         if (false === $pos = strrpos($this->output, '.')) {
             $this->output .= '_*';
         } else {
-            $this->output = substr($this->output, 0, $pos) . '_*' . substr($this->output, $pos);
+            $this->output = substr($this->output, 0, $pos).'_*'.substr($this->output, $pos);
         }
-    }
-
-    public function next()
-    {
-        return next($this->assets);
-    }
-
-    public function rewind()
-    {
-        return reset($this->assets);
-    }
-
-    public function valid()
-    {
-        return false !== current($this->assets);
-    }
-
-    public function hasChildren()
-    {
-        return current($this->assets) instanceof AssetCollectionInterface;
-    }
-
-    /**
-     * @uses current()
-     */
-    public function getChildren()
-    {
-        return new self($this->current(), $this->clones);
     }
 
     /**
@@ -114,10 +86,38 @@ class AssetCollectionIterator implements \RecursiveIterator
         return key($this->assets);
     }
 
+    public function next()
+    {
+        return next($this->assets);
+    }
+
+    public function rewind()
+    {
+        return reset($this->assets);
+    }
+
+    public function valid()
+    {
+        return false !== current($this->assets);
+    }
+
+    public function hasChildren()
+    {
+        return current($this->assets) instanceof AssetCollectionInterface;
+    }
+
+    /**
+     * @uses current()
+     */
+    public function getChildren()
+    {
+        return new self($this->current(), $this->clones);
+    }
+
     private function removeDuplicateVar($name)
     {
         foreach ($this->vars as $var) {
-            $var = '{' . $var . '}';
+            $var = '{'.$var.'}';
             if (false !== strpos($name, $var) && false !== strpos($this->output, $var)) {
                 $name = str_replace($var, '', $name);
             }

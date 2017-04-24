@@ -131,11 +131,11 @@ class ExecutionContext implements ExecutionContextInterface
     /**
      * Creates a new execution context.
      *
-     * @param ValidatorInterface $validator The validator
-     * @param mixed $root The root value of the
+     * @param ValidatorInterface  $validator         The validator
+     * @param mixed               $root              The root value of the
      *                                               validated object graph
-     * @param TranslatorInterface $translator The translator
-     * @param string|null $translationDomain The translation domain to
+     * @param TranslatorInterface $translator        The translator
+     * @param string|null         $translationDomain The translation domain to
      *                                               use for translating
      *                                               violation messages
      *
@@ -159,7 +159,23 @@ class ExecutionContext implements ExecutionContextInterface
         $this->value = $value;
         $this->object = $object;
         $this->metadata = $metadata;
-        $this->propertyPath = (string)$propertyPath;
+        $this->propertyPath = (string) $propertyPath;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setConstraint(Constraint $constraint)
+    {
+        $this->constraint = $constraint;
     }
 
     /**
@@ -171,14 +187,15 @@ class ExecutionContext implements ExecutionContextInterface
         // API, as they are not present in the new interface anymore.
         // You should use buildViolation() instead.
         if (func_num_args() > 2) {
-            @trigger_error('The parameters $invalidValue, $plural and $code in method ' . __METHOD__ . ' are deprecated since version 2.5 and will be removed in 3.0. Use the ' . __CLASS__ . '::buildViolation method instead.', E_USER_DEPRECATED);
+            @trigger_error('The parameters $invalidValue, $plural and $code in method '.__METHOD__.' are deprecated since version 2.5 and will be removed in 3.0. Use the '.__CLASS__.'::buildViolation method instead.', E_USER_DEPRECATED);
 
             $this
                 ->buildViolation($message, $parameters)
                 ->setInvalidValue($invalidValue)
                 ->setPlural($plural)
                 ->setCode($code)
-                ->addViolation();
+                ->addViolation()
+            ;
 
             return;
         }
@@ -225,6 +242,14 @@ class ExecutionContext implements ExecutionContextInterface
     /**
      * {@inheritdoc}
      */
+    public function getValidator()
+    {
+        return $this->validator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getRoot()
     {
         return $this->root;
@@ -262,25 +287,9 @@ class ExecutionContext implements ExecutionContextInterface
         return $this->group;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setGroup($group)
-    {
-        $this->group = $group;
-    }
-
     public function getConstraint()
     {
         return $this->constraint;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setConstraint(Constraint $constraint)
-    {
-        $this->constraint = $constraint;
     }
 
     /**
@@ -312,7 +321,7 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function addViolationAt($subPath, $message, array $parameters = array(), $invalidValue = null, $plural = null, $code = null)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use the ' . __CLASS__ . '::buildViolation method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the '.__CLASS__.'::buildViolation method instead.', E_USER_DEPRECATED);
 
         if (func_num_args() > 2) {
             $this
@@ -321,7 +330,8 @@ class ExecutionContext implements ExecutionContextInterface
                 ->setInvalidValue($invalidValue)
                 ->setPlural($plural)
                 ->setCode($code)
-                ->addViolation();
+                ->addViolation()
+            ;
 
             return;
         }
@@ -329,7 +339,8 @@ class ExecutionContext implements ExecutionContextInterface
         $this
             ->buildViolation($message, $parameters)
             ->atPath($subPath)
-            ->addViolation();
+            ->addViolation()
+        ;
     }
 
     /**
@@ -337,7 +348,7 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function validate($value, $subPath = '', $groups = null, $traverse = false, $deep = false)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use the ' . __CLASS__ . '::getValidator() method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the '.__CLASS__.'::getValidator() method instead.', E_USER_DEPRECATED);
 
         if (is_array($value)) {
             // The $traverse flag is ignored for arrays
@@ -347,7 +358,8 @@ class ExecutionContext implements ExecutionContextInterface
                 ->getValidator()
                 ->inContext($this)
                 ->atPath($subPath)
-                ->validate($value, $constraint, $groups);
+                ->validate($value, $constraint, $groups)
+            ;
         }
 
         if ($traverse && $value instanceof \Traversable) {
@@ -357,22 +369,16 @@ class ExecutionContext implements ExecutionContextInterface
                 ->getValidator()
                 ->inContext($this)
                 ->atPath($subPath)
-                ->validate($value, $constraint, $groups);
+                ->validate($value, $constraint, $groups)
+            ;
         }
 
         return $this
             ->getValidator()
             ->inContext($this)
             ->atPath($subPath)
-            ->validate($value, null, $groups);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValidator()
-    {
-        return $this->validator;
+            ->validate($value, null, $groups)
+        ;
     }
 
     /**
@@ -380,13 +386,14 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function validateValue($value, $constraints, $subPath = '', $groups = null)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.5 and will be removed in 3.0. Use the ' . __CLASS__ . '::getValidator() method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the '.__CLASS__.'::getValidator() method instead.', E_USER_DEPRECATED);
 
         return $this
             ->getValidator()
             ->inContext($this)
             ->atPath($subPath)
-            ->validate($value, $constraints, $groups);
+            ->validate($value, $constraints, $groups)
+        ;
     }
 
     /**
@@ -394,7 +401,7 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function getMetadataFactory()
     {
-        @trigger_error('The ' . __METHOD__ . ' is deprecated since version 2.5 and will be removed in 3.0. Use the new Symfony\Component\Validator\Context\ExecutionContext::getValidator method in combination with Symfony\Component\Validator\Validator\ValidatorInterface::getMetadataFor or Symfony\Component\Validator\Validator\ValidatorInterface::hasMetadataFor method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' is deprecated since version 2.5 and will be removed in 3.0. Use the new Symfony\Component\Validator\Context\ExecutionContext::getValidator method in combination with Symfony\Component\Validator\Validator\ValidatorInterface::getMetadataFor or Symfony\Component\Validator\Validator\ValidatorInterface::hasMetadataFor method instead.', E_USER_DEPRECATED);
 
         $validator = $this->getValidator();
 
@@ -431,7 +438,7 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function markConstraintAsValidated($cacheKey, $constraintHash)
     {
-        $this->validatedConstraints[$cacheKey . ':' . $constraintHash] = true;
+        $this->validatedConstraints[$cacheKey.':'.$constraintHash] = true;
     }
 
     /**
@@ -439,7 +446,7 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function isConstraintValidated($cacheKey, $constraintHash)
     {
-        return isset($this->validatedConstraints[$cacheKey . ':' . $constraintHash]);
+        return isset($this->validatedConstraints[$cacheKey.':'.$constraintHash]);
     }
 
     /**

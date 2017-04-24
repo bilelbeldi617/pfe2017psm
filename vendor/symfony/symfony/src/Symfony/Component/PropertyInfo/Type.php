@@ -76,12 +76,12 @@ class Type
     private $collectionValueType;
 
     /**
-     * @param string $builtinType
-     * @param bool $nullable
+     * @param string      $builtinType
+     * @param bool        $nullable
      * @param string|null $class
-     * @param bool $collection
-     * @param Type|null $collectionKeyType
-     * @param Type|null $collectionValueType
+     * @param bool        $collection
+     * @param Type|null   $collectionKeyType
+     * @param Type|null   $collectionValueType
      *
      * @throws \InvalidArgumentException
      */

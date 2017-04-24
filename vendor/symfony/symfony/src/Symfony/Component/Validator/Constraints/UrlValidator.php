@@ -43,7 +43,7 @@ class UrlValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Url) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Url');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Url');
         }
 
         if (null === $value) {
@@ -54,7 +54,7 @@ class UrlValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         if ('' === $value) {
             return;
         }

@@ -14,6 +14,7 @@ class ParentEleve
 {
 
 
+
     /**
      * @var int
      *
@@ -57,30 +58,6 @@ class ParentEleve
      * @ORM\Column(name="adresse_parent", type="string", length=100)
      */
     private $adresseParent;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email_parent", type="string", length=100)
-     */
-    private $emailParent;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="login_parent", type="string", length=100)
-     */
-    private $loginParent;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password_parent", type="string", length=100)
-     */
-    private $passwordParent;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="fonction_parent", type="string", length=100)
-     */
-    private $fonctionParent;
 
     /**
      * @return string
@@ -99,6 +76,27 @@ class ParentEleve
         $this->emailParent = $emailParent;
         return $this;
     }
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email_parent", type="string", length=100)
+     */
+    private $emailParent;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="login_parent", type="string", length=100)
+     */
+    private $loginParent;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password_parent", type="string", length=100)
+     */
+    private $passwordParent;
 
     /**
      * @return string
@@ -132,24 +130,23 @@ class ParentEleve
         $this->passwordParent = $passwordParent;
     }
 
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fonction_parent", type="string", length=100)
+     */
+    private $fonctionParent;
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get nomParent
-     *
-     * @return string
-     */
-    public function getNomParent()
-    {
-        return $this->nomParent;
     }
 
     /**
@@ -166,13 +163,13 @@ class ParentEleve
     }
 
     /**
-     * Get prenomParent
+     * Get nomParent
      *
-     * @return string
+     * @return string 
      */
-    public function getPrenomParent()
+    public function getNomParent()
     {
-        return $this->prenomParent;
+        return $this->nomParent;
     }
 
     /**
@@ -189,13 +186,13 @@ class ParentEleve
     }
 
     /**
-     * Get cinParent
+     * Get prenomParent
      *
-     * @return integer
+     * @return string 
      */
-    public function getCinParent()
+    public function getPrenomParent()
     {
-        return $this->cinParent;
+        return $this->prenomParent;
     }
 
     /**
@@ -212,13 +209,13 @@ class ParentEleve
     }
 
     /**
-     * Get numTelParent
+     * Get cinParent
      *
-     * @return string
+     * @return integer 
      */
-    public function getNumTelParent()
+    public function getCinParent()
     {
-        return $this->numTelParent;
+        return $this->cinParent;
     }
 
     /**
@@ -235,13 +232,13 @@ class ParentEleve
     }
 
     /**
-     * Get adresseParent
+     * Get numTelParent
      *
-     * @return string
+     * @return string 
      */
-    public function getAdresseParent()
+    public function getNumTelParent()
     {
-        return $this->adresseParent;
+        return $this->numTelParent;
     }
 
     /**
@@ -258,13 +255,13 @@ class ParentEleve
     }
 
     /**
-     * Get fonctionParent
+     * Get adresseParent
      *
-     * @return string
+     * @return string 
      */
-    public function getFonctionParent()
+    public function getAdresseParent()
     {
-        return $this->fonctionParent;
+        return $this->adresseParent;
     }
 
     /**
@@ -278,5 +275,15 @@ class ParentEleve
         $this->fonctionParent = $fonctionParent;
 
         return $this;
+    }
+
+    /**
+     * Get fonctionParent
+     *
+     * @return string 
+     */
+    public function getFonctionParent()
+    {
+        return $this->fonctionParent;
     }
 }

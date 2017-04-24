@@ -53,11 +53,6 @@ class NumberFormatterTest extends AbstractNumberFormatterTest
         $formatter->setAttribute(NumberFormatter::LENIENT_PARSE, null);
     }
 
-    protected function getNumberFormatter($locale = 'en', $style = null, $pattern = null)
-    {
-        return new NumberFormatter($locale, $style, $pattern);
-    }
-
     /**
      * @expectedException \Symfony\Component\Intl\Exception\MethodArgumentValueNotImplementedException
      */
@@ -194,6 +189,11 @@ class NumberFormatterTest extends AbstractNumberFormatterTest
     {
         $formatter = $this->getNumberFormatter('en', NumberFormatter::DECIMAL);
         $formatter->setTextAttribute(null, null);
+    }
+
+    protected function getNumberFormatter($locale = 'en', $style = null, $pattern = null)
+    {
+        return new NumberFormatter($locale, $style, $pattern);
     }
 
     protected function getIntlErrorMessage()

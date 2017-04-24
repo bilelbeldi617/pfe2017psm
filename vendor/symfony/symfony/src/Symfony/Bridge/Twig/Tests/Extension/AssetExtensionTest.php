@@ -33,19 +33,6 @@ class AssetExtensionTest extends TestCase
         $this->assertEquals('http://localhost/me.png?version=42', $extension->getAssetUrl('me.png', null, true, '42'));
     }
 
-    private function createExtension(Package $package)
-    {
-        $foundationExtension = $this->getMockBuilder('Symfony\Bridge\Twig\Extension\HttpFoundationExtension')->disableOriginalConstructor()->getMock();
-        $foundationExtension
-            ->expects($this->any())
-            ->method('generateAbsoluteUrl')
-            ->will($this->returnCallback(function ($arg) {
-                return 'http://localhost/' . $arg;
-            }));
-
-        return new AssetExtension(new Packages($package), $foundationExtension);
-    }
-
     /**
      * @group legacy
      */
@@ -64,5 +51,17 @@ class AssetExtensionTest extends TestCase
         $extension = $this->createExtension(new PathPackage('foo', new EmptyVersionStrategy()));
 
         $this->assertEquals('/foo/me.png?42', $extension->getAssetUrl('me.png', null, false, 42));
+    }
+
+    private function createExtension(Package $package)
+    {
+        $foundationExtension = $this->getMockBuilder('Symfony\Bridge\Twig\Extension\HttpFoundationExtension')->disableOriginalConstructor()->getMock();
+        $foundationExtension
+            ->expects($this->any())
+            ->method('generateAbsoluteUrl')
+            ->will($this->returnCallback(function ($arg) { return 'http://localhost/'.$arg; }))
+        ;
+
+        return new AssetExtension(new Packages($package), $foundationExtension);
     }
 }

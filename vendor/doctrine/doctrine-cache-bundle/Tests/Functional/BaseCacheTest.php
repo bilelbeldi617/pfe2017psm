@@ -27,6 +27,11 @@ use Doctrine\Bundle\DoctrineCacheBundle\Tests\FunctionalTestCase;
  */
 abstract class BaseCacheTest extends FunctionalTestCase
 {
+    /**
+     * @return \Doctrine\Common\Cache\Cache
+     */
+    abstract protected function createCacheDriver();
+
     public function testCacheDriver()
     {
         $cache = $this->createCacheDriver();
@@ -40,9 +45,4 @@ abstract class BaseCacheTest extends FunctionalTestCase
         $this->assertTrue($cache->delete('key'));
         $this->assertFalse($cache->contains('key'));
     }
-
-    /**
-     * @return \Doctrine\Common\Cache\Cache
-     */
-    abstract protected function createCacheDriver();
 }

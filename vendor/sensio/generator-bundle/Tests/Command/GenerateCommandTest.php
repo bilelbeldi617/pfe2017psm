@@ -48,6 +48,25 @@ abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    protected function getBundle()
+    {
+        if (null !== $this->bundle) {
+            return $this->bundle;
+        }
+
+        $tmpDir = sys_get_temp_dir().'/sf'.mt_rand(111111, 999999);
+        @mkdir($tmpDir, 0777, true);
+
+        $this->bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $this->bundle
+            ->expects($this->any())
+            ->method('getPath')
+            ->will($this->returnValue($tmpDir))
+        ;
+
+        return $this->bundle;
+    }
+
     protected function getContainer()
     {
         $bundle = $this->getBundle();
@@ -56,17 +75,20 @@ abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
         $kernel
             ->expects($this->any())
             ->method('getBundle')
-            ->will($this->returnValue($bundle));
+            ->will($this->returnValue($bundle))
+        ;
         $kernel
             ->expects($this->any())
             ->method('getBundles')
-            ->will($this->returnValue(array($bundle)));
+            ->will($this->returnValue(array($bundle)))
+        ;
 
         $filesystem = $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')->getMock();
         $filesystem
             ->expects($this->any())
             ->method('isAbsolutePath')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $container = new Container();
         $container->set('kernel', $kernel);
@@ -75,23 +97,5 @@ abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
         $container->setParameter('kernel.root_dir', $bundle->getPath());
 
         return $container;
-    }
-
-    protected function getBundle()
-    {
-        if (null !== $this->bundle) {
-            return $this->bundle;
-        }
-
-        $tmpDir = sys_get_temp_dir() . '/sf' . mt_rand(111111, 999999);
-        @mkdir($tmpDir, 0777, true);
-
-        $this->bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $this->bundle
-            ->expects($this->any())
-            ->method('getPath')
-            ->will($this->returnValue($tmpDir));
-
-        return $this->bundle;
     }
 }

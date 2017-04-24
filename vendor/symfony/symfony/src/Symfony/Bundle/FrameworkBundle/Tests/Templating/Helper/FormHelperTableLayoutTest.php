@@ -43,11 +43,6 @@ class FormHelperTableLayoutTest extends AbstractTableLayoutTest
         $this->assertSame('<form name="form" method="get">', $html);
     }
 
-    protected function renderStart(FormView $view, array $vars = array())
-    {
-        return (string)$this->engine->get('form')->start($view, $vars);
-    }
-
     public function testStartTagHasActionAttributeWhenActionIsZero()
     {
         $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
@@ -65,8 +60,8 @@ class FormHelperTableLayoutTest extends AbstractTableLayoutTest
         // should be moved to the Form component once absolute file paths are supported
         // by the default name parser in the Templating component
         $reflClass = new \ReflectionClass('Symfony\Bundle\FrameworkBundle\FrameworkBundle');
-        $root = realpath(dirname($reflClass->getFileName()) . '/Resources/views');
-        $rootTheme = realpath(__DIR__ . '/Resources');
+        $root = realpath(dirname($reflClass->getFileName()).'/Resources/views');
+        $rootTheme = realpath(__DIR__.'/Resources');
         $templateNameParser = new StubTemplateNameParser($root, $rootTheme);
         $loader = new FilesystemLoader(array());
 
@@ -93,7 +88,7 @@ class FormHelperTableLayoutTest extends AbstractTableLayoutTest
 
     protected function renderForm(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->form($view, $vars);
+        return (string) $this->engine->get('form')->form($view, $vars);
     }
 
     protected function renderEnctype(FormView $view)
@@ -102,37 +97,42 @@ class FormHelperTableLayoutTest extends AbstractTableLayoutTest
             $this->markTestSkipped(sprintf('Deprecated method %s->enctype() is not implemented.', get_class($form)));
         }
 
-        return (string)$form->enctype($view);
+        return (string) $form->enctype($view);
     }
 
     protected function renderLabel(FormView $view, $label = null, array $vars = array())
     {
-        return (string)$this->engine->get('form')->label($view, $label, $vars);
+        return (string) $this->engine->get('form')->label($view, $label, $vars);
     }
 
     protected function renderErrors(FormView $view)
     {
-        return (string)$this->engine->get('form')->errors($view);
+        return (string) $this->engine->get('form')->errors($view);
     }
 
     protected function renderWidget(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->widget($view, $vars);
+        return (string) $this->engine->get('form')->widget($view, $vars);
     }
 
     protected function renderRow(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->row($view, $vars);
+        return (string) $this->engine->get('form')->row($view, $vars);
     }
 
     protected function renderRest(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->rest($view, $vars);
+        return (string) $this->engine->get('form')->rest($view, $vars);
+    }
+
+    protected function renderStart(FormView $view, array $vars = array())
+    {
+        return (string) $this->engine->get('form')->start($view, $vars);
     }
 
     protected function renderEnd(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->end($view, $vars);
+        return (string) $this->engine->get('form')->end($view, $vars);
     }
 
     protected function setTheme(FormView $view, array $themes)

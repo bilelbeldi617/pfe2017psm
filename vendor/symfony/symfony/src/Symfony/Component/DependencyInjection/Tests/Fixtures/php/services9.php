@@ -53,20 +53,6 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * Gets the default parameters.
-     *
-     * @return array An array of the default parameters
-     */
-    protected function getDefaultParameters()
-    {
-        return array(
-            'baz_class' => 'BazClass',
-            'foo_class' => 'Bar\\FooClass',
-            'foo' => 'bar',
-        );
-    }
-
-    /**
      * Gets the 'bar' service.
      *
      * This service is shared.
@@ -200,11 +186,11 @@ class ProjectServiceContainer extends Container
     {
         $a = $this->get('foo.baz');
 
-        $this->services['foo'] = $instance = \Bar\FooClass::getInstance('foo', $a, array($this->getParameter('foo') => 'foo is ' . $this->getParameter('foo') . '', 'foobar' => $this->getParameter('foo')), true, $this);
+        $this->services['foo'] = $instance = \Bar\FooClass::getInstance('foo', $a, array($this->getParameter('foo') => 'foo is '.$this->getParameter('foo').'', 'foobar' => $this->getParameter('foo')), true, $this);
 
         $instance->foo = 'bar';
         $instance->moo = $a;
-        $instance->qux = array($this->getParameter('foo') => 'foo is ' . $this->getParameter('foo') . '', 'foobar' => $this->getParameter('foo'));
+        $instance->qux = array($this->getParameter('foo') => 'foo is '.$this->getParameter('foo').'', 'foobar' => $this->getParameter('foo'));
         $instance->setBar($this->get('bar'));
         $instance->initialize();
         sc_configure($instance);
@@ -390,5 +376,19 @@ class ProjectServiceContainer extends Container
         $instance->foo = 'bar';
 
         return $instance;
+    }
+
+    /**
+     * Gets the default parameters.
+     *
+     * @return array An array of the default parameters
+     */
+    protected function getDefaultParameters()
+    {
+        return array(
+            'baz_class' => 'BazClass',
+            'foo_class' => 'Bar\\FooClass',
+            'foo' => 'bar',
+        );
     }
 }

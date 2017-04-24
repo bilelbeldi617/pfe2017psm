@@ -114,31 +114,6 @@ class ViolationPath implements \IteratorAggregate, PropertyPathInterface
     }
 
     /**
-     * Builds the string representation from the elements.
-     */
-    private function buildString()
-    {
-        $this->pathAsString = '';
-        $data = false;
-
-        foreach ($this->elements as $index => $element) {
-            if ($this->mapsForm[$index]) {
-                $this->pathAsString .= ".children[$element]";
-            } elseif (!$data) {
-                $this->pathAsString .= '.data' . ($this->isIndex[$index] ? "[$element]" : ".$element");
-                $data = true;
-            } else {
-                $this->pathAsString .= $this->isIndex[$index] ? "[$element]" : ".$element";
-            }
-        }
-
-        if ('' !== $this->pathAsString) {
-            // remove leading dot
-            $this->pathAsString = substr($this->pathAsString, 1);
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function __toString()
@@ -254,5 +229,30 @@ class ViolationPath implements \IteratorAggregate, PropertyPathInterface
     public function getIterator()
     {
         return new ViolationPathIterator($this);
+    }
+
+    /**
+     * Builds the string representation from the elements.
+     */
+    private function buildString()
+    {
+        $this->pathAsString = '';
+        $data = false;
+
+        foreach ($this->elements as $index => $element) {
+            if ($this->mapsForm[$index]) {
+                $this->pathAsString .= ".children[$element]";
+            } elseif (!$data) {
+                $this->pathAsString .= '.data'.($this->isIndex[$index] ? "[$element]" : ".$element");
+                $data = true;
+            } else {
+                $this->pathAsString .= $this->isIndex[$index] ? "[$element]" : ".$element";
+            }
+        }
+
+        if ('' !== $this->pathAsString) {
+            // remove leading dot
+            $this->pathAsString = substr($this->pathAsString, 1);
+        }
     }
 }

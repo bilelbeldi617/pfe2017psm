@@ -74,6 +74,6 @@ class TemplateNameParser extends BaseTemplateNameParser
 
     private function isAbsolutePath($file)
     {
-        return (bool)preg_match('#^(?:/|[a-zA-Z]:)#', $file);
+        return (bool) preg_match('#^(?:/|[a-zA-Z]:)#', $file);
     }
 }

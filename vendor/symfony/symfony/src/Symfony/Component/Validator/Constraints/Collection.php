@@ -42,17 +42,11 @@ class Collection extends Composite
     {
         // no known options set? $options is the fields array
         if (is_array($options)
-            && !array_intersect(array_keys($options), array('groups', 'fields', 'allowExtraFields', 'allowMissingFields', 'extraFieldsMessage', 'missingFieldsMessage'))
-        ) {
+            && !array_intersect(array_keys($options), array('groups', 'fields', 'allowExtraFields', 'allowMissingFields', 'extraFieldsMessage', 'missingFieldsMessage'))) {
             $options = array('fields' => $options);
         }
 
         parent::__construct($options);
-    }
-
-    public function getRequiredOptions()
-    {
-        return array('fields');
     }
 
     /**
@@ -77,6 +71,11 @@ class Collection extends Composite
                 $this->fields[$fieldName] = $field = new Required($field);
             }
         }
+    }
+
+    public function getRequiredOptions()
+    {
+        return array('fields');
     }
 
     protected function getCompositeOption()

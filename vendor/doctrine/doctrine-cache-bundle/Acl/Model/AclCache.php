@@ -30,12 +30,12 @@ class AclCache implements AclCacheInterface
     /**
      * Constructor
      *
-     * @param \Doctrine\Common\Cache\CacheProvider $cache
+     * @param \Doctrine\Common\Cache\CacheProvider                                      $cache
      * @param \Symfony\Component\Security\Acl\Model\PermissionGrantingStrategyInterface $permissionGrantingStrategy
      */
     public function __construct(CacheProvider $cache, PermissionGrantingStrategyInterface $permissionGrantingStrategy)
     {
-        $this->cache = $cache;
+        $this->cache                      = $cache;
         $this->permissionGrantingStrategy = $permissionGrantingStrategy;
     }
 
@@ -44,7 +44,7 @@ class AclCache implements AclCacheInterface
      */
     public function evictFromCacheById($primaryKey)
     {
-        if (!$this->cache->contains($primaryKey)) {
+        if ( ! $this->cache->contains($primaryKey)) {
             return;
         }
 
@@ -52,20 +52,6 @@ class AclCache implements AclCacheInterface
 
         $this->cache->delete($primaryKey);
         $this->evictFromCacheByKey($key);
-    }
-
-    /**
-     * Removes an ACL from the cache
-     *
-     * @param string $key
-     */
-    private function evictFromCacheByKey($key)
-    {
-        if (!$this->cache->contains($key)) {
-            return;
-        }
-
-        $this->cache->delete($key);
     }
 
     /**
@@ -79,15 +65,24 @@ class AclCache implements AclCacheInterface
     }
 
     /**
-     * Returns the key for the object identity
-     *
-     * @param \Symfony\Component\Security\Acl\Model\ObjectIdentityInterface $oid
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    private function createKeyFromIdentity(ObjectIdentityInterface $oid)
+    public function getFromCacheById($primaryKey)
     {
-        return $oid->getType() . '_' . $oid->getIdentifier();
+        if ( ! $this->cache->contains($primaryKey)) {
+            return null;
+        }
+
+        $key = $this->cache->fetch($primaryKey);
+        $acl = $this->getFromCacheByKey($key);
+
+        if ( ! $acl) {
+            $this->cache->delete($primaryKey);
+
+            return null;
+        }
+
+        return $acl;
     }
 
     /**
@@ -101,21 +96,32 @@ class AclCache implements AclCacheInterface
     }
 
     /**
-     * Retrieves an ACL for the given key from the cache
-     *
-     * @param string $key
-     *
-     * @return null|\Symfony\Component\Security\Acl\Model\AclInterface
+     * {@inheritdoc}
      */
-    private function getFromCacheByKey($key)
+    public function putInCache(AclInterface $acl)
     {
-        if (!$this->cache->contains($key)) {
-            return null;
+        if (null === $acl->getId()) {
+            throw new \InvalidArgumentException('Transient ACLs cannot be cached.');
         }
 
-        $serialized = $this->cache->fetch($key);
+        $parentAcl = $acl->getParentAcl();
 
-        return $this->unserializeAcl($serialized);
+        if (null !== $parentAcl) {
+            $this->putInCache($parentAcl);
+        }
+
+        $key = $this->createKeyFromIdentity($acl->getObjectIdentity());
+
+        $this->cache->save($key, serialize($acl));
+        $this->cache->save($acl->getId(), $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearCache()
+    {
+        return $this->cache->deleteAll();
     }
 
     /**
@@ -127,7 +133,7 @@ class AclCache implements AclCacheInterface
      */
     private function unserializeAcl($serialized)
     {
-        $acl = unserialize($serialized);
+        $acl      = unserialize($serialized);
         $parentId = $acl->getParentAcl();
 
         if (null !== $parentId) {
@@ -188,52 +194,46 @@ class AclCache implements AclCacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the key for the object identity
+     *
+     * @param \Symfony\Component\Security\Acl\Model\ObjectIdentityInterface $oid
+     *
+     * @return string
      */
-    public function getFromCacheById($primaryKey)
+    private function createKeyFromIdentity(ObjectIdentityInterface $oid)
     {
-        if (!$this->cache->contains($primaryKey)) {
-            return null;
-        }
-
-        $key = $this->cache->fetch($primaryKey);
-        $acl = $this->getFromCacheByKey($key);
-
-        if (!$acl) {
-            $this->cache->delete($primaryKey);
-
-            return null;
-        }
-
-        return $acl;
+        return $oid->getType() . '_' . $oid->getIdentifier();
     }
 
     /**
-     * {@inheritdoc}
+     * Removes an ACL from the cache
+     *
+     * @param string $key
      */
-    public function putInCache(AclInterface $acl)
+    private function evictFromCacheByKey($key)
     {
-        if (null === $acl->getId()) {
-            throw new \InvalidArgumentException('Transient ACLs cannot be cached.');
+        if ( ! $this->cache->contains($key)) {
+            return;
         }
 
-        $parentAcl = $acl->getParentAcl();
-
-        if (null !== $parentAcl) {
-            $this->putInCache($parentAcl);
-        }
-
-        $key = $this->createKeyFromIdentity($acl->getObjectIdentity());
-
-        $this->cache->save($key, serialize($acl));
-        $this->cache->save($acl->getId(), $key);
+        $this->cache->delete($key);
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieves an ACL for the given key from the cache
+     *
+     * @param string $key
+     *
+     * @return null|\Symfony\Component\Security\Acl\Model\AclInterface
      */
-    public function clearCache()
+    private function getFromCacheByKey($key)
     {
-        return $this->cache->deleteAll();
+        if ( ! $this->cache->contains($key)) {
+            return null;
+        }
+
+        $serialized = $this->cache->fetch($key);
+
+        return $this->unserializeAcl($serialized);
     }
 }

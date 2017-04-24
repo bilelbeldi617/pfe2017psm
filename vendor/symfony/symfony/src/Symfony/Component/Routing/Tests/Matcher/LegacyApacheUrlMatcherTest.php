@@ -23,6 +23,16 @@ class LegacyApacheUrlMatcherTest extends TestCase
 {
     protected $server;
 
+    protected function setUp()
+    {
+        $this->server = $_SERVER;
+    }
+
+    protected function tearDown()
+    {
+        $_SERVER = $this->server;
+    }
+
     /**
      * @dataProvider getMatchData
      */
@@ -142,15 +152,5 @@ class LegacyApacheUrlMatcherTest extends TestCase
                 ),
             ),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->server = $_SERVER;
-    }
-
-    protected function tearDown()
-    {
-        $_SERVER = $this->server;
     }
 }

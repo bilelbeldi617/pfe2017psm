@@ -45,22 +45,12 @@ class FluentdFormatter implements FormatterInterface
             throw new \RuntimeException('PHP\'s json extension is required to use Monolog\'s FluentdUnixFormatter');
         }
 
-        $this->levelTag = (bool)$levelTag;
+        $this->levelTag = (bool) $levelTag;
     }
 
     public function isUsingLevelsInTag()
     {
         return $this->levelTag;
-    }
-
-    public function formatBatch(array $records)
-    {
-        $message = '';
-        foreach ($records as $record) {
-            $message .= $this->format($record);
-        }
-
-        return $message;
     }
 
     public function format(array $record)
@@ -81,5 +71,15 @@ class FluentdFormatter implements FormatterInterface
         }
 
         return json_encode(array($tag, $record['datetime']->getTimestamp(), $message));
+    }
+
+    public function formatBatch(array $records)
+    {
+        $message = '';
+        foreach ($records as $record) {
+            $message .= $this->format($record);
+        }
+
+        return $message;
     }
 }

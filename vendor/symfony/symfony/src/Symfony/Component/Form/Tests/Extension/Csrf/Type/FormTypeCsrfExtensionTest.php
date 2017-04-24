@@ -40,6 +40,29 @@ class FormTypeCsrfExtensionTest extends TypeTestCase
      */
     protected $translator;
 
+    protected function setUp()
+    {
+        $this->tokenManager = $this->getMockBuilder('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface')->getMock();
+        $this->translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
+
+        parent::setUp();
+    }
+
+    protected function tearDown()
+    {
+        $this->tokenManager = null;
+        $this->translator = null;
+
+        parent::tearDown();
+    }
+
+    protected function getExtensions()
+    {
+        return array_merge(parent::getExtensions(), array(
+            new CsrfExtension($this->tokenManager, $this->translator),
+        ));
+    }
+
     public function testCsrfProtectionByDefaultIfRootAndCompound()
     {
         $view = $this->factory
@@ -324,7 +347,7 @@ class FormTypeCsrfExtensionTest extends TypeTestCase
     {
         $prototypeView = $this->factory
             ->create('Symfony\Component\Form\Extension\Core\Type\CollectionType', null, array(
-                'entry_type' => __CLASS__ . '_ChildType',
+                'entry_type' => __CLASS__.'_ChildType',
                 'entry_options' => array(
                     'csrf_field_name' => 'csrf',
                 ),
@@ -346,9 +369,9 @@ class FormTypeCsrfExtensionTest extends TypeTestCase
             ->will($this->returnValue(false));
 
         $this->translator->expects($this->once())
-            ->method('trans')
-            ->with('Foobar')
-            ->will($this->returnValue('[trans]Foobar[/trans]'));
+             ->method('trans')
+             ->with('Foobar')
+             ->will($this->returnValue('[trans]Foobar[/trans]'));
 
         $form = $this->factory
             ->createBuilder('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
@@ -370,28 +393,5 @@ class FormTypeCsrfExtensionTest extends TypeTestCase
 
         $this->assertGreaterThan(0, count($errors));
         $this->assertEquals($expected, $errors[0]);
-    }
-
-    protected function setUp()
-    {
-        $this->tokenManager = $this->getMockBuilder('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface')->getMock();
-        $this->translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
-
-        parent::setUp();
-    }
-
-    protected function tearDown()
-    {
-        $this->tokenManager = null;
-        $this->translator = null;
-
-        parent::tearDown();
-    }
-
-    protected function getExtensions()
-    {
-        return array_merge(parent::getExtensions(), array(
-            new CsrfExtension($this->tokenManager, $this->translator),
-        ));
     }
 }

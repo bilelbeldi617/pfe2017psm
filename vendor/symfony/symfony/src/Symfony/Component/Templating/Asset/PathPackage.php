@@ -28,8 +28,8 @@ class PathPackage extends Package
      * Constructor.
      *
      * @param string $basePath The base path to be prepended to relative paths
-     * @param string $version The package version
-     * @param string $format The format used to apply the version
+     * @param string $version  The package version
+     * @param string $format   The format used to apply the version
      */
     public function __construct($basePath = null, $version = null, $format = null)
     {
@@ -39,10 +39,10 @@ class PathPackage extends Package
             $this->basePath = '/';
         } else {
             if ('/' != $basePath[0]) {
-                $basePath = '/' . $basePath;
+                $basePath = '/'.$basePath;
             }
 
-            $this->basePath = rtrim($basePath, '/') . '/';
+            $this->basePath = rtrim($basePath, '/').'/';
         }
     }
 
@@ -59,7 +59,7 @@ class PathPackage extends Package
 
         // apply the base path
         if ('/' !== substr($url, 0, 1)) {
-            $url = $this->basePath . $url;
+            $url = $this->basePath.$url;
         }
 
         return $url;

@@ -29,6 +29,11 @@ class PropertyAccessorTest extends TestCase
      */
     private $propertyAccessor;
 
+    protected function setUp()
+    {
+        $this->propertyAccessor = new PropertyAccessor();
+    }
+
     public function getPathsWithUnexpectedType()
     {
         return array(
@@ -36,8 +41,8 @@ class PropertyAccessorTest extends TestCase
             array('foo', 'foobar'),
             array(null, 'foobar'),
             array(123, 'foobar'),
-            array((object)array('prop' => null), 'prop.foobar'),
-            array((object)array('prop' => (object)array('subProp' => null)), 'prop.subProp.foobar'),
+            array((object) array('prop' => null), 'prop.foobar'),
+            array((object) array('prop' => (object) array('subProp' => null)), 'prop.subProp.foobar'),
             array(array('index' => null), '[index][foobar]'),
             array(array('index' => array('subIndex' => null)), '[index][subIndex][foobar]'),
         );
@@ -46,9 +51,9 @@ class PropertyAccessorTest extends TestCase
     public function getPathsWithMissingProperty()
     {
         return array(
-            array((object)array('firstName' => 'Bernhard'), 'lastName'),
-            array((object)array('property' => (object)array('firstName' => 'Bernhard')), 'property.lastName'),
-            array(array('index' => (object)array('firstName' => 'Bernhard')), '[index].lastName'),
+            array((object) array('firstName' => 'Bernhard'), 'lastName'),
+            array((object) array('property' => (object) array('firstName' => 'Bernhard')), 'property.lastName'),
+            array(array('index' => (object) array('firstName' => 'Bernhard')), '[index].lastName'),
             array(new TestClass('Bernhard'), 'protectedProperty'),
             array(new TestClass('Bernhard'), 'privateProperty'),
             array(new TestClass('Bernhard'), 'protectedAccessor'),
@@ -70,7 +75,7 @@ class PropertyAccessorTest extends TestCase
             array(array(), '[index][lastName]'),
             array(array('index' => array()), '[index][lastName]'),
             array(array('index' => array('firstName' => 'Bernhard')), '[index][lastName]'),
-            array((object)array('property' => array('firstName' => 'Bernhard')), 'property[lastName]'),
+            array((object) array('property' => array('firstName' => 'Bernhard')), 'property[lastName]'),
         );
     }
 
@@ -131,12 +136,11 @@ class PropertyAccessorTest extends TestCase
         $this->assertSame(array(), $object->getArrayCopy());
     }
 
+    // https://github.com/symfony/symfony/pull/4450
     public function testGetValueReadsMagicGetThatReturnsConstant()
     {
         $this->assertSame('constant value', $this->propertyAccessor->getValue(new TestClassMagicGet('Bernhard'), 'constantMagicProperty'));
     }
-
-    // https://github.com/symfony/symfony/pull/4450
 
     public function testGetValueNotModifyObject()
     {
@@ -176,14 +180,13 @@ class PropertyAccessorTest extends TestCase
         $this->assertSame('Bernhard', $this->propertyAccessor->getValue(new TestClassMagicCall('Bernhard'), 'magicCallProperty'));
     }
 
+    // https://github.com/symfony/symfony/pull/4450
     public function testGetValueReadsMagicCallThatReturnsConstant()
     {
         $this->propertyAccessor = new PropertyAccessor(true);
 
         $this->assertSame('constant value', $this->propertyAccessor->getValue(new TestClassMagicCall('Bernhard'), 'constantMagicCallProperty'));
     }
-
-    // https://github.com/symfony/symfony/pull/4450
 
     /**
      * @dataProvider getPathsWithUnexpectedType
@@ -430,10 +433,10 @@ class PropertyAccessorTest extends TestCase
             array(array('Bernhard', 'Schussek'), '[1]', 'Schussek'),
             array(array('firstName' => 'Bernhard'), '[firstName]', 'Bernhard'),
             array(array('index' => array('firstName' => 'Bernhard')), '[index][firstName]', 'Bernhard'),
-            array((object)array('firstName' => 'Bernhard'), 'firstName', 'Bernhard'),
-            array((object)array('property' => array('firstName' => 'Bernhard')), 'property[firstName]', 'Bernhard'),
-            array(array('index' => (object)array('firstName' => 'Bernhard')), '[index].firstName', 'Bernhard'),
-            array((object)array('property' => (object)array('firstName' => 'Bernhard')), 'property.firstName', 'Bernhard'),
+            array((object) array('firstName' => 'Bernhard'), 'firstName', 'Bernhard'),
+            array((object) array('property' => array('firstName' => 'Bernhard')), 'property[firstName]', 'Bernhard'),
+            array(array('index' => (object) array('firstName' => 'Bernhard')), '[index].firstName', 'Bernhard'),
+            array((object) array('property' => (object) array('firstName' => 'Bernhard')), 'property.firstName', 'Bernhard'),
 
             // Accessor methods
             array(new TestClass('Bernhard'), 'publicProperty', 'Bernhard'),
@@ -455,8 +458,8 @@ class PropertyAccessorTest extends TestCase
             // Special chars
             array(array('%!@$§.' => 'Bernhard'), '[%!@$§.]', 'Bernhard'),
             array(array('index' => array('%!@$§.' => 'Bernhard')), '[index][%!@$§.]', 'Bernhard'),
-            array((object)array('%!@$§' => 'Bernhard'), '%!@$§', 'Bernhard'),
-            array((object)array('property' => (object)array('%!@$§' => 'Bernhard')), 'property.%!@$§', 'Bernhard'),
+            array((object) array('%!@$§' => 'Bernhard'), '%!@$§', 'Bernhard'),
+            array((object) array('property' => (object) array('%!@$§' => 'Bernhard')), 'property.%!@$§', 'Bernhard'),
 
             // nested objects and arrays
             array(array('foo' => new TestClass('bar')), '[foo].publicGetSetter', 'bar'),
@@ -562,10 +565,5 @@ class PropertyAccessorTest extends TestCase
         $object = new TypeHinted();
 
         $this->propertyAccessor->setValue($object, 'countable', 'This is a string, \Countable expected.');
-    }
-
-    protected function setUp()
-    {
-        $this->propertyAccessor = new PropertyAccessor();
     }
 }

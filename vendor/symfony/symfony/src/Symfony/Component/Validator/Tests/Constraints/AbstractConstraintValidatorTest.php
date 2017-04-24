@@ -71,6 +71,29 @@ abstract class AbstractConstraintValidatorTest extends TestCase
         $this->setDefaultTimezone('UTC');
     }
 
+    protected function tearDown()
+    {
+        $this->restoreDefaultTimezone();
+    }
+
+    protected function setDefaultTimezone($defaultTimezone)
+    {
+        // Make sure this method can not be called twice before calling
+        // also restoreDefaultTimezone()
+        if (null === $this->defaultTimezone) {
+            $this->defaultTimezone = date_default_timezone_get();
+            date_default_timezone_set($defaultTimezone);
+        }
+    }
+
+    protected function restoreDefaultTimezone()
+    {
+        if (null !== $this->defaultTimezone) {
+            date_default_timezone_set($this->defaultTimezone);
+            $this->defaultTimezone = null;
+        }
+    }
+
     protected function createContext()
     {
         $translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
@@ -110,43 +133,13 @@ abstract class AbstractConstraintValidatorTest extends TestCase
         return $context;
     }
 
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    abstract protected function createValidator();
-
-    protected function setDefaultTimezone($defaultTimezone)
-    {
-        // Make sure this method can not be called twice before calling
-        // also restoreDefaultTimezone()
-        if (null === $this->defaultTimezone) {
-            $this->defaultTimezone = date_default_timezone_get();
-            date_default_timezone_set($defaultTimezone);
-        }
-    }
-
-    protected function tearDown()
-    {
-        $this->restoreDefaultTimezone();
-    }
-
-    protected function restoreDefaultTimezone()
-    {
-        if (null !== $this->defaultTimezone) {
-            date_default_timezone_set($this->defaultTimezone);
-            $this->defaultTimezone = null;
-        }
-    }
-
     /**
-     * @param mixed $message
-     * @param array $parameters
+     * @param mixed  $message
+     * @param array  $parameters
      * @param string $propertyPath
      * @param string $invalidValue
-     * @param null $plural
-     * @param null $code
+     * @param null   $plural
+     * @param null   $code
      *
      * @return ConstraintViolation
      *
@@ -251,19 +244,19 @@ abstract class AbstractConstraintValidatorTest extends TestCase
     }
 
     /**
-     * @param mixed $message
-     * @param array $parameters
+     * @param mixed  $message
+     * @param array  $parameters
      * @param string $propertyPath
      * @param string $invalidValue
-     * @param null $plural
-     * @param null $code
+     * @param null   $plural
+     * @param null   $code
      *
      * @deprecated To be removed in Symfony 3.0. Use
      *             {@link buildViolation()} instead.
      */
     protected function assertViolation($message, array $parameters = array(), $propertyPath = 'property.path', $invalidValue = 'InvalidValue', $plural = null, $code = null)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the buildViolation() method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the buildViolation() method instead.', E_USER_DEPRECATED);
 
         $this->buildViolation($message)
             ->setParameters($parameters)
@@ -272,6 +265,27 @@ abstract class AbstractConstraintValidatorTest extends TestCase
             ->setCode($code)
             ->setPlural($plural)
             ->assertRaised();
+    }
+
+    /**
+     * @param array $expected
+     *
+     * @deprecated To be removed in Symfony 3.0. Use
+     *             {@link buildViolation()} instead.
+     */
+    protected function assertViolations(array $expected)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the buildViolation() method instead.', E_USER_DEPRECATED);
+
+        $violations = $this->context->getViolations();
+
+        $this->assertCount(count($expected), $violations);
+
+        $i = 0;
+
+        foreach ($expected as $violation) {
+            $this->assertEquals($violation, $violations[$i++]);
+        }
     }
 
     /**
@@ -284,26 +298,12 @@ abstract class AbstractConstraintValidatorTest extends TestCase
         return new ConstraintViolationAssertion($this->context, $message, $this->constraint);
     }
 
-    /**
-     * @param array $expected
-     *
-     * @deprecated To be removed in Symfony 3.0. Use
-     *             {@link buildViolation()} instead.
-     */
-    protected function assertViolations(array $expected)
+    protected function getApiVersion()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the buildViolation() method instead.', E_USER_DEPRECATED);
-
-        $violations = $this->context->getViolations();
-
-        $this->assertCount(count($expected), $violations);
-
-        $i = 0;
-
-        foreach ($expected as $violation) {
-            $this->assertEquals($violation, $violations[$i++]);
-        }
+        return Validation::API_VERSION_2_5;
     }
+
+    abstract protected function createValidator();
 }
 
 /**

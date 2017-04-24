@@ -17,6 +17,13 @@ use Symfony\Bundle\AsseticBundle\Templating\AsseticHelper;
 
 class AsseticHelperTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
+    }
+
     /**
      * @dataProvider getDebugAndCount
      */
@@ -35,13 +42,6 @@ class AsseticHelperTest extends \PHPUnit_Framework_TestCase
             array(false, 1, '->javascripts() returns one url when not in debug mode'),
             array(true, 2, '->javascripts() returns many urls when in debug mode'),
         );
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
     }
 }
 

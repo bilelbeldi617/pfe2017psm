@@ -34,7 +34,7 @@ class XmlDoctrineCacheExtensionTest extends AbstractDoctrineCacheExtensionTest
      */
     protected function loadFromFile(ContainerBuilder $container, $file)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/config/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/config/xml'));
 
         $loader->load($file . '.xml');
     }

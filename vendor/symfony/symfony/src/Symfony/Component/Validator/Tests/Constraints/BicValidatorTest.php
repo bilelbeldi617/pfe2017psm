@@ -16,6 +16,11 @@ use Symfony\Component\Validator\Constraints\Bic;
 
 class BicValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function createValidator()
+    {
+        return new BicValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Bic());
@@ -65,7 +70,7 @@ class BicValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($bic, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $bic . '"')
+            ->setParameter('{{ value }}', '"'.$bic.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -97,10 +102,5 @@ class BicValidatorTest extends AbstractConstraintValidatorTest
             array('DeutAT2LXXX', Bic::INVALID_CASE_ERROR),
             array('DEUTAT2lxxx', Bic::INVALID_CASE_ERROR),
         );
-    }
-
-    protected function createValidator()
-    {
-        return new BicValidator();
     }
 }

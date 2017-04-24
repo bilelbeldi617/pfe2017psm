@@ -35,16 +35,9 @@ abstract class BasePhpFormulaLoader implements FormulaLoaderInterface
         }
     }
 
-    /**
-     * Returns an array of prototypical calls and options.
-     *
-     * @return array Prototypes and options
-     */
-    abstract protected function registerPrototypes();
-
     public function addPrototype($prototype, array $options = array())
     {
-        $tokens = token_get_all('<?php ' . $prototype);
+        $tokens = token_get_all('<?php '.$prototype);
         array_shift($tokens);
 
         $this->prototypes[$prototype] = array($tokens, $options);
@@ -67,25 +60,21 @@ abstract class BasePhpFormulaLoader implements FormulaLoaderInterface
             $current = self::tokenToString($token);
             // loop through each prototype (by reference)
             foreach (array_keys($this->prototypes) as $i) {
-                $prototype = &$this->prototypes[$i][0];
+                $prototype = & $this->prototypes[$i][0];
                 $options = $this->prototypes[$i][1];
-                $buffer = &$buffers[$i];
-                $level = &$bufferLevels[$i];
+                $buffer = & $buffers[$i];
+                $level = & $bufferLevels[$i];
 
                 if (isset($buffersInWildcard[$i])) {
                     switch ($current) {
-                        case '(':
-                            ++$level;
-                            break;
-                        case ')':
-                            --$level;
-                            break;
+                        case '(': ++$level; break;
+                        case ')': --$level; break;
                     }
 
                     $buffer .= $current;
 
                     if (!$level) {
-                        $calls[] = array($buffer . ';', $options);
+                        $calls[] = array($buffer.';', $options);
                         $buffer = '';
                         unset($buffersInWildcard[$i]);
                     }
@@ -111,11 +100,6 @@ abstract class BasePhpFormulaLoader implements FormulaLoaderInterface
         return $formulae;
     }
 
-    protected static function tokenToString($token)
-    {
-        return is_array($token) ? $token[1] : $token;
-    }
-
     private function processCall($call, array $protoOptions = array())
     {
         $tmp = FilesystemUtils::createTemporaryFile('php_formula_loader');
@@ -125,10 +109,10 @@ abstract class BasePhpFormulaLoader implements FormulaLoaderInterface
             $call,
             'echo serialize($_call);',
         )));
-        $args = unserialize(shell_exec('php ' . escapeshellarg($tmp)));
+        $args = unserialize(shell_exec('php '.escapeshellarg($tmp)));
         unlink($tmp);
 
-        $inputs = isset($args[0]) ? self::argumentToArray($args[0]) : array();
+        $inputs  = isset($args[0]) ? self::argumentToArray($args[0]) : array();
         $filters = isset($args[1]) ? self::argumentToArray($args[1]) : array();
         $options = isset($args[2]) ? $args[2] : array();
 
@@ -151,11 +135,23 @@ abstract class BasePhpFormulaLoader implements FormulaLoaderInterface
     }
 
     /**
+     * Returns an array of prototypical calls and options.
+     *
+     * @return array Prototypes and options
+     */
+    abstract protected function registerPrototypes();
+
+    /**
      * Returns setup code for the reflection scriptlet.
      *
      * @return string Some PHP setup code
      */
     abstract protected function registerSetupCode();
+
+    protected static function tokenToString($token)
+    {
+        return is_array($token) ? $token[1] : $token;
+    }
 
     protected static function argumentToArray($argument)
     {

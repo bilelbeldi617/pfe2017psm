@@ -39,14 +39,6 @@ class TemplateReference implements TemplateReferenceInterface
     /**
      * {@inheritdoc}
      */
-    public function getLogicalName()
-    {
-        return $this->parameters['name'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function set($name, $value)
     {
         if (array_key_exists($name, $this->parameters)) {
@@ -82,6 +74,14 @@ class TemplateReference implements TemplateReferenceInterface
      * {@inheritdoc}
      */
     public function getPath()
+    {
+        return $this->parameters['name'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogicalName()
     {
         return $this->parameters['name'];
     }

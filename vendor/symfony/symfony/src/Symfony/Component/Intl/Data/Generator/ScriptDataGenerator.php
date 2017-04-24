@@ -36,7 +36,7 @@ class ScriptDataGenerator extends AbstractDataGenerator
      */
     protected function scanLocales(LocaleScanner $scanner, $sourceDir)
     {
-        return $scanner->scanLocales($sourceDir . '/lang');
+        return $scanner->scanLocales($sourceDir.'/lang');
     }
 
     /**
@@ -44,7 +44,7 @@ class ScriptDataGenerator extends AbstractDataGenerator
      */
     protected function compileTemporaryBundles(GenrbCompiler $compiler, $sourceDir, $tempDir)
     {
-        $compiler->compile($sourceDir . '/lang', $tempDir);
+        $compiler->compile($sourceDir.'/lang', $tempDir);
     }
 
     /**

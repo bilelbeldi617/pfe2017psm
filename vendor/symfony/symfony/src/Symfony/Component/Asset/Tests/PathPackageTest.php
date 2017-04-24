@@ -58,14 +58,6 @@ class PathPackageTest extends TestCase
         $this->assertEquals($expected, $package->getUrl($path));
     }
 
-    private function getContext($basePath)
-    {
-        $context = $this->getMockBuilder('Symfony\Component\Asset\Context\ContextInterface')->getMock();
-        $context->expects($this->any())->method('getBasePath')->will($this->returnValue($basePath));
-
-        return $context;
-    }
-
     public function getContextConfigs()
     {
         return array(
@@ -81,5 +73,13 @@ class PathPackageTest extends TestCase
             array('/bar', 'foo/', '', 'foo', '/bar/foo/foo?v1'),
             array('/bar', '/foo/', '', 'foo', '/bar/foo/foo?v1'),
         );
+    }
+
+    private function getContext($basePath)
+    {
+        $context = $this->getMockBuilder('Symfony\Component\Asset\Context\ContextInterface')->getMock();
+        $context->expects($this->any())->method('getBasePath')->will($this->returnValue($basePath));
+
+        return $context;
     }
 }

@@ -29,16 +29,6 @@ class AccessMapTest extends TestCase
         $this->assertSame(array(array('ROLE_USER'), 'https'), $map->getPatterns($request));
     }
 
-    private function getRequestMatcher($request, $matches)
-    {
-        $requestMatcher = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestMatcherInterface')->getMock();
-        $requestMatcher->expects($this->once())
-            ->method('matches')->with($request)
-            ->will($this->returnValue($matches));
-
-        return $requestMatcher;
-    }
-
     public function testReturnsEmptyPatternIfNoneMatched()
     {
         $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
@@ -48,5 +38,15 @@ class AccessMapTest extends TestCase
         $map->add($requestMatcher, array('ROLE_USER'), 'https');
 
         $this->assertSame(array(null, null), $map->getPatterns($request));
+    }
+
+    private function getRequestMatcher($request, $matches)
+    {
+        $requestMatcher = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestMatcherInterface')->getMock();
+        $requestMatcher->expects($this->once())
+            ->method('matches')->with($request)
+            ->will($this->returnValue($matches));
+
+        return $requestMatcher;
     }
 }

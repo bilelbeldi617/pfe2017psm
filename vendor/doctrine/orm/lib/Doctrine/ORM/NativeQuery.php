@@ -33,18 +33,6 @@ final class NativeQuery extends AbstractQuery
     private $_sql;
 
     /**
-     * Gets the SQL query.
-     *
-     * @return mixed The built SQL query or an array of all SQL queries.
-     *
-     * @override
-     */
-    public function getSQL()
-    {
-        return $this->_sql;
-    }
-
-    /**
      * Sets the SQL of the query.
      *
      * @param string $sql
@@ -59,22 +47,34 @@ final class NativeQuery extends AbstractQuery
     }
 
     /**
+     * Gets the SQL query.
+     *
+     * @return mixed The built SQL query or an array of all SQL queries.
+     *
+     * @override
+     */
+    public function getSQL()
+    {
+        return $this->_sql;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function _doExecute()
     {
         $parameters = array();
-        $types = array();
+        $types      = array();
 
         foreach ($this->getParameters() as $parameter) {
-            $name = $parameter->getName();
+            $name  = $parameter->getName();
             $value = $this->processParameterValue($parameter->getValue());
-            $type = ($parameter->getValue() === $value)
+            $type  = ($parameter->getValue() === $value)
                 ? $parameter->getType()
                 : Query\ParameterTypeInferer::inferType($value);
 
             $parameters[$name] = $value;
-            $types[$name] = $type;
+            $types[$name]      = $type;
         }
 
         if ($parameters && is_int(key($parameters))) {
@@ -82,7 +82,7 @@ final class NativeQuery extends AbstractQuery
             ksort($types);
 
             $parameters = array_values($parameters);
-            $types = array_values($types);
+            $types      = array_values($types);
         }
 
         return $this->_em->getConnection()->executeQuery(

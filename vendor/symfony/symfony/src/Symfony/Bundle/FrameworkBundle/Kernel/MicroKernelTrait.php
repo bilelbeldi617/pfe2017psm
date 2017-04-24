@@ -24,6 +24,38 @@ use Symfony\Component\Routing\RouteCollectionBuilder;
 trait MicroKernelTrait
 {
     /**
+     * Add or import routes into your application.
+     *
+     *     $routes->import('config/routing.yml');
+     *     $routes->add('/admin', 'AppBundle:Admin:dashboard', 'admin_dashboard');
+     *
+     * @param RouteCollectionBuilder $routes
+     */
+    abstract protected function configureRoutes(RouteCollectionBuilder $routes);
+
+    /**
+     * Configures the container.
+     *
+     * You can register extensions:
+     *
+     * $c->loadFromExtension('framework', array(
+     *     'secret' => '%secret%'
+     * ));
+     *
+     * Or services:
+     *
+     * $c->register('halloween', 'FooBundle\HalloweenProvider');
+     *
+     * Or parameters:
+     *
+     * $c->setParameter('halloween', 'lot of fun');
+     *
+     * @param ContainerBuilder $c
+     * @param LoaderInterface  $loader
+     */
+    abstract protected function configureContainer(ContainerBuilder $c, LoaderInterface $loader);
+
+    /**
      * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
@@ -52,36 +84,4 @@ trait MicroKernelTrait
 
         return $routes->build();
     }
-
-    /**
-     * Add or import routes into your application.
-     *
-     *     $routes->import('config/routing.yml');
-     *     $routes->add('/admin', 'AppBundle:Admin:dashboard', 'admin_dashboard');
-     *
-     * @param RouteCollectionBuilder $routes
-     */
-    abstract protected function configureRoutes(RouteCollectionBuilder $routes);
-
-    /**
-     * Configures the container.
-     *
-     * You can register extensions:
-     *
-     * $c->loadFromExtension('framework', array(
-     *     'secret' => '%secret%'
-     * ));
-     *
-     * Or services:
-     *
-     * $c->register('halloween', 'FooBundle\HalloweenProvider');
-     *
-     * Or parameters:
-     *
-     * $c->setParameter('halloween', 'lot of fun');
-     *
-     * @param ContainerBuilder $c
-     * @param LoaderInterface $loader
-     */
-    abstract protected function configureContainer(ContainerBuilder $c, LoaderInterface $loader);
 }

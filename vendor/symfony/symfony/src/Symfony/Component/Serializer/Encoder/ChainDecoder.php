@@ -39,6 +39,20 @@ class ChainDecoder implements DecoderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function supportsDecoding($format)
+    {
+        try {
+            $this->getDecoder($format);
+        } catch (RuntimeException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Gets the decoder supporting the format.
      *
      * @param string $format
@@ -64,19 +78,5 @@ class ChainDecoder implements DecoderInterface
         }
 
         throw new RuntimeException(sprintf('No decoder found for format "%s".', $format));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDecoding($format)
-    {
-        try {
-            $this->getDecoder($format);
-        } catch (RuntimeException $e) {
-            return false;
-        }
-
-        return true;
     }
 }

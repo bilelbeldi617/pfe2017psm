@@ -60,12 +60,12 @@ class DoctrineChoiceLoader implements ChoiceLoaderInterface
      * passed which optimizes the object loading for one of the Doctrine
      * mapper implementations.
      *
-     * @param ChoiceListFactoryInterface $factory The factory for creating
+     * @param ChoiceListFactoryInterface $factory      The factory for creating
      *                                                 the loaded choice list
-     * @param ObjectManager $manager The object manager
-     * @param string $class The class name of the
+     * @param ObjectManager              $manager      The object manager
+     * @param string                     $class        The class name of the
      *                                                 loaded objects
-     * @param IdReader $idReader The reader for the object
+     * @param IdReader                   $idReader     The reader for the object
      *                                                 IDs.
      * @param null|EntityLoaderInterface $objectLoader The objects loader
      */
@@ -78,6 +78,24 @@ class DoctrineChoiceLoader implements ChoiceLoaderInterface
         $this->class = $classMetadata->getName();
         $this->idReader = $idReader ?: new IdReader($manager, $classMetadata);
         $this->objectLoader = $objectLoader;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadChoiceList($value = null)
+    {
+        if ($this->choiceList) {
+            return $this->choiceList;
+        }
+
+        $objects = $this->objectLoader
+            ? $this->objectLoader->getEntities()
+            : $this->manager->getRepository($this->class)->findAll();
+
+        $this->choiceList = $this->factory->createListFromChoices($objects, $value);
+
+        return $this->choiceList;
     }
 
     /**
@@ -102,7 +120,7 @@ class DoctrineChoiceLoader implements ChoiceLoaderInterface
             foreach ($choices as $i => $object) {
                 if ($object instanceof $this->class) {
                     // Make sure to convert to the right format
-                    $values[$i] = (string)$this->idReader->getIdValue($object);
+                    $values[$i] = (string) $this->idReader->getIdValue($object);
                 }
             }
 
@@ -110,24 +128,6 @@ class DoctrineChoiceLoader implements ChoiceLoaderInterface
         }
 
         return $this->loadChoiceList($value)->getValuesForChoices($choices);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadChoiceList($value = null)
-    {
-        if ($this->choiceList) {
-            return $this->choiceList;
-        }
-
-        $objects = $this->objectLoader
-            ? $this->objectLoader->getEntities()
-            : $this->manager->getRepository($this->class)->findAll();
-
-        $this->choiceList = $this->factory->createListFromChoices($objects, $value);
-
-        return $this->choiceList;
     }
 
     /**
@@ -159,7 +159,7 @@ class DoctrineChoiceLoader implements ChoiceLoaderInterface
             // "INDEX BY" clause to the Doctrine query in the loader,
             // but I'm not sure whether that's doable in a generic fashion.
             foreach ($unorderedObjects as $object) {
-                $objectsById[(string)$this->idReader->getIdValue($object)] = $object;
+                $objectsById[(string) $this->idReader->getIdValue($object)] = $object;
             }
 
             foreach ($values as $i => $id) {

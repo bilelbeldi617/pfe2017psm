@@ -28,15 +28,15 @@ class MemcachedDefinition extends CacheDefinition
     public function configure($name, array $config, Definition $service, ContainerBuilder $container)
     {
         $memcachedConf = $config['memcached'];
-        $connRef = $this->getConnectionReference($name, $memcachedConf, $container);
+        $connRef       = $this->getConnectionReference($name, $memcachedConf, $container);
 
         $service->addMethodCall('setMemcached', array($connRef));
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return \Symfony\Component\DependencyInjection\Reference
      */
@@ -46,9 +46,9 @@ class MemcachedDefinition extends CacheDefinition
             return new Reference($config['connection_id']);
         }
 
-        $connClass = '%doctrine_cache.memcached.connection.class%';
-        $connId = sprintf('doctrine_cache.services.%s.connection', $name);
-        $connDef = new Definition($connClass);
+        $connClass  = '%doctrine_cache.memcached.connection.class%';
+        $connId     = sprintf('doctrine_cache.services.%s.connection', $name);
+        $connDef    = new Definition($connClass);
 
         if (isset($config['persistent_id']) === true) {
             $connDef->addArgument($config['persistent_id']);

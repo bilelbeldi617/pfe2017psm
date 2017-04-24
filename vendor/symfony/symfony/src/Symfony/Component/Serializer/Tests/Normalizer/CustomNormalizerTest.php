@@ -23,6 +23,12 @@ class CustomNormalizerTest extends TestCase
      */
     private $normalizer;
 
+    protected function setUp()
+    {
+        $this->normalizer = new CustomNormalizer();
+        $this->normalizer->setSerializer(new Serializer());
+    }
+
     public function testInterface()
     {
         $this->assertInstanceOf('Symfony\Component\Serializer\Normalizer\NormalizerInterface', $this->normalizer);
@@ -60,11 +66,5 @@ class CustomNormalizerTest extends TestCase
         $this->assertTrue($this->normalizer->supportsDenormalization(array(), 'Symfony\Component\Serializer\Tests\Fixtures\ScalarDummy'));
         $this->assertFalse($this->normalizer->supportsDenormalization(array(), 'stdClass'));
         $this->assertTrue($this->normalizer->supportsDenormalization(array(), 'Symfony\Component\Serializer\Tests\Fixtures\DenormalizableDummy'));
-    }
-
-    protected function setUp()
-    {
-        $this->normalizer = new CustomNormalizer();
-        $this->normalizer->setSerializer(new Serializer());
     }
 }

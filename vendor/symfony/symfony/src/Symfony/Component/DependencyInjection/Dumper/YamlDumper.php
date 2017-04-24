@@ -46,103 +46,13 @@ class YamlDumper extends Dumper
             $this->dumper = new YmlDumper();
         }
 
-        return $this->addParameters() . "\n" . $this->addServices();
-    }
-
-    /**
-     * Adds parameters.
-     *
-     * @return string
-     */
-    private function addParameters()
-    {
-        if (!$this->container->getParameterBag()->all()) {
-            return '';
-        }
-
-        $parameters = $this->prepareParameters($this->container->getParameterBag()->all(), $this->container->isFrozen());
-
-        return $this->dumper->dump(array('parameters' => $parameters), 2);
-    }
-
-    /**
-     * Prepares parameters.
-     *
-     * @param array $parameters
-     * @param bool $escape
-     *
-     * @return array
-     */
-    private function prepareParameters(array $parameters, $escape = true)
-    {
-        $filtered = array();
-        foreach ($parameters as $key => $value) {
-            if (is_array($value)) {
-                $value = $this->prepareParameters($value, $escape);
-            } elseif ($value instanceof Reference || is_string($value) && 0 === strpos($value, '@')) {
-                $value = '@' . $value;
-            }
-
-            $filtered[$key] = $value;
-        }
-
-        return $escape ? $this->escape($filtered) : $filtered;
-    }
-
-    /**
-     * Escapes arguments.
-     *
-     * @param array $arguments
-     *
-     * @return array
-     */
-    private function escape(array $arguments)
-    {
-        $args = array();
-        foreach ($arguments as $k => $v) {
-            if (is_array($v)) {
-                $args[$k] = $this->escape($v);
-            } elseif (is_string($v)) {
-                $args[$k] = str_replace('%', '%%', $v);
-            } else {
-                $args[$k] = $v;
-            }
-        }
-
-        return $args;
-    }
-
-    /**
-     * Adds services.
-     *
-     * @return string
-     */
-    private function addServices()
-    {
-        if (!$this->container->getDefinitions()) {
-            return '';
-        }
-
-        $code = "services:\n";
-        foreach ($this->container->getDefinitions() as $id => $definition) {
-            $code .= $this->addService($id, $definition);
-        }
-
-        $aliases = $this->container->getAliases();
-        foreach ($aliases as $alias => $id) {
-            while (isset($aliases[(string)$id])) {
-                $id = $aliases[(string)$id];
-            }
-            $code .= $this->addServiceAlias($alias, $id);
-        }
-
-        return $code;
+        return $this->addParameters()."\n".$this->addServices();
     }
 
     /**
      * Adds a service.
      *
-     * @param string $id
+     * @param string     $id
      * @param Definition $definition
      *
      * @return string
@@ -169,13 +79,13 @@ class YamlDumper extends Dumper
                 foreach ($attributes as $key => $value) {
                     $att[] = sprintf('%s: %s', $this->dumper->dump($key), $this->dumper->dump($value));
                 }
-                $att = $att ? ', ' . implode(', ', $att) : '';
+                $att = $att ? ', '.implode(', ', $att) : '';
 
                 $tagsCode .= sprintf("            - { name: %s%s }\n", $this->dumper->dump($name), $att);
             }
         }
         if ($tagsCode) {
-            $code .= "        tags:\n" . $tagsCode;
+            $code .= "        tags:\n".$tagsCode;
         }
 
         if ($definition->getFile()) {
@@ -265,6 +175,86 @@ class YamlDumper extends Dumper
     }
 
     /**
+     * Adds a service alias.
+     *
+     * @param string $alias
+     * @param Alias  $id
+     *
+     * @return string
+     */
+    private function addServiceAlias($alias, $id)
+    {
+        if ($id->isPublic()) {
+            return sprintf("    %s: '@%s'\n", $alias, $id);
+        }
+
+        return sprintf("    %s:\n        alias: %s\n        public: false\n", $alias, $id);
+    }
+
+    /**
+     * Adds services.
+     *
+     * @return string
+     */
+    private function addServices()
+    {
+        if (!$this->container->getDefinitions()) {
+            return '';
+        }
+
+        $code = "services:\n";
+        foreach ($this->container->getDefinitions() as $id => $definition) {
+            $code .= $this->addService($id, $definition);
+        }
+
+        $aliases = $this->container->getAliases();
+        foreach ($aliases as $alias => $id) {
+            while (isset($aliases[(string) $id])) {
+                $id = $aliases[(string) $id];
+            }
+            $code .= $this->addServiceAlias($alias, $id);
+        }
+
+        return $code;
+    }
+
+    /**
+     * Adds parameters.
+     *
+     * @return string
+     */
+    private function addParameters()
+    {
+        if (!$this->container->getParameterBag()->all()) {
+            return '';
+        }
+
+        $parameters = $this->prepareParameters($this->container->getParameterBag()->all(), $this->container->isFrozen());
+
+        return $this->dumper->dump(array('parameters' => $parameters), 2);
+    }
+
+    /**
+     * Dumps callable to YAML format.
+     *
+     * @param callable $callable
+     *
+     * @return callable
+     */
+    private function dumpCallable($callable)
+    {
+        if (is_array($callable)) {
+            if ($callable[0] instanceof Reference) {
+                $callable = array($this->getServiceCall((string) $callable[0], $callable[0]), $callable[1]);
+            } else {
+                $callable = array($callable[0], $callable[1]);
+            }
+        }
+
+        return $callable;
+    }
+
+    /**
      * Dumps the value to YAML format.
      *
      * @param mixed $value
@@ -283,11 +273,11 @@ class YamlDumper extends Dumper
 
             return $code;
         } elseif ($value instanceof Reference) {
-            return $this->getServiceCall((string)$value, $value);
+            return $this->getServiceCall((string) $value, $value);
         } elseif ($value instanceof Parameter) {
-            return $this->getParameterCall((string)$value);
+            return $this->getParameterCall((string) $value);
         } elseif ($value instanceof Expression) {
-            return $this->getExpressionCall((string)$value);
+            return $this->getExpressionCall((string) $value);
         } elseif (is_object($value) || is_resource($value)) {
             throw new RuntimeException('Unable to dump a service container if a parameter is an object or a resource.');
         }
@@ -298,7 +288,7 @@ class YamlDumper extends Dumper
     /**
      * Gets the service call.
      *
-     * @param string $id
+     * @param string    $id
      * @param Reference $reference
      *
      * @return string
@@ -330,39 +320,49 @@ class YamlDumper extends Dumper
     }
 
     /**
-     * Dumps callable to YAML format.
+     * Prepares parameters.
      *
-     * @param callable $callable
+     * @param array $parameters
+     * @param bool  $escape
      *
-     * @return callable
+     * @return array
      */
-    private function dumpCallable($callable)
+    private function prepareParameters(array $parameters, $escape = true)
     {
-        if (is_array($callable)) {
-            if ($callable[0] instanceof Reference) {
-                $callable = array($this->getServiceCall((string)$callable[0], $callable[0]), $callable[1]);
-            } else {
-                $callable = array($callable[0], $callable[1]);
+        $filtered = array();
+        foreach ($parameters as $key => $value) {
+            if (is_array($value)) {
+                $value = $this->prepareParameters($value, $escape);
+            } elseif ($value instanceof Reference || is_string($value) && 0 === strpos($value, '@')) {
+                $value = '@'.$value;
             }
+
+            $filtered[$key] = $value;
         }
 
-        return $callable;
+        return $escape ? $this->escape($filtered) : $filtered;
     }
 
     /**
-     * Adds a service alias.
+     * Escapes arguments.
      *
-     * @param string $alias
-     * @param Alias $id
+     * @param array $arguments
      *
-     * @return string
+     * @return array
      */
-    private function addServiceAlias($alias, $id)
+    private function escape(array $arguments)
     {
-        if ($id->isPublic()) {
-            return sprintf("    %s: '@%s'\n", $alias, $id);
+        $args = array();
+        foreach ($arguments as $k => $v) {
+            if (is_array($v)) {
+                $args[$k] = $this->escape($v);
+            } elseif (is_string($v)) {
+                $args[$k] = str_replace('%', '%%', $v);
+            } else {
+                $args[$k] = $v;
+            }
         }
 
-        return sprintf("    %s:\n        alias: %s\n        public: false\n", $alias, $id);
+        return $args;
     }
 }

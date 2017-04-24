@@ -11,7 +11,7 @@ namespace projetBundle\Entity;
 
 class chaouki
 {
-    private $skila;
+ private $skila ;
 
     /**
      * @return mixed

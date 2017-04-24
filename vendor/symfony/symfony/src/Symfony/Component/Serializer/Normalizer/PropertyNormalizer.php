@@ -135,6 +135,14 @@ class PropertyNormalizer extends AbstractNormalizer
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return class_exists($type) && $this->supports($type);
+    }
+
+    /**
      * Checks if the given class has any non-static property.
      *
      * @param string $class
@@ -153,13 +161,5 @@ class PropertyNormalizer extends AbstractNormalizer
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDenormalization($data, $type, $format = null)
-    {
-        return class_exists($type) && $this->supports($type);
     }
 }

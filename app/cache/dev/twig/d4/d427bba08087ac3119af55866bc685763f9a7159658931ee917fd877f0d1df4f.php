@@ -9,50 +9,20 @@ class __TwigTemplate_cc589f8668783568f227a8bb24cb79ecea6c648d679c2bad2d445d46751
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(38 => 7, 36 => 6, 32 => 4, 24 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("{% if trace.function %}
-    at {{ trace.class ~ trace.type ~ trace.function }}({{ trace.args|format_args_as_text }})
-{% else %}
-    at n/a
-{% endif %}
-{% if trace.file is defined and trace.line is defined %}
-        in {{ trace.file }} line {{ trace.line }}
-{% endif %}
-", "@Twig/Exception/trace.txt.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\trace.txt.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_6a18ec7f5d32515ef18d839cb4e1f508fcf63b000fb13a5d662d7e060ff6fbbf = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_6a18ec7f5d32515ef18d839cb4e1f508fcf63b000fb13a5d662d7e060ff6fbbf->enter($__internal_6a18ec7f5d32515ef18d839cb4e1f508fcf63b000fb13a5d662d7e060ff6fbbf_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/trace.txt.twig"));
+        $__internal_46d65602eb33692a13cfd8f13a29da00469808221c80b9c2e709035ac9c48a85 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_46d65602eb33692a13cfd8f13a29da00469808221c80b9c2e709035ac9c48a85->enter($__internal_46d65602eb33692a13cfd8f13a29da00469808221c80b9c2e709035ac9c48a85_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@Twig/Exception/trace.txt.twig"));
 
         // line 1
         if ($this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "function", array())) {
             // line 2
             echo "    at ";
-            echo(($this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "class", array()) . $this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "type", array())) . $this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "function", array()));
+            echo (($this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "class", array()) . $this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "type", array())) . $this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "function", array()));
             echo "(";
             echo $this->env->getExtension('Symfony\Bridge\Twig\Extension\CodeExtension')->formatArgsAsText($this->getAttribute((isset($context["trace"]) ? $context["trace"] : $this->getContext($context, "trace")), "args", array()));
             echo ")
@@ -72,13 +42,44 @@ class __TwigTemplate_cc589f8668783568f227a8bb24cb79ecea6c648d679c2bad2d445d46751
             echo "
 ";
         }
-
-        $__internal_6a18ec7f5d32515ef18d839cb4e1f508fcf63b000fb13a5d662d7e060ff6fbbf->leave($__internal_6a18ec7f5d32515ef18d839cb4e1f508fcf63b000fb13a5d662d7e060ff6fbbf_prof);
+        
+        $__internal_46d65602eb33692a13cfd8f13a29da00469808221c80b9c2e709035ac9c48a85->leave($__internal_46d65602eb33692a13cfd8f13a29da00469808221c80b9c2e709035ac9c48a85_prof);
 
     }
 
     public function getTemplateName()
     {
         return "@Twig/Exception/trace.txt.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  38 => 7,  36 => 6,  32 => 4,  24 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("{% if trace.function %}
+    at {{ trace.class ~ trace.type ~ trace.function }}({{ trace.args|format_args_as_text }})
+{% else %}
+    at n/a
+{% endif %}
+{% if trace.file is defined and trace.line is defined %}
+        in {{ trace.file }} line {{ trace.line }}
+{% endif %}
+", "@Twig/Exception/trace.txt.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\trace.txt.twig");
     }
 }

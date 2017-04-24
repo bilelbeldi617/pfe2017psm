@@ -14,10 +14,10 @@ namespace Symfony\Component\ClassLoader\Tests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
 
-require_once __DIR__ . '/Fixtures/ClassesWithParents/GInterface.php';
-require_once __DIR__ . '/Fixtures/ClassesWithParents/CInterface.php';
-require_once __DIR__ . '/Fixtures/ClassesWithParents/B.php';
-require_once __DIR__ . '/Fixtures/ClassesWithParents/A.php';
+require_once __DIR__.'/Fixtures/ClassesWithParents/GInterface.php';
+require_once __DIR__.'/Fixtures/ClassesWithParents/CInterface.php';
+require_once __DIR__.'/Fixtures/ClassesWithParents/B.php';
+require_once __DIR__.'/Fixtures/ClassesWithParents/A.php';
 
 class ClassCollectionLoaderTest extends TestCase
 {
@@ -26,7 +26,7 @@ class ClassCollectionLoaderTest extends TestCase
      */
     public function testTraitDependencies()
     {
-        require_once __DIR__ . '/Fixtures/deps/traits.php';
+        require_once __DIR__.'/Fixtures/deps/traits.php';
 
         $r = new \ReflectionClass('Symfony\Component\ClassLoader\ClassCollectionLoader');
         $m = $r->getMethod('getOrderedClasses');
@@ -36,18 +36,14 @@ class ClassCollectionLoaderTest extends TestCase
 
         $this->assertEquals(
             array('TD', 'TC', 'TB', 'TA', 'TZ', 'CTFoo'),
-            array_map(function ($class) {
-                return $class->getName();
-            }, $ordered)
+            array_map(function ($class) { return $class->getName(); }, $ordered)
         );
 
         $ordered = $m->invoke(null, array('CTBar'));
 
         $this->assertEquals(
             array('TD', 'TZ', 'TC', 'TB', 'TA', 'CTBar'),
-            array_map(function ($class) {
-                return $class->getName();
-            }, $ordered)
+            array_map(function ($class) { return $class->getName(); }, $ordered)
         );
     }
 
@@ -69,9 +65,7 @@ class ClassCollectionLoaderTest extends TestCase
 
         $ordered = $m->invoke(null, $classes);
 
-        $this->assertEquals($expected, array_map(function ($class) {
-            return $class->getName();
-        }, $ordered));
+        $this->assertEquals($expected, array_map(function ($class) { return $class->getName(); }, $ordered));
     }
 
     public function getDifferentOrders()
@@ -105,11 +99,11 @@ class ClassCollectionLoaderTest extends TestCase
      */
     public function testClassWithTraitsReordering(array $classes)
     {
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/ATrait.php';
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/BTrait.php';
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/CTrait.php';
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/D.php';
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/E.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/ATrait.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/BTrait.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/CTrait.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/D.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/E.php';
 
         $expected = array(
             'ClassesWithParents\\GInterface',
@@ -129,9 +123,7 @@ class ClassCollectionLoaderTest extends TestCase
 
         $ordered = $m->invoke(null, $classes);
 
-        $this->assertEquals($expected, array_map(function ($class) {
-            return $class->getName();
-        }, $ordered));
+        $this->assertEquals($expected, array_map(function ($class) { return $class->getName(); }, $ordered));
     }
 
     public function getDifferentOrdersForTraits()
@@ -152,9 +144,9 @@ class ClassCollectionLoaderTest extends TestCase
      */
     public function testFixClassWithTraitsOrdering()
     {
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/CTrait.php';
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/F.php';
-        require_once __DIR__ . '/Fixtures/ClassesWithParents/G.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/CTrait.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/F.php';
+        require_once __DIR__.'/Fixtures/ClassesWithParents/G.php';
 
         $classes = array(
             'ClassesWithParents\\F',
@@ -173,9 +165,7 @@ class ClassCollectionLoaderTest extends TestCase
 
         $ordered = $m->invoke(null, $classes);
 
-        $this->assertEquals($expected, array_map(function ($class) {
-            return $class->getName();
-        }, $ordered));
+        $this->assertEquals($expected, array_map(function ($class) { return $class->getName(); }, $ordered));
     }
 
     /**
@@ -183,7 +173,7 @@ class ClassCollectionLoaderTest extends TestCase
      */
     public function testFixNamespaceDeclarations($source, $expected)
     {
-        $this->assertEquals('<?php ' . $expected, ClassCollectionLoader::fixNamespaceDeclarations('<?php ' . $source));
+        $this->assertEquals('<?php '.$expected, ClassCollectionLoader::fixNamespaceDeclarations('<?php '.$source));
     }
 
     public function getFixNamespaceDeclarationsData()
@@ -204,7 +194,7 @@ class ClassCollectionLoaderTest extends TestCase
     public function testFixNamespaceDeclarationsWithoutTokenizer($source, $expected)
     {
         ClassCollectionLoader::enableTokenizer(false);
-        $this->assertEquals('<?php ' . $expected, ClassCollectionLoader::fixNamespaceDeclarations('<?php ' . $source));
+        $this->assertEquals('<?php '.$expected, ClassCollectionLoader::fixNamespaceDeclarations('<?php '.$source));
         ClassCollectionLoader::enableTokenizer(true);
     }
 
@@ -225,7 +215,7 @@ class ClassCollectionLoaderTest extends TestCase
      */
     public function testUnableToLoadClassException()
     {
-        if (is_file($file = sys_get_temp_dir() . '/foo.php')) {
+        if (is_file($file = sys_get_temp_dir().'/foo.php')) {
             unlink($file);
         }
 
@@ -234,12 +224,12 @@ class ClassCollectionLoaderTest extends TestCase
 
     public function testCommentStripping()
     {
-        if (is_file($file = __DIR__ . '/bar.php')) {
+        if (is_file($file = __DIR__.'/bar.php')) {
             unlink($file);
         }
         spl_autoload_register($r = function ($class) {
             if (0 === strpos($class, 'Namespaced') || 0 === strpos($class, 'Pearlike_')) {
-                @require_once __DIR__ . '/Fixtures/' . str_replace(array('\\', '_'), '/', $class) . '.php';
+                @require_once __DIR__.'/Fixtures/'.str_replace(array('\\', '_'), '/', $class).'.php';
             }
         });
 
@@ -290,7 +280,7 @@ namespace {require __DIR__.'/Fixtures/Namespaced/WithDirMagic.php';}
 namespace {require __DIR__.'/Fixtures/Namespaced/WithFileMagic.php';}
 namespace {require __DIR__.'/Fixtures/Namespaced/WithHaltCompiler.php';}
 EOF
-            . $strictTypes,
+            .$strictTypes,
             str_replace(array("<?php \n", '\\\\'), array('', '/'), file_get_contents($file))
         );
 

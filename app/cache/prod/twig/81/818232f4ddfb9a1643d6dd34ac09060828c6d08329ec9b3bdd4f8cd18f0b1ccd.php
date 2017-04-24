@@ -1,7 +1,6 @@
 <?php
 
 /* projetBundle:Default/Admin:afficherBulletinGroupe.html.twig */
-
 class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b1d0b2 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -16,6 +15,17 @@ class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 2
     public function block_title($context, array $blocks = array())
     {
         // line 3
@@ -23,6 +33,7 @@ class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b
 ";
     }
 
+    // line 6
     public function block_mainContent($context, array $blocks = array())
     {
         // line 7
@@ -85,7 +96,7 @@ class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b
                     foreach ($context['_seq'] as $context["_key"] => $context["i"]) {
                         // line 36
                         echo "                            ";
-                        if (!$this->getAttribute($this->getAttribute($context["r"], "note", array(), "any", false, true), $context["i"], array(), "array", true, true)) {
+                        if ( !$this->getAttribute($this->getAttribute($context["r"], "note", array(), "any", false, true), $context["i"], array(), "array", true, true)) {
                             // line 37
                             echo "                                <td> --- </td>
                             ";
@@ -152,14 +163,10 @@ class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b
 ";
     }
 
-    // line 2
-
     public function getTemplateName()
     {
         return "projetBundle:Default/Admin:afficherBulletinGroupe.html.twig";
     }
-
-    // line 6
 
     public function isTraitable()
     {
@@ -168,13 +175,13 @@ class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b
 
     public function getDebugInfo()
     {
-        return array(160 => 62, 154 => 61, 146 => 56, 143 => 55, 131 => 49, 123 => 46, 118 => 43, 111 => 41, 105 => 39, 101 => 37, 98 => 36, 94 => 35, 88 => 33, 84 => 32, 73 => 24, 65 => 21, 60 => 18, 56 => 16, 53 => 15, 49 => 14, 40 => 7, 37 => 6, 32 => 3, 29 => 2, 11 => 1,);
+        return array (  160 => 62,  154 => 61,  146 => 56,  143 => 55,  131 => 49,  123 => 46,  118 => 43,  111 => 41,  105 => 39,  101 => 37,  98 => 36,  94 => 35,  88 => 33,  84 => 32,  73 => 24,  65 => 21,  60 => 18,  56 => 16,  53 => 15,  49 => 14,  40 => 7,  37 => 6,  32 => 3,  29 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -182,15 +189,5 @@ class __TwigTemplate_c49e899ac76b24c68e68532b0624c4f22efe12e1778ec575d894e7ce57b
     public function getSourceContext()
     {
         return new Twig_Source("", "projetBundle:Default/Admin:afficherBulletinGroupe.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle/Resources/views/Default/Admin/afficherBulletinGroupe.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

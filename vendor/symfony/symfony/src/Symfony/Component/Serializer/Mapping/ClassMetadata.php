@@ -54,6 +54,22 @@ class ClassMetadata implements ClassMetadataInterface
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addAttributeMetadata(AttributeMetadataInterface $attributeMetadata)
+    {
+        $this->attributesMetadata[$attributeMetadata->getName()] = $attributeMetadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAttributesMetadata()
     {
         return $this->attributesMetadata;
@@ -76,14 +92,6 @@ class ClassMetadata implements ClassMetadataInterface
     /**
      * {@inheritdoc}
      */
-    public function addAttributeMetadata(AttributeMetadataInterface $attributeMetadata)
-    {
-        $this->attributesMetadata[$attributeMetadata->getName()] = $attributeMetadata;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getReflectionClass()
     {
         if (!$this->reflClass) {
@@ -91,14 +99,6 @@ class ClassMetadata implements ClassMetadataInterface
         }
 
         return $this->reflClass;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**

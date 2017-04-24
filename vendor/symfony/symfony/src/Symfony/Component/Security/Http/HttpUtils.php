@@ -33,8 +33,8 @@ class HttpUtils
     /**
      * Constructor.
      *
-     * @param UrlGeneratorInterface $urlGenerator A UrlGeneratorInterface instance
-     * @param UrlMatcherInterface|RequestMatcherInterface $urlMatcher The URL or Request matcher
+     * @param UrlGeneratorInterface                       $urlGenerator A UrlGeneratorInterface instance
+     * @param UrlMatcherInterface|RequestMatcherInterface $urlMatcher   The URL or Request matcher
      *
      * @throws \InvalidArgumentException
      */
@@ -51,8 +51,8 @@ class HttpUtils
      * Creates a redirect Response.
      *
      * @param Request $request A Request instance
-     * @param string $path A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
-     * @param int $status The status code
+     * @param string  $path    A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
+     * @param int     $status  The status code
      *
      * @return RedirectResponse A RedirectResponse instance
      */
@@ -62,10 +62,68 @@ class HttpUtils
     }
 
     /**
+     * Creates a Request.
+     *
+     * @param Request $request The current Request instance
+     * @param string  $path    A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
+     *
+     * @return Request A Request instance
+     */
+    public function createRequest(Request $request, $path)
+    {
+        $newRequest = Request::create($this->generateUri($request, $path), 'get', array(), $request->cookies->all(), array(), $request->server->all());
+        if ($request->hasSession()) {
+            $newRequest->setSession($request->getSession());
+        }
+
+        if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
+            $newRequest->attributes->set(Security::AUTHENTICATION_ERROR, $request->attributes->get(Security::AUTHENTICATION_ERROR));
+        }
+        if ($request->attributes->has(Security::ACCESS_DENIED_ERROR)) {
+            $newRequest->attributes->set(Security::ACCESS_DENIED_ERROR, $request->attributes->get(Security::ACCESS_DENIED_ERROR));
+        }
+        if ($request->attributes->has(Security::LAST_USERNAME)) {
+            $newRequest->attributes->set(Security::LAST_USERNAME, $request->attributes->get(Security::LAST_USERNAME));
+        }
+
+        return $newRequest;
+    }
+
+    /**
+     * Checks that a given path matches the Request.
+     *
+     * @param Request $request A Request instance
+     * @param string  $path    A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
+     *
+     * @return bool true if the path is the same as the one from the Request, false otherwise
+     */
+    public function checkRequestPath(Request $request, $path)
+    {
+        if ('/' !== $path[0]) {
+            try {
+                // matching a request is more powerful than matching a URL path + context, so try that first
+                if ($this->urlMatcher instanceof RequestMatcherInterface) {
+                    $parameters = $this->urlMatcher->matchRequest($request);
+                } else {
+                    $parameters = $this->urlMatcher->match($request->getPathInfo());
+                }
+
+                return $path === $parameters['_route'];
+            } catch (MethodNotAllowedException $e) {
+                return false;
+            } catch (ResourceNotFoundException $e) {
+                return false;
+            }
+        }
+
+        return $path === rawurldecode($request->getPathInfo());
+    }
+
+    /**
      * Generates a URI, based on the given path or absolute URL.
      *
      * @param Request $request A Request instance
-     * @param string $path A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
+     * @param string  $path    A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
      *
      * @return string An absolute URL
      *
@@ -96,63 +154,5 @@ class HttpUtils
         }
 
         return $url;
-    }
-
-    /**
-     * Creates a Request.
-     *
-     * @param Request $request The current Request instance
-     * @param string $path A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
-     *
-     * @return Request A Request instance
-     */
-    public function createRequest(Request $request, $path)
-    {
-        $newRequest = Request::create($this->generateUri($request, $path), 'get', array(), $request->cookies->all(), array(), $request->server->all());
-        if ($request->hasSession()) {
-            $newRequest->setSession($request->getSession());
-        }
-
-        if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
-            $newRequest->attributes->set(Security::AUTHENTICATION_ERROR, $request->attributes->get(Security::AUTHENTICATION_ERROR));
-        }
-        if ($request->attributes->has(Security::ACCESS_DENIED_ERROR)) {
-            $newRequest->attributes->set(Security::ACCESS_DENIED_ERROR, $request->attributes->get(Security::ACCESS_DENIED_ERROR));
-        }
-        if ($request->attributes->has(Security::LAST_USERNAME)) {
-            $newRequest->attributes->set(Security::LAST_USERNAME, $request->attributes->get(Security::LAST_USERNAME));
-        }
-
-        return $newRequest;
-    }
-
-    /**
-     * Checks that a given path matches the Request.
-     *
-     * @param Request $request A Request instance
-     * @param string $path A path (an absolute path (/foo), an absolute URL (http://...), or a route name (foo))
-     *
-     * @return bool true if the path is the same as the one from the Request, false otherwise
-     */
-    public function checkRequestPath(Request $request, $path)
-    {
-        if ('/' !== $path[0]) {
-            try {
-                // matching a request is more powerful than matching a URL path + context, so try that first
-                if ($this->urlMatcher instanceof RequestMatcherInterface) {
-                    $parameters = $this->urlMatcher->matchRequest($request);
-                } else {
-                    $parameters = $this->urlMatcher->match($request->getPathInfo());
-                }
-
-                return $path === $parameters['_route'];
-            } catch (MethodNotAllowedException $e) {
-                return false;
-            } catch (ResourceNotFoundException $e) {
-                return false;
-            }
-        }
-
-        return $path === rawurldecode($request->getPathInfo());
     }
 }

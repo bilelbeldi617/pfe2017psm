@@ -13,7 +13,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     public function testSomeCase()
     {
         $traditionalTime = microtime(true);
-        for ($i = 0; $i < 10000; $i++) {
+        for ($i=0; $i<10000; $i++) {
             if (null === $rs = $this->traditionalRepo->findMaybe(true)) {
                 $rs = new \stdClass();
             }
@@ -21,7 +21,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
         $traditionalTime = microtime(true) - $traditionalTime;
 
         $phpOptionTime = microtime(true);
-        for ($i = 0; $i < 10000; $i++) {
+        for ($i=0; $i<10000; $i++) {
             $rs = $this->phpOptionRepo->findMaybe(true)->getOrElse(new \stdClass);
         }
         $phpOptionTime = microtime(true) - $phpOptionTime;
@@ -33,7 +33,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     public function testNoneCase()
     {
         $traditionalTime = microtime(true);
-        for ($i = 0; $i < 10000; $i++) {
+        for ($i=0; $i<10000; $i++) {
             if (null === $rs = $this->traditionalRepo->findMaybe(false)) {
                 $rs = new \stdClass();
             }
@@ -41,7 +41,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
         $traditionalTime = microtime(true) - $traditionalTime;
 
         $phpOptionTime = microtime(true);
-        for ($i = 0; $i < 10000; $i++) {
+        for ($i=0; $i<10000; $i++) {
             $rs = $this->phpOptionRepo->findMaybe(false)->getOrElse(new \stdClass);
         }
         $phpOptionTime = microtime(true) - $phpOptionTime;

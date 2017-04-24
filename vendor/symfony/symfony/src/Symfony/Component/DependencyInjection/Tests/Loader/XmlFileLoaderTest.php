@@ -28,15 +28,15 @@ class XmlFileLoaderTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = realpath(__DIR__ . '/../Fixtures/');
-        require_once self::$fixturesPath . '/includes/foo.php';
-        require_once self::$fixturesPath . '/includes/ProjectExtension.php';
-        require_once self::$fixturesPath . '/includes/ProjectWithXsdExtension.php';
+        self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
+        require_once self::$fixturesPath.'/includes/foo.php';
+        require_once self::$fixturesPath.'/includes/ProjectExtension.php';
+        require_once self::$fixturesPath.'/includes/ProjectWithXsdExtension.php';
     }
 
     public function testLoad()
     {
-        $loader = new XmlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/ini'));
+        $loader = new XmlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/ini'));
 
         try {
             $loader->load('foo.xml');
@@ -49,13 +49,13 @@ class XmlFileLoaderTest extends TestCase
 
     public function testParseFile()
     {
-        $loader = new XmlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/ini'));
+        $loader = new XmlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/ini'));
         $r = new \ReflectionObject($loader);
         $m = $r->getMethod('parseFileToDOM');
         $m->setAccessible(true);
 
         try {
-            $m->invoke($loader, self::$fixturesPath . '/ini/parameters.ini');
+            $m->invoke($loader, self::$fixturesPath.'/ini/parameters.ini');
             $this->fail('->parseFileToDOM() throws an InvalidArgumentException if the loaded file is not a valid XML file');
         } catch (\Exception $e) {
             $this->assertInstanceOf('Symfony\\Component\\DependencyInjection\\Exception\\InvalidArgumentException', $e, '->parseFileToDOM() throws an InvalidArgumentException if the loaded file is not a valid XML file');
@@ -66,10 +66,10 @@ class XmlFileLoaderTest extends TestCase
             $this->assertStringStartsWith('[ERROR 4] Start tag expected, \'<\' not found (in', $e->getMessage(), '->parseFileToDOM() throws an InvalidArgumentException if the loaded file is not a valid XML file');
         }
 
-        $loader = new XmlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/xml'));
 
         try {
-            $m->invoke($loader, self::$fixturesPath . '/xml/nonvalid.xml');
+            $m->invoke($loader, self::$fixturesPath.'/xml/nonvalid.xml');
             $this->fail('->parseFileToDOM() throws an InvalidArgumentException if the loaded file does not validate the XSD');
         } catch (\Exception $e) {
             $this->assertInstanceOf('Symfony\\Component\\DependencyInjection\\Exception\\InvalidArgumentException', $e, '->parseFileToDOM() throws an InvalidArgumentException if the loaded file does not validate the XSD');
@@ -80,7 +80,7 @@ class XmlFileLoaderTest extends TestCase
             $this->assertStringStartsWith('[ERROR 1845] Element \'nonvalid\': No matching global declaration available for the validation root. (in', $e->getMessage(), '->parseFileToDOM() throws an InvalidArgumentException if the loaded file does not validate the XSD');
         }
 
-        $xml = $m->invoke($loader, self::$fixturesPath . '/xml/services1.xml');
+        $xml = $m->invoke($loader, self::$fixturesPath.'/xml/services1.xml');
         $this->assertInstanceOf('DOMDocument', $xml, '->parseFileToDOM() returns an SimpleXMLElement object');
     }
 
@@ -89,7 +89,7 @@ class XmlFileLoaderTest extends TestCase
         $disableEntities = libxml_disable_entity_loader(true);
 
         $containerBuilder = new ContainerBuilder();
-        $loader = new XmlFileLoader($containerBuilder, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($containerBuilder, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services2.xml');
 
         libxml_disable_entity_loader($disableEntities);
@@ -100,7 +100,7 @@ class XmlFileLoaderTest extends TestCase
     public function testLoadParameters()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services2.xml');
 
         $actual = $container->getParameterBag()->all();
@@ -132,9 +132,9 @@ class XmlFileLoaderTest extends TestCase
     {
         $container = new ContainerBuilder();
         $resolver = new LoaderResolver(array(
-            new IniFileLoader($container, new FileLocator(self::$fixturesPath . '/ini')),
-            new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yml')),
-            $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml')),
+            new IniFileLoader($container, new FileLocator(self::$fixturesPath.'/ini')),
+            new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yml')),
+            $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml')),
         ));
         $loader->setResolver($resolver);
         $loader->load('services4.xml');
@@ -173,7 +173,7 @@ class XmlFileLoaderTest extends TestCase
     public function testLoadAnonymousServices()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services5.xml');
         $services = $container->getDefinitions();
         $this->assertCount(6, $services, '->load() attributes unique ids to anonymous services');
@@ -182,8 +182,8 @@ class XmlFileLoaderTest extends TestCase
         $args = $services['foo']->getArguments();
         $this->assertCount(1, $args, '->load() references anonymous services as "normal" ones');
         $this->assertInstanceOf('Symfony\\Component\\DependencyInjection\\Reference', $args[0], '->load() converts anonymous services to references to "normal" services');
-        $this->assertTrue(isset($services[(string)$args[0]]), '->load() makes a reference to the created ones');
-        $inner = $services[(string)$args[0]];
+        $this->assertTrue(isset($services[(string) $args[0]]), '->load() makes a reference to the created ones');
+        $inner = $services[(string) $args[0]];
         $this->assertEquals('BarClass', $inner->getClass(), '->load() uses the same configuration as for the anonymous ones');
         $this->assertFalse($inner->isPublic());
 
@@ -191,8 +191,8 @@ class XmlFileLoaderTest extends TestCase
         $args = $inner->getArguments();
         $this->assertCount(1, $args, '->load() references anonymous services as "normal" ones');
         $this->assertInstanceOf('Symfony\\Component\\DependencyInjection\\Reference', $args[0], '->load() converts anonymous services to references to "normal" services');
-        $this->assertTrue(isset($services[(string)$args[0]]), '->load() makes a reference to the created ones');
-        $inner = $services[(string)$args[0]];
+        $this->assertTrue(isset($services[(string) $args[0]]), '->load() makes a reference to the created ones');
+        $inner = $services[(string) $args[0]];
         $this->assertEquals('BazClass', $inner->getClass(), '->load() uses the same configuration as for the anonymous ones');
         $this->assertFalse($inner->isPublic());
 
@@ -200,8 +200,8 @@ class XmlFileLoaderTest extends TestCase
         $properties = $services['foo']->getProperties();
         $property = $properties['p'];
         $this->assertInstanceOf('Symfony\\Component\\DependencyInjection\\Reference', $property, '->load() converts anonymous services to references to "normal" services');
-        $this->assertTrue(isset($services[(string)$property]), '->load() makes a reference to the created ones');
-        $inner = $services[(string)$property];
+        $this->assertTrue(isset($services[(string) $property]), '->load() makes a reference to the created ones');
+        $inner = $services[(string) $property];
         $this->assertEquals('BuzClass', $inner->getClass(), '->load() uses the same configuration as for the anonymous ones');
         $this->assertFalse($inner->isPublic());
 
@@ -229,7 +229,7 @@ class XmlFileLoaderTest extends TestCase
     public function testLegacyLoadServices()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('legacy-services6.xml');
         $services = $container->getDefinitions();
         $this->assertEquals('FooClass', $services['constructor']->getClass());
@@ -249,7 +249,7 @@ class XmlFileLoaderTest extends TestCase
     public function testLoadServices()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services6.xml');
         $services = $container->getDefinitions();
         $this->assertTrue(isset($services['foo']), '->load() parses <service> elements');
@@ -269,10 +269,10 @@ class XmlFileLoaderTest extends TestCase
 
         $aliases = $container->getAliases();
         $this->assertTrue(isset($aliases['alias_for_foo']), '->load() parses <service> elements');
-        $this->assertEquals('foo', (string)$aliases['alias_for_foo'], '->load() parses aliases');
+        $this->assertEquals('foo', (string) $aliases['alias_for_foo'], '->load() parses aliases');
         $this->assertTrue($aliases['alias_for_foo']->isPublic());
         $this->assertTrue(isset($aliases['another_alias_for_foo']));
-        $this->assertEquals('foo', (string)$aliases['another_alias_for_foo']);
+        $this->assertEquals('foo', (string) $aliases['another_alias_for_foo']);
         $this->assertFalse($aliases['another_alias_for_foo']->isPublic());
 
         $this->assertEquals(array('decorated', null, 0), $services['decorator_service']->getDecoratedService());
@@ -283,7 +283,7 @@ class XmlFileLoaderTest extends TestCase
     public function testParsesTags()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services10.xml');
 
         $services = $container->findTaggedServiceIds('foo_tag');
@@ -309,7 +309,7 @@ class XmlFileLoaderTest extends TestCase
     public function testParseTagsWithoutNameThrowsException()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('tag_without_name.xml');
     }
 
@@ -320,14 +320,14 @@ class XmlFileLoaderTest extends TestCase
     public function testParseTagWithEmptyNameThrowsException()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('tag_with_empty_name.xml');
     }
 
     public function testDeprecated()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services_deprecated.xml');
 
         $this->assertTrue($container->getDefinition('foo')->isDeprecated());
@@ -375,7 +375,7 @@ class XmlFileLoaderTest extends TestCase
         $container = new ContainerBuilder();
         $container->registerExtension(new \ProjectExtension());
         $container->registerExtension(new \ProjectWithXsdExtension());
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
 
         // extension without an XSD
         $loader->load('extensions/services1.xml');
@@ -393,7 +393,7 @@ class XmlFileLoaderTest extends TestCase
         $container = new ContainerBuilder();
         $container->registerExtension(new \ProjectExtension());
         $container->registerExtension(new \ProjectWithXsdExtension());
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('extensions/services2.xml');
         $container->compile();
         $services = $container->getDefinitions();
@@ -408,7 +408,7 @@ class XmlFileLoaderTest extends TestCase
         $container = new ContainerBuilder();
         $container->registerExtension(new \ProjectExtension());
         $container->registerExtension(new \ProjectWithXsdExtension());
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
 
         // extension with an XSD (does not validate)
         try {
@@ -439,12 +439,12 @@ class XmlFileLoaderTest extends TestCase
             $this->markTestSkipped('To run this test, add "phar" to the "suhosin.executor.include.whitelist" settings in your php.ini file.');
         }
 
-        require_once self::$fixturesPath . '/includes/ProjectWithXsdExtensionInPhar.phar';
+        require_once self::$fixturesPath.'/includes/ProjectWithXsdExtensionInPhar.phar';
 
         // extension with an XSD in PHAR archive
         $container = new ContainerBuilder();
         $container->registerExtension(new \ProjectWithXsdExtensionInPhar());
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('extensions/services6.xml');
 
         // extension with an XSD in PHAR archive (does not validate)
@@ -473,21 +473,21 @@ class XmlFileLoaderTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $loader1 = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml/extension1'));
+        $loader1 = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml/extension1'));
         $loader1->load('services.xml');
         $services = $container->getDefinitions();
         $this->assertCount(2, $services, '->load() attributes unique ids to anonymous services');
-        $loader2 = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml/extension2'));
+        $loader2 = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml/extension2'));
         $loader2->load('services.xml');
         $services = $container->getDefinitions();
         $this->assertCount(4, $services, '->load() attributes unique ids to anonymous services');
 
         $services = $container->getDefinitions();
         $args1 = $services['extension1.foo']->getArguments();
-        $inner1 = $services[(string)$args1[0]];
+        $inner1 = $services[(string) $args1[0]];
         $this->assertEquals('BarClass1', $inner1->getClass(), '->load() uses the same configuration as for the anonymous ones');
         $args2 = $services['extension2.foo']->getArguments();
-        $inner2 = $services[(string)$args2[0]];
+        $inner2 = $services[(string) $args2[0]];
         $this->assertEquals('BarClass2', $inner2->getClass(), '->load() uses the same configuration as for the anonymous ones');
     }
 
@@ -495,7 +495,7 @@ class XmlFileLoaderTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
 
         // document types are not allowed.
         try {
@@ -514,7 +514,7 @@ class XmlFileLoaderTest extends TestCase
     public function testXmlNamespaces()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('namespaces.xml');
         $services = $container->getDefinitions();
 
@@ -526,7 +526,7 @@ class XmlFileLoaderTest extends TestCase
     public function testLoadIndexedArguments()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services14.xml');
 
         $this->assertEquals(array('index_0' => 'app'), $container->findDefinition('logger')->getArguments());
@@ -535,7 +535,7 @@ class XmlFileLoaderTest extends TestCase
     public function testLoadInlinedServices()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services21.xml');
 
         $foo = $container->getDefinition('foo');
@@ -564,7 +564,7 @@ class XmlFileLoaderTest extends TestCase
     public function testType()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services22.xml');
 
         $this->assertEquals(array('Bar', 'Baz'), $container->getDefinition('foo')->getAutowiringTypes());
@@ -573,7 +573,7 @@ class XmlFileLoaderTest extends TestCase
     public function testAutowire()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('services23.xml');
 
         $this->assertTrue($container->getDefinition('bar')->isAutowired());
@@ -582,7 +582,7 @@ class XmlFileLoaderTest extends TestCase
     public function testArgumentWithKeyOutsideCollection()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml'));
+        $loader = new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml'));
         $loader->load('with_key_outside_collection.xml');
 
         $this->assertSame(array('type' => 'foo', 'bar'), $container->getDefinition('foo')->getArguments());

@@ -9,11 +9,9 @@
 namespace projetBundle\Entity;
 
 
-class ResultatGroupe
-{
-    private $eleve;
-    private $moyenneGeneral;
-    private $listResultat;
+class ResultatGroupe {
+    private $eleve ;
+    private $moyenneGeneral ;
 
     /**
      * @return mixed
@@ -30,6 +28,7 @@ class ResultatGroupe
     {
         $this->moyenneGeneral = $moyenneGeneral;
     }
+    private $listResultat ;
 
     /**
      * @return mixed

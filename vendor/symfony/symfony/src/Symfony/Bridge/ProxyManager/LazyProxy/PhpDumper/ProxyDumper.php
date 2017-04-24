@@ -76,14 +76,14 @@ class ProxyDumper implements DumperInterface
             }
         }
 
-        $methodName = 'get' . Container::camelize($id) . 'Service';
+        $methodName = 'get'.Container::camelize($id).'Service';
         $proxyClass = $this->getProxyClassName($definition);
 
         $generatedClass = $this->generateProxyClass($definition);
 
         $constructorCall = $generatedClass->hasMethod('staticProxyConstructor')
-            ? $proxyClass . '::staticProxyConstructor'
-            : 'new ' . $proxyClass;
+            ? $proxyClass.'::staticProxyConstructor'
+            : 'new '.$proxyClass;
 
         return <<<EOF
         if (\$lazyLoad) {
@@ -105,6 +105,14 @@ EOF;
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getProxyCode(Definition $definition)
+    {
+        return $this->classGenerator->generate($this->generateProxyClass($definition));
+    }
+
+    /**
      * Produces the proxy class name for the given definition.
      *
      * @param Definition $definition
@@ -113,7 +121,7 @@ EOF;
      */
     private function getProxyClassName(Definition $definition)
     {
-        return str_replace('\\', '', $definition->getClass()) . '_' . spl_object_hash($definition) . $this->salt;
+        return str_replace('\\', '', $definition->getClass()).'_'.spl_object_hash($definition).$this->salt;
     }
 
     /**
@@ -128,13 +136,5 @@ EOF;
         $this->proxyGenerator->generate(new \ReflectionClass($definition->getClass()), $generatedClass);
 
         return $generatedClass;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getProxyCode(Definition $definition)
-    {
-        return $this->classGenerator->generate($this->generateProxyClass($definition));
     }
 }

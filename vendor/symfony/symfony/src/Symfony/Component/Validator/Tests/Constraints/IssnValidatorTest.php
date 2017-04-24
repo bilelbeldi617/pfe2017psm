@@ -20,13 +20,14 @@ use Symfony\Component\Validator\Validation;
  */
 class IssnValidatorTest extends AbstractConstraintValidatorTest
 {
-    public function getValidIssn()
+    protected function getApiVersion()
     {
-        return array_merge(
-            $this->getValidLowerCasedIssn(),
-            $this->getValidNonHyphenatedIssn(),
-            $this->getFullValidIssn()
-        );
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new IssnValidator();
     }
 
     public function getValidLowerCasedIssn()
@@ -66,6 +67,15 @@ class IssnValidatorTest extends AbstractConstraintValidatorTest
             array('1996-0786'),
             array('1684-5374'),
             array('1996-0794'),
+        );
+    }
+
+    public function getValidIssn()
+    {
+        return array_merge(
+            $this->getValidLowerCasedIssn(),
+            $this->getValidNonHyphenatedIssn(),
+            $this->getFullValidIssn()
         );
     }
 
@@ -123,7 +133,7 @@ class IssnValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($issn, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $issn . '"')
+            ->setParameter('{{ value }}', '"'.$issn.'"')
             ->setCode(Issn::INVALID_CASE_ERROR)
             ->assertRaised();
     }
@@ -141,7 +151,7 @@ class IssnValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($issn, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $issn . '"')
+            ->setParameter('{{ value }}', '"'.$issn.'"')
             ->setCode(Issn::MISSING_HYPHEN_ERROR)
             ->assertRaised();
     }
@@ -170,18 +180,8 @@ class IssnValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($issn, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $issn . '"')
+            ->setParameter('{{ value }}', '"'.$issn.'"')
             ->setCode($code)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new IssnValidator();
     }
 }

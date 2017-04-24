@@ -37,7 +37,7 @@ abstract class Storage
      */
     public function __toString()
     {
-        return (string)$this->template;
+        return (string) $this->template;
     }
 
     /**

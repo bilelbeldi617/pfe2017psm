@@ -80,27 +80,6 @@ class DoctrineOrmTypeGuesser implements FormTypeGuesserInterface
         }
     }
 
-    protected function getMetadata($class)
-    {
-        // normalize class name
-        $class = ClassUtils::getRealClass(ltrim($class, '\\'));
-
-        if (array_key_exists($class, $this->cache)) {
-            return $this->cache[$class];
-        }
-
-        $this->cache[$class] = null;
-        foreach ($this->registry->getManagers() as $name => $em) {
-            try {
-                return $this->cache[$class] = array($em->getClassMetadata($class), $name);
-            } catch (MappingException $e) {
-                // not an entity or mapped super class
-            } catch (LegacyMappingException $e) {
-                // not an entity or mapped super class, using Doctrine ORM 2.2
-            }
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -167,6 +146,27 @@ class DoctrineOrmTypeGuesser implements FormTypeGuesserInterface
         if ($ret && $ret[0]->hasField($property) && !$ret[0]->hasAssociation($property)) {
             if (in_array($ret[0]->getTypeOfField($property), array(Type::DECIMAL, Type::FLOAT))) {
                 return new ValueGuess(null, Guess::MEDIUM_CONFIDENCE);
+            }
+        }
+    }
+
+    protected function getMetadata($class)
+    {
+        // normalize class name
+        $class = ClassUtils::getRealClass(ltrim($class, '\\'));
+
+        if (array_key_exists($class, $this->cache)) {
+            return $this->cache[$class];
+        }
+
+        $this->cache[$class] = null;
+        foreach ($this->registry->getManagers() as $name => $em) {
+            try {
+                return $this->cache[$class] = array($em->getClassMetadata($class), $name);
+            } catch (MappingException $e) {
+                // not an entity or mapped super class
+            } catch (LegacyMappingException $e) {
+                // not an entity or mapped super class, using Doctrine ORM 2.2
             }
         }
     }

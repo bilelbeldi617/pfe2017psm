@@ -37,6 +37,16 @@ use Doctrine\ORM\Tools\SchemaTool;
 abstract class AbstractCommand extends Command
 {
     /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param SchemaTool      $schemaTool
+     * @param array           $metadatas
+     *
+     * @return null|int Null or 0 if everything went fine, or an error code.
+     */
+    abstract protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas);
+
+    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -48,7 +58,7 @@ abstract class AbstractCommand extends Command
 
         $metadatas = $em->getMetadataFactory()->getAllMetadata();
 
-        if (!empty($metadatas)) {
+        if ( ! empty($metadatas)) {
             // Create SchemaTool
             $tool = new SchemaTool($em);
 
@@ -58,14 +68,4 @@ abstract class AbstractCommand extends Command
             return 0;
         }
     }
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param SchemaTool $schemaTool
-     * @param array $metadatas
-     *
-     * @return null|int Null or 0 if everything went fine, or an error code.
-     */
-    abstract protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas);
 }

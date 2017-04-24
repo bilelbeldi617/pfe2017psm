@@ -35,7 +35,7 @@ class SubmitButton extends Button implements ClickableInterface
      * Submits data to the button.
      *
      * @param null|string $submittedData The data
-     * @param bool $clearMissing Not used
+     * @param bool        $clearMissing  Not used
      *
      * @return $this
      *

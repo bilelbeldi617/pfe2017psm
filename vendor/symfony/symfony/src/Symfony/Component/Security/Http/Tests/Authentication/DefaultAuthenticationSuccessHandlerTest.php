@@ -23,6 +23,14 @@ class DefaultAuthenticationSuccessHandlerTest extends TestCase
 
     private $token = null;
 
+    protected function setUp()
+    {
+        $this->httpUtils = $this->getMockBuilder('Symfony\Component\Security\Http\HttpUtils')->getMock();
+        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
+        $this->request->headers = $this->getMockBuilder('Symfony\Component\HttpFoundation\HeaderBag')->getMock();
+        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+    }
+
     public function testRequestIsRedirected()
     {
         $response = $this->expectRedirectResponse('/');
@@ -31,17 +39,6 @@ class DefaultAuthenticationSuccessHandlerTest extends TestCase
         $result = $handler->onAuthenticationSuccess($this->request, $this->token);
 
         $this->assertSame($response, $result);
-    }
-
-    private function expectRedirectResponse($path)
-    {
-        $response = new Response();
-        $this->httpUtils->expects($this->once())
-            ->method('createRedirectResponse')
-            ->with($this->request, $path)
-            ->will($this->returnValue($response));
-
-        return $response;
     }
 
     public function testDefaultTargetPathCanBeForced()
@@ -174,11 +171,14 @@ class DefaultAuthenticationSuccessHandlerTest extends TestCase
         $this->assertSame($response, $result);
     }
 
-    protected function setUp()
+    private function expectRedirectResponse($path)
     {
-        $this->httpUtils = $this->getMockBuilder('Symfony\Component\Security\Http\HttpUtils')->getMock();
-        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $this->request->headers = $this->getMockBuilder('Symfony\Component\HttpFoundation\HeaderBag')->getMock();
-        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $response = new Response();
+        $this->httpUtils->expects($this->once())
+            ->method('createRedirectResponse')
+            ->with($this->request, $path)
+            ->will($this->returnValue($response));
+
+        return $response;
     }
 }

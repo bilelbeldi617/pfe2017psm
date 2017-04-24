@@ -39,9 +39,9 @@ class RegistryTest extends TestCase
         $conn = $this->getMock('Doctrine\DBAL\Connection', array(), array(), '', false);
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container->expects($this->once())
-            ->method('get')
-            ->with($this->equalTo('doctrine.dbal.default_connection'))
-            ->will($this->returnValue($conn));
+                  ->method('get')
+                  ->with($this->equalTo('doctrine.dbal.default_connection'))
+                  ->will($this->returnValue($conn));
 
         $registry = new Registry($container, array('default' => 'doctrine.dbal.default_connection'), array(), 'default', 'default');
 
@@ -53,9 +53,9 @@ class RegistryTest extends TestCase
         $conn = $this->getMock('Doctrine\DBAL\Connection', array(), array(), '', false);
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container->expects($this->once())
-            ->method('get')
-            ->with($this->equalTo('doctrine.dbal.default_connection'))
-            ->will($this->returnValue($conn));
+                  ->method('get')
+                  ->with($this->equalTo('doctrine.dbal.default_connection'))
+                  ->will($this->returnValue($conn));
 
         $registry = new Registry($container, array('default' => 'doctrine.dbal.default_connection'), array(), 'default', 'default');
 
@@ -84,9 +84,9 @@ class RegistryTest extends TestCase
         $em = new \stdClass();
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container->expects($this->once())
-            ->method('get')
-            ->with($this->equalTo('doctrine.orm.default_entity_manager'))
-            ->will($this->returnValue($em));
+                  ->method('get')
+                  ->with($this->equalTo('doctrine.orm.default_entity_manager'))
+                  ->will($this->returnValue($em));
 
         $registry = new Registry($container, array(), array('default' => 'doctrine.orm.default_entity_manager'), 'default', 'default');
 
@@ -98,9 +98,9 @@ class RegistryTest extends TestCase
         $em = new \stdClass();
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container->expects($this->once())
-            ->method('get')
-            ->with($this->equalTo('doctrine.orm.default_entity_manager'))
-            ->will($this->returnValue($em));
+                  ->method('get')
+                  ->with($this->equalTo('doctrine.orm.default_entity_manager'))
+                  ->will($this->returnValue($em));
 
         $registry = new Registry($container, array(), array('default' => 'doctrine.orm.default_entity_manager'), 'default', 'default');
 
@@ -120,8 +120,8 @@ class RegistryTest extends TestCase
     {
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container->expects($this->once())
-            ->method('set')
-            ->with($this->equalTo('doctrine.orm.default_entity_manager'), $this->equalTo(null));
+                  ->method('set')
+                  ->with($this->equalTo('doctrine.orm.default_entity_manager'), $this->equalTo(null));
 
         $registry = new Registry($container, array(), array('default' => 'doctrine.orm.default_entity_manager'), 'default', 'default');
         $registry->resetManager();
@@ -131,8 +131,8 @@ class RegistryTest extends TestCase
     {
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container->expects($this->once())
-            ->method('set')
-            ->with($this->equalTo('doctrine.orm.default_entity_manager'), $this->equalTo(null));
+                  ->method('set')
+                  ->with($this->equalTo('doctrine.orm.default_entity_manager'), $this->equalTo(null));
 
         $registry = new Registry($container, array(), array('default' => 'doctrine.orm.default_entity_manager'), 'default', 'default');
         $registry->resetManager('default');

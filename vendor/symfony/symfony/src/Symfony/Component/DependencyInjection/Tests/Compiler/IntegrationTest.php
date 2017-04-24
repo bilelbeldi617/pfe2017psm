@@ -37,16 +37,19 @@ class IntegrationTest extends TestCase
 
         $a = $container
             ->register('a', '\stdClass')
-            ->addArgument(new Reference('c'));
+            ->addArgument(new Reference('c'))
+        ;
 
         $b = $container
             ->register('b', '\stdClass')
             ->addArgument(new Reference('c'))
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
 
         $c = $container
             ->register('c', '\stdClass')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
 
         $container->compile();
 
@@ -64,13 +67,15 @@ class IntegrationTest extends TestCase
 
         $a = $container
             ->register('a', '\stdClass')
-            ->addArgument(new Reference('b'));
+            ->addArgument(new Reference('b'))
+        ;
 
         $container->setAlias('b', new Alias('c', false));
 
         $c = $container
             ->register('c', '\stdClass')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
 
         $container->compile();
 
@@ -89,16 +94,19 @@ class IntegrationTest extends TestCase
         $container
             ->register('a', '\stdClass')
             ->addArgument(new Reference('b'))
-            ->addMethodCall('setC', array(new Reference('c')));
+            ->addMethodCall('setC', array(new Reference('c')))
+        ;
 
         $container
             ->register('b', '\stdClass')
             ->addArgument(new Reference('c'))
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
 
         $container
             ->register('c', '\stdClass')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
 
         $container->compile();
 

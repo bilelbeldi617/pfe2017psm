@@ -31,9 +31,30 @@ class Psr4ClassLoader
      */
     public function addPrefix($prefix, $baseDir)
     {
-        $prefix = trim($prefix, '\\') . '\\';
-        $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $prefix = trim($prefix, '\\').'\\';
+        $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $this->prefixes[] = array($prefix, $baseDir);
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return string|null
+     */
+    public function findFile($class)
+    {
+        $class = ltrim($class, '\\');
+
+        foreach ($this->prefixes as $current) {
+            list($currentPrefix, $currentBaseDir) = $current;
+            if (0 === strpos($class, $currentPrefix)) {
+                $classWithoutPrefix = substr($class, strlen($currentPrefix));
+                $file = $currentBaseDir.str_replace('\\', DIRECTORY_SEPARATOR, $classWithoutPrefix).'.php';
+                if (file_exists($file)) {
+                    return $file;
+                }
+            }
+        }
     }
 
     /**
@@ -51,27 +72,6 @@ class Psr4ClassLoader
         }
 
         return false;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return string|null
-     */
-    public function findFile($class)
-    {
-        $class = ltrim($class, '\\');
-
-        foreach ($this->prefixes as $current) {
-            list($currentPrefix, $currentBaseDir) = $current;
-            if (0 === strpos($class, $currentPrefix)) {
-                $classWithoutPrefix = substr($class, strlen($currentPrefix));
-                $file = $currentBaseDir . str_replace('\\', DIRECTORY_SEPARATOR, $classWithoutPrefix) . '.php';
-                if (file_exists($file)) {
-                    return $file;
-                }
-            }
-        }
     }
 
     /**

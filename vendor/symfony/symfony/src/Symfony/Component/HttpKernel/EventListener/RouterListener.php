@@ -50,10 +50,10 @@ class RouterListener implements EventSubscriberInterface
      *
      * RequestStack will become required in 3.0.
      *
-     * @param UrlMatcherInterface|RequestMatcherInterface $matcher The Url or Request matcher
-     * @param RequestStack $requestStack A RequestStack instance
-     * @param RequestContext|null $context The RequestContext (can be null when $matcher implements RequestContextAwareInterface)
-     * @param LoggerInterface|null $logger The logger
+     * @param UrlMatcherInterface|RequestMatcherInterface $matcher      The Url or Request matcher
+     * @param RequestStack                                $requestStack A RequestStack instance
+     * @param RequestContext|null                         $context      The RequestContext (can be null when $matcher implements RequestContextAwareInterface)
+     * @param LoggerInterface|null                        $logger       The logger
      *
      * @throws \InvalidArgumentException
      */
@@ -65,9 +65,9 @@ class RouterListener implements EventSubscriberInterface
             $logger = $context;
             $context = $tmp;
 
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack to be given as second argument as ' . __CLASS__ . '::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack to be given as second argument as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         } elseif (!$requestStack instanceof RequestStack) {
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack instance as ' . __CLASS__ . '::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack instance as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         }
 
         if (null !== $requestStack && !$requestStack instanceof RequestStack) {
@@ -94,14 +94,6 @@ class RouterListener implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::REQUEST => array(array('onKernelRequest', 32)),
-            KernelEvents::FINISH_REQUEST => array(array('onKernelFinishRequest', 0)),
-        );
-    }
-
     /**
      * Sets the current Request.
      *
@@ -115,7 +107,7 @@ class RouterListener implements EventSubscriberInterface
      */
     public function setRequest(Request $request = null)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.4 and will be made private in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.4 and will be made private in 3.0.', E_USER_DEPRECATED);
 
         $this->setCurrentRequest($request);
     }
@@ -187,5 +179,13 @@ class RouterListener implements EventSubscriberInterface
 
             throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::REQUEST => array(array('onKernelRequest', 32)),
+            KernelEvents::FINISH_REQUEST => array(array('onKernelFinishRequest', 0)),
+        );
     }
 }

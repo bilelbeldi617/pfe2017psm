@@ -64,42 +64,6 @@ abstract class AbstractExtension implements FormExtensionInterface
     }
 
     /**
-     * Initializes the types.
-     *
-     * @throws UnexpectedTypeException if any registered type is not an instance of FormTypeInterface
-     */
-    private function initTypes()
-    {
-        $this->types = array();
-
-        foreach ($this->loadTypes() as $type) {
-            if (!$type instanceof FormTypeInterface) {
-                throw new UnexpectedTypeException($type, 'Symfony\Component\Form\FormTypeInterface');
-            }
-
-            // Since Symfony 3.0 types are identified by their FQCN
-            $fqcn = get_class($type);
-            $legacyName = $type->getName();
-
-            $this->types[$fqcn] = $type;
-
-            if ($legacyName) {
-                $this->types[$legacyName] = $type;
-            }
-        }
-    }
-
-    /**
-     * Registers the types.
-     *
-     * @return FormTypeInterface[] An array of FormTypeInterface instances
-     */
-    protected function loadTypes()
-    {
-        return array();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function hasType($name)
@@ -123,37 +87,6 @@ abstract class AbstractExtension implements FormExtensionInterface
         return isset($this->typeExtensions[$name])
             ? $this->typeExtensions[$name]
             : array();
-    }
-
-    /**
-     * Initializes the type extensions.
-     *
-     * @throws UnexpectedTypeException if any registered type extension is not
-     *                                 an instance of FormTypeExtensionInterface
-     */
-    private function initTypeExtensions()
-    {
-        $this->typeExtensions = array();
-
-        foreach ($this->loadTypeExtensions() as $extension) {
-            if (!$extension instanceof FormTypeExtensionInterface) {
-                throw new UnexpectedTypeException($extension, 'Symfony\Component\Form\FormTypeExtensionInterface');
-            }
-
-            $type = $extension->getExtendedType();
-
-            $this->typeExtensions[$type][] = $extension;
-        }
-    }
-
-    /**
-     * Registers the type extensions.
-     *
-     * @return FormTypeExtensionInterface[] An array of FormTypeExtensionInterface instances
-     */
-    protected function loadTypeExtensions()
-    {
-        return array();
     }
 
     /**
@@ -181,6 +114,82 @@ abstract class AbstractExtension implements FormExtensionInterface
     }
 
     /**
+     * Registers the types.
+     *
+     * @return FormTypeInterface[] An array of FormTypeInterface instances
+     */
+    protected function loadTypes()
+    {
+        return array();
+    }
+
+    /**
+     * Registers the type extensions.
+     *
+     * @return FormTypeExtensionInterface[] An array of FormTypeExtensionInterface instances
+     */
+    protected function loadTypeExtensions()
+    {
+        return array();
+    }
+
+    /**
+     * Registers the type guesser.
+     *
+     * @return FormTypeGuesserInterface|null A type guesser
+     */
+    protected function loadTypeGuesser()
+    {
+    }
+
+    /**
+     * Initializes the types.
+     *
+     * @throws UnexpectedTypeException if any registered type is not an instance of FormTypeInterface
+     */
+    private function initTypes()
+    {
+        $this->types = array();
+
+        foreach ($this->loadTypes() as $type) {
+            if (!$type instanceof FormTypeInterface) {
+                throw new UnexpectedTypeException($type, 'Symfony\Component\Form\FormTypeInterface');
+            }
+
+            // Since Symfony 3.0 types are identified by their FQCN
+            $fqcn = get_class($type);
+            $legacyName = $type->getName();
+
+            $this->types[$fqcn] = $type;
+
+            if ($legacyName) {
+                $this->types[$legacyName] = $type;
+            }
+        }
+    }
+
+    /**
+     * Initializes the type extensions.
+     *
+     * @throws UnexpectedTypeException if any registered type extension is not
+     *                                 an instance of FormTypeExtensionInterface
+     */
+    private function initTypeExtensions()
+    {
+        $this->typeExtensions = array();
+
+        foreach ($this->loadTypeExtensions() as $extension) {
+            if (!$extension instanceof FormTypeExtensionInterface) {
+                throw new UnexpectedTypeException($extension, 'Symfony\Component\Form\FormTypeExtensionInterface');
+            }
+
+            $type = $extension->getExtendedType();
+
+            $this->typeExtensions[$type][] = $extension;
+        }
+    }
+
+    /**
      * Initializes the type guesser.
      *
      * @throws UnexpectedTypeException if the type guesser is not an instance of FormTypeGuesserInterface
@@ -193,14 +202,5 @@ abstract class AbstractExtension implements FormExtensionInterface
         if (null !== $this->typeGuesser && !$this->typeGuesser instanceof FormTypeGuesserInterface) {
             throw new UnexpectedTypeException($this->typeGuesser, 'Symfony\Component\Form\FormTypeGuesserInterface');
         }
-    }
-
-    /**
-     * Registers the type guesser.
-     *
-     * @return FormTypeGuesserInterface|null A type guesser
-     */
-    protected function loadTypeGuesser()
-    {
     }
 }

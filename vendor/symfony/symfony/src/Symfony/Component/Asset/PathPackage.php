@@ -29,7 +29,7 @@ class PathPackage extends Package
     private $basePath;
 
     /**
-     * @param string $basePath The base path to be prepended to relative paths
+     * @param string                   $basePath        The base path to be prepended to relative paths
      * @param VersionStrategyInterface $versionStrategy The version strategy
      */
     public function __construct($basePath, VersionStrategyInterface $versionStrategy, ContextInterface $context = null)
@@ -40,10 +40,10 @@ class PathPackage extends Package
             $this->basePath = '/';
         } else {
             if ('/' != $basePath[0]) {
-                $basePath = '/' . $basePath;
+                $basePath = '/'.$basePath;
             }
 
-            $this->basePath = rtrim($basePath, '/') . '/';
+            $this->basePath = rtrim($basePath, '/').'/';
         }
     }
 
@@ -56,7 +56,7 @@ class PathPackage extends Package
             return $path;
         }
 
-        return $this->getBasePath() . ltrim($this->getVersionStrategy()->applyVersion($path), '/');
+        return $this->getBasePath().ltrim($this->getVersionStrategy()->applyVersion($path), '/');
     }
 
     /**
@@ -66,6 +66,6 @@ class PathPackage extends Package
      */
     public function getBasePath()
     {
-        return $this->getContext()->getBasePath() . $this->basePath;
+        return $this->getContext()->getBasePath().$this->basePath;
     }
 }

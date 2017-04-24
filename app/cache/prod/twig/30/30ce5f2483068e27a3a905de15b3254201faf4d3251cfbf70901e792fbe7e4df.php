@@ -1,7 +1,6 @@
 <?php
 
 /* SwiftmailerBundle:Collector:swiftmailer.html.twig */
-
 class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5d375a extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,6 +16,17 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "@WebProfiler/Profiler/layout.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 3
     public function block_toolbar($context, array $blocks = array())
     {
         // line 4
@@ -76,10 +86,10 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                 $context['_parent'] = $context;
                 $context['_seq'] = twig_ensure_traversable($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "mailers", array()));
                 $context['loop'] = array(
-                    'parent' => $context['_parent'],
-                    'index0' => 0,
-                    'index' => 1,
-                    'first' => true,
+                  'parent' => $context['_parent'],
+                  'index0' => 0,
+                  'index'  => 1,
+                  'first'  => true,
                 );
                 if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
                     $length = count($context['_seq']);
@@ -104,13 +114,13 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                         <b>Is spooled?</b>
                         <span>";
                     // line 31
-                    echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("yes") : ("no"));
+                    echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("yes") : ("no"));
                     echo "</span>
                     </div>
 
                     ";
                     // line 34
-                    if (!$this->getAttribute($context["loop"], "first", array())) {
+                    if ( !$this->getAttribute($context["loop"], "first", array())) {
                         // line 35
                         echo "                        <hr>
                     ";
@@ -149,7 +159,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                     echo "</span>
                         &nbsp; (<small>";
                     // line 43
-                    echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("spooled") : ("sent"));
+                    echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("spooled") : ("sent"));
                     echo "</small>)
                     </div>
                 ";
@@ -173,6 +183,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
         }
     }
 
+    // line 53
     public function block_menu($context, array $blocks = array())
     {
         // line 54
@@ -182,7 +193,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
         echo "
     <span class=\"label ";
         // line 56
-        echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messageCount", array())) ? ("") : ("disabled"));
+        echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messageCount", array())) ? ("") : ("disabled"));
         echo "\">
         ";
         // line 57
@@ -217,8 +228,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
 ";
     }
 
-    // line 3
-
+    // line 72
     public function block_panel($context, array $blocks = array())
     {
         // line 73
@@ -247,7 +257,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
 
     ";
         // line 89
-        if (!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "mailers", array())) {
+        if ( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "mailers", array())) {
             // line 90
             echo "        <div class=\"empty\">
             <p>No e-mail messages were sent.</p>
@@ -287,11 +297,11 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                 echo "</td>
                         <td class=\"font-normal\">";
                 // line 110
-                echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("spooled") : ("sent"));
+                echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("spooled") : ("sent"));
                 echo "</td>
                         <td class=\"font-normal\">";
                 // line 111
-                echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isDefaultMailer", array(0 => $context["name"]), "method")) ? ("This is the default mailer") : (""));
+                echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isDefaultMailer", array(0 => $context["name"]), "method")) ? ("This is the default mailer") : (""));
                 echo "</td>
                     </tr>
                 ";
@@ -319,9 +329,9 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                 echo "</span>
                     <span class=\"label\">";
                 // line 121
-                echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("spooled") : ("sent"));
+                echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isSpool", array(0 => $context["name"]), "method")) ? ("spooled") : ("sent"));
                 echo " ";
-                echo((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messageCount", array(0 => $context["name"]), "method") == 1)) ? ("message") : ("messages"));
+                echo ((($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messageCount", array(0 => $context["name"]), "method") == 1)) ? ("message") : ("messages"));
                 echo "</span>
                 </div>
             ";
@@ -351,7 +361,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                 echo " <span>mailer</span>
                 <small>";
                 // line 131
-                echo(($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isDefaultMailer", array(0 => $context["name"]), "method")) ? ("(default app mailer)") : (""));
+                echo (($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "isDefaultMailer", array(0 => $context["name"]), "method")) ? ("(default app mailer)") : (""));
                 echo "</small>
             </h3>
         ";
@@ -360,7 +370,7 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
             echo "
         ";
             // line 135
-            if (!$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messages", array(0 => $context["name"]), "method")) {
+            if ( !$this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messages", array(0 => $context["name"]), "method")) {
                 // line 136
                 echo "            <div class=\"empty\">
                 <p>No e-mail messages were sent.</p>
@@ -372,10 +382,10 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
                 $context['_parent'] = $context;
                 $context['_seq'] = twig_ensure_traversable($this->getAttribute((isset($context["collector"]) ? $context["collector"] : null), "messages", array(0 => $context["name"]), "method"));
                 $context['loop'] = array(
-                    'parent' => $context['_parent'],
-                    'index0' => 0,
-                    'index' => 1,
-                    'first' => true,
+                  'parent' => $context['_parent'],
+                  'index0' => 0,
+                  'index'  => 1,
+                  'first'  => true,
                 );
                 if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
                     $length = count($context['_seq']);
@@ -540,14 +550,10 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
         $context = array_intersect_key($context, $_parent) + $_parent;
     }
 
-    // line 53
-
     public function getTemplateName()
     {
         return "SwiftmailerBundle:Collector:swiftmailer.html.twig";
     }
-
-    // line 72
 
     public function isTraitable()
     {
@@ -556,13 +562,13 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
 
     public function getDebugInfo()
     {
-        return array(546 => 203, 543 => 202, 528 => 200, 523 => 197, 514 => 194, 510 => 192, 506 => 191, 501 => 188, 497 => 186, 491 => 184, 489 => 183, 485 => 181, 482 => 180, 480 => 179, 477 => 178, 468 => 175, 465 => 173, 462 => 171, 460 => 170, 456 => 168, 453 => 167, 448 => 166, 443 => 163, 440 => 161, 437 => 159, 435 => 158, 428 => 152, 422 => 151, 418 => 150, 412 => 146, 408 => 144, 402 => 142, 399 => 141, 381 => 140, 375 => 136, 373 => 135, 370 => 134, 364 => 131, 360 => 130, 357 => 129, 354 => 128, 350 => 127, 347 => 126, 343 => 124, 332 => 121, 328 => 120, 325 => 119, 321 => 118, 318 => 117, 313 => 114, 304 => 111, 300 => 110, 296 => 109, 292 => 108, 289 => 107, 285 => 106, 273 => 96, 271 => 95, 268 => 94, 262 => 90, 260 => 89, 255 => 86, 243 => 76, 241 => 75, 238 => 74, 235 => 73, 232 => 72, 227 => 69, 221 => 66, 218 => 65, 216 => 64, 212 => 62, 206 => 60, 202 => 58, 200 => 57, 196 => 56, 193 => 55, 190 => 54, 187 => 53, 180 => 49, 177 => 48, 174 => 47, 171 => 46, 162 => 43, 158 => 42, 154 => 41, 151 => 40, 146 => 39, 143 => 38, 129 => 37, 125 => 35, 123 => 34, 117 => 31, 110 => 27, 106 => 26, 103 => 25, 85 => 24, 83 => 23, 77 => 20, 73 => 18, 71 => 17, 68 => 16, 65 => 15, 60 => 13, 55 => 12, 50 => 10, 47 => 9, 44 => 8, 41 => 7, 39 => 6, 36 => 5, 33 => 4, 30 => 3, 11 => 1,);
+        return array (  546 => 203,  543 => 202,  528 => 200,  523 => 197,  514 => 194,  510 => 192,  506 => 191,  501 => 188,  497 => 186,  491 => 184,  489 => 183,  485 => 181,  482 => 180,  480 => 179,  477 => 178,  468 => 175,  465 => 173,  462 => 171,  460 => 170,  456 => 168,  453 => 167,  448 => 166,  443 => 163,  440 => 161,  437 => 159,  435 => 158,  428 => 152,  422 => 151,  418 => 150,  412 => 146,  408 => 144,  402 => 142,  399 => 141,  381 => 140,  375 => 136,  373 => 135,  370 => 134,  364 => 131,  360 => 130,  357 => 129,  354 => 128,  350 => 127,  347 => 126,  343 => 124,  332 => 121,  328 => 120,  325 => 119,  321 => 118,  318 => 117,  313 => 114,  304 => 111,  300 => 110,  296 => 109,  292 => 108,  289 => 107,  285 => 106,  273 => 96,  271 => 95,  268 => 94,  262 => 90,  260 => 89,  255 => 86,  243 => 76,  241 => 75,  238 => 74,  235 => 73,  232 => 72,  227 => 69,  221 => 66,  218 => 65,  216 => 64,  212 => 62,  206 => 60,  202 => 58,  200 => 57,  196 => 56,  193 => 55,  190 => 54,  187 => 53,  180 => 49,  177 => 48,  174 => 47,  171 => 46,  162 => 43,  158 => 42,  154 => 41,  151 => 40,  146 => 39,  143 => 38,  129 => 37,  125 => 35,  123 => 34,  117 => 31,  110 => 27,  106 => 26,  103 => 25,  85 => 24,  83 => 23,  77 => 20,  73 => 18,  71 => 17,  68 => 16,  65 => 15,  60 => 13,  55 => 12,  50 => 10,  47 => 9,  44 => 8,  41 => 7,  39 => 6,  36 => 5,  33 => 4,  30 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -570,15 +576,5 @@ class __TwigTemplate_d57426a00fa4a2b7a8eb9cc309977c38a16927c564261e848017cdca5e5
     public function getSourceContext()
     {
         return new Twig_Source("", "SwiftmailerBundle:Collector:swiftmailer.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\swiftmailer-bundle/Resources/views/Collector/swiftmailer.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "@WebProfiler/Profiler/layout.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

@@ -19,7 +19,7 @@ class YamlMonologExtensionTest extends FixtureMonologExtensionTest
 {
     protected function loadFixture(ContainerBuilder $container, $fixture)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/yml'));
-        $loader->load($fixture . '.yml');
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/yml'));
+        $loader->load($fixture.'.yml');
     }
 }

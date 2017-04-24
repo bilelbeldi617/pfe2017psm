@@ -30,7 +30,7 @@ final class UserSecurityIdentity implements SecurityIdentityInterface
      * Constructor.
      *
      * @param string $username the username representation
-     * @param string $class the user's fully qualified class name
+     * @param string $class    the user's fully qualified class name
      *
      * @throws \InvalidArgumentException
      */
@@ -43,8 +43,20 @@ final class UserSecurityIdentity implements SecurityIdentityInterface
             throw new \InvalidArgumentException('$class must not be empty.');
         }
 
-        $this->username = (string)$username;
+        $this->username = (string) $username;
         $this->class = $class;
+    }
+
+    /**
+     * Creates a user security identity from a UserInterface.
+     *
+     * @param UserInterface $user
+     *
+     * @return UserSecurityIdentity
+     */
+    public static function fromAccount(UserInterface $user)
+    {
+        return new self($user->getUsername(), ClassUtils::getRealClass($user));
     }
 
     /**
@@ -62,32 +74,7 @@ final class UserSecurityIdentity implements SecurityIdentityInterface
             return self::fromAccount($user);
         }
 
-        return new self((string)$user, is_object($user) ? ClassUtils::getRealClass($user) : ClassUtils::getRealClass($token));
-    }
-
-    /**
-     * Creates a user security identity from a UserInterface.
-     *
-     * @param UserInterface $user
-     *
-     * @return UserSecurityIdentity
-     */
-    public static function fromAccount(UserInterface $user)
-    {
-        return new self($user->getUsername(), ClassUtils::getRealClass($user));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function equals(SecurityIdentityInterface $sid)
-    {
-        if (!$sid instanceof self) {
-            return false;
-        }
-
-        return $this->username === $sid->getUsername()
-            && $this->class === $sid->getClass();
+        return new self((string) $user, is_object($user) ? ClassUtils::getRealClass($user) : ClassUtils::getRealClass($token));
     }
 
     /**
@@ -108,6 +95,19 @@ final class UserSecurityIdentity implements SecurityIdentityInterface
     public function getClass()
     {
         return $this->class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function equals(SecurityIdentityInterface $sid)
+    {
+        if (!$sid instanceof self) {
+            return false;
+        }
+
+        return $this->username === $sid->getUsername()
+               && $this->class === $sid->getClass();
     }
 
     /**

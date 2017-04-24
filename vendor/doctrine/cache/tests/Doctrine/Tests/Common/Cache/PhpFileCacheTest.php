@@ -25,7 +25,7 @@ class PhpFileCacheTest extends BaseFileCacheTest
         $cache = $this->_getCacheDriver();
 
         // Test save
-        $cache->save('test_set_state', new SetStateClass(array(1, 2, 3)));
+        $cache->save('test_set_state', new SetStateClass(array(1,2,3)));
 
         //Test __set_state call
         $this->assertCount(0, SetStateClass::$values);
@@ -33,7 +33,7 @@ class PhpFileCacheTest extends BaseFileCacheTest
         // Test fetch
         $value = $cache->fetch('test_set_state');
         $this->assertInstanceOf('Doctrine\Tests\Common\Cache\SetStateClass', $value);
-        $this->assertEquals(array(1, 2, 3), $value->getValue());
+        $this->assertEquals(array(1,2,3), $value->getValue());
 
         //Test __set_state call
         $this->assertCount(1, SetStateClass::$values);
@@ -42,17 +42,12 @@ class PhpFileCacheTest extends BaseFileCacheTest
         $this->assertTrue($cache->contains('test_set_state'));
     }
 
-    protected function _getCacheDriver()
-    {
-        return new PhpFileCache($this->directory);
-    }
-
     public function testNotImplementsSetState()
     {
         $cache = $this->_getCacheDriver();
 
         $this->setExpectedException('InvalidArgumentException');
-        $cache->save('test_not_set_state', new NotSetStateClass(array(1, 2, 3)));
+        $cache->save('test_not_set_state', new NotSetStateClass(array(1,2,3)));
     }
 
     public function testGetStats()
@@ -65,6 +60,11 @@ class PhpFileCacheTest extends BaseFileCacheTest
         $this->assertNull($stats[Cache::STATS_UPTIME]);
         $this->assertEquals(0, $stats[Cache::STATS_MEMORY_USAGE]);
         $this->assertGreaterThan(0, $stats[Cache::STATS_MEMORY_AVAILABLE]);
+    }
+
+    protected function _getCacheDriver()
+    {
+        return new PhpFileCache($this->directory);
     }
 }
 

@@ -9,11 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . '/FilesystemHelper.php';
-
-interface Twig_EnvironmentTestLoaderInterface extends Twig_LoaderInterface, Twig_SourceContextLoaderInterface
-{
-}
+require_once dirname(__FILE__).'/FilesystemHelper.php';
 
 class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
 {
@@ -176,7 +172,7 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
 
     public function testExtensionsAreNotInitializedWhenRenderingACompiledTemplate()
     {
-        $cache = new Twig_Cache_Filesystem($dir = sys_get_temp_dir() . '/twig');
+        $cache = new Twig_Cache_Filesystem($dir = sys_get_temp_dir().'/twig');
         $options = array('cache' => $cache, 'auto_reload' => false, 'debug' => false);
 
         // force compilation
@@ -190,7 +186,8 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
             ->getMockBuilder('Twig_Environment')
             ->setConstructorArgs(array($loader, $options))
             ->setMethods(array('initExtensions'))
-            ->getMock();
+            ->getMock()
+        ;
 
         $twig->expects($this->never())->method('initExtensions');
 
@@ -226,23 +223,6 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
             ->method('load');
 
         $twig->loadTemplate($templateName);
-    }
-
-    protected function getMockLoader($templateName, $templateContent)
-    {
-        // to be removed in 2.0
-        $loader = $this->getMockBuilder('Twig_EnvironmentTestLoaderInterface')->getMock();
-        //$loader = $this->getMockBuilder(array('Twig_LoaderInterface', 'Twig_SourceContextLoaderInterface'))->getMock();
-        $loader->expects($this->any())
-            ->method('getSourceContext')
-            ->with($templateName)
-            ->will($this->returnValue(new Twig_Source($templateContent, $templateName)));
-        $loader->expects($this->any())
-            ->method('getCacheKey')
-            ->with($templateName)
-            ->will($this->returnValue($templateName));
-
-        return $loader;
     }
 
     public function testAutoReloadCacheHit()
@@ -493,6 +473,23 @@ EOF
         $this->assertEquals('bar', $twig->render('func_string_default'));
         $this->assertEquals('foo', $twig->render('func_string_named_args'));
     }
+
+    protected function getMockLoader($templateName, $templateContent)
+    {
+        // to be removed in 2.0
+        $loader = $this->getMockBuilder('Twig_EnvironmentTestLoaderInterface')->getMock();
+        //$loader = $this->getMockBuilder(array('Twig_LoaderInterface', 'Twig_SourceContextLoaderInterface'))->getMock();
+        $loader->expects($this->any())
+          ->method('getSourceContext')
+          ->with($templateName)
+          ->will($this->returnValue(new Twig_Source($templateContent, $templateName)));
+        $loader->expects($this->any())
+          ->method('getCacheKey')
+          ->with($templateName)
+          ->will($this->returnValue($templateName));
+
+        return $loader;
+    }
 }
 
 class Twig_Tests_EnvironmentTest_Extension_WithGlobals extends Twig_Extension
@@ -641,12 +638,15 @@ class Twig_Tests_EnvironmentTest_ExtensionWithoutRuntime extends Twig_Extension
     }
 }
 
-// to be removed in 2.0
-
 class Twig_Tests_EnvironmentTest_Runtime
 {
     public function fromRuntime($name = 'bar')
     {
         return $name;
     }
+}
+
+// to be removed in 2.0
+interface Twig_EnvironmentTestLoaderInterface extends Twig_LoaderInterface, Twig_SourceContextLoaderInterface
+{
 }

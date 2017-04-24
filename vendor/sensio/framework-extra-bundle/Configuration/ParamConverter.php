@@ -69,9 +69,9 @@ class ParamConverter extends ConfigurationAnnotation
      *
      * @param string $name The parameter name
      */
-    public function setName($name)
+    public function setValue($name)
     {
-        $this->name = $name;
+        $this->setName($name);
     }
 
     /**
@@ -79,9 +79,9 @@ class ParamConverter extends ConfigurationAnnotation
      *
      * @param string $name The parameter name
      */
-    public function setValue($name)
+    public function setName($name)
     {
-        $this->setName($name);
+        $this->name = $name;
     }
 
     /**
@@ -131,7 +131,7 @@ class ParamConverter extends ConfigurationAnnotation
      */
     public function setIsOptional($optional)
     {
-        $this->optional = (bool)$optional;
+        $this->optional = (bool) $optional;
     }
 
     /**

@@ -31,24 +31,7 @@ class FilesystemLoader extends Loader
      */
     public function __construct($templatePathPatterns)
     {
-        $this->templatePathPatterns = (array)$templatePathPatterns;
-    }
-
-    /**
-     * Returns true if the template is still fresh.
-     *
-     * @param TemplateReferenceInterface $template A template
-     * @param int $time The last modification time of the cached template (timestamp)
-     *
-     * @return bool true if the template is still fresh, false otherwise
-     */
-    public function isFresh(TemplateReferenceInterface $template, $time)
-    {
-        if (false === $storage = $this->load($template)) {
-            return false;
-        }
-
-        return filemtime((string)$storage) < $time;
+        $this->templatePathPatterns = (array) $templatePathPatterns;
     }
 
     /**
@@ -68,7 +51,7 @@ class FilesystemLoader extends Loader
 
         $replacements = array();
         foreach ($template->all() as $key => $value) {
-            $replacements['%' . $key . '%'] = $value;
+            $replacements['%'.$key.'%'] = $value;
         }
 
         $fileFailures = array();
@@ -100,6 +83,23 @@ class FilesystemLoader extends Loader
         }
 
         return false;
+    }
+
+    /**
+     * Returns true if the template is still fresh.
+     *
+     * @param TemplateReferenceInterface $template A template
+     * @param int                        $time     The last modification time of the cached template (timestamp)
+     *
+     * @return bool true if the template is still fresh, false otherwise
+     */
+    public function isFresh(TemplateReferenceInterface $template, $time)
+    {
+        if (false === $storage = $this->load($template)) {
+            return false;
+        }
+
+        return filemtime((string) $storage) < $time;
     }
 
     /**

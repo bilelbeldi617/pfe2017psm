@@ -54,20 +54,12 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->builder->build();
 
         $this->assertFileExists($this->tmpDir);
-        $this->assertFileExists($this->tmpDir . '/annotations');
-        $this->assertFileExists($this->tmpDir . '/metadata');
+        $this->assertFileExists($this->tmpDir.'/annotations');
+        $this->assertFileExists($this->tmpDir.'/metadata');
 
         $factory = $this->getField($serializer, 'factory');
         $this->assertAttributeSame(false, 'debug', $factory);
         $this->assertAttributeNotSame(null, 'cache', $factory);
-    }
-
-    private function getField($obj, $name)
-    {
-        $ref = new \ReflectionProperty($obj, $name);
-        $ref->setAccessible(true);
-
-        return $ref->getValue($obj);
     }
 
     public function testDoesAddDefaultHandlers()
@@ -79,7 +71,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()
     {
-        $this->assertSame($this->builder, $this->builder->configureHandlers(function (HandlerRegistry $registry) {
+        $this->assertSame($this->builder, $this->builder->configureHandlers(function(HandlerRegistry $registry) {
         }));
 
         $this->assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
@@ -122,19 +114,12 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function getIncludeInterfaces(SerializerBuilder $builder)
-    {
-        $factory = $this->getField($builder->build(), 'factory');
-
-        return $this->getField($factory, 'includeInterfaces');
-    }
-
     protected function setUp()
     {
         $this->builder = SerializerBuilder::create();
         $this->fs = new Filesystem();
 
-        $this->tmpDir = sys_get_temp_dir() . '/serializer';
+        $this->tmpDir = sys_get_temp_dir().'/serializer';
         $this->fs->remove($this->tmpDir);
         clearstatcache();
     }
@@ -142,5 +127,20 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         $this->fs->remove($this->tmpDir);
+    }
+
+    private function getField($obj, $name)
+    {
+        $ref = new \ReflectionProperty($obj, $name);
+        $ref->setAccessible(true);
+
+        return $ref->getValue($obj);
+    }
+
+    private function getIncludeInterfaces(SerializerBuilder $builder)
+    {
+        $factory = $this->getField($builder->build(), 'factory');
+
+        return $this->getField($factory, 'includeInterfaces');
     }
 }

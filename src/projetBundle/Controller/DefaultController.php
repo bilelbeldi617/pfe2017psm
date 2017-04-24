@@ -24,41 +24,44 @@ class DefaultController extends Controller
     /**
      * @Route("/sendmail", name="sendmail")
      */
-    public function sendmailAction(Request $request)
-    {
+    public function sendmailAction(Request $request){
 
         $dest = $request->get("destination");
         $login = $request->get("login");
         $password = $request->get("pass");
-        $messageCorps = "Login : " . $login . " pass : " . $password;
-        $serializer = SerializerBuilder::create()->build();
+        $messageCorps = "Login : ".$login." pass : ".$password;
+        $serializer = SerializerBuilder::create()->build() ;
 
         try {
             $message = \Swift_Message::newInstance(null);
-            $fromadress = "primaschooltest@gmail.com";
+            $fromadress = "primaschooltest@gmail.com" ;
             $message->setFrom($fromadress);
             $message->setTo($dest);
             $message->setSubject("Un parent");
-            $message->setContentType("text/html");
+            $message->setContentType("text/html") ;
             $message->setBody($messageCorps);
             $mailer = $this->get("mailer");
             $mailer->send($message);
 
-            return new Response($serializer->serialize(array("status" => "inserted"), 'json'));
+            return new Response($serializer->serialize(array("status"=>"inserted"), 'json')) ;
         } catch (Exception $e) {
-            echo $e->getMessage();
-            return new Response($serializer->serialize(array("status" => "error"), 'json'));
+            echo $e->getMessage() ;
+            return new Response($serializer->serialize(array("status"=>"error"), 'json')) ;
         }
+
+
+
+
 
 
     }
 
 
+
     /**
      * @Route("/", name="index")
      */
-    public function indexAction()
-    {
+    public function indexAction(){
 
         return $this->redirect($this->generateUrl("login"));
 
@@ -67,10 +70,9 @@ class DefaultController extends Controller
     /**
      * @Route("/testEleve", name="testEleve")
      */
-    public function testEleveAction()
-    {
+    public function testEleveAction(){
 
-        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve" => "97585455"));
+        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve"=>"97585455"));
         echo var_dump($eleve);
         die;
     }
@@ -78,41 +80,44 @@ class DefaultController extends Controller
     /**
      * @Route("/testAnnee", name="testAnnee")
      */
-    public function testAnneeAction()
-    {
+    public function testAnneeAction(){
 
         $dateAujourdhui = new \DateTime("now");
         $year = $dateAujourdhui->format("Y");
         $m = $dateAujourdhui->format("m");
         $anneeScolaireCourant = "";
-        if (($m > 6) && ($m <= 9)) {
+        if(($m>6) && ($m<=9)) {
 
-            $anneeScolaireCourant = $year . "/" . ($year + 1);
-        } else {
-            $anneeScolaireCourant = ($year - 1) . "/" . $year;
+            $anneeScolaireCourant = $year."/".($year + 1);
+        }else{
+            $anneeScolaireCourant = ($year-1)."/".$year;
         }
-        $a = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("courante" => 1));
+            $a = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("courante"=>1));
 
-        if ($a->getPeriode() == $anneeScolaireCourant) {
-            //echo ("le");
+            if($a->getPeriode() == $anneeScolaireCourant){
+                //echo ("le");
 
-        } else {
-            //echo("oui");
-            $a->setCourante(0);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($a);
-            $em->flush();
-            $anneeScolaire = new AnneeScolaire();
-            $anneeScolaire->setPeriode($anneeScolaireCourant);
-            $anneeScolaire->setCourante(1);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($anneeScolaire);
-            $em->flush();
+            }else{
+                //echo("oui");
+                $a->setCourante(0);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($a);
+                $em->flush();
+                $anneeScolaire = new AnneeScolaire();
+                $anneeScolaire->setPeriode($anneeScolaireCourant);
+                $anneeScolaire->setCourante(1);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($anneeScolaire);
+                $em->flush();
 
-        }
+            }
+
+
+
 
 
     }
+
 
 
     /**
@@ -120,35 +125,36 @@ class DefaultController extends Controller
      */
     public function loginAction(Request $request)
     {
-        if ($request->getMethod() == "POST") {
+        if($request->getMethod() == "POST"){
 
 
-            $login = mysql_real_escape_string($request->get("login"));
-            $password = mysql_real_escape_string($request->get("password"));
 
-            $em = $this->getDoctrine()->getRepository("projetBundle:PersonnelAdministratif");
-            $pa = new PersonnelAdministratif();
-            $pa = $em->findOneBy(array("loginPa" => $login, "passwordPa" => $password));
+            $login = mysql_real_escape_string($request->get("login")) ;
+            $password = mysql_real_escape_string($request->get("password")) ;
+
+            $em=$this->getDoctrine()->getRepository("projetBundle:PersonnelAdministratif") ;
+            $pa = new PersonnelAdministratif() ;
+            $pa = $em->findOneBy(array("loginPa"=>$login, "passwordPa"=>$password)) ;
 
 
             $dateAujourdhui = new \DateTime("now");
             $year = $dateAujourdhui->format("Y");
             $m = $dateAujourdhui->format("m");
             $anneeScolaireCourant = "";
-            if (($m > 6) && ($m <= 9)) {
+            if(($m>6) && ($m<=9)) {
 
-                $anneeScolaireCourant = $year . "/" . ($year + 1);
-            } else {
-                $anneeScolaireCourant = ($year - 1) . "/" . $year;
+                $anneeScolaireCourant = $year."/".($year + 1);
+            }else{
+                $anneeScolaireCourant = ($year-1)."/".$year;
             }
 
-            $a = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("courante" => 1));
+            $a = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("courante"=>1));
 
 
-            if ($a->getPeriode() == $anneeScolaireCourant) {
+            if($a->getPeriode() == $anneeScolaireCourant){
 
 
-            } else {
+            }else{
                 //echo("oui");
                 $a->setCourante(0);
                 $em = $this->getDoctrine()->getManager();
@@ -164,52 +170,54 @@ class DefaultController extends Controller
 
             }
 
-            if ($pa != null) {
+            if ($pa != null){
 
-                $session = $request->getSession();
-                $session->start();
-                $session->set("user", $pa);
+                $session = $request->getSession() ;
+                $session->start() ;
+                $session->set("user", $pa) ;
                 $session->set("anneeScolaireCourante", $a);
-                $session->set("userType", "admin");
+                $session->set("userType", "admin") ;
                 return $this->redirect($this->generateUrl("dashAdmin"));
 
 
-            } else {
+            }else {
 
                 $em = $this->getDoctrine()->getRepository("projetBundle:Enseignant");
                 $enseignant = new Enseignant();
-                $enseignant = $em->findOneBy(array("loginEnseignant" => $login, "passwordEnseignant" => $password));
-                if ($enseignant != null) {
-                    $session = $request->getSession();
-                    $session->start();
+                $enseignant = $em->findOneBy(array("loginEnseignant"=>$login, "passwordEnseignant"=>$password));
+                if ($enseignant != null){
+                    $session = $request->getSession() ;
+                    $session->start() ;
                     $session->set("anneeScoalireCourante", $a);
-                    $session->set("user", $enseignant);
-                    $session->set("userType", "enseignant");
+                    $session->set("user", $enseignant) ;
+                    $session->set("userType", "enseignant") ;
                     return $this->redirect($this->generateUrl("dashEnseignant"));
 
-                    //return $this->render('projetBundle:Default:login.html.twig',array("message"=>"Login et mot de passe introuvable !") );
+                //return $this->render('projetBundle:Default:login.html.twig',array("message"=>"Login et mot de passe introuvable !") );
 
-                } else {
+            }else{
                     //return $this->render('projetBundle:Default:login.html.twig',array("message"=>"Login et mot de passe introuvable !") );
                     $em = $this->getDoctrine()->getRepository("projetBundle:ParentEleve");
                     $parent = new ParentEleve();
-                    $parent = $em->findOneBy(array("loginParent" => $login, "passwordParent" => $password));
-                    if ($parent != null) {
-                        $session = $request->getSession();
-                        $session->start();
+                    $parent = $em->findOneBy(array("loginParent"=>$login, "passwordParent"=>$password));
+                    if ($parent != null){
+                        $session = $request->getSession() ;
+                        $session->start() ;
                         $session->set("anneeScoalireCourante", $a);
-                        $session->set("user", $parent);
-                        $session->set("userType", "parent");
+                        $session->set("user", $parent) ;
+                        $session->set("userType", "parent") ;
                         return $this->redirect($this->generateUrl("dashParent"));
-                    } else {
-                        return $this->render('projetBundle:Default:login.html.twig', array("message" => "Login et mot de passe introuvable !"));
+                }else{
+                        return $this->render('projetBundle:Default:login.html.twig',array("message"=>"Login et mot de passe introuvable !") );
                     }
                 }
             }
 
 
-        } else {
-            return $this->render("@projet/Default/login.html.twig");
+
+
+        }else {
+               return $this->render("@projet/Default/login.html.twig") ;
         }
     }
 

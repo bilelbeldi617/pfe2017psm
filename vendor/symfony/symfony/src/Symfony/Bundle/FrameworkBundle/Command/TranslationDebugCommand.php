@@ -85,7 +85,8 @@ You can display information about translations in all registered bundles in a sp
   <info>php %command.full_name% --all en</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -106,19 +107,19 @@ EOF
         $kernel = $this->getContainer()->get('kernel');
 
         // Define Root Path to App folder
-        $transPaths = array($kernel->getRootDir() . '/Resources/');
+        $transPaths = array($kernel->getRootDir().'/Resources/');
 
         // Override with provided Bundle info
         if (null !== $input->getArgument('bundle')) {
             try {
                 $bundle = $kernel->getBundle($input->getArgument('bundle'));
                 $transPaths = array(
-                    $bundle->getPath() . '/Resources/',
+                    $bundle->getPath().'/Resources/',
                     sprintf('%s/Resources/%s/', $kernel->getRootDir(), $bundle->getName()),
                 );
             } catch (\InvalidArgumentException $e) {
                 // such a bundle does not exist, so treat the argument as path
-                $transPaths = array($input->getArgument('bundle') . '/Resources/');
+                $transPaths = array($input->getArgument('bundle').'/Resources/');
 
                 if (!is_dir($transPaths[0])) {
                     throw new \InvalidArgumentException(sprintf('"%s" is neither an enabled bundle nor a directory.', $transPaths[0]));
@@ -126,7 +127,7 @@ EOF
             }
         } elseif ($input->getOption('all')) {
             foreach ($kernel->getBundles() as $bundle) {
-                $transPaths[] = $bundle->getPath() . '/Resources/';
+                $transPaths[] = $bundle->getPath().'/Resources/';
                 $transPaths[] = sprintf('%s/Resources/%s/', $kernel->getRootDir(), $bundle->getName());
             }
         }
@@ -181,8 +182,7 @@ EOF
                 }
 
                 if (!in_array(self::MESSAGE_UNUSED, $states) && true === $input->getOption('only-unused')
-                    || !in_array(self::MESSAGE_MISSING, $states) && true === $input->getOption('only-missing')
-                ) {
+                    || !in_array(self::MESSAGE_MISSING, $states) && true === $input->getOption('only-missing')) {
                     continue;
                 }
 
@@ -206,86 +206,6 @@ EOF
         $io->table($headers, $rows);
     }
 
-    /**
-     * @param string $locale
-     * @param array $transPaths
-     *
-     * @return MessageCatalogue
-     */
-    private function extractMessages($locale, $transPaths)
-    {
-        $extractedCatalogue = new MessageCatalogue($locale);
-        foreach ($transPaths as $path) {
-            $path = $path . 'views';
-            if (is_dir($path)) {
-                $this->getContainer()->get('translation.extractor')->extract($path, $extractedCatalogue);
-            }
-        }
-
-        return $extractedCatalogue;
-    }
-
-    /**
-     * @param string $locale
-     * @param array $transPaths
-     * @param TranslationLoader $loader
-     *
-     * @return MessageCatalogue
-     */
-    private function loadCurrentMessages($locale, $transPaths, TranslationLoader $loader)
-    {
-        $currentCatalogue = new MessageCatalogue($locale);
-        foreach ($transPaths as $path) {
-            $path = $path . 'translations';
-            if (is_dir($path)) {
-                $loader->loadMessages($path, $currentCatalogue);
-            }
-        }
-
-        return $currentCatalogue;
-    }
-
-    /**
-     * @param string $locale
-     * @param array $transPaths
-     * @param TranslationLoader $loader
-     *
-     * @return MessageCatalogue[]
-     */
-    private function loadFallbackCatalogues($locale, $transPaths, TranslationLoader $loader)
-    {
-        $fallbackCatalogues = array();
-        $translator = $this->getContainer()->get('translator');
-        if ($translator instanceof Translator || $translator instanceof DataCollectorTranslator || $translator instanceof LoggingTranslator) {
-            foreach ($translator->getFallbackLocales() as $fallbackLocale) {
-                if ($fallbackLocale === $locale) {
-                    continue;
-                }
-
-                $fallbackCatalogue = new MessageCatalogue($fallbackLocale);
-                foreach ($transPaths as $path) {
-                    $path = $path . 'translations';
-                    if (is_dir($path)) {
-                        $loader->loadMessages($path, $fallbackCatalogue);
-                    }
-                }
-                $fallbackCatalogues[] = $fallbackCatalogue;
-            }
-        }
-
-        return $fallbackCatalogues;
-    }
-
-    private function formatStates(array $states)
-    {
-        $result = array();
-        foreach ($states as $state) {
-            $result[] = $this->formatState($state);
-        }
-
-        return implode(' ', $result);
-    }
-
     private function formatState($state)
     {
         if (self::MESSAGE_MISSING === $state) {
@@ -303,6 +223,16 @@ EOF
         return $state;
     }
 
+    private function formatStates(array $states)
+    {
+        $result = array();
+        foreach ($states as $state) {
+            $result[] = $this->formatState($state);
+        }
+
+        return implode(' ', $result);
+    }
+
     private function formatId($id)
     {
         return sprintf('<fg=cyan;options=bold>%s</>', $id);
@@ -314,12 +244,82 @@ EOF
 
         if (false !== $encoding = mb_detect_encoding($string, null, true)) {
             if (mb_strlen($string, $encoding) > $length) {
-                return mb_substr($string, 0, $length - 3, $encoding) . '...';
+                return mb_substr($string, 0, $length - 3, $encoding).'...';
             }
         } elseif (strlen($string) > $length) {
-            return substr($string, 0, $length - 3) . '...';
+            return substr($string, 0, $length - 3).'...';
         }
 
         return $string;
+    }
+
+    /**
+     * @param string $locale
+     * @param array  $transPaths
+     *
+     * @return MessageCatalogue
+     */
+    private function extractMessages($locale, $transPaths)
+    {
+        $extractedCatalogue = new MessageCatalogue($locale);
+        foreach ($transPaths as $path) {
+            $path = $path.'views';
+            if (is_dir($path)) {
+                $this->getContainer()->get('translation.extractor')->extract($path, $extractedCatalogue);
+            }
+        }
+
+        return $extractedCatalogue;
+    }
+
+    /**
+     * @param string            $locale
+     * @param array             $transPaths
+     * @param TranslationLoader $loader
+     *
+     * @return MessageCatalogue
+     */
+    private function loadCurrentMessages($locale, $transPaths, TranslationLoader $loader)
+    {
+        $currentCatalogue = new MessageCatalogue($locale);
+        foreach ($transPaths as $path) {
+            $path = $path.'translations';
+            if (is_dir($path)) {
+                $loader->loadMessages($path, $currentCatalogue);
+            }
+        }
+
+        return $currentCatalogue;
+    }
+
+    /**
+     * @param string            $locale
+     * @param array             $transPaths
+     * @param TranslationLoader $loader
+     *
+     * @return MessageCatalogue[]
+     */
+    private function loadFallbackCatalogues($locale, $transPaths, TranslationLoader $loader)
+    {
+        $fallbackCatalogues = array();
+        $translator = $this->getContainer()->get('translator');
+        if ($translator instanceof Translator || $translator instanceof DataCollectorTranslator || $translator instanceof LoggingTranslator) {
+            foreach ($translator->getFallbackLocales() as $fallbackLocale) {
+                if ($fallbackLocale === $locale) {
+                    continue;
+                }
+
+                $fallbackCatalogue = new MessageCatalogue($fallbackLocale);
+                foreach ($transPaths as $path) {
+                    $path = $path.'translations';
+                    if (is_dir($path)) {
+                        $loader->loadMessages($path, $fallbackCatalogue);
+                    }
+                }
+                $fallbackCatalogues[] = $fallbackCatalogue;
+            }
+        }
+
+        return $fallbackCatalogues;
     }
 }

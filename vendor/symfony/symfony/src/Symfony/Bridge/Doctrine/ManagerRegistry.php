@@ -30,14 +30,6 @@ abstract class ManagerRegistry extends AbstractManagerRegistry implements Contai
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getService($name)
     {
         return $this->container->get($name);
@@ -49,5 +41,13 @@ abstract class ManagerRegistry extends AbstractManagerRegistry implements Contai
     protected function resetService($name)
     {
         $this->container->set($name, null);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 }

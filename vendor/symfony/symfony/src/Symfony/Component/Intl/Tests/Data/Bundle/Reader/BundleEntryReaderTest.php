@@ -21,6 +21,17 @@ use Symfony\Component\Intl\Data\Bundle\Reader\BundleEntryReader;
 class BundleEntryReaderTest extends TestCase
 {
     const RES_DIR = '/res/dir';
+
+    /**
+     * @var BundleEntryReader
+     */
+    private $reader;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $readerImpl;
+
     private static $data = array(
         'Entries' => array(
             'Foo' => 'Bar',
@@ -29,6 +40,7 @@ class BundleEntryReaderTest extends TestCase
         'Foo' => 'Bar',
         'Version' => '2.0',
     );
+
     private static $fallbackData = array(
         'Entries' => array(
             'Foo' => 'Foo',
@@ -37,6 +49,7 @@ class BundleEntryReaderTest extends TestCase
         'Baz' => 'Foo',
         'Version' => '1.0',
     );
+
     private static $mergedData = array(
         // no recursive merging -> too complicated
         'Entries' => array(
@@ -47,14 +60,12 @@ class BundleEntryReaderTest extends TestCase
         'Version' => '2.0',
         'Foo' => 'Bar',
     );
-    /**
-     * @var BundleEntryReader
-     */
-    private $reader;
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $readerImpl;
+
+    protected function setUp()
+    {
+        $this->readerImpl = $this->getMockBuilder('Symfony\Component\Intl\Data\Bundle\Reader\BundleEntryReaderInterface')->getMock();
+        $this->reader = new BundleEntryReader($this->readerImpl);
+    }
 
     public function testForwardCallToRead()
     {
@@ -351,11 +362,5 @@ class BundleEntryReaderTest extends TestCase
         }
 
         $this->assertSame($result, $this->reader->readEntry(self::RES_DIR, 'mo', array('Foo', 'Bar'), true));
-    }
-
-    protected function setUp()
-    {
-        $this->readerImpl = $this->getMockBuilder('Symfony\Component\Intl\Data\Bundle\Reader\BundleEntryReaderInterface')->getMock();
-        $this->reader = new BundleEntryReader($this->readerImpl);
     }
 }

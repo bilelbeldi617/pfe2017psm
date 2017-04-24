@@ -6,11 +6,11 @@
 
 {% block script %}
     <script language="JavaScript">
-        $("document").ready(function () {
-            $("#tableEleve").dataTable();
+        $("document").ready(function(){
+           $("#tableEleve").dataTable();
         });
     </script>
-{% endblock %}
+    {% endblock %}
 
 {% block mainContent %}
 
@@ -49,21 +49,18 @@
                     </tr>
                     </tfoot>
                     <tbody id="tableBody">
-                    {% for e in listEleves %}
-                        <tr>
-                            <td><a href="{{ path('affecter') }}?matEleve={{ e.matriculeEleve }}"><input type="button"
-                                                                                                        value="Affecter à un groupe"
-                                                                                                        class="btn btn-primary"></a>
-                            </td>
-                            <td>{{ e.niveauEleve }}</td>
-                            <td>{{ e.matriculeEleve }}</td>
-                            <td>{{ e.nomEleve }}</td>
-                            <td>{{ e.prenomEleve }}</td>
-                            <td>{{ e.dateNaissanceEleve }}</td>
-                            <td>{{ e.parent.nomParent }} {{ e.parent.prenomParent }}</td>
+                        {% for e in listEleves %}
+                            <tr>
+                                <td><a href="{{ path('affecter') }}?matEleve={{ e.matriculeEleve }}"><input type="button" value="Affecter à un groupe" class="btn btn-primary"></a></td>
+                                <td>{{ e.niveauEleve }}</td>
+                                <td>{{ e.matriculeEleve }}</td>
+                                <td>{{ e.nomEleve }}</td>
+                                <td>{{ e.prenomEleve }}</td>
+                                <td>{{ e.dateNaissanceEleve }}</td>
+                                <td>{{ e.parent.nomParent }} {{ e.parent.prenomParent }}</td>
 
-                        </tr>
-                    {% endfor %}
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
 

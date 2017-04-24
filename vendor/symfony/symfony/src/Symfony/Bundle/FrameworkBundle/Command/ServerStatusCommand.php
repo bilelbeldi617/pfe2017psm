@@ -36,7 +36,8 @@ class ServerStatusCommand extends ServerCommand
                 new InputOption('port', 'p', InputOption::VALUE_REQUIRED, 'Address port number', '8000'),
             ))
             ->setName('server:status')
-            ->setDescription('Outputs the status of the built-in web server for the given address');
+            ->setDescription('Outputs the status of the built-in web server for the given address')
+        ;
     }
 
     /**
@@ -48,7 +49,7 @@ class ServerStatusCommand extends ServerCommand
         $address = $input->getArgument('address');
 
         if (false === strpos($address, ':')) {
-            $address = $address . ':' . $input->getOption('port');
+            $address = $address.':'.$input->getOption('port');
         }
 
         // remove an orphaned lock file

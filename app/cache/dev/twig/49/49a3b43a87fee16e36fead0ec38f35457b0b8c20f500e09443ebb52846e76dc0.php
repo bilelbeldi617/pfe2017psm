@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:exception.css.twig */
-
 class __TwigTemplate_b5be8c7e8f54b63f2842ba5cc041715fbeb0d1184bfe7228e964890f2c69d30a extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,7 +9,31 @@ class __TwigTemplate_b5be8c7e8f54b63f2842ba5cc041715fbeb0d1184bfe7228e964890f2c6
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_ee6a479eff214c570fe7112d6bbe56f40aa470beb98fe236e1d6525a55bd8f44 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_ee6a479eff214c570fe7112d6bbe56f40aa470beb98fe236e1d6525a55bd8f44->enter($__internal_ee6a479eff214c570fe7112d6bbe56f40aa470beb98fe236e1d6525a55bd8f44_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:exception.css.twig"));
+
+        // line 1
+        echo "/*
+";
+        // line 2
+        $this->loadTemplate("@Twig/Exception/exception.txt.twig", "TwigBundle:Exception:exception.css.twig", 2)->display(array_merge($context, array("exception" => (isset($context["exception"]) ? $context["exception"] : $this->getContext($context, "exception")))));
+        // line 3
+        echo "*/
+";
+        
+        $__internal_ee6a479eff214c570fe7112d6bbe56f40aa470beb98fe236e1d6525a55bd8f44->leave($__internal_ee6a479eff214c570fe7112d6bbe56f40aa470beb98fe236e1d6525a55bd8f44_prof);
+
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle:Exception:exception.css.twig";
     }
 
     public function isTraitable()
@@ -20,13 +43,13 @@ class __TwigTemplate_b5be8c7e8f54b63f2842ba5cc041715fbeb0d1184bfe7228e964890f2c6
 
     public function getDebugInfo()
     {
-        return array(27 => 3, 25 => 2, 22 => 1,);
+        return array (  27 => 3,  25 => 2,  22 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -37,28 +60,5 @@ class __TwigTemplate_b5be8c7e8f54b63f2842ba5cc041715fbeb0d1184bfe7228e964890f2c6
 {% include '@Twig/Exception/exception.txt.twig' with { 'exception': exception } %}
 */
 ", "TwigBundle:Exception:exception.css.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.css.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_5413e5c5c78cca11bd86b29c0fb47e9d436e5285e86bf28e320123cb2f11039a = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_5413e5c5c78cca11bd86b29c0fb47e9d436e5285e86bf28e320123cb2f11039a->enter($__internal_5413e5c5c78cca11bd86b29c0fb47e9d436e5285e86bf28e320123cb2f11039a_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:exception.css.twig"));
-
-        // line 1
-        echo "/*
-";
-        // line 2
-        $this->loadTemplate("@Twig/Exception/exception.txt.twig", "TwigBundle:Exception:exception.css.twig", 2)->display(array_merge($context, array("exception" => (isset($context["exception"]) ? $context["exception"] : $this->getContext($context, "exception")))));
-        // line 3
-        echo "*/
-";
-
-        $__internal_5413e5c5c78cca11bd86b29c0fb47e9d436e5285e86bf28e320123cb2f11039a->leave($__internal_5413e5c5c78cca11bd86b29c0fb47e9d436e5285e86bf28e320123cb2f11039a_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "TwigBundle:Exception:exception.css.twig";
     }
 }

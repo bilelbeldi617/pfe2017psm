@@ -31,6 +31,12 @@ class LegacyChoiceListAdapterTest extends TestCase
      */
     private $adaptedList;
 
+    protected function setUp()
+    {
+        $this->adaptedList = $this->getMockBuilder('Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface')->getMock();
+        $this->list = new LegacyChoiceListAdapter($this->adaptedList);
+    }
+
     public function testGetChoices()
     {
         $this->adaptedList->expects($this->once())
@@ -102,11 +108,5 @@ class LegacyChoiceListAdapterTest extends TestCase
     public function testGetAdaptedList()
     {
         $this->assertSame($this->adaptedList, $this->list->getAdaptedList());
-    }
-
-    protected function setUp()
-    {
-        $this->adaptedList = $this->getMockBuilder('Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface')->getMock();
-        $this->list = new LegacyChoiceListAdapter($this->adaptedList);
     }
 }

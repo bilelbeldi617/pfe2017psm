@@ -32,25 +32,6 @@ class PhpEngineTest extends TestCase
         $this->assertSame($app, $globals['app']);
     }
 
-    /**
-     * Creates a Container with a Session-containing Request service.
-     *
-     * @return Container
-     */
-    protected function getContainer()
-    {
-        $container = new Container();
-        $session = new Session(new MockArraySessionStorage());
-        $request = new Request();
-        $stack = new RequestStack();
-        $stack->push($request);
-
-        $request->setSession($session);
-        $container->set('request_stack', $stack);
-
-        return $container;
-    }
-
     public function testEvaluateWithoutAvailableRequest()
     {
         $container = new Container();
@@ -73,5 +54,24 @@ class PhpEngineTest extends TestCase
         $engine = new PhpEngine(new TemplateNameParser(), $container, $loader);
 
         $engine->get('non-existing-helper');
+    }
+
+    /**
+     * Creates a Container with a Session-containing Request service.
+     *
+     * @return Container
+     */
+    protected function getContainer()
+    {
+        $container = new Container();
+        $session = new Session(new MockArraySessionStorage());
+        $request = new Request();
+        $stack = new RequestStack();
+        $stack->push($request);
+
+        $request->setSession($session);
+        $container->set('request_stack', $stack);
+
+        return $container;
     }
 }

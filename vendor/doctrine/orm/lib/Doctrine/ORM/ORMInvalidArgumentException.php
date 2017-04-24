@@ -37,18 +37,6 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * Helper method to show an object as string.
-     *
-     * @param object $obj
-     *
-     * @return string
-     */
-    private static function objToStr($obj)
-    {
-        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj) . '@' . spl_object_hash($obj);
-    }
-
-    /**
      * @param object $entity
      *
      * @return ORMInvalidArgumentException
@@ -77,7 +65,7 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     static public function entityWithoutIdentity($className, $entity)
     {
         return new self(
-            "The given entity of type '" . $className . "' (" . self::objToStr($entity) . ") has no identity/no " .
+            "The given entity of type '" . $className . "' (".self::objToStr($entity).") has no identity/no " . 
             "id values set. It cannot be added to the identity map."
         );
     }
@@ -93,7 +81,7 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param array $assoc
+     * @param array  $assoc
      * @param object $entry
      *
      * @return ORMInvalidArgumentException
@@ -101,19 +89,19 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     static public function newEntityFoundThroughRelationship(array $assoc, $entry)
     {
         return new self("A new entity was found through the relationship '"
-            . $assoc['sourceEntity'] . "#" . $assoc['fieldName'] . "' that was not"
-            . " configured to cascade persist operations for entity: " . self::objToStr($entry) . "."
-            . " To solve this issue: Either explicitly call EntityManager#persist()"
-            . " on this unknown entity or configure cascade persist "
-            . " this association in the mapping for example @ManyToOne(..,cascade={\"persist\"})."
-            . (method_exists($entry, '__toString') ?
-                "" :
-                " If you cannot find out which entity causes the problem"
-                . " implement '" . $assoc['targetEntity'] . "#__toString()' to get a clue."));
+                            . $assoc['sourceEntity'] . "#" . $assoc['fieldName'] . "' that was not"
+                            . " configured to cascade persist operations for entity: " . self::objToStr($entry) . "."
+                            . " To solve this issue: Either explicitly call EntityManager#persist()"
+                            . " on this unknown entity or configure cascade persist "
+                            . " this association in the mapping for example @ManyToOne(..,cascade={\"persist\"})."
+                            . (method_exists($entry, '__toString') ?
+                                "":
+                                " If you cannot find out which entity causes the problem"
+                               ." implement '" . $assoc['targetEntity'] . "#__toString()' to get a clue."));
     }
 
     /**
-     * @param array $assoc
+     * @param array  $assoc
      * @param object $entry
      *
      * @return ORMInvalidArgumentException
@@ -121,8 +109,8 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     static public function detachedEntityFoundThroughRelationship(array $assoc, $entry)
     {
         return new self("A detached entity of type " . $assoc['targetEntity'] . " (" . self::objToStr($entry) . ") "
-            . " was found through the relationship '" . $assoc['sourceEntity'] . "#" . $assoc['fieldName'] . "' "
-            . "during cascading a persist operation.");
+                        . " was found through the relationship '" . $assoc['sourceEntity'] . "#" . $assoc['fieldName'] . "' "
+                        . "during cascading a persist operation.");
     }
 
     /**
@@ -133,7 +121,7 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     static public function entityNotManaged($entity)
     {
         return new self("Entity " . self::objToStr($entity) . " is not managed. An entity is managed if its fetched " .
-            "from the database or registered as new through EntityManager#persist");
+                "from the database or registered as new through EntityManager#persist");
     }
 
     /**
@@ -144,7 +132,7 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
      */
     static public function entityHasNoIdentity($entity, $operation)
     {
-        return new self("Entity has no identity, therefore " . $operation . " cannot be performed. " . self::objToStr($entity));
+        return new self("Entity has no identity, therefore " . $operation ." cannot be performed. " . self::objToStr($entity));
     }
 
     /**
@@ -155,7 +143,7 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
      */
     static public function entityIsRemoved($entity, $operation)
     {
-        return new self("Entity is removed, therefore " . $operation . " cannot be performed. " . self::objToStr($entity));
+        return new self("Entity is removed, therefore " . $operation ." cannot be performed. " . self::objToStr($entity));
     }
 
     /**
@@ -171,15 +159,15 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
 
     /**
      * @param string $context
-     * @param mixed $given
-     * @param int $parameterIndex
+     * @param mixed  $given
+     * @param int    $parameterIndex
      *
      * @return ORMInvalidArgumentException
      */
     public static function invalidObject($context, $given, $parameterIndex = 1)
     {
         return new self($context . ' expects parameter ' . $parameterIndex .
-            ' to be an entity object, ' . gettype($given) . ' given.');
+                    ' to be an entity object, '. gettype($given) . ' given.');
     }
 
     /**
@@ -197,5 +185,17 @@ class ORMInvalidArgumentException extends \InvalidArgumentException
     public static function invalidIdentifierBindingEntity()
     {
         return new self("Binding entities to query parameters only allowed for entities that have an identifier.");
+    }
+
+    /**
+     * Helper method to show an object as string.
+     *
+     * @param object $obj
+     *
+     * @return string
+     */
+    private static function objToStr($obj)
+    {
+        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj).'@'.spl_object_hash($obj);
     }
 }

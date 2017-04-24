@@ -36,16 +36,6 @@ class PsrResponseListener implements EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::VIEW => 'onKernelView',
-        );
-    }
-
-    /**
      * Do the conversion if applicable and update the response of the event.
      *
      * @param GetResponseForControllerResultEvent $event
@@ -59,5 +49,15 @@ class PsrResponseListener implements EventSubscriberInterface
         }
 
         $event->setResponse($this->httpFoundationFactory->createResponse($controllerResult));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::VIEW => 'onKernelView',
+        );
     }
 }

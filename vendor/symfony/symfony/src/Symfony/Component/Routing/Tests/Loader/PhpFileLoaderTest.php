@@ -30,7 +30,7 @@ class PhpFileLoaderTest extends TestCase
 
     public function testLoadWithRoute()
     {
-        $loader = new PhpFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new PhpFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $routeCollection = $loader->load('validpattern.php');
         $routes = $routeCollection->all();
 
@@ -49,7 +49,7 @@ class PhpFileLoaderTest extends TestCase
 
     public function testLoadWithImport()
     {
-        $loader = new PhpFileLoader(new FileLocator(array(__DIR__ . '/../Fixtures')));
+        $loader = new PhpFileLoader(new FileLocator(array(__DIR__.'/../Fixtures')));
         $routeCollection = $loader->load('validresource.php');
         $routes = $routeCollection->all();
 
@@ -68,7 +68,7 @@ class PhpFileLoaderTest extends TestCase
 
     public function testThatDefiningVariableInConfigFileHasNoSideEffects()
     {
-        $locator = new FileLocator(array(__DIR__ . '/../Fixtures'));
+        $locator = new FileLocator(array(__DIR__.'/../Fixtures'));
         $loader = new PhpFileLoader($locator);
         $routeCollection = $loader->load('with_define_path_variable.php');
         $resources = $routeCollection->getResources();
@@ -77,7 +77,7 @@ class PhpFileLoaderTest extends TestCase
         $fileResource = reset($resources);
         $this->assertSame(
             realpath($locator->locate('with_define_path_variable.php')),
-            (string)$fileResource
+            (string) $fileResource
         );
     }
 }

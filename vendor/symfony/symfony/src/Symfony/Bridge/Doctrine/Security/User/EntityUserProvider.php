@@ -68,16 +68,6 @@ class EntityUserProvider implements UserProviderInterface
         return $user;
     }
 
-    private function getRepository()
-    {
-        return $this->getObjectManager()->getRepository($this->classOrAlias);
-    }
-
-    private function getObjectManager()
-    {
-        return $this->registry->getManager($this->managerName);
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -97,9 +87,9 @@ class EntityUserProvider implements UserProviderInterface
             // That's the case when the user has been changed by a form with
             // validation errors.
             if (!$id = $this->getClassMetadata()->getIdentifierValues($user)) {
-                throw new \InvalidArgumentException('You cannot refresh a user ' .
-                    'from the EntityUserProvider that does not contain an identifier. ' .
-                    'The user object has to be serialized with its own identifier ' .
+                throw new \InvalidArgumentException('You cannot refresh a user '.
+                    'from the EntityUserProvider that does not contain an identifier. '.
+                    'The user object has to be serialized with its own identifier '.
                     'mapped by Doctrine.'
                 );
             }
@@ -111,6 +101,24 @@ class EntityUserProvider implements UserProviderInterface
         }
 
         return $refreshedUser;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsClass($class)
+    {
+        return $class === $this->getClass() || is_subclass_of($class, $this->getClass());
+    }
+
+    private function getObjectManager()
+    {
+        return $this->registry->getManager($this->managerName);
+    }
+
+    private function getRepository()
+    {
+        return $this->getObjectManager()->getRepository($this->classOrAlias);
     }
 
     private function getClass()
@@ -131,13 +139,5 @@ class EntityUserProvider implements UserProviderInterface
     private function getClassMetadata()
     {
         return $this->getObjectManager()->getClassMetadata($this->classOrAlias);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsClass($class)
-    {
-        return $class === $this->getClass() || is_subclass_of($class, $this->getClass());
     }
 }

@@ -65,7 +65,7 @@ abstract class AbstractPreAuthenticatedListener implements ListenerInterface
         }
 
         if (null !== $this->logger) {
-            $this->logger->debug('Checking current security token.', array('token' => (string)$this->tokenStorage->getToken()));
+            $this->logger->debug('Checking current security token.', array('token' => (string) $this->tokenStorage->getToken()));
         }
 
         if (null !== $token = $this->tokenStorage->getToken()) {
@@ -75,14 +75,14 @@ abstract class AbstractPreAuthenticatedListener implements ListenerInterface
         }
 
         if (null !== $this->logger) {
-            $this->logger->debug('Trying to pre-authenticate user.', array('username' => (string)$user));
+            $this->logger->debug('Trying to pre-authenticate user.', array('username' => (string) $user));
         }
 
         try {
             $token = $this->authenticationManager->authenticate(new PreAuthenticatedToken($user, $credentials, $this->providerKey));
 
             if (null !== $this->logger) {
-                $this->logger->info('Pre-authentication successful.', array('token' => (string)$token));
+                $this->logger->info('Pre-authentication successful.', array('token' => (string) $token));
             }
             $this->tokenStorage->setToken($token);
 
@@ -94,15 +94,6 @@ abstract class AbstractPreAuthenticatedListener implements ListenerInterface
             $this->clearToken($e);
         }
     }
-
-    /**
-     * Gets the user and credentials from the Request.
-     *
-     * @param Request $request A Request instance
-     *
-     * @return array An array composed of the user and the credentials
-     */
-    abstract protected function getPreAuthenticatedData(Request $request);
 
     /**
      * Clears a PreAuthenticatedToken for this provider (if present).
@@ -120,4 +111,13 @@ abstract class AbstractPreAuthenticatedListener implements ListenerInterface
             }
         }
     }
+
+    /**
+     * Gets the user and credentials from the Request.
+     *
+     * @param Request $request A Request instance
+     *
+     * @return array An array composed of the user and the credentials
+     */
+    abstract protected function getPreAuthenticatedData(Request $request);
 }

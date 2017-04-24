@@ -59,10 +59,10 @@ class AclProvider implements AclProviderInterface
     /**
      * Constructor.
      *
-     * @param Connection $connection
+     * @param Connection                          $connection
      * @param PermissionGrantingStrategyInterface $permissionGrantingStrategy
-     * @param array $options
-     * @param AclCacheInterface $cache
+     * @param array                               $options
+     * @param AclCacheInterface                   $cache
      */
     public function __construct(Connection $connection, PermissionGrantingStrategyInterface $permissionGrantingStrategy, array $options, AclCacheInterface $cache = null)
     {
@@ -70,6 +70,21 @@ class AclProvider implements AclProviderInterface
         $this->connection = $connection;
         $this->options = $options;
         $this->permissionGrantingStrategy = $permissionGrantingStrategy;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findChildren(ObjectIdentityInterface $parentOid, $directChildrenOnly = false)
+    {
+        $sql = $this->getFindChildrenSql($parentOid, $directChildrenOnly);
+
+        $children = array();
+        foreach ($this->connection->executeQuery($sql)->fetchAll() as $data) {
+            $children[] = new ObjectIdentity($data['object_identifier'], $data['class_type']);
+        }
+
+        return $children;
     }
 
     /**
@@ -91,7 +106,7 @@ class AclProvider implements AclProviderInterface
 
         for ($i = 0, $c = count($oids); $i < $c; ++$i) {
             $oid = $oids[$i];
-            $oidLookupKey = $oid->getIdentifier() . $oid->getType();
+            $oidLookupKey = $oid->getIdentifier().$oid->getType();
             $oidLookup[$oidLookupKey] = $oid;
             $aclFound = false;
 
@@ -178,7 +193,7 @@ class AclProvider implements AclProviderInterface
                         $this->cache->putInCache($loadedAcl);
                     }
 
-                    if (isset($oidLookup[$loadedOid->getIdentifier() . $loadedOid->getType()])) {
+                    if (isset($oidLookup[$loadedOid->getIdentifier().$loadedOid->getType()])) {
                         $result->attach($loadedOid, $loadedAcl);
                     }
                 }
@@ -203,239 +218,6 @@ class AclProvider implements AclProviderInterface
         }
 
         return $result;
-    }
-
-    /**
-     * This method is called when an ACL instance is retrieved from the cache.
-     *
-     * @param AclInterface $acl
-     */
-    private function updateAceIdentityMap(AclInterface $acl)
-    {
-        foreach (array('classAces', 'classFieldAces', 'objectAces', 'objectFieldAces') as $property) {
-            $reflection = new \ReflectionProperty($acl, $property);
-            $reflection->setAccessible(true);
-            $value = $reflection->getValue($acl);
-
-            if ('classAces' === $property || 'objectAces' === $property) {
-                $this->doUpdateAceIdentityMap($value);
-            } else {
-                foreach ($value as $field => $aces) {
-                    $this->doUpdateAceIdentityMap($value[$field]);
-                }
-            }
-
-            $reflection->setValue($acl, $value);
-            $reflection->setAccessible(false);
-        }
-    }
-
-    /**
-     * Does either overwrite the passed ACE, or saves it in the global identity
-     * map to ensure every ACE only gets instantiated once.
-     *
-     * @param array &$aces
-     */
-    private function doUpdateAceIdentityMap(array &$aces)
-    {
-        foreach ($aces as $index => $ace) {
-            if (isset($this->loadedAces[$ace->getId()])) {
-                $aces[$index] = $this->loadedAces[$ace->getId()];
-            } else {
-                $this->loadedAces[$ace->getId()] = $ace;
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findChildren(ObjectIdentityInterface $parentOid, $directChildrenOnly = false)
-    {
-        $sql = $this->getFindChildrenSql($parentOid, $directChildrenOnly);
-
-        $children = array();
-        foreach ($this->connection->executeQuery($sql)->fetchAll() as $data) {
-            $children[] = new ObjectIdentity($data['object_identifier'], $data['class_type']);
-        }
-
-        return $children;
-    }
-
-    /**
-     * Constructs the SQL for retrieving child object identities for the given
-     * object identities.
-     *
-     * @param ObjectIdentityInterface $oid
-     * @param bool $directChildrenOnly
-     *
-     * @return string
-     */
-    protected function getFindChildrenSql(ObjectIdentityInterface $oid, $directChildrenOnly)
-    {
-        if (false === $directChildrenOnly) {
-            $query = <<<FINDCHILDREN
-                SELECT o.object_identifier, c.class_type
-                FROM
-                    {$this->options['oid_table_name']} o
-                INNER JOIN {$this->options['class_table_name']} c ON c.id = o.class_id
-                INNER JOIN {$this->options['oid_ancestors_table_name']} a ON a.object_identity_id = o.id
-                WHERE
-                    a.ancestor_id = %d AND a.object_identity_id != a.ancestor_id
-FINDCHILDREN;
-        } else {
-            $query = <<<FINDCHILDREN
-                SELECT o.object_identifier, c.class_type
-                FROM {$this->options['oid_table_name']} o
-                INNER JOIN {$this->options['class_table_name']} c ON c.id = o.class_id
-                WHERE o.parent_object_identity_id = %d
-FINDCHILDREN;
-        }
-
-        return sprintf($query, $this->retrieveObjectIdentityPrimaryKey($oid));
-    }
-
-    /**
-     * Returns the primary key of the passed object identity.
-     *
-     * @param ObjectIdentityInterface $oid
-     *
-     * @return int
-     */
-    final protected function retrieveObjectIdentityPrimaryKey(ObjectIdentityInterface $oid)
-    {
-        return $this->connection->executeQuery($this->getSelectObjectIdentityIdSql($oid))->fetchColumn();
-    }
-
-    /**
-     * Constructs the SQL for retrieving the primary key of the given object
-     * identity.
-     *
-     * @param ObjectIdentityInterface $oid
-     *
-     * @return string
-     */
-    protected function getSelectObjectIdentityIdSql(ObjectIdentityInterface $oid)
-    {
-        $query = <<<QUERY
-            SELECT o.id
-            FROM %s o
-            INNER JOIN %s c ON c.id = o.class_id
-            WHERE o.object_identifier = %s AND c.class_type = %s
-QUERY;
-
-        return sprintf(
-            $query,
-            $this->options['oid_table_name'],
-            $this->options['class_table_name'],
-            $this->connection->quote((string)$oid->getIdentifier()),
-            $this->connection->quote((string)$oid->getType())
-        );
-    }
-
-    /**
-     * This method is called for object identities which could not be retrieved
-     * from the cache, and for which thus a database query is required.
-     *
-     * @param array $batch
-     * @param array $sids
-     * @param array $oidLookup
-     *
-     * @return \SplObjectStorage mapping object identities to ACL instances
-     *
-     * @throws AclNotFoundException
-     */
-    private function lookupObjectIdentities(array $batch, array $sids, array $oidLookup)
-    {
-        $ancestorIds = $this->getAncestorIds($batch);
-        if (!$ancestorIds) {
-            throw new AclNotFoundException('There is no ACL for the given object identity.');
-        }
-
-        $sql = $this->getLookupSql($ancestorIds);
-        $stmt = $this->connection->executeQuery($sql);
-
-        return $this->hydrateObjectIdentities($stmt, $oidLookup, $sids);
-    }
-
-    /**
-     * Retrieves all the ids which need to be queried from the database
-     * including the ids of parent ACLs.
-     *
-     * @param array $batch
-     *
-     * @return array
-     */
-    private function getAncestorIds(array $batch)
-    {
-        $sql = $this->getAncestorLookupSql($batch);
-
-        $ancestorIds = array();
-        foreach ($this->connection->executeQuery($sql)->fetchAll() as $data) {
-            // FIXME: skip ancestors which are cached
-            // Fix: Oracle returns keys in uppercase
-            $ancestorIds[] = reset($data);
-        }
-
-        return $ancestorIds;
-    }
-
-    protected function getAncestorLookupSql(array $batch)
-    {
-        $sql = <<<SELECTCLAUSE
-            SELECT a.ancestor_id
-            FROM
-                {$this->options['oid_table_name']} o
-            INNER JOIN {$this->options['class_table_name']} c ON c.id = o.class_id
-            INNER JOIN {$this->options['oid_ancestors_table_name']} a ON a.object_identity_id = o.id
-               WHERE (
-SELECTCLAUSE;
-
-        $types = array();
-        $count = count($batch);
-        for ($i = 0; $i < $count; ++$i) {
-            if (!isset($types[$batch[$i]->getType()])) {
-                $types[$batch[$i]->getType()] = true;
-
-                // if there is more than one type we can safely break out of the
-                // loop, because it is the differentiator factor on whether to
-                // query for only one or more class types
-                if (count($types) > 1) {
-                    break;
-                }
-            }
-        }
-
-        if (1 === count($types)) {
-            $ids = array();
-            for ($i = 0; $i < $count; ++$i) {
-                $identifier = (string)$batch[$i]->getIdentifier();
-                $ids[] = $this->connection->quote($identifier);
-            }
-
-            $sql .= sprintf(
-                '(o.object_identifier IN (%s) AND c.class_type = %s)',
-                implode(',', $ids),
-                $this->connection->quote($batch[0]->getType())
-            );
-        } else {
-            $where = '(o.object_identifier = %s AND c.class_type = %s)';
-            for ($i = 0; $i < $count; ++$i) {
-                $sql .= sprintf(
-                    $where,
-                    $this->connection->quote($batch[$i]->getIdentifier()),
-                    $this->connection->quote($batch[$i]->getType())
-                );
-
-                if ($i + 1 < $count) {
-                    $sql .= ' OR ';
-                }
-            }
-        }
-
-        $sql .= ')';
-
-        return $sql;
     }
 
     /**
@@ -481,9 +263,227 @@ SELECTCLAUSE;
             WHERE (o.id =
 SELECTCLAUSE;
 
-        $sql .= implode(' OR o.id = ', $ancestorIds) . ')';
+        $sql .= implode(' OR o.id = ', $ancestorIds).')';
 
         return $sql;
+    }
+
+    protected function getAncestorLookupSql(array $batch)
+    {
+        $sql = <<<SELECTCLAUSE
+            SELECT a.ancestor_id
+            FROM
+                {$this->options['oid_table_name']} o
+            INNER JOIN {$this->options['class_table_name']} c ON c.id = o.class_id
+            INNER JOIN {$this->options['oid_ancestors_table_name']} a ON a.object_identity_id = o.id
+               WHERE (
+SELECTCLAUSE;
+
+        $types = array();
+        $count = count($batch);
+        for ($i = 0; $i < $count; ++$i) {
+            if (!isset($types[$batch[$i]->getType()])) {
+                $types[$batch[$i]->getType()] = true;
+
+                // if there is more than one type we can safely break out of the
+                // loop, because it is the differentiator factor on whether to
+                // query for only one or more class types
+                if (count($types) > 1) {
+                    break;
+                }
+            }
+        }
+
+        if (1 === count($types)) {
+            $ids = array();
+            for ($i = 0; $i < $count; ++$i) {
+                $identifier = (string) $batch[$i]->getIdentifier();
+                $ids[] = $this->connection->quote($identifier);
+            }
+
+            $sql .= sprintf(
+                '(o.object_identifier IN (%s) AND c.class_type = %s)',
+                implode(',', $ids),
+                $this->connection->quote($batch[0]->getType())
+            );
+        } else {
+            $where = '(o.object_identifier = %s AND c.class_type = %s)';
+            for ($i = 0; $i < $count; ++$i) {
+                $sql .= sprintf(
+                    $where,
+                    $this->connection->quote($batch[$i]->getIdentifier()),
+                    $this->connection->quote($batch[$i]->getType())
+                );
+
+                if ($i + 1 < $count) {
+                    $sql .= ' OR ';
+                }
+            }
+        }
+
+        $sql .= ')';
+
+        return $sql;
+    }
+
+    /**
+     * Constructs the SQL for retrieving child object identities for the given
+     * object identities.
+     *
+     * @param ObjectIdentityInterface $oid
+     * @param bool                    $directChildrenOnly
+     *
+     * @return string
+     */
+    protected function getFindChildrenSql(ObjectIdentityInterface $oid, $directChildrenOnly)
+    {
+        if (false === $directChildrenOnly) {
+            $query = <<<FINDCHILDREN
+                SELECT o.object_identifier, c.class_type
+                FROM
+                    {$this->options['oid_table_name']} o
+                INNER JOIN {$this->options['class_table_name']} c ON c.id = o.class_id
+                INNER JOIN {$this->options['oid_ancestors_table_name']} a ON a.object_identity_id = o.id
+                WHERE
+                    a.ancestor_id = %d AND a.object_identity_id != a.ancestor_id
+FINDCHILDREN;
+        } else {
+            $query = <<<FINDCHILDREN
+                SELECT o.object_identifier, c.class_type
+                FROM {$this->options['oid_table_name']} o
+                INNER JOIN {$this->options['class_table_name']} c ON c.id = o.class_id
+                WHERE o.parent_object_identity_id = %d
+FINDCHILDREN;
+        }
+
+        return sprintf($query, $this->retrieveObjectIdentityPrimaryKey($oid));
+    }
+
+    /**
+     * Constructs the SQL for retrieving the primary key of the given object
+     * identity.
+     *
+     * @param ObjectIdentityInterface $oid
+     *
+     * @return string
+     */
+    protected function getSelectObjectIdentityIdSql(ObjectIdentityInterface $oid)
+    {
+        $query = <<<QUERY
+            SELECT o.id
+            FROM %s o
+            INNER JOIN %s c ON c.id = o.class_id
+            WHERE o.object_identifier = %s AND c.class_type = %s
+QUERY;
+
+        return sprintf(
+            $query,
+            $this->options['oid_table_name'],
+            $this->options['class_table_name'],
+            $this->connection->quote((string) $oid->getIdentifier()),
+            $this->connection->quote((string) $oid->getType())
+        );
+    }
+
+    /**
+     * Returns the primary key of the passed object identity.
+     *
+     * @param ObjectIdentityInterface $oid
+     *
+     * @return int
+     */
+    final protected function retrieveObjectIdentityPrimaryKey(ObjectIdentityInterface $oid)
+    {
+        return $this->connection->executeQuery($this->getSelectObjectIdentityIdSql($oid))->fetchColumn();
+    }
+
+    /**
+     * This method is called when an ACL instance is retrieved from the cache.
+     *
+     * @param AclInterface $acl
+     */
+    private function updateAceIdentityMap(AclInterface $acl)
+    {
+        foreach (array('classAces', 'classFieldAces', 'objectAces', 'objectFieldAces') as $property) {
+            $reflection = new \ReflectionProperty($acl, $property);
+            $reflection->setAccessible(true);
+            $value = $reflection->getValue($acl);
+
+            if ('classAces' === $property || 'objectAces' === $property) {
+                $this->doUpdateAceIdentityMap($value);
+            } else {
+                foreach ($value as $field => $aces) {
+                    $this->doUpdateAceIdentityMap($value[$field]);
+                }
+            }
+
+            $reflection->setValue($acl, $value);
+            $reflection->setAccessible(false);
+        }
+    }
+
+    /**
+     * Retrieves all the ids which need to be queried from the database
+     * including the ids of parent ACLs.
+     *
+     * @param array $batch
+     *
+     * @return array
+     */
+    private function getAncestorIds(array $batch)
+    {
+        $sql = $this->getAncestorLookupSql($batch);
+
+        $ancestorIds = array();
+        foreach ($this->connection->executeQuery($sql)->fetchAll() as $data) {
+            // FIXME: skip ancestors which are cached
+            // Fix: Oracle returns keys in uppercase
+            $ancestorIds[] = reset($data);
+        }
+
+        return $ancestorIds;
+    }
+
+    /**
+     * Does either overwrite the passed ACE, or saves it in the global identity
+     * map to ensure every ACE only gets instantiated once.
+     *
+     * @param array &$aces
+     */
+    private function doUpdateAceIdentityMap(array &$aces)
+    {
+        foreach ($aces as $index => $ace) {
+            if (isset($this->loadedAces[$ace->getId()])) {
+                $aces[$index] = $this->loadedAces[$ace->getId()];
+            } else {
+                $this->loadedAces[$ace->getId()] = $ace;
+            }
+        }
+    }
+
+    /**
+     * This method is called for object identities which could not be retrieved
+     * from the cache, and for which thus a database query is required.
+     *
+     * @param array $batch
+     * @param array $sids
+     * @param array $oidLookup
+     *
+     * @return \SplObjectStorage mapping object identities to ACL instances
+     *
+     * @throws AclNotFoundException
+     */
+    private function lookupObjectIdentities(array $batch, array $sids, array $oidLookup)
+    {
+        $ancestorIds = $this->getAncestorIds($batch);
+        if (!$ancestorIds) {
+            throw new AclNotFoundException('There is no ACL for the given object identity.');
+        }
+
+        $sql = $this->getLookupSql($ancestorIds);
+        $stmt = $this->connection->executeQuery($sql);
+
+        return $this->hydrateObjectIdentities($stmt, $oidLookup, $sids);
     }
 
     /**
@@ -496,8 +496,8 @@ SELECTCLAUSE;
      * performance of the entire ACL system.
      *
      * @param Statement $stmt
-     * @param array $oidLookup
-     * @param array $sids
+     * @param array     $oidLookup
+     * @param array     $sids
      *
      * @return \SplObjectStorage
      *
@@ -530,27 +530,27 @@ SELECTCLAUSE;
         // but it is faster
         foreach ($stmt->fetchAll(\PDO::FETCH_NUM) as $data) {
             list($aclId,
-                $objectIdentifier,
-                $parentObjectIdentityId,
-                $entriesInheriting,
-                $classType,
-                $aceId,
-                $objectIdentityId,
-                $fieldName,
-                $aceOrder,
-                $mask,
-                $granting,
-                $grantingStrategy,
-                $auditSuccess,
-                $auditFailure,
-                $username,
-                $securityIdentifier) = array_values($data);
+                 $objectIdentifier,
+                 $parentObjectIdentityId,
+                 $entriesInheriting,
+                 $classType,
+                 $aceId,
+                 $objectIdentityId,
+                 $fieldName,
+                 $aceOrder,
+                 $mask,
+                 $granting,
+                 $grantingStrategy,
+                 $auditSuccess,
+                 $auditFailure,
+                 $username,
+                 $securityIdentifier) = array_values($data);
 
             // has the ACL been hydrated during this hydration cycle?
             if (isset($acls[$aclId])) {
                 $acl = $acls[$aclId];
-                // has the ACL been hydrated during any previous cycle, or was possibly loaded
-                // from cache?
+            // has the ACL been hydrated during any previous cycle, or was possibly loaded
+            // from cache?
             } elseif (isset($loadedAcls[$classType][$objectIdentifier])) {
                 $acl = $loadedAcls[$classType][$objectIdentifier];
 
@@ -560,20 +560,20 @@ SELECTCLAUSE;
                 // attach ACL to the result set; even though we do not enforce that every
                 // object identity has only one instance, we must make sure to maintain
                 // referential equality with the oids passed to findAcls()
-                $oidCacheKey = $objectIdentifier . $classType;
+                $oidCacheKey = $objectIdentifier.$classType;
                 if (!isset($oidCache[$oidCacheKey])) {
                     $oidCache[$oidCacheKey] = $acl->getObjectIdentity();
                 }
                 $result->attach($oidCache[$oidCacheKey], $acl);
-                // so, this hasn't been hydrated yet
+            // so, this hasn't been hydrated yet
             } else {
                 // create object identity if we haven't done so yet
-                $oidLookupKey = $objectIdentifier . $classType;
+                $oidLookupKey = $objectIdentifier.$classType;
                 if (!isset($oidCache[$oidLookupKey])) {
                     $oidCache[$oidLookupKey] = new ObjectIdentity($objectIdentifier, $classType);
                 }
 
-                $acl = new Acl((int)$aclId, $oidCache[$oidLookupKey], $permissionGrantingStrategy, $emptyArray, (bool)$entriesInheriting);
+                $acl = new Acl((int) $aclId, $oidCache[$oidLookupKey], $permissionGrantingStrategy, $emptyArray, (bool) $entriesInheriting);
 
                 // keep a local, and global reference to this ACL
                 $loadedAcls[$classType][$objectIdentifier] = $acl;
@@ -603,7 +603,7 @@ SELECTCLAUSE;
                 // It is important to only ever have one ACE instance per actual row since
                 // some ACEs are shared between ACL instances
                 if (!isset($loadedAces[$aceId])) {
-                    if (!isset($sids[$key = ($username ? '1' : '0') . $securityIdentifier])) {
+                    if (!isset($sids[$key = ($username ? '1' : '0').$securityIdentifier])) {
                         if ($username) {
                             $sids[$key] = new UserSecurityIdentity(
                                 substr($securityIdentifier, 1 + $pos = strpos($securityIdentifier, '-')),
@@ -615,9 +615,9 @@ SELECTCLAUSE;
                     }
 
                     if (null === $fieldName) {
-                        $loadedAces[$aceId] = new Entry((int)$aceId, $acl, $sids[$key], $grantingStrategy, (int)$mask, (bool)$granting, (bool)$auditFailure, (bool)$auditSuccess);
+                        $loadedAces[$aceId] = new Entry((int) $aceId, $acl, $sids[$key], $grantingStrategy, (int) $mask, (bool) $granting, (bool) $auditFailure, (bool) $auditSuccess);
                     } else {
-                        $loadedAces[$aceId] = new FieldEntry((int)$aceId, $acl, $fieldName, $sids[$key], $grantingStrategy, (int)$mask, (bool)$granting, (bool)$auditFailure, (bool)$auditSuccess);
+                        $loadedAces[$aceId] = new FieldEntry((int) $aceId, $acl, $fieldName, $sids[$key], $grantingStrategy, (int) $mask, (bool) $granting, (bool) $auditFailure, (bool) $auditSuccess);
                     }
                 }
                 $ace = $loadedAces[$aceId];

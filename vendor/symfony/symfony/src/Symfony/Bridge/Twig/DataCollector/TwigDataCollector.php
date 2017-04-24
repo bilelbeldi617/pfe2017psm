@@ -51,6 +51,45 @@ class TwigDataCollector extends DataCollector implements LateDataCollectorInterf
         return $this->getProfile()->getDuration() * 1000;
     }
 
+    public function getTemplateCount()
+    {
+        return $this->getComputedData('template_count');
+    }
+
+    public function getTemplates()
+    {
+        return $this->getComputedData('templates');
+    }
+
+    public function getBlockCount()
+    {
+        return $this->getComputedData('block_count');
+    }
+
+    public function getMacroCount()
+    {
+        return $this->getComputedData('macro_count');
+    }
+
+    public function getHtmlCallGraph()
+    {
+        $dumper = new \Twig_Profiler_Dumper_Html();
+        $dump = $dumper->dump($this->getProfile());
+
+        // needed to remove the hardcoded CSS styles
+        $dump = str_replace(array(
+            '<span style="background-color: #ffd">',
+            '<span style="color: #d44">',
+            '<span style="background-color: #dfd">',
+        ), array(
+            '<span class="status-warning">',
+            '<span class="status-error">',
+            '<span class="status-success">',
+        ), $dump);
+
+        return new \Twig_Markup($dump, 'UTF-8');
+    }
+
     public function getProfile()
     {
         if (null === $this->profile) {
@@ -58,11 +97,6 @@ class TwigDataCollector extends DataCollector implements LateDataCollectorInterf
         }
 
         return $this->profile;
-    }
-
-    public function getTemplateCount()
-    {
-        return $this->getComputedData('template_count');
     }
 
     private function getComputedData($index)
@@ -109,40 +143,6 @@ class TwigDataCollector extends DataCollector implements LateDataCollectorInterf
         $data['templates'] = $templates;
 
         return $data;
-    }
-
-    public function getTemplates()
-    {
-        return $this->getComputedData('templates');
-    }
-
-    public function getBlockCount()
-    {
-        return $this->getComputedData('block_count');
-    }
-
-    public function getMacroCount()
-    {
-        return $this->getComputedData('macro_count');
-    }
-
-    public function getHtmlCallGraph()
-    {
-        $dumper = new \Twig_Profiler_Dumper_Html();
-        $dump = $dumper->dump($this->getProfile());
-
-        // needed to remove the hardcoded CSS styles
-        $dump = str_replace(array(
-            '<span style="background-color: #ffd">',
-            '<span style="color: #d44">',
-            '<span style="background-color: #dfd">',
-        ), array(
-            '<span class="status-warning">',
-            '<span class="status-error">',
-            '<span class="status-success">',
-        ), $dump);
-
-        return new \Twig_Markup($dump, 'UTF-8');
     }
 
     /**

@@ -29,37 +29,12 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
         $this->event = $this->createEventMock($this->request, $this->response);
     }
 
-    private function createRequest(Cache $cache = null)
-    {
-        return new Request(array(), array(), array(
-            '_cache' => $cache,
-        ));
-    }
-
-    private function createEventMock(Request $request, Response $response)
-    {
-        $event = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\FilterResponseEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $event
-            ->expects($this->any())
-            ->method('getRequest')
-            ->will($this->returnValue($request));
-
-        $event
-            ->expects($this->any())
-            ->method('getResponse')
-            ->will($this->returnValue($response));
-
-        return $event;
-    }
-
     public function testWontReassignResponseWhenResponseIsUnsuccessful()
     {
         $this->event
             ->expects($this->never())
-            ->method('setResponse');
+            ->method('setResponse')
+        ;
 
         $this->response->setStatusCode(500);
 
@@ -70,7 +45,8 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
     {
         $this->event
             ->expects($this->never())
-            ->method('setResponse');
+            ->method('setResponse')
+        ;
 
         $this->request->attributes->remove('_cache');
 
@@ -92,8 +68,8 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
     public function testResponseIsPrivateIfConfigurationIsPublicFalse()
     {
         $request = $this->createRequest(new Cache(array(
-            'public' => false,
-        )));
+                    'public' => false,
+                )));
 
         $this->listener->onKernelResponse($this->createEventMock($request, $this->response));
 
@@ -173,19 +149,12 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
         $request->headers->add(array('If-Modified-Since' => 'Fri, 23 Aug 2013 00:00:00 GMT'));
 
         $listener = new HttpCacheListener();
-        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () {
-            return new Response(500);
-        }, $request, null);
+        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () { return new Response(500); }, $request, null);
 
         $listener->onKernelController($controllerEvent);
         $response = call_user_func($controllerEvent->getController());
 
         $this->assertEquals(304, $response->getStatusCode());
-    }
-
-    private function getKernel()
-    {
-        return $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
     }
 
     public function testLastModifiedHeader()
@@ -195,9 +164,7 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $listener = new HttpCacheListener();
-        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () {
-            return new Response();
-        }, $request, null);
+        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () { return new Response(); }, $request, null);
         $listener->onKernelController($controllerEvent);
 
         $responseEvent = new FilterResponseEvent($this->getKernel(), $request, null, call_user_func($controllerEvent->getController()));
@@ -217,9 +184,7 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
         $request->headers->add(array('If-None-Match' => sprintf('"%s"', hash('sha256', $entity->getId()))));
 
         $listener = new HttpCacheListener();
-        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () {
-            return new Response(500);
-        }, $request, null);
+        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () { return new Response(500); }, $request, null);
 
         $listener->onKernelController($controllerEvent);
         $response = call_user_func($controllerEvent->getController());
@@ -234,9 +199,7 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $listener = new HttpCacheListener();
-        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () {
-            return new Response();
-        }, $request, null);
+        $controllerEvent = new FilterControllerEvent($this->getKernel(), function () { return new Response(); }, $request, null);
         $listener->onKernelController($controllerEvent);
 
         $responseEvent = new FilterResponseEvent($this->getKernel(), $request, null, call_user_func($controllerEvent->getController()));
@@ -247,6 +210,39 @@ class HttpCacheListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->headers->has('ETag'));
         $this->assertContains(hash('sha256', $entity->getId()), $response->headers->get('ETag'));
+    }
+
+    private function createRequest(Cache $cache = null)
+    {
+        return new Request(array(), array(), array(
+            '_cache' => $cache,
+        ));
+    }
+
+    private function createEventMock(Request $request, Response $response)
+    {
+        $event = $this
+            ->getMockBuilder('Symfony\Component\HttpKernel\Event\FilterResponseEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->will($this->returnValue($request))
+        ;
+
+        $event
+            ->expects($this->any())
+            ->method('getResponse')
+            ->will($this->returnValue($response))
+        ;
+
+        return $event;
+    }
+
+    private function getKernel()
+    {
+        return $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
     }
 }
 

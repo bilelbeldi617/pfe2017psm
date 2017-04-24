@@ -9,7 +9,16 @@ class __TwigTemplate_28bcf4de473f19e5621be3df9a9b54e3b316e63fcd173cc7517b8ba6a13
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        // line 1
+        echo twig_jsonencode_filter(array("error" => array("code" => (isset($context["status_code"]) ? $context["status_code"] : null), "message" => (isset($context["status_text"]) ? $context["status_text"] : null), "exception" => $this->getAttribute((isset($context["exception"]) ? $context["exception"] : null), "toarray", array()))));
+        echo "
+";
     }
 
     public function getTemplateName()
@@ -24,13 +33,13 @@ class __TwigTemplate_28bcf4de473f19e5621be3df9a9b54e3b316e63fcd173cc7517b8ba6a13
 
     public function getDebugInfo()
     {
-        return array(19 => 1,);
+        return array (  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -38,13 +47,5 @@ class __TwigTemplate_28bcf4de473f19e5621be3df9a9b54e3b316e63fcd173cc7517b8ba6a13
     public function getSourceContext()
     {
         return new Twig_Source("", "@Twig/Exception/exception.json.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle\\Resources\\views\\Exception\\exception.json.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        // line 1
-        echo twig_jsonencode_filter(array("error" => array("code" => (isset($context["status_code"]) ? $context["status_code"] : null), "message" => (isset($context["status_text"]) ? $context["status_text"] : null), "exception" => $this->getAttribute((isset($context["exception"]) ? $context["exception"] : null), "toarray", array()))));
-        echo "
-";
     }
 }

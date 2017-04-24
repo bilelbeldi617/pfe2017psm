@@ -9,8 +9,7 @@
 namespace projetBundle\Entity;
 
 
-class Contact
-{
+class Contact {
     private $eleve;
     private $enseignant;
     private $matiere;

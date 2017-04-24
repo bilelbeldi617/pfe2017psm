@@ -36,7 +36,7 @@ class BCryptPasswordEncoder extends BasePasswordEncoder
      */
     public function __construct($cost)
     {
-        $cost = (int)$cost;
+        $cost = (int) $cost;
         if ($cost < 4 || $cost > 31) {
             throw new \InvalidArgumentException('Cost must be in the range of 4-31.');
         }
@@ -55,7 +55,7 @@ class BCryptPasswordEncoder extends BasePasswordEncoder
      *
      * It is almost best to **not** pass a salt and let PHP generate one for you.
      *
-     * @param string $raw The password to encode
+     * @param string $raw  The password to encode
      * @param string $salt The salt
      *
      * @return string The encoded password
@@ -73,7 +73,7 @@ class BCryptPasswordEncoder extends BasePasswordEncoder
         $options = array('cost' => $this->cost);
 
         if ($salt) {
-            @trigger_error('Passing a $salt to ' . __METHOD__ . '() is deprecated since version 2.8 and will be ignored in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('Passing a $salt to '.__METHOD__.'() is deprecated since version 2.8 and will be ignored in 3.0.', E_USER_DEPRECATED);
 
             $options['salt'] = $salt;
         }

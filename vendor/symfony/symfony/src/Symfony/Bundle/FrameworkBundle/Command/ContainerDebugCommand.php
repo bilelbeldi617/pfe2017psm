@@ -85,7 +85,8 @@ Display a specific parameter by specifying its name with the <info>--parameter</
   <info>php %command.full_name% --parameter=kernel.debug</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

@@ -25,6 +25,29 @@ class NativeRequestHandlerTest extends AbstractRequestHandlerTest
         self::$serverBackup = $_SERVER;
     }
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $_GET = array();
+        $_POST = array();
+        $_FILES = array();
+        $_SERVER = array(
+            // PHPUnit needs this entry
+            'SCRIPT_NAME' => self::$serverBackup['SCRIPT_NAME'],
+        );
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $_GET = array();
+        $_POST = array();
+        $_FILES = array();
+        $_SERVER = self::$serverBackup;
+    }
+
     /**
      * @expectedException \Symfony\Component\Form\Exception\UnexpectedTypeException
      */
@@ -48,23 +71,6 @@ class NativeRequestHandlerTest extends AbstractRequestHandlerTest
             ->with('DATA');
 
         $this->requestHandler->handleRequest($form, $this->request);
-    }
-
-    protected function setRequestData($method, $data, $files = array())
-    {
-        if ('GET' === $method) {
-            $_GET = $data;
-            $_FILES = array();
-        } else {
-            $_POST = $data;
-            $_FILES = $files;
-        }
-
-        $_SERVER = array(
-            'REQUEST_METHOD' => $method,
-            // PHPUnit needs this entry
-            'SCRIPT_NAME' => self::$serverBackup['SCRIPT_NAME'],
-        );
     }
 
     public function testConvertEmptyUploadedFilesToNull()
@@ -167,8 +173,8 @@ class NativeRequestHandlerTest extends AbstractRequestHandlerTest
         $form = $this->getMockForm('param1', 'POST');
 
         $this->setRequestData('GET', array(
-            'param1' => 'DATA',
-        ));
+                'param1' => 'DATA',
+            ));
 
         $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
 
@@ -178,27 +184,21 @@ class NativeRequestHandlerTest extends AbstractRequestHandlerTest
         $this->requestHandler->handleRequest($form, $this->request);
     }
 
-    protected function setUp()
+    protected function setRequestData($method, $data, $files = array())
     {
-        parent::setUp();
+        if ('GET' === $method) {
+            $_GET = $data;
+            $_FILES = array();
+        } else {
+            $_POST = $data;
+            $_FILES = $files;
+        }
 
-        $_GET = array();
-        $_POST = array();
-        $_FILES = array();
         $_SERVER = array(
+            'REQUEST_METHOD' => $method,
             // PHPUnit needs this entry
             'SCRIPT_NAME' => self::$serverBackup['SCRIPT_NAME'],
         );
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $_GET = array();
-        $_POST = array();
-        $_FILES = array();
-        $_SERVER = self::$serverBackup;
     }
 
     protected function getRequestHandler()
@@ -209,9 +209,9 @@ class NativeRequestHandlerTest extends AbstractRequestHandlerTest
     protected function getMockFile($suffix = '')
     {
         return array(
-            'name' => 'upload' . $suffix . '.txt',
+            'name' => 'upload'.$suffix.'.txt',
             'type' => 'text/plain',
-            'tmp_name' => 'owfdskjasdfsa' . $suffix,
+            'tmp_name' => 'owfdskjasdfsa'.$suffix,
             'error' => UPLOAD_ERR_OK,
             'size' => 100,
         );

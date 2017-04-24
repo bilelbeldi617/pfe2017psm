@@ -68,14 +68,6 @@ abstract class TreeWalkerAdapter implements TreeWalker
     }
 
     /**
-     * @return array
-     */
-    protected function _getQueryComponents()
-    {
-        return $this->_queryComponents;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function setQueryComponent($dqlAlias, array $queryComponent)
@@ -87,6 +79,34 @@ abstract class TreeWalkerAdapter implements TreeWalker
         }
 
         $this->_queryComponents[$dqlAlias] = $queryComponent;
+    }
+
+    /**
+     * @return array
+     */
+    protected function _getQueryComponents()
+    {
+        return $this->_queryComponents;
+    }
+
+    /**
+     * Retrieves the Query Instance responsible for the current walkers execution.
+     *
+     * @return \Doctrine\ORM\AbstractQuery
+     */
+    protected function _getQuery()
+    {
+        return $this->_query;
+    }
+
+    /**
+     * Retrieves the ParserResult.
+     *
+     * @return \Doctrine\ORM\Query\ParserResult
+     */
+    protected function _getParserResult()
+    {
+        return $this->_parserResult;
     }
 
     /**
@@ -416,25 +436,5 @@ abstract class TreeWalkerAdapter implements TreeWalker
      */
     public function getExecutor($AST)
     {
-    }
-
-    /**
-     * Retrieves the Query Instance responsible for the current walkers execution.
-     *
-     * @return \Doctrine\ORM\AbstractQuery
-     */
-    protected function _getQuery()
-    {
-        return $this->_query;
-    }
-
-    /**
-     * Retrieves the ParserResult.
-     *
-     * @return \Doctrine\ORM\Query\ParserResult
-     */
-    protected function _getParserResult()
-    {
-        return $this->_parserResult;
     }
 }

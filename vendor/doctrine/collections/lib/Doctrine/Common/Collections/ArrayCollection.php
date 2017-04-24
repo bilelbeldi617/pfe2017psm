@@ -101,6 +101,21 @@ class ArrayCollection implements Collection, Selectable
     /**
      * {@inheritDoc}
      */
+    public function remove($key)
+    {
+        if ( ! isset($this->elements[$key]) && ! array_key_exists($key, $this->elements)) {
+            return null;
+        }
+
+        $removed = $this->elements[$key];
+        unset($this->elements[$key]);
+
+        return $removed;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function removeElement($element)
     {
         $key = array_search($element, $this->elements, true);
@@ -125,14 +140,6 @@ class ArrayCollection implements Collection, Selectable
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function containsKey($key)
-    {
-        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
-    }
-
-    /**
      * Required by interface ArrayAccess.
      *
      * {@inheritDoc}
@@ -143,43 +150,17 @@ class ArrayCollection implements Collection, Selectable
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function get($key)
-    {
-        return isset($this->elements[$key]) ? $this->elements[$key] : null;
-    }
-
-    /**
      * Required by interface ArrayAccess.
      *
      * {@inheritDoc}
      */
     public function offsetSet($offset, $value)
     {
-        if (!isset($offset)) {
+        if ( ! isset($offset)) {
             return $this->add($value);
         }
 
         $this->set($offset, $value);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function add($value)
-    {
-        $this->elements[] = $value;
-
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function set($key, $value)
-    {
-        $this->elements[$key] = $value;
     }
 
     /**
@@ -195,16 +176,9 @@ class ArrayCollection implements Collection, Selectable
     /**
      * {@inheritDoc}
      */
-    public function remove($key)
+    public function containsKey($key)
     {
-        if (!isset($this->elements[$key]) && !array_key_exists($key, $this->elements)) {
-            return null;
-        }
-
-        $removed = $this->elements[$key];
-        unset($this->elements[$key]);
-
-        return $removed;
+        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
     }
 
     /**
@@ -240,6 +214,14 @@ class ArrayCollection implements Collection, Selectable
     /**
      * {@inheritDoc}
      */
+    public function get($key)
+    {
+        return isset($this->elements[$key]) ? $this->elements[$key] : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getKeys()
     {
         return array_keys($this->elements);
@@ -259,6 +241,24 @@ class ArrayCollection implements Collection, Selectable
     public function count()
     {
         return count($this->elements);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function set($key, $value)
+    {
+        $this->elements[$key] = $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function add($value)
+    {
+        $this->elements[] = $value;
+
+        return true;
     }
 
     /**
@@ -301,7 +301,7 @@ class ArrayCollection implements Collection, Selectable
     public function forAll(Closure $p)
     {
         foreach ($this->elements as $key => $element) {
-            if (!$p($key, $element)) {
+            if ( ! $p($key, $element)) {
                 return false;
             }
         }
@@ -358,12 +358,12 @@ class ArrayCollection implements Collection, Selectable
      */
     public function matching(Criteria $criteria)
     {
-        $expr = $criteria->getWhereExpression();
+        $expr     = $criteria->getWhereExpression();
         $filtered = $this->elements;
 
         if ($expr) {
-            $visitor = new ClosureExpressionVisitor();
-            $filter = $visitor->dispatch($expr);
+            $visitor  = new ClosureExpressionVisitor();
+            $filter   = $visitor->dispatch($expr);
             $filtered = array_filter($filtered, $filter);
         }
 

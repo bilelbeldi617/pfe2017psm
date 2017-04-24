@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Security\Core;
 
-@trigger_error('The ' . __NAMESPACE__ . '\SecurityContext class is deprecated since version 2.6 and will be removed in 3.0. Use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage or Symfony\Component\Security\Core\Authorization\AuthorizationChecker instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\SecurityContext class is deprecated since version 2.6 and will be removed in 3.0. Use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage or Symfony\Component\Security\Core\Authorization\AuthorizationChecker instead.', E_USER_DEPRECATED);
 
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -46,9 +46,9 @@ class SecurityContext implements SecurityContextInterface
     /**
      * For backwards compatibility, the signature of sf <2.6 still works.
      *
-     * @param TokenStorageInterface|AuthenticationManagerInterface $tokenStorage
+     * @param TokenStorageInterface|AuthenticationManagerInterface         $tokenStorage
      * @param AuthorizationCheckerInterface|AccessDecisionManagerInterface $authorizationChecker
-     * @param bool $alwaysAuthenticate only applicable with old signature
+     * @param bool                                                         $alwaysAuthenticate   only applicable with old signature
      */
     public function __construct($tokenStorage, $authorizationChecker, $alwaysAuthenticate = false)
     {

@@ -39,6 +39,16 @@ class FileBinaryMimeTypeGuesser implements MimeTypeGuesserInterface
     }
 
     /**
+     * Returns whether this guesser is supported on the current OS.
+     *
+     * @return bool
+     */
+    public static function isSupported()
+    {
+        return '\\' !== DIRECTORY_SEPARATOR && function_exists('passthru') && function_exists('escapeshellarg');
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function guess($path)
@@ -73,15 +83,5 @@ class FileBinaryMimeTypeGuesser implements MimeTypeGuesserInterface
         }
 
         return $match[1];
-    }
-
-    /**
-     * Returns whether this guesser is supported on the current OS.
-     *
-     * @return bool
-     */
-    public static function isSupported()
-    {
-        return '\\' !== DIRECTORY_SEPARATOR && function_exists('passthru') && function_exists('escapeshellarg');
     }
 }

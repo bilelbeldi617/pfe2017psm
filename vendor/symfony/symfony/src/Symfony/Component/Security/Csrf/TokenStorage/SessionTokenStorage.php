@@ -43,8 +43,8 @@ class SessionTokenStorage implements TokenStorageInterface
     /**
      * Initializes the storage with a Session object and a session namespace.
      *
-     * @param SessionInterface $session The user session
-     * @param string $namespace The namespace under which the token
+     * @param SessionInterface $session   The user session
+     * @param string           $namespace The namespace under which the token
      *                                    is stored in the session
      */
     public function __construct(SessionInterface $session, $namespace = self::SESSION_NAMESPACE)
@@ -62,11 +62,11 @@ class SessionTokenStorage implements TokenStorageInterface
             $this->session->start();
         }
 
-        if (!$this->session->has($this->namespace . '/' . $tokenId)) {
-            throw new TokenNotFoundException('The CSRF token with ID ' . $tokenId . ' does not exist.');
+        if (!$this->session->has($this->namespace.'/'.$tokenId)) {
+            throw new TokenNotFoundException('The CSRF token with ID '.$tokenId.' does not exist.');
         }
 
-        return (string)$this->session->get($this->namespace . '/' . $tokenId);
+        return (string) $this->session->get($this->namespace.'/'.$tokenId);
     }
 
     /**
@@ -78,7 +78,7 @@ class SessionTokenStorage implements TokenStorageInterface
             $this->session->start();
         }
 
-        $this->session->set($this->namespace . '/' . $tokenId, (string)$token);
+        $this->session->set($this->namespace.'/'.$tokenId, (string) $token);
     }
 
     /**
@@ -90,7 +90,7 @@ class SessionTokenStorage implements TokenStorageInterface
             $this->session->start();
         }
 
-        return $this->session->has($this->namespace . '/' . $tokenId);
+        return $this->session->has($this->namespace.'/'.$tokenId);
     }
 
     /**
@@ -102,6 +102,6 @@ class SessionTokenStorage implements TokenStorageInterface
             $this->session->start();
         }
 
-        return $this->session->remove($this->namespace . '/' . $tokenId);
+        return $this->session->remove($this->namespace.'/'.$tokenId);
     }
 }

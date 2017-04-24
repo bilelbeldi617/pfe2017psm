@@ -20,6 +20,21 @@ class ChoiceToValueTransformerTest extends TestCase
     protected $transformer;
     protected $transformerWithNull;
 
+    protected function setUp()
+    {
+        $list = new ArrayChoiceList(array('', false, 'X', true));
+        $listWithNull = new ArrayChoiceList(array('', false, 'X', null));
+
+        $this->transformer = new ChoiceToValueTransformer($list);
+        $this->transformerWithNull = new ChoiceToValueTransformer($listWithNull);
+    }
+
+    protected function tearDown()
+    {
+        $this->transformer = null;
+        $this->transformerWithNull = null;
+    }
+
     public function transformProvider()
     {
         return array(
@@ -78,20 +93,5 @@ class ChoiceToValueTransformerTest extends TestCase
     public function testReverseTransformExpectsStringOrNull($value)
     {
         $this->transformer->reverseTransform($value);
-    }
-
-    protected function setUp()
-    {
-        $list = new ArrayChoiceList(array('', false, 'X', true));
-        $listWithNull = new ArrayChoiceList(array('', false, 'X', null));
-
-        $this->transformer = new ChoiceToValueTransformer($list);
-        $this->transformerWithNull = new ChoiceToValueTransformer($listWithNull);
-    }
-
-    protected function tearDown()
-    {
-        $this->transformer = null;
-        $this->transformerWithNull = null;
     }
 }

@@ -23,18 +23,22 @@ class DecoratorServicePassTest extends TestCase
         $container = new ContainerBuilder();
         $fooDefinition = $container
             ->register('foo')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
         $fooExtendedDefinition = $container
             ->register('foo.extended')
             ->setPublic(true)
-            ->setDecoratedService('foo');
+            ->setDecoratedService('foo')
+        ;
         $barDefinition = $container
             ->register('bar')
-            ->setPublic(true);
+            ->setPublic(true)
+        ;
         $barExtendedDefinition = $container
             ->register('bar.extended')
             ->setPublic(true)
-            ->setDecoratedService('bar', 'bar.yoo');
+            ->setDecoratedService('bar', 'bar.yoo')
+        ;
 
         $this->process($container);
 
@@ -54,23 +58,19 @@ class DecoratorServicePassTest extends TestCase
         $this->assertNull($barExtendedDefinition->getDecoratedService());
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $repeatedPass = new DecoratorServicePass();
-        $repeatedPass->process($container);
-    }
-
     public function testProcessWithAlias()
     {
         $container = new ContainerBuilder();
         $container
             ->register('foo')
-            ->setPublic(true);
+            ->setPublic(true)
+        ;
         $container->setAlias('foo.alias', new Alias('foo', false));
         $fooExtendedDefinition = $container
             ->register('foo.extended')
             ->setPublic(true)
-            ->setDecoratedService('foo.alias');
+            ->setDecoratedService('foo.alias')
+        ;
 
         $this->process($container);
 
@@ -88,19 +88,23 @@ class DecoratorServicePassTest extends TestCase
         $container = new ContainerBuilder();
         $fooDefinition = $container
             ->register('foo')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
         $barDefinition = $container
             ->register('bar')
             ->setPublic(true)
-            ->setDecoratedService('foo');
+            ->setDecoratedService('foo')
+        ;
         $bazDefinition = $container
             ->register('baz')
             ->setPublic(true)
-            ->setDecoratedService('foo', null, 5);
+            ->setDecoratedService('foo', null, 5)
+        ;
         $quxDefinition = $container
             ->register('qux')
             ->setPublic(true)
-            ->setDecoratedService('foo', null, 3);
+            ->setDecoratedService('foo', null, 3)
+        ;
 
         $this->process($container);
 
@@ -126,11 +130,13 @@ class DecoratorServicePassTest extends TestCase
         $container = new ContainerBuilder();
         $container
             ->register('foo')
-            ->setTags(array('bar' => array('attr' => 'baz')));
+            ->setTags(array('bar' => array('attr' => 'baz')))
+        ;
         $container
             ->register('baz')
             ->setTags(array('foobar' => array('attr' => 'bar')))
-            ->setDecoratedService('foo');
+            ->setDecoratedService('foo')
+        ;
 
         $this->process($container);
 
@@ -144,16 +150,24 @@ class DecoratorServicePassTest extends TestCase
 
         $container
             ->register('parent')
-            ->addAutowiringType('Bar');
+            ->addAutowiringType('Bar')
+        ;
 
         $container
             ->register('child')
             ->setDecoratedService('parent')
-            ->addAutowiringType('Foo');
+            ->addAutowiringType('Foo')
+        ;
 
         $this->process($container);
 
         $this->assertEquals(array('Bar', 'Foo'), $container->getDefinition('child')->getAutowiringTypes());
         $this->assertEmpty($container->getDefinition('child.inner')->getAutowiringTypes());
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $repeatedPass = new DecoratorServicePass();
+        $repeatedPass->process($container);
     }
 }

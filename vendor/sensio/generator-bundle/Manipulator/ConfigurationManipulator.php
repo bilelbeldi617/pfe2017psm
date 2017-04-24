@@ -68,7 +68,7 @@ class ConfigurationManipulator extends Manipulator
         // find the line break after the last import
         $targetLinebreakPosition = strpos($currentContents, "\n", $lastImportPosition);
 
-        $newContents = substr($currentContents, 0, $targetLinebreakPosition) . "\n" . $code . substr($currentContents, $targetLinebreakPosition);
+        $newContents = substr($currentContents, 0, $targetLinebreakPosition)."\n".$code.substr($currentContents, $targetLinebreakPosition);
 
         if (false === Generator::dump($this->file, $newContents)) {
             throw new \RuntimeException(sprintf('Could not write file %s ', $this->file));
@@ -80,7 +80,7 @@ class ConfigurationManipulator extends Manipulator
         return sprintf(<<<EOF
     - { resource: "@%s/Resources/config/%s" }
 EOF
-            ,
+        ,
             $bundle->getName(),
             $bundle->getServicesConfigurationFilename()
         );

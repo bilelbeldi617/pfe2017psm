@@ -49,6 +49,14 @@ class DateTimeTzType extends Type
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return Type::DATETIMETZ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         return $platform->getDateTimeTzTypeDeclarationSQL($fieldDeclaration);
@@ -73,18 +81,10 @@ class DateTimeTzType extends Type
         }
 
         $val = \DateTime::createFromFormat($platform->getDateTimeTzFormatString(), $value);
-        if (!$val) {
+        if ( ! $val) {
             throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeTzFormatString());
         }
 
         return $val;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return Type::DATETIMETZ;
     }
 }

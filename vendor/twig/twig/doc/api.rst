@@ -69,7 +69,7 @@ You can also load and render the template in one fell swoop::
     echo $twig->render('index.html', array('the' => 'variables', 'go' => 'here'));
 
 .. versionadded:: 1.28
-The possibility to render blocks from the API was added in Twig 1.28.
+    The possibility to render blocks from the API was added in Twig 1.28.
 
 If a template defines blocks, they can be rendered individually via the
 ``renderBlock()`` call::
@@ -170,10 +170,10 @@ Here is a list of the built-in loaders Twig provides:
 ..........................
 
 .. versionadded:: 1.10
-The ``prependPath()`` and support for namespaces were added in Twig 1.10.
+    The ``prependPath()`` and support for namespaces were added in Twig 1.10.
 
 .. versionadded:: 1.27
-Relative paths support was added in Twig 1.27.
+    Relative paths support was added in Twig 1.27.
 
 ``Twig_Loader_Filesystem`` loads templates from the file system. This loader
 can find templates in folders on the file system and is the preferred way to
@@ -516,7 +516,7 @@ Profiler Extension
 ~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 1.18
-The Profile extension was added in Twig 1.18.
+    The Profile extension was added in Twig 1.18.
 
 The ``profiler`` extension enables a profiler for Twig templates; it should
 only be used on your development machines as it adds some overhead::

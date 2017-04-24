@@ -63,7 +63,7 @@ serializer.pre_deserialize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded : 0.12
-Event was added
+    Event was added
 
 This is dispatched before an object is deserialized. You can use this to
 modify submitted data, or modify the type that is being used for deserialization.

@@ -32,21 +32,11 @@ class Salle
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get numSalle
-     *
-     * @return integer
-     */
-    public function getNumSalle()
-    {
-        return $this->numSalle;
     }
 
     /**
@@ -60,5 +50,15 @@ class Salle
         $this->numSalle = $numSalle;
 
         return $this;
+    }
+
+    /**
+     * Get numSalle
+     *
+     * @return integer 
+     */
+    public function getNumSalle()
+    {
+        return $this->numSalle;
     }
 }

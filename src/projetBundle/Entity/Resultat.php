@@ -9,13 +9,12 @@
 namespace projetBundle\Entity;
 
 
-class Resultat
-{
+class Resultat {
 
     private $moyenne;
     private $matiere;
     private $note;
-    private $nomEnseignant;
+    private $nomEnseignant ;
 
     /**
      * @return mixed

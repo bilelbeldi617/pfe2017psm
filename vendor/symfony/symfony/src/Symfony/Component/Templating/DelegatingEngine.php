@@ -36,41 +36,11 @@ class DelegatingEngine implements EngineInterface, StreamingEngineInterface
     }
 
     /**
-     * Adds an engine.
-     *
-     * @param EngineInterface $engine An EngineInterface instance
-     */
-    public function addEngine(EngineInterface $engine)
-    {
-        $this->engines[] = $engine;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function render($name, array $parameters = array())
     {
         return $this->getEngine($name)->render($name, $parameters);
-    }
-
-    /**
-     * Get an engine able to render the given template.
-     *
-     * @param string|TemplateReferenceInterface $name A template name or a TemplateReferenceInterface instance
-     *
-     * @return EngineInterface The engine
-     *
-     * @throws \RuntimeException if no engine able to work with the template is found
-     */
-    public function getEngine($name)
-    {
-        foreach ($this->engines as $engine) {
-            if ($engine->supports($name)) {
-                return $engine;
-            }
-        }
-
-        throw new \RuntimeException(sprintf('No engine is able to work with the template "%s".', $name));
     }
 
     /**
@@ -95,6 +65,16 @@ class DelegatingEngine implements EngineInterface, StreamingEngineInterface
     }
 
     /**
+     * Adds an engine.
+     *
+     * @param EngineInterface $engine An EngineInterface instance
+     */
+    public function addEngine(EngineInterface $engine)
+    {
+        $this->engines[] = $engine;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function supports($name)
@@ -106,5 +86,25 @@ class DelegatingEngine implements EngineInterface, StreamingEngineInterface
         }
 
         return true;
+    }
+
+    /**
+     * Get an engine able to render the given template.
+     *
+     * @param string|TemplateReferenceInterface $name A template name or a TemplateReferenceInterface instance
+     *
+     * @return EngineInterface The engine
+     *
+     * @throws \RuntimeException if no engine able to work with the template is found
+     */
+    public function getEngine($name)
+    {
+        foreach ($this->engines as $engine) {
+            if ($engine->supports($name)) {
+                return $engine;
+            }
+        }
+
+        throw new \RuntimeException(sprintf('No engine is able to work with the template "%s".', $name));
     }
 }

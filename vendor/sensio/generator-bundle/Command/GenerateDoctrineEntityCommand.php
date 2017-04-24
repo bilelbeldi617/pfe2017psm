@@ -64,7 +64,7 @@ This also has support for passing field specific attributes:
 
 <info>php %command.full_name% --entity=AcmeBlogBundle:Blog/Post --format=annotation --fields="title:string(length=255 nullable=true unique=true) body:text ranking:decimal(precision:10 scale:0)" --no-interaction</info>
 EOT
-            );
+        );
     }
 
     /**
@@ -105,54 +105,6 @@ EOT
         $questionHelper->writeGeneratorSummary($output, array());
     }
 
-    private function parseFields($input)
-    {
-        if (is_array($input)) {
-            return $input;
-        }
-
-        $fields = array();
-        foreach (preg_split('{(?:\([^\(]*\))(*SKIP)(*F)|\s+}', $input) as $value) {
-            $elements = explode(':', $value);
-            $name = $elements[0];
-            $fieldAttributes = array();
-            if (strlen($name)) {
-                $fieldAttributes['fieldName'] = $name;
-                $type = isset($elements[1]) ? $elements[1] : 'string';
-                preg_match_all('{(.*)\((.*)\)}', $type, $matches);
-                $fieldAttributes['type'] = isset($matches[1][0]) ? $matches[1][0] : $type;
-                $length = null;
-                if ('string' === $fieldAttributes['type']) {
-                    $fieldAttributes['length'] = $length;
-                }
-                if (isset($matches[2][0]) && $length = $matches[2][0]) {
-                    $attributesFound = array();
-                    if (false !== strpos($length, '=')) {
-                        preg_match_all('{([^,= ]+)=([^,= ]+)}', $length, $result);
-                        $attributesFound = array_combine($result[1], $result[2]);
-                    } else {
-                        $fieldAttributes['length'] = $length;
-                    }
-                    $fieldAttributes = array_merge($fieldAttributes, $attributesFound);
-                    foreach (array('length', 'precision', 'scale') as $intAttribute) {
-                        if (isset($fieldAttributes[$intAttribute])) {
-                            $fieldAttributes[$intAttribute] = (int)$fieldAttributes[$intAttribute];
-                        }
-                    }
-                    foreach (array('nullable', 'unique') as $boolAttribute) {
-                        if (isset($fieldAttributes[$boolAttribute])) {
-                            $fieldAttributes[$boolAttribute] = filter_var($fieldAttributes[$boolAttribute], FILTER_VALIDATE_BOOLEAN);
-                        }
-                    }
-                }
-
-                $fields[$name] = $fieldAttributes;
-            }
-        }
-
-        return $fields;
-    }
-
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -187,7 +139,7 @@ EOT
             try {
                 $b = $this->getContainer()->get('kernel')->getBundle($bundle);
 
-                if (!file_exists($b->getPath() . '/Entity/' . str_replace('\\', '/', $entity) . '.php')) {
+                if (!file_exists($b->getPath().'/Entity/'.str_replace('\\', '/', $entity).'.php')) {
                     break;
                 }
 
@@ -196,7 +148,7 @@ EOT
                 $output->writeln(sprintf('<bg=red>Bundle "%s" does not exist.</>', $bundle));
             }
         }
-        $input->setOption('entity', $bundle . ':' . $entity);
+        $input->setOption('entity', $bundle.':'.$entity);
 
         // format
         $output->writeln(array(
@@ -215,6 +167,54 @@ EOT
 
         // fields
         $input->setOption('fields', $this->addFields($input, $output, $questionHelper));
+    }
+
+    private function parseFields($input)
+    {
+        if (is_array($input)) {
+            return $input;
+        }
+
+        $fields = array();
+        foreach (preg_split('{(?:\([^\(]*\))(*SKIP)(*F)|\s+}', $input) as $value) {
+            $elements = explode(':', $value);
+            $name = $elements[0];
+            $fieldAttributes = array();
+            if (strlen($name)) {
+                $fieldAttributes['fieldName'] = $name;
+                $type = isset($elements[1]) ? $elements[1] : 'string';
+                preg_match_all('{(.*)\((.*)\)}', $type, $matches);
+                $fieldAttributes['type'] = isset($matches[1][0]) ? $matches[1][0] : $type;
+                $length = null;
+                if ('string' === $fieldAttributes['type']) {
+                    $fieldAttributes['length'] = $length;
+                }
+                if (isset($matches[2][0]) && $length = $matches[2][0]) {
+                    $attributesFound = array();
+                    if (false !== strpos($length, '=')) {
+                        preg_match_all('{([^,= ]+)=([^,= ]+)}', $length, $result);
+                        $attributesFound = array_combine($result[1], $result[2]);
+                    } else {
+                        $fieldAttributes['length'] = $length;
+                    }
+                    $fieldAttributes = array_merge($fieldAttributes, $attributesFound);
+                    foreach (array('length', 'precision', 'scale') as $intAttribute) {
+                        if (isset($fieldAttributes[$intAttribute])) {
+                            $fieldAttributes[$intAttribute] = (int) $fieldAttributes[$intAttribute];
+                        }
+                    }
+                    foreach (array('nullable', 'unique') as $boolAttribute) {
+                        if (isset($fieldAttributes[$boolAttribute])) {
+                            $fieldAttributes[$boolAttribute] = filter_var($fieldAttributes[$boolAttribute], FILTER_VALIDATE_BOOLEAN);
+                        }
+                    }
+                }
+
+                $fields[$name] = $fieldAttributes;
+            }
+        }
+
+        return $fields;
     }
 
     private function addFields(InputInterface $input, OutputInterface $output, QuestionHelper $questionHelper)

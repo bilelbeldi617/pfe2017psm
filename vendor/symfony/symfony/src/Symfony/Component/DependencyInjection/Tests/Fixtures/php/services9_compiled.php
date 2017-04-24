@@ -56,20 +56,6 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * Gets the default parameters.
-     *
-     * @return array An array of the default parameters
-     */
-    protected function getDefaultParameters()
-    {
-        return array(
-            'baz_class' => 'BazClass',
-            'foo_class' => 'Bar\\FooClass',
-            'foo' => 'bar',
-        );
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function compile()
@@ -83,26 +69,6 @@ class ProjectServiceContainer extends Container
     public function isFrozen()
     {
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setParameter($name, $value)
-    {
-        throw new LogicException('Impossible to call set() on a frozen ParameterBag.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameterBag()
-    {
-        if (null === $this->parameterBag) {
-            $this->parameterBag = new FrozenParameterBag($this->parameters);
-        }
-
-        return $this->parameterBag;
     }
 
     /**
@@ -122,20 +88,6 @@ class ProjectServiceContainer extends Container
         $a->configure($instance);
 
         return $instance;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameter($name)
-    {
-        $name = strtolower($name);
-
-        if (!(isset($this->parameters[$name]) || array_key_exists($name, $this->parameters))) {
-            throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
-        }
-
-        return $this->parameters[$name];
     }
 
     /**
@@ -326,16 +278,6 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function hasParameter($name)
-    {
-        $name = strtolower($name);
-
-        return isset($this->parameters[$name]) || array_key_exists($name, $this->parameters);
-    }
-
-    /**
      * Gets the 'new_factory_service' service.
      *
      * This service is shared.
@@ -379,5 +321,63 @@ class ProjectServiceContainer extends Container
     protected function getServiceFromStaticMethodService()
     {
         return $this->services['service_from_static_method'] = \Bar\FooClass::getInstance();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameter($name)
+    {
+        $name = strtolower($name);
+
+        if (!(isset($this->parameters[$name]) || array_key_exists($name, $this->parameters))) {
+            throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
+        }
+
+        return $this->parameters[$name];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasParameter($name)
+    {
+        $name = strtolower($name);
+
+        return isset($this->parameters[$name]) || array_key_exists($name, $this->parameters);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParameter($name, $value)
+    {
+        throw new LogicException('Impossible to call set() on a frozen ParameterBag.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameterBag()
+    {
+        if (null === $this->parameterBag) {
+            $this->parameterBag = new FrozenParameterBag($this->parameters);
+        }
+
+        return $this->parameterBag;
+    }
+
+    /**
+     * Gets the default parameters.
+     *
+     * @return array An array of the default parameters
+     */
+    protected function getDefaultParameters()
+    {
+        return array(
+            'baz_class' => 'BazClass',
+            'foo_class' => 'Bar\\FooClass',
+            'foo' => 'bar',
+        );
     }
 }

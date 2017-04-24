@@ -22,6 +22,25 @@ class DataCollectorTranslatorPassTest extends TestCase
     private $container;
     private $dataCollectorTranslatorPass;
 
+    protected function setUp()
+    {
+        $this->container = new ContainerBuilder();
+        $this->dataCollectorTranslatorPass = new DataCollectorTranslatorPass();
+
+        $this->container->setParameter('translator_implementing_bag', 'Symfony\Component\Translation\Translator');
+        $this->container->setParameter('translator_not_implementing_bag', 'Symfony\Bundle\FrameworkBundle\Tests\DependencyInjection\Compiler\TranslatorWithTranslatorBag');
+
+        $this->container->register('translator.data_collector', 'Symfony\Component\Translation\DataCollectorTranslator')
+            ->setPublic(false)
+            ->setDecoratedService('translator')
+            ->setArguments(array(new Reference('translator.data_collector.inner')))
+        ;
+
+        $this->container->register('data_collector.translation', 'Symfony\Component\Translation\DataCollector\TranslationDataCollector')
+            ->setArguments(array(new Reference('translator.data_collector')))
+        ;
+    }
+
     /**
      * @dataProvider getImplementingTranslatorBagInterfaceTranslatorClassNames
      */
@@ -84,23 +103,6 @@ class DataCollectorTranslatorPassTest extends TestCase
             array('Symfony\Bundle\FrameworkBundle\Tests\DependencyInjection\Compiler\TranslatorWithTranslatorBag'),
             array('%translator_not_implementing_bag%'),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->container = new ContainerBuilder();
-        $this->dataCollectorTranslatorPass = new DataCollectorTranslatorPass();
-
-        $this->container->setParameter('translator_implementing_bag', 'Symfony\Component\Translation\Translator');
-        $this->container->setParameter('translator_not_implementing_bag', 'Symfony\Bundle\FrameworkBundle\Tests\DependencyInjection\Compiler\TranslatorWithTranslatorBag');
-
-        $this->container->register('translator.data_collector', 'Symfony\Component\Translation\DataCollectorTranslator')
-            ->setPublic(false)
-            ->setDecoratedService('translator')
-            ->setArguments(array(new Reference('translator.data_collector.inner')));
-
-        $this->container->register('data_collector.translation', 'Symfony\Component\Translation\DataCollector\TranslationDataCollector')
-            ->setArguments(array(new Reference('translator.data_collector')));
     }
 }
 

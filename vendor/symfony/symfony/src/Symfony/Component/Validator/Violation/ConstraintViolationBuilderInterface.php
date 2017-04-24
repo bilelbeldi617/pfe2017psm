@@ -38,7 +38,7 @@ interface ConstraintViolationBuilderInterface
     /**
      * Sets a parameter to be inserted into the violation message.
      *
-     * @param string $key The name of the parameter
+     * @param string $key   The name of the parameter
      * @param string $value The value to be inserted in the parameter's place
      *
      * @return $this

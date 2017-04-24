@@ -48,13 +48,13 @@ class StopwatchTokenParser extends \Twig_TokenParser
         return $body;
     }
 
-    public function getTag()
-    {
-        return 'stopwatch';
-    }
-
     public function decideStopwatchEnd(\Twig_Token $token)
     {
         return $token->test('endstopwatch');
+    }
+
+    public function getTag()
+    {
+        return 'stopwatch';
     }
 }

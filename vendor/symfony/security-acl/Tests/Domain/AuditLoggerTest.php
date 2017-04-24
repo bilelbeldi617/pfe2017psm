@@ -25,44 +25,40 @@ class AuditLoggerTest extends \PHPUnit_Framework_TestCase
             $ace
                 ->expects($this->once())
                 ->method('isAuditSuccess')
-                ->will($this->returnValue($audit));
+                ->will($this->returnValue($audit))
+            ;
 
             $ace
-                ->expects($this->never())
-                ->method('isAuditFailure');
+               ->expects($this->never())
+               ->method('isAuditFailure')
+            ;
         } else {
             $ace
                 ->expects($this->never())
-                ->method('isAuditSuccess');
+                ->method('isAuditSuccess')
+            ;
 
             $ace
                 ->expects($this->once())
                 ->method('isAuditFailure')
-                ->will($this->returnValue($audit));
+                ->will($this->returnValue($audit))
+            ;
         }
 
         if (true === $audit) {
             $logger
-                ->expects($this->once())
-                ->method('doLog')
-                ->with($this->equalTo($granting), $this->equalTo($ace));
+               ->expects($this->once())
+               ->method('doLog')
+               ->with($this->equalTo($granting), $this->equalTo($ace))
+            ;
         } else {
             $logger
                 ->expects($this->never())
-                ->method('doLog');
+                ->method('doLog')
+            ;
         }
 
         $logger->logIfNeeded($granting, $ace);
-    }
-
-    protected function getLogger()
-    {
-        return $this->getMockForAbstractClass('Symfony\Component\Security\Acl\Domain\AuditLogger');
-    }
-
-    protected function getEntry()
-    {
-        return $this->getMock('Symfony\Component\Security\Acl\Model\AuditableEntryInterface');
     }
 
     public function getTestLogData()
@@ -73,5 +69,15 @@ class AuditLoggerTest extends \PHPUnit_Framework_TestCase
             array(false, false),
             array(false, true),
         );
+    }
+
+    protected function getEntry()
+    {
+        return $this->getMock('Symfony\Component\Security\Acl\Model\AuditableEntryInterface');
+    }
+
+    protected function getLogger()
+    {
+        return $this->getMockForAbstractClass('Symfony\Component\Security\Acl\Domain\AuditLogger');
     }
 }

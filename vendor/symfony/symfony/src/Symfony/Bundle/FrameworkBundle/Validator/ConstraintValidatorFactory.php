@@ -46,8 +46,8 @@ class ConstraintValidatorFactory implements ConstraintValidatorFactoryInterface
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container The service container
-     * @param array $validators An array of validators
+     * @param ContainerInterface $container  The service container
+     * @param array              $validators An array of validators
      */
     public function __construct(ContainerInterface $container, array $validators = array())
     {

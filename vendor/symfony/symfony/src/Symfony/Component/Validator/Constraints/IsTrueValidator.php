@@ -27,7 +27,7 @@ class IsTrueValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof IsTrue) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\IsTrue');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\IsTrue');
         }
 
         if (null === $value) {

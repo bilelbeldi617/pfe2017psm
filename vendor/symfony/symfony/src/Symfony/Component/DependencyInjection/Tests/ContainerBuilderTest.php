@@ -11,8 +11,8 @@
 
 namespace Symfony\Component\DependencyInjection\Tests;
 
-require_once __DIR__ . '/Fixtures/includes/classes.php';
-require_once __DIR__ . '/Fixtures/includes/ProjectExtension.php';
+require_once __DIR__.'/Fixtures/includes/classes.php';
+require_once __DIR__.'/Fixtures/includes/ProjectExtension.php';
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\ResourceInterface;
@@ -187,7 +187,7 @@ class ContainerBuilderTest extends TestCase
         $builder->setAlias('bar', 'foo');
         $this->assertTrue($builder->hasAlias('bar'), '->hasAlias() returns true if the alias exists');
         $this->assertFalse($builder->hasAlias('foobar'), '->hasAlias() returns false if the alias does not exist');
-        $this->assertEquals('foo', (string)$builder->getAlias('bar'), '->getAlias() returns the aliased service');
+        $this->assertEquals('foo', (string) $builder->getAlias('bar'), '->getAlias() returns the aliased service');
         $this->assertTrue($builder->has('bar'), '->setAlias() defines a new service');
         $this->assertTrue($builder->get('bar') === $builder->get('foo'), '->setAlias() creates a service that is an alias to another one');
 
@@ -214,10 +214,10 @@ class ContainerBuilderTest extends TestCase
         $builder->setAlias('moo', new Alias('foo', false));
 
         $aliases = $builder->getAliases();
-        $this->assertEquals('foo', (string)$aliases['bar']);
+        $this->assertEquals('foo', (string) $aliases['bar']);
         $this->assertTrue($aliases['bar']->isPublic());
-        $this->assertEquals('foo', (string)$aliases['foobar']);
-        $this->assertEquals('foo', (string)$aliases['moo']);
+        $this->assertEquals('foo', (string) $aliases['foobar']);
+        $this->assertEquals('foo', (string) $aliases['moo']);
         $this->assertFalse($aliases['moo']->isPublic());
 
         $builder->register('bar', 'stdClass');
@@ -284,9 +284,9 @@ class ContainerBuilderTest extends TestCase
     public function testCreateService()
     {
         $builder = new ContainerBuilder();
-        $builder->register('foo1', 'Bar\FooClass')->setFile(__DIR__ . '/Fixtures/includes/foo.php');
+        $builder->register('foo1', 'Bar\FooClass')->setFile(__DIR__.'/Fixtures/includes/foo.php');
         $this->assertInstanceOf('\Bar\FooClass', $builder->get('foo1'), '->createService() requires the file defined by the service definition');
-        $builder->register('foo2', 'Bar\FooClass')->setFile(__DIR__ . '/Fixtures/includes/%file%.php');
+        $builder->register('foo2', 'Bar\FooClass')->setFile(__DIR__.'/Fixtures/includes/%file%.php');
         $builder->setParameter('file', 'foo');
         $this->assertInstanceOf('\Bar\FooClass', $builder->get('foo2'), '->createService() replaces parameters in the file provided by the service definition');
     }
@@ -295,7 +295,7 @@ class ContainerBuilderTest extends TestCase
     {
         $builder = new ContainerBuilder();
 
-        $builder->register('foo1', 'Bar\FooClass')->setFile(__DIR__ . '/Fixtures/includes/foo.php');
+        $builder->register('foo1', 'Bar\FooClass')->setFile(__DIR__.'/Fixtures/includes/foo.php');
         $builder->getDefinition('foo1')->setLazy(true);
 
         $foo1 = $builder->get('foo1');
@@ -346,7 +346,8 @@ class ContainerBuilderTest extends TestCase
             ->register('foo1', 'Bar\FooClass')
             ->setFactoryClass('%foo_class%')
             ->setFactoryMethod('getInstance')
-            ->addArgument(array('foo' => '%value%', '%value%' => 'foo', new Reference('bar')));
+            ->addArgument(array('foo' => '%value%', '%value%' => 'foo', new Reference('bar')))
+        ;
         $builder->setParameter('value', 'bar');
         $builder->setParameter('foo_class', 'Bar\FooClass');
         $this->assertTrue($builder->get('foo1')->called, '->createService() calls the factory method to create the service instance');
@@ -363,7 +364,8 @@ class ContainerBuilderTest extends TestCase
         $builder
             ->register('foo', 'Bar\FooClass')
             ->setFactoryService('%foo_service%')
-            ->setFactoryMethod('getInstance');
+            ->setFactoryMethod('getInstance')
+        ;
         $builder->setParameter('foo_service', 'foo_service');
         $this->assertTrue($builder->get('foo')->called, '->createService() calls the factory method to create the service instance');
     }
@@ -505,7 +507,7 @@ class ContainerBuilderTest extends TestCase
 
         $aliases = $container->getAliases();
         $this->assertTrue(isset($aliases['alias_for_foo']));
-        $this->assertEquals('foo', (string)$aliases['alias_for_foo']);
+        $this->assertEquals('foo', (string) $aliases['alias_for_foo']);
 
         $container = new ContainerBuilder();
         $container->setResourceTracking(false);
@@ -533,7 +535,8 @@ class ContainerBuilderTest extends TestCase
             ->register('foo', 'Bar\FooClass')
             ->addTag('foo', array('foo' => 'foo'))
             ->addTag('bar', array('bar' => 'bar'))
-            ->addTag('foo', array('foofoo' => 'foofoo'));
+            ->addTag('foo', array('foofoo' => 'foofoo'))
+        ;
         $this->assertEquals($builder->findTaggedServiceIds('foo'), array(
             'foo' => array(
                 array('foo' => 'foo'),
@@ -549,7 +552,8 @@ class ContainerBuilderTest extends TestCase
         $builder
             ->register('foo', 'Bar\FooClass')
             ->addTag('kernel.event_listener', array('foo' => 'foo'))
-            ->addTag('kenrel.event_listener', array('bar' => 'bar'));
+            ->addTag('kenrel.event_listener', array('bar' => 'bar'))
+        ;
         $builder->findTaggedServiceIds('kernel.event_listener');
         $this->assertEquals(array('kenrel.event_listener'), $builder->findUnusedTags(), '->findUnusedTags() returns an array with unused tags');
     }
@@ -583,7 +587,7 @@ class ContainerBuilderTest extends TestCase
         $resource = end($resources);
 
         $this->assertInstanceOf('Symfony\Component\Config\Resource\FileResource', $resource);
-        $this->assertSame(realpath(__DIR__ . '/Fixtures/includes/classes.php'), realpath($resource->getResource()));
+        $this->assertSame(realpath(__DIR__.'/Fixtures/includes/classes.php'), realpath($resource->getResource()));
     }
 
     public function testAddClassResource()
@@ -606,7 +610,7 @@ class ContainerBuilderTest extends TestCase
         $resource = end($resources);
 
         $this->assertInstanceOf('Symfony\Component\Config\Resource\FileResource', $resource);
-        $this->assertSame(realpath(__DIR__ . '/Fixtures/includes/classes.php'), realpath($resource->getResource()));
+        $this->assertSame(realpath(__DIR__.'/Fixtures/includes/classes.php'), realpath($resource->getResource()));
     }
 
     public function testCompilesClassDefinitionsOfLazyServices()
@@ -620,7 +624,7 @@ class ContainerBuilderTest extends TestCase
 
         $container->compile();
 
-        $classesPath = realpath(__DIR__ . '/Fixtures/includes/classes.php');
+        $classesPath = realpath(__DIR__.'/Fixtures/includes/classes.php');
         $matchingResources = array_filter(
             $container->getResources(),
             function (ResourceInterface $resource) use ($classesPath) {
@@ -634,8 +638,8 @@ class ContainerBuilderTest extends TestCase
     public function testResources()
     {
         $container = new ContainerBuilder();
-        $container->addResource($a = new FileResource(__DIR__ . '/Fixtures/xml/services1.xml'));
-        $container->addResource($b = new FileResource(__DIR__ . '/Fixtures/xml/services2.xml'));
+        $container->addResource($a = new FileResource(__DIR__.'/Fixtures/xml/services1.xml'));
+        $container->addResource($b = new FileResource(__DIR__.'/Fixtures/xml/services2.xml'));
         $resources = array();
         foreach ($container->getResources() as $resource) {
             if (false === strpos($resource, '.php')) {
@@ -740,9 +744,11 @@ class ContainerBuilderTest extends TestCase
     {
         $container = new ContainerBuilder();
         $container->register('baz', 'BazClass')
-            ->setSynchronized(true);
+            ->setSynchronized(true)
+        ;
         $container->register('bar', 'BarClass')
-            ->addMethodCall('setBaz', array(new Reference('baz')));
+            ->addMethodCall('setBaz', array(new Reference('baz')))
+        ;
 
         $container->set('baz', $baz = new \BazClass());
         $this->assertSame($baz, $container->get('bar')->getBaz());
@@ -761,9 +767,11 @@ class ContainerBuilderTest extends TestCase
         $container->register('baz', 'BazClass')
             ->setSynthetic(true)
             ->setSynchronized(true)
-            ->setScope('foo');
+            ->setScope('foo')
+        ;
         $container->register('bar', 'BarClass')
-            ->addMethodCall('setBaz', array(new Reference('baz', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)));
+            ->addMethodCall('setBaz', array(new Reference('baz', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)))
+        ;
         $container->compile();
 
         $container->enterScope('foo');
@@ -822,7 +830,7 @@ class ContainerBuilderTest extends TestCase
 
         $container->compile();
 
-        $this->assertSame('abstract_service', (string)$container->getAlias('abstract_alias'));
+        $this->assertSame('abstract_service', (string) $container->getAlias('abstract_alias'));
     }
 
     public function testLazyLoadedService()
@@ -875,13 +883,13 @@ class ContainerBuilderTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $bDefinition = $container->register('b', __NAMESPACE__ . '\B');
+        $container->register('a', __NAMESPACE__.'\A');
+        $bDefinition = $container->register('b', __NAMESPACE__.'\B');
         $bDefinition->setAutowired(true);
 
         $container->compile();
 
-        $this->assertEquals('a', (string)$container->getDefinition('b')->getArgument(0));
+        $this->assertEquals('a', (string) $container->getDefinition('b')->getArgument(0));
     }
 }
 

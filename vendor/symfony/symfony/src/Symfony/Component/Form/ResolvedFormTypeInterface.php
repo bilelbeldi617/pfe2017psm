@@ -52,8 +52,8 @@ interface ResolvedFormTypeInterface
      * Creates a new form builder for this type.
      *
      * @param FormFactoryInterface $factory The form factory
-     * @param string $name The name for the builder
-     * @param array $options The builder options
+     * @param string               $name    The name for the builder
+     * @param array                $options The builder options
      *
      * @return FormBuilderInterface The created form builder
      */
@@ -62,8 +62,8 @@ interface ResolvedFormTypeInterface
     /**
      * Creates a new form view for a form of this type.
      *
-     * @param FormInterface $form The form to create a view for
-     * @param FormView $parent The parent view or null
+     * @param FormInterface $form   The form to create a view for
+     * @param FormView      $parent The parent view or null
      *
      * @return FormView The created form view
      */
@@ -73,7 +73,7 @@ interface ResolvedFormTypeInterface
      * Configures a form builder for the type hierarchy.
      *
      * @param FormBuilderInterface $builder The builder to configure
-     * @param array $options The options used for the configuration
+     * @param array                $options The options used for the configuration
      */
     public function buildForm(FormBuilderInterface $builder, array $options);
 
@@ -82,9 +82,9 @@ interface ResolvedFormTypeInterface
      *
      * It is called before the children of the view are built.
      *
-     * @param FormView $view The form view to configure
-     * @param FormInterface $form The form corresponding to the view
-     * @param array $options The options used for the configuration
+     * @param FormView      $view    The form view to configure
+     * @param FormInterface $form    The form corresponding to the view
+     * @param array         $options The options used for the configuration
      */
     public function buildView(FormView $view, FormInterface $form, array $options);
 
@@ -93,9 +93,9 @@ interface ResolvedFormTypeInterface
      *
      * It is called after the children of the view have been built.
      *
-     * @param FormView $view The form view to configure
-     * @param FormInterface $form The form corresponding to the view
-     * @param array $options The options used for the configuration
+     * @param FormView      $view    The form view to configure
+     * @param FormInterface $form    The form corresponding to the view
+     * @param array         $options The options used for the configuration
      */
     public function finishView(FormView $view, FormInterface $form, array $options);
 

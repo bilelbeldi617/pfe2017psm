@@ -26,7 +26,7 @@ abstract class AbstractGuardAuthenticator implements GuardAuthenticatorInterface
      * care about which authenticated token you're using.
      *
      * @param UserInterface $user
-     * @param string $providerKey
+     * @param string        $providerKey
      *
      * @return PostAuthenticationGuardToken
      */

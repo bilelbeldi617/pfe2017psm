@@ -34,6 +34,13 @@ class PropertyNormalizerTest extends TestCase
      */
     private $serializer;
 
+    protected function setUp()
+    {
+        $this->serializer = $this->getMockBuilder('Symfony\Component\Serializer\SerializerInterface')->getMock();
+        $this->normalizer = new PropertyNormalizer();
+        $this->normalizer->setSerializer($this->serializer);
+    }
+
     public function testNormalize()
     {
         $obj = new PropertyDummy();
@@ -50,7 +57,7 @@ class PropertyNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => 'foo', 'bar' => 'bar'),
-            __NAMESPACE__ . '\PropertyDummy',
+            __NAMESPACE__.'\PropertyDummy',
             'any'
         );
         $this->assertEquals('foo', $obj->foo);
@@ -65,7 +72,7 @@ class PropertyNormalizerTest extends TestCase
         $this->normalizer->setCamelizedAttributes(array('camel_case'));
         $obj = $this->normalizer->denormalize(
             array('camel_case' => 'value'),
-            __NAMESPACE__ . '\PropertyDummy'
+            __NAMESPACE__.'\PropertyDummy'
         );
         $this->assertEquals('value', $obj->getCamelCase());
     }
@@ -108,14 +115,14 @@ class PropertyNormalizerTest extends TestCase
             'kevin_dunglas' => 'dunglas.fr',
             'fooBar' => 'les-tilleuls.coop',
             'bar_foo' => 'lostinthesupermarket.fr',
-        ), __NAMESPACE__ . '\PropertyCamelizedDummy'), $obj);
+        ), __NAMESPACE__.'\PropertyCamelizedDummy'), $obj);
 
         $this->normalizer->setCamelizedAttributes(array('foo_bar'));
         $this->assertEquals($this->normalizer->denormalize(array(
             'kevinDunglas' => 'dunglas.fr',
             'foo_bar' => 'les-tilleuls.coop',
             'bar_foo' => 'lostinthesupermarket.fr',
-        ), __NAMESPACE__ . '\PropertyCamelizedDummy'), $obj);
+        ), __NAMESPACE__.'\PropertyCamelizedDummy'), $obj);
     }
 
     public function testNameConverterSupport()
@@ -123,7 +130,7 @@ class PropertyNormalizerTest extends TestCase
         $this->normalizer = new PropertyNormalizer(null, new CamelCaseToSnakeCaseNameConverter());
         $obj = $this->normalizer->denormalize(
             array('camel_case' => 'camelCase'),
-            __NAMESPACE__ . '\PropertyDummy'
+            __NAMESPACE__.'\PropertyDummy'
         );
         $this->assertEquals('camelCase', $obj->getCamelCase());
     }
@@ -132,7 +139,7 @@ class PropertyNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => 'foo', 'bar' => 'bar'),
-            __NAMESPACE__ . '\PropertyConstructorDummy',
+            __NAMESPACE__.'\PropertyConstructorDummy',
             'any'
         );
         $this->assertEquals('foo', $obj->getFoo());
@@ -143,7 +150,7 @@ class PropertyNormalizerTest extends TestCase
     {
         $obj = $this->normalizer->denormalize(
             array('foo' => null, 'bar' => 'bar'),
-            __NAMESPACE__ . '\PropertyConstructorDummy', '
+            __NAMESPACE__.'\PropertyConstructorDummy', '
             any'
         );
         $this->assertNull($obj->getFoo());
@@ -399,13 +406,13 @@ class PropertyNormalizerTest extends TestCase
     {
         $this->assertEquals(
             new PropertyDummy(),
-            $this->normalizer->denormalize(array('non_existing' => true), __NAMESPACE__ . '\PropertyDummy')
+            $this->normalizer->denormalize(array('non_existing' => true), __NAMESPACE__.'\PropertyDummy')
         );
     }
 
     public function testDenormalizeShouldIgnoreStaticProperty()
     {
-        $obj = $this->normalizer->denormalize(array('outOfScope' => true), __NAMESPACE__ . '\PropertyDummy');
+        $obj = $this->normalizer->denormalize(array('outOfScope' => true), __NAMESPACE__.'\PropertyDummy');
 
         $this->assertEquals(new PropertyDummy(), $obj);
         $this->assertEquals('out_of_scope', PropertyDummy::$outOfScope);
@@ -436,21 +443,14 @@ class PropertyNormalizerTest extends TestCase
     {
         $this->assertFalse($this->normalizer->supportsNormalization(new StaticPropertyDummy()));
     }
-
-    protected function setUp()
-    {
-        $this->serializer = $this->getMockBuilder('Symfony\Component\Serializer\SerializerInterface')->getMock();
-        $this->normalizer = new PropertyNormalizer();
-        $this->normalizer->setSerializer($this->serializer);
-    }
 }
 
 class PropertyDummy
 {
     public static $outOfScope = 'out_of_scope';
     public $foo;
-    protected $camelCase;
     private $bar;
+    protected $camelCase;
 
     public function getBar()
     {
@@ -497,9 +497,9 @@ class PropertyConstructorDummy
 
 class PropertyCamelizedDummy
 {
+    private $kevinDunglas;
     public $fooBar;
     public $bar_foo;
-    private $kevinDunglas;
 
     public function __construct($kevinDunglas = null)
     {

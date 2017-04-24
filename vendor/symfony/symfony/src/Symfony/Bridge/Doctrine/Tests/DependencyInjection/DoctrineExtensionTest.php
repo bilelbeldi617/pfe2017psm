@@ -26,6 +26,29 @@ class DoctrineExtensionTest extends TestCase
      */
     private $extension;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->extension = $this
+            ->getMockBuilder('Symfony\Bridge\Doctrine\DependencyInjection\AbstractDoctrineExtension')
+            ->setMethods(array(
+                'getMappingResourceConfigDirectory',
+                'getObjectManagerElementName',
+                'getMappingObjectDefaultName',
+                'getMappingResourceExtension',
+                'load',
+            ))
+            ->getMock()
+        ;
+
+        $this->extension->expects($this->any())
+            ->method('getObjectManagerElementName')
+            ->will($this->returnCallback(function ($name) {
+                return 'doctrine.orm.'.$name;
+            }));
+    }
+
     /**
      * @expectedException \LogicException
      */
@@ -151,20 +174,20 @@ class DoctrineExtensionTest extends TestCase
     public function providerBasicDrivers()
     {
         return array(
-            array('doctrine.orm.cache.apc.class', array('type' => 'apc')),
-            array('doctrine.orm.cache.array.class', array('type' => 'array')),
-            array('doctrine.orm.cache.xcache.class', array('type' => 'xcache')),
-            array('doctrine.orm.cache.wincache.class', array('type' => 'wincache')),
-            array('doctrine.orm.cache.zenddata.class', array('type' => 'zenddata')),
-            array('doctrine.orm.cache.redis.class', array('type' => 'redis'), array('setRedis')),
-            array('doctrine.orm.cache.memcache.class', array('type' => 'memcache'), array('setMemcache')),
+            array('doctrine.orm.cache.apc.class',       array('type' => 'apc')),
+            array('doctrine.orm.cache.array.class',     array('type' => 'array')),
+            array('doctrine.orm.cache.xcache.class',    array('type' => 'xcache')),
+            array('doctrine.orm.cache.wincache.class',  array('type' => 'wincache')),
+            array('doctrine.orm.cache.zenddata.class',  array('type' => 'zenddata')),
+            array('doctrine.orm.cache.redis.class',     array('type' => 'redis'),     array('setRedis')),
+            array('doctrine.orm.cache.memcache.class',  array('type' => 'memcache'),  array('setMemcache')),
             array('doctrine.orm.cache.memcached.class', array('type' => 'memcached'), array('setMemcached')),
         );
     }
 
     /**
      * @param string $class
-     * @param array $config
+     * @param array  $config
      *
      * @dataProvider providerBasicDrivers
      */
@@ -194,32 +217,6 @@ class DoctrineExtensionTest extends TestCase
         foreach (array_unique($expectedCalls) as $call) {
             $this->assertContains($call, $actualCalls);
         }
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
-     */
-    protected function createContainer(array $data = array())
-    {
-        return new ContainerBuilder(new ParameterBag(array_merge(array(
-            'kernel.bundles' => array('FrameworkBundle' => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle'),
-            'kernel.cache_dir' => __DIR__,
-            'kernel.debug' => false,
-            'kernel.environment' => 'test',
-            'kernel.name' => 'kernel',
-            'kernel.root_dir' => __DIR__,
-        ), $data)));
-    }
-
-    protected function invokeLoadCacheDriver(array $objectManager, ContainerBuilder $container, $cacheName)
-    {
-        $method = new \ReflectionMethod($this->extension, 'loadObjectManagerCacheDriver');
-
-        $method->setAccessible(true);
-
-        $method->invokeArgs($this->extension, array($objectManager, $container, $cacheName));
     }
 
     public function testServiceCacheDriver()
@@ -260,25 +257,29 @@ class DoctrineExtensionTest extends TestCase
         $this->invokeLoadCacheDriver($objectManager, $container, $cacheName);
     }
 
-    protected function setUp()
+    protected function invokeLoadCacheDriver(array $objectManager, ContainerBuilder $container, $cacheName)
     {
-        parent::setUp();
+        $method = new \ReflectionMethod($this->extension, 'loadObjectManagerCacheDriver');
 
-        $this->extension = $this
-            ->getMockBuilder('Symfony\Bridge\Doctrine\DependencyInjection\AbstractDoctrineExtension')
-            ->setMethods(array(
-                'getMappingResourceConfigDirectory',
-                'getObjectManagerElementName',
-                'getMappingObjectDefaultName',
-                'getMappingResourceExtension',
-                'load',
-            ))
-            ->getMock();
+        $method->setAccessible(true);
 
-        $this->extension->expects($this->any())
-            ->method('getObjectManagerElementName')
-            ->will($this->returnCallback(function ($name) {
-                return 'doctrine.orm.' . $name;
-            }));
+        $method->invokeArgs($this->extension, array($objectManager, $container, $cacheName));
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
+     */
+    protected function createContainer(array $data = array())
+    {
+        return new ContainerBuilder(new ParameterBag(array_merge(array(
+            'kernel.bundles' => array('FrameworkBundle' => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle'),
+            'kernel.cache_dir' => __DIR__,
+            'kernel.debug' => false,
+            'kernel.environment' => 'test',
+            'kernel.name' => 'kernel',
+            'kernel.root_dir' => __DIR__,
+        ), $data)));
     }
 }

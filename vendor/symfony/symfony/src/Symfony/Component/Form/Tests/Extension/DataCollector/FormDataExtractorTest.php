@@ -57,6 +57,14 @@ class FormDataExtractorTest extends TestCase
      */
     private $factory;
 
+    protected function setUp()
+    {
+        $this->valueExporter = new FormDataExtractorTest_SimpleValueExporter();
+        $this->dataExtractor = new FormDataExtractor($this->valueExporter);
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+    }
+
     public function testExtractConfiguration()
     {
         $type = $this->getMockBuilder('Symfony\Component\Form\ResolvedFormTypeInterface')->getMock();
@@ -80,17 +88,6 @@ class FormDataExtractorTest extends TestCase
             'passed_options' => array(),
             'resolved_options' => array(),
         ), $this->dataExtractor->extractConfiguration($form));
-    }
-
-    /**
-     * @param string $name
-     * @param array $options
-     *
-     * @return FormBuilder
-     */
-    private function createBuilder($name, array $options = array())
-    {
-        return new FormBuilder($name, null, $this->dispatcher, $this->factory, $options);
     }
 
     public function testExtractConfigurationSortsPassedOptions()
@@ -379,8 +376,7 @@ class FormDataExtractorTest extends TestCase
     {
         $form = $this->createBuilder('name')
             ->addModelTransformer(new CallbackTransformer(
-                function () {
-                },
+                function () {},
                 function () {
                     throw new TransformationFailedException('Fail!');
                 }
@@ -424,11 +420,14 @@ class FormDataExtractorTest extends TestCase
         ), $this->dataExtractor->extractViewVariables($view));
     }
 
-    protected function setUp()
+    /**
+     * @param string $name
+     * @param array  $options
+     *
+     * @return FormBuilder
+     */
+    private function createBuilder($name, array $options = array())
     {
-        $this->valueExporter = new FormDataExtractorTest_SimpleValueExporter();
-        $this->dataExtractor = new FormDataExtractor($this->valueExporter);
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        return new FormBuilder($name, null, $this->dispatcher, $this->factory, $options);
     }
 }

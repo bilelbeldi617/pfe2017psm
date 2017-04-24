@@ -23,18 +23,18 @@ class AsseticHelperFormulaLoader extends BasePhpFormulaLoader
     protected function registerPrototypes()
     {
         return array(
-            '$view[\'assetic\']->javascripts(*)' => array('output' => 'js/*.js'),
-            '$view[\'assetic\']->stylesheets(*)' => array('output' => 'css/*.css'),
-            '$view[\'assetic\']->image(*)' => array('output' => 'images/*', 'single' => true),
-            '$view["assetic"]->javascripts(*)' => array('output' => 'js/*.js'),
-            '$view["assetic"]->stylesheets(*)' => array('output' => 'css/*.css'),
-            '$view["assetic"]->image(*)' => array('output' => 'images/*', 'single' => true),
+            '$view[\'assetic\']->javascripts(*)'      => array('output' => 'js/*.js'),
+            '$view[\'assetic\']->stylesheets(*)'      => array('output' => 'css/*.css'),
+            '$view[\'assetic\']->image(*)'            => array('output' => 'images/*', 'single' => true),
+            '$view["assetic"]->javascripts(*)'        => array('output' => 'js/*.js'),
+            '$view["assetic"]->stylesheets(*)'        => array('output' => 'css/*.css'),
+            '$view["assetic"]->image(*)'              => array('output' => 'images/*', 'single' => true),
             '$view->get(\'assetic\')->javascripts(*)' => array('output' => 'js/*.js'),
             '$view->get(\'assetic\')->stylesheets(*)' => array('output' => 'css/*.css'),
-            '$view->get(\'assetic\')->image(*)' => array('output' => 'images/*', 'single' => true),
-            '$view->get("assetic")->javascripts(*)' => array('output' => 'js/*.js'),
-            '$view->get("assetic")->stylesheets(*)' => array('output' => 'css/*.css'),
-            '$view->get("assetic")->image(*)' => array('output' => 'images/*', 'single' => true),
+            '$view->get(\'assetic\')->image(*)'       => array('output' => 'images/*', 'single' => true),
+            '$view->get("assetic")->javascripts(*)'   => array('output' => 'js/*.js'),
+            '$view->get("assetic")->stylesheets(*)'   => array('output' => 'css/*.css'),
+            '$view->get("assetic")->image(*)'         => array('output' => 'images/*', 'single' => true),
         );
     }
 

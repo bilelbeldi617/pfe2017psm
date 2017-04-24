@@ -31,13 +31,13 @@ class CsrfToken
     /**
      * Constructor.
      *
-     * @param string $id The token ID
+     * @param string $id    The token ID
      * @param string $value The actual token value
      */
     public function __construct($id, $value)
     {
-        $this->id = (string)$id;
-        $this->value = (string)$value;
+        $this->id = (string) $id;
+        $this->value = (string) $value;
     }
 
     /**

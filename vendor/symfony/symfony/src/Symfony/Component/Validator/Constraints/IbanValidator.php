@@ -143,7 +143,7 @@ class IbanValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Iban) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Iban');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Iban');
         }
 
         if (null === $value || '' === $value) {
@@ -154,7 +154,7 @@ class IbanValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         // Remove spaces and convert to uppercase
         $canonicalized = str_replace(' ', '', strtoupper($value));
@@ -213,7 +213,7 @@ class IbanValidator extends ConstraintValidator
         }
 
         // ...and have a valid format
-        if (!preg_match('/^' . self::$formats[$countryCode] . '$/', $canonicalized)
+        if (!preg_match('/^'.self::$formats[$countryCode].'$/', $canonicalized)
         ) {
             if ($this->context instanceof ExecutionContextInterface) {
                 $this->context->buildViolation($constraint->message)
@@ -233,7 +233,7 @@ class IbanValidator extends ConstraintValidator
         // Move the first four characters to the end
         // e.g. CH93 0076 2011 6238 5295 7
         //   -> 0076 2011 6238 5295 7 CH93
-        $canonicalized = substr($canonicalized, 4) . substr($canonicalized, 0, 4);
+        $canonicalized = substr($canonicalized, 4).substr($canonicalized, 0, 4);
 
         // Convert all remaining letters to their ordinals
         // The result is an integer, which is too large for PHP's int
@@ -286,7 +286,7 @@ class IbanValidator extends ConstraintValidator
         $rest = 0;
 
         foreach ($parts as $part) {
-            $rest = ($rest . $part) % 97;
+            $rest = ($rest.$part) % 97;
         }
 
         return $rest;

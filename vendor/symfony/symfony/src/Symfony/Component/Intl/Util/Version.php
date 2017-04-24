@@ -19,13 +19,6 @@ namespace Symfony\Component\Intl\Util;
 class Version
 {
     /**
-     * Must not be instantiated.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Compares two versions with an operator.
      *
      * This method is identical to {@link version_compare()}, except that you
@@ -40,9 +33,9 @@ class Version
      *     Version::compare('1.2.3', '1.2.4', '==', 2)
      *     // => true
      *
-     * @param string $version1 A version string
-     * @param string $version2 A version string to compare
-     * @param string $operator The comparison operator
+     * @param string   $version1  A version string
+     * @param string   $version2  A version string to compare
+     * @param string   $operator  The comparison operator
      * @param int|null $precision The number of components to compare. Pass
      *                            NULL to compare the versions unchanged.
      *
@@ -70,7 +63,7 @@ class Version
      *     Version::normalize('1.2.3', 2);
      *     // => '1.2'
      *
-     * @param string $version A version string
+     * @param string   $version   A version string
      * @param int|null $precision The number of components to include. Pass
      *                            NULL to return the version unchanged.
      *
@@ -89,10 +82,17 @@ class Version
             $pattern = sprintf('[^\.]+(\.%s)?', $pattern);
         }
 
-        if (!preg_match('/^' . $pattern . '/', $version, $matches)) {
+        if (!preg_match('/^'.$pattern.'/', $version, $matches)) {
             return;
         }
 
         return $matches[0];
+    }
+
+    /**
+     * Must not be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

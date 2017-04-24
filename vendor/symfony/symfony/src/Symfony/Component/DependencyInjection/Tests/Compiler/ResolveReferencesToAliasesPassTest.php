@@ -26,18 +26,13 @@ class ResolveReferencesToAliasesPassTest extends TestCase
         $container->setAlias('bar', 'foo');
         $def = $container
             ->register('moo')
-            ->setArguments(array(new Reference('bar')));
+            ->setArguments(array(new Reference('bar')))
+        ;
 
         $this->process($container);
 
         $arguments = $def->getArguments();
-        $this->assertEquals('foo', (string)$arguments[0]);
-    }
-
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new ResolveReferencesToAliasesPass();
-        $pass->process($container);
+        $this->assertEquals('foo', (string) $arguments[0]);
     }
 
     public function testProcessRecursively()
@@ -47,12 +42,13 @@ class ResolveReferencesToAliasesPassTest extends TestCase
         $container->setAlias('moo', 'bar');
         $def = $container
             ->register('foobar')
-            ->setArguments(array(new Reference('moo')));
+            ->setArguments(array(new Reference('moo')))
+        ;
 
         $this->process($container);
 
         $arguments = $def->getArguments();
-        $this->assertEquals('foo', (string)$arguments[0]);
+        $this->assertEquals('foo', (string) $arguments[0]);
     }
 
     /**
@@ -83,8 +79,8 @@ class ResolveReferencesToAliasesPassTest extends TestCase
         $resolvedFooFactory = $container->getDefinition('foo')->getFactory();
         $resolvedBarFactory = $container->getDefinition('bar')->getFactory();
 
-        $this->assertSame('factory', (string)$resolvedFooFactory[0]);
-        $this->assertSame('Factory', (string)$resolvedBarFactory[0]);
+        $this->assertSame('factory', (string) $resolvedFooFactory[0]);
+        $this->assertSame('Factory', (string) $resolvedBarFactory[0]);
     }
 
     /**
@@ -103,5 +99,11 @@ class ResolveReferencesToAliasesPassTest extends TestCase
         $this->process($container);
 
         $this->assertSame('factory', $foo->getFactoryService());
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new ResolveReferencesToAliasesPass();
+        $pass->process($container);
     }
 }

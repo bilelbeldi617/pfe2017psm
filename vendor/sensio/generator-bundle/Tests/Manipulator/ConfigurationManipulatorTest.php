@@ -22,7 +22,7 @@ class ConfigurationManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->tmpDir = sys_get_temp_dir() . '/sf';
+        $this->tmpDir = sys_get_temp_dir().'/sf';
         $this->filesystem = new Filesystem();
         $this->filesystem->remove($this->tmpDir);
         $this->filesystem->mkdir($this->tmpDir);
@@ -40,7 +40,7 @@ class ConfigurationManipulatorTest extends \PHPUnit_Framework_TestCase
     {
         $bundle = new Bundle('Acme', $bundleName, 'src', $format, true);
 
-        $configurationPath = $this->tmpDir . '/config.yml';
+        $configurationPath = $this->tmpDir.'/config.yml';
         file_put_contents($configurationPath, $startingContents);
         $manipulator = new ConfigurationManipulator($configurationPath);
 
@@ -66,7 +66,7 @@ framework:
     esi:             { enabled: true }
     translator:      { fallback: en }
 EOF
-        , <<<EOF
+            , <<<EOF
 imports:
     - { resource: security.yml }
     - { resource: parameters.yml }
@@ -91,7 +91,7 @@ framework:
     esi:             { enabled: true }
     translator:      { fallback: en }
 EOF
-        , <<<EOF
+            , <<<EOF
 imports:
     - { resource: security.yml }
     - { resource: parameters.yml }
@@ -121,7 +121,7 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
 EOF
-        , <<<EOF
+            , <<<EOF
 framework:
     esi:             { enabled: true }
     translator:      { fallback: en }
@@ -154,7 +154,7 @@ framework:
     esi:             { enabled: true }
     translator:      { fallback: en }
 EOF
-        , <<<EOF
+            , <<<EOF
 imports:
     - { resource: security.yml }
     - { resource: parameters.yml }

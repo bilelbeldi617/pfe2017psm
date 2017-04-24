@@ -22,9 +22,9 @@ interface FormConfigBuilderInterface extends FormConfigInterface
     /**
      * Adds an event listener to an event on this form.
      *
-     * @param string $eventName The name of the event to listen to
-     * @param callable $listener The listener to execute
-     * @param int $priority The priority of the listener. Listeners
+     * @param string   $eventName The name of the event to listen to
+     * @param callable $listener  The listener to execute
+     * @param int      $priority  The priority of the listener. Listeners
      *                            with a higher priority are called before
      *                            listeners with a lower priority.
      *
@@ -50,7 +50,7 @@ interface FormConfigBuilderInterface extends FormConfigInterface
      * view to the normalized format.
      *
      * @param DataTransformerInterface $viewTransformer
-     * @param bool $forcePrepend if set to true, prepend instead of appending
+     * @param bool                     $forcePrepend    if set to true, prepend instead of appending
      *
      * @return $this The configuration object
      */
@@ -72,7 +72,7 @@ interface FormConfigBuilderInterface extends FormConfigInterface
      * normalized to the model format.
      *
      * @param DataTransformerInterface $modelTransformer
-     * @param bool $forceAppend if set to true, append instead of prepending
+     * @param bool                     $forceAppend      if set to true, append instead of prepending
      *
      * @return $this The configuration object
      */
@@ -88,8 +88,8 @@ interface FormConfigBuilderInterface extends FormConfigInterface
     /**
      * Sets the value for an attribute.
      *
-     * @param string $name The name of the attribute
-     * @param mixed $value The value of the attribute
+     * @param string $name  The name of the attribute
+     * @param mixed  $value The value of the attribute
      *
      * @return $this The configuration object
      */

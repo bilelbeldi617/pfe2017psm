@@ -16,23 +16,41 @@ class __TwigTemplate_6e1cc35cfb5464dac6ea8c406e917cf56784ebd24d361da84531cdef236
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "baseForEnseignant.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_e844ebf935343a80eb2ba70939f386a734ee30e04df97f379e21545434466ec0 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_e844ebf935343a80eb2ba70939f386a734ee30e04df97f379e21545434466ec0->enter($__internal_e844ebf935343a80eb2ba70939f386a734ee30e04df97f379e21545434466ec0_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Enseignant/saisirCahierTexte.html.twig"));
+
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_e844ebf935343a80eb2ba70939f386a734ee30e04df97f379e21545434466ec0->leave($__internal_e844ebf935343a80eb2ba70939f386a734ee30e04df97f379e21545434466ec0_prof);
+
+    }
+
+    // line 2
     public function block_title($context, array $blocks = array())
     {
-        $__internal_d14a28ac40516a9df26aa8628805349fc588d8be87211a5d5e12102cdc60b5a2 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d14a28ac40516a9df26aa8628805349fc588d8be87211a5d5e12102cdc60b5a2->enter($__internal_d14a28ac40516a9df26aa8628805349fc588d8be87211a5d5e12102cdc60b5a2_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_3902e73c50a3a5653e2c227137338191d486c9aaf5ba339091af30524ddcb765 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_3902e73c50a3a5653e2c227137338191d486c9aaf5ba339091af30524ddcb765->enter($__internal_3902e73c50a3a5653e2c227137338191d486c9aaf5ba339091af30524ddcb765_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
         // line 3
         echo "    Saisir le cahier de texte
 ";
-
-        $__internal_d14a28ac40516a9df26aa8628805349fc588d8be87211a5d5e12102cdc60b5a2->leave($__internal_d14a28ac40516a9df26aa8628805349fc588d8be87211a5d5e12102cdc60b5a2_prof);
+        
+        $__internal_3902e73c50a3a5653e2c227137338191d486c9aaf5ba339091af30524ddcb765->leave($__internal_3902e73c50a3a5653e2c227137338191d486c9aaf5ba339091af30524ddcb765_prof);
 
     }
 
+    // line 5
     public function block_script($context, array $blocks = array())
     {
-        $__internal_0e6224580bc4b90180188bf30a29ea694ca123e97cc51e915e586fb1268a8743 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_0e6224580bc4b90180188bf30a29ea694ca123e97cc51e915e586fb1268a8743->enter($__internal_0e6224580bc4b90180188bf30a29ea694ca123e97cc51e915e586fb1268a8743_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
+        $__internal_87711fc9a1659685eed6cf7df83f7dc7c890de2e032d9a69cb626a6c5096dd81 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_87711fc9a1659685eed6cf7df83f7dc7c890de2e032d9a69cb626a6c5096dd81->enter($__internal_87711fc9a1659685eed6cf7df83f7dc7c890de2e032d9a69cb626a6c5096dd81_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
 
         // line 6
         echo "    <script language=\"JavaScript\">
@@ -57,17 +75,16 @@ class __TwigTemplate_6e1cc35cfb5464dac6ea8c406e917cf56784ebd24d361da84531cdef236
 
     </script>
 ";
-
-        $__internal_0e6224580bc4b90180188bf30a29ea694ca123e97cc51e915e586fb1268a8743->leave($__internal_0e6224580bc4b90180188bf30a29ea694ca123e97cc51e915e586fb1268a8743_prof);
+        
+        $__internal_87711fc9a1659685eed6cf7df83f7dc7c890de2e032d9a69cb626a6c5096dd81->leave($__internal_87711fc9a1659685eed6cf7df83f7dc7c890de2e032d9a69cb626a6c5096dd81_prof);
 
     }
 
-    // line 2
-
+    // line 28
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_45fc4715ae355fa21c070808de569b63a804a38cc279cdf5b3ebef6275485ece = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_45fc4715ae355fa21c070808de569b63a804a38cc279cdf5b3ebef6275485ece->enter($__internal_45fc4715ae355fa21c070808de569b63a804a38cc279cdf5b3ebef6275485ece_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_9bdcd675e5e32b28af6a96d9e64ebfc57b3c7ccef6650a07946654e51616097a = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_9bdcd675e5e32b28af6a96d9e64ebfc57b3c7ccef6650a07946654e51616097a->enter($__internal_9bdcd675e5e32b28af6a96d9e64ebfc57b3c7ccef6650a07946654e51616097a_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 29
         echo "
@@ -149,29 +166,30 @@ class __TwigTemplate_6e1cc35cfb5464dac6ea8c406e917cf56784ebd24d361da84531cdef236
 
 
 ";
-
-        $__internal_45fc4715ae355fa21c070808de569b63a804a38cc279cdf5b3ebef6275485ece->leave($__internal_45fc4715ae355fa21c070808de569b63a804a38cc279cdf5b3ebef6275485ece_prof);
+        
+        $__internal_9bdcd675e5e32b28af6a96d9e64ebfc57b3c7ccef6650a07946654e51616097a->leave($__internal_9bdcd675e5e32b28af6a96d9e64ebfc57b3c7ccef6650a07946654e51616097a_prof);
 
     }
 
-    // line 5
+    public function getTemplateName()
+    {
+        return "@projet/Default/Enseignant/saisirCahierTexte.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 28
-
     public function getDebugInfo()
     {
-        return array(131 => 48, 119 => 44, 111 => 43, 108 => 42, 104 => 41, 90 => 29, 84 => 28, 56 => 6, 50 => 5, 42 => 3, 36 => 2, 11 => 1,);
+        return array (  131 => 48,  119 => 44,  111 => 43,  108 => 42,  104 => 41,  90 => 29,  84 => 28,  56 => 6,  50 => 5,  42 => 3,  36 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -267,26 +285,5 @@ class __TwigTemplate_6e1cc35cfb5464dac6ea8c406e917cf56784ebd24d361da84531cdef236
 
 
 ", "@projet/Default/Enseignant/saisirCahierTexte.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Enseignant\\saisirCahierTexte.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "baseForEnseignant.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_1a10b9b7f8deff3f4dfae72302b8524b52198a48b039b80aeeea08f023eb3585 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_1a10b9b7f8deff3f4dfae72302b8524b52198a48b039b80aeeea08f023eb3585->enter($__internal_1a10b9b7f8deff3f4dfae72302b8524b52198a48b039b80aeeea08f023eb3585_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Enseignant/saisirCahierTexte.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_1a10b9b7f8deff3f4dfae72302b8524b52198a48b039b80aeeea08f023eb3585->leave($__internal_1a10b9b7f8deff3f4dfae72302b8524b52198a48b039b80aeeea08f023eb3585_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@projet/Default/Enseignant/saisirCahierTexte.html.twig";
     }
 }

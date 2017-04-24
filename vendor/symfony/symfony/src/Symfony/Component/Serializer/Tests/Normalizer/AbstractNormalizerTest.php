@@ -28,6 +28,13 @@ class AbstractNormalizerTest extends TestCase
      */
     private $classMetadata;
 
+    protected function setUp()
+    {
+        $loader = $this->getMockBuilder('Symfony\Component\Serializer\Mapping\Loader\LoaderChain')->setConstructorArgs(array(array()))->getMock();
+        $this->classMetadata = $this->getMockBuilder('Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory')->setConstructorArgs(array($loader))->getMock();
+        $this->normalizer = new AbstractNormalizerDummy($this->classMetadata);
+    }
+
     public function testGetAllowedAttributesAsString()
     {
         $classMetadata = new ClassMetadata('c');
@@ -96,12 +103,5 @@ class AbstractNormalizerTest extends TestCase
         $normalizer->denormalize(array('foo' => 'bar'), 'Symfony\Component\Serializer\Tests\Fixtures\ToBeProxyfiedDummy', null, $context);
 
         $this->assertSame('bar', $proxyDummy->getFoo());
-    }
-
-    protected function setUp()
-    {
-        $loader = $this->getMockBuilder('Symfony\Component\Serializer\Mapping\Loader\LoaderChain')->setConstructorArgs(array(array()))->getMock();
-        $this->classMetadata = $this->getMockBuilder('Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory')->setConstructorArgs(array($loader))->getMock();
-        $this->normalizer = new AbstractNormalizerDummy($this->classMetadata);
     }
 }

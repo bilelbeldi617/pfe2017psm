@@ -24,14 +24,19 @@ class GroupDummyParent
     private $kevin;
     private $coopTilleuls;
 
+    public function setKevin($kevin)
+    {
+        $this->kevin = $kevin;
+    }
+
     public function getKevin()
     {
         return $this->kevin;
     }
 
-    public function setKevin($kevin)
+    public function setCoopTilleuls($coopTilleuls)
     {
-        $this->kevin = $kevin;
+        $this->coopTilleuls = $coopTilleuls;
     }
 
     /**
@@ -40,10 +45,5 @@ class GroupDummyParent
     public function getCoopTilleuls()
     {
         return $this->coopTilleuls;
-    }
-
-    public function setCoopTilleuls($coopTilleuls)
-    {
-        $this->coopTilleuls = $coopTilleuls;
     }
 }

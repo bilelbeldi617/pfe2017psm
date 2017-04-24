@@ -45,6 +45,16 @@ class OptimisticLockException extends ORMException
     }
 
     /**
+     * Gets the entity that caused the exception.
+     *
+     * @return object|null
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
      * @param object $entity
      *
      * @return OptimisticLockException
@@ -56,8 +66,8 @@ class OptimisticLockException extends ORMException
 
     /**
      * @param object $entity
-     * @param int $expectedLockVersion
-     * @param int $actualLockVersion
+     * @param int    $expectedLockVersion
+     * @param int    $actualLockVersion
      *
      * @return OptimisticLockException
      */
@@ -65,7 +75,7 @@ class OptimisticLockException extends ORMException
     {
         $expectedLockVersion = ($expectedLockVersion instanceof \DateTime) ? $expectedLockVersion->getTimestamp() : $expectedLockVersion;
         $actualLockVersion = ($actualLockVersion instanceof \DateTime) ? $actualLockVersion->getTimestamp() : $actualLockVersion;
-        return new self("The optimistic lock failed, version " . $expectedLockVersion . " was expected, but is actually " . $actualLockVersion, $entity);
+        return new self("The optimistic lock failed, version " . $expectedLockVersion . " was expected, but is actually ".$actualLockVersion, $entity);
     }
 
     /**
@@ -76,15 +86,5 @@ class OptimisticLockException extends ORMException
     public static function notVersioned($entityName)
     {
         return new self("Cannot obtain optimistic lock on unversioned entity " . $entityName, null);
-    }
-
-    /**
-     * Gets the entity that caused the exception.
-     *
-     * @return object|null
-     */
-    public function getEntity()
-    {
-        return $this->entity;
     }
 }

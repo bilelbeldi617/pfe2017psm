@@ -64,6 +64,19 @@ class FormDataCollectorTest extends TestCase
      */
     private $childView;
 
+    protected function setUp()
+    {
+        $this->dataExtractor = $this->getMockBuilder('Symfony\Component\Form\Extension\DataCollector\FormDataExtractorInterface')->getMock();
+        $this->dataCollector = new FormDataCollector($this->dataExtractor);
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->dataMapper = $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
+        $this->form = $this->createForm('name');
+        $this->childForm = $this->createForm('child');
+        $this->view = new FormView();
+        $this->childView = new FormView();
+    }
+
     public function testBuildPreliminaryFormTree()
     {
         $this->form->add($this->childForm);
@@ -101,20 +114,20 @@ class FormDataCollectorTest extends TestCase
         $this->dataCollector->buildPreliminaryFormTree($this->form);
 
         $childFormData = array(
-            'config' => 'bar',
-            'default_data' => 'bar',
-            'submitted_data' => 'bar',
-            'children' => array(),
-        );
+             'config' => 'bar',
+             'default_data' => 'bar',
+             'submitted_data' => 'bar',
+             'children' => array(),
+         );
 
         $formData = array(
-            'config' => 'foo',
-            'default_data' => 'foo',
-            'submitted_data' => 'foo',
-            'children' => array(
-                'child' => $childFormData,
-            ),
-        );
+             'config' => 'foo',
+             'default_data' => 'foo',
+             'submitted_data' => 'foo',
+             'children' => array(
+                 'child' => $childFormData,
+             ),
+         );
 
         $this->assertSame(array(
             'forms' => array(
@@ -125,7 +138,7 @@ class FormDataCollectorTest extends TestCase
                 spl_object_hash($this->childForm) => $childFormData,
             ),
             'nb_errors' => 0,
-        ), $this->dataCollector->getData());
+         ), $this->dataCollector->getData());
     }
 
     public function testBuildMultiplePreliminaryFormTrees()
@@ -487,11 +500,11 @@ class FormDataCollectorTest extends TestCase
 
         $form1->add($childForm1);
         $this->dataExtractor
-            ->method('extractConfiguration')
-            ->will($this->returnValue(array()));
+             ->method('extractConfiguration')
+             ->will($this->returnValue(array()));
         $this->dataExtractor
-            ->method('extractDefaultData')
-            ->will($this->returnValue(array()));
+             ->method('extractDefaultData')
+             ->will($this->returnValue(array()));
         $this->dataExtractor->expects($this->at(4))
             ->method('extractSubmittedData')
             ->with($form1)
@@ -514,19 +527,6 @@ class FormDataCollectorTest extends TestCase
 
         $data = $this->dataCollector->getData();
         $this->assertSame(4, $data['nb_errors']);
-    }
-
-    protected function setUp()
-    {
-        $this->dataExtractor = $this->getMockBuilder('Symfony\Component\Form\Extension\DataCollector\FormDataExtractorInterface')->getMock();
-        $this->dataCollector = new FormDataCollector($this->dataExtractor);
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->dataMapper = $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
-        $this->form = $this->createForm('name');
-        $this->childForm = $this->createForm('child');
-        $this->view = new FormView();
-        $this->childView = new FormView();
     }
 
     private function createForm($name)

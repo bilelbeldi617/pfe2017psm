@@ -58,23 +58,10 @@ class NativeSessionTokenStorage implements TokenStorageInterface
         }
 
         if (!isset($_SESSION[$this->namespace][$tokenId])) {
-            throw new TokenNotFoundException('The CSRF token with ID ' . $tokenId . ' does not exist.');
+            throw new TokenNotFoundException('The CSRF token with ID '.$tokenId.' does not exist.');
         }
 
-        return (string)$_SESSION[$this->namespace][$tokenId];
-    }
-
-    private function startSession()
-    {
-        if (PHP_VERSION_ID >= 50400) {
-            if (PHP_SESSION_NONE === session_status()) {
-                session_start();
-            }
-        } elseif (!session_id()) {
-            session_start();
-        }
-
-        $this->sessionStarted = true;
+        return (string) $_SESSION[$this->namespace][$tokenId];
     }
 
     /**
@@ -86,7 +73,7 @@ class NativeSessionTokenStorage implements TokenStorageInterface
             $this->startSession();
         }
 
-        $_SESSION[$this->namespace][$tokenId] = (string)$token;
+        $_SESSION[$this->namespace][$tokenId] = (string) $token;
     }
 
     /**
@@ -111,11 +98,24 @@ class NativeSessionTokenStorage implements TokenStorageInterface
         }
 
         $token = isset($_SESSION[$this->namespace][$tokenId])
-            ? (string)$_SESSION[$this->namespace][$tokenId]
+            ? (string) $_SESSION[$this->namespace][$tokenId]
             : null;
 
         unset($_SESSION[$this->namespace][$tokenId]);
 
         return $token;
+    }
+
+    private function startSession()
+    {
+        if (PHP_VERSION_ID >= 50400) {
+            if (PHP_SESSION_NONE === session_status()) {
+                session_start();
+            }
+        } elseif (!session_id()) {
+            session_start();
+        }
+
+        $this->sessionStarted = true;
     }
 }

@@ -20,6 +20,16 @@ use Symfony\Component\Validator\Validation;
  */
 class UuidValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new UuidValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Uuid());
@@ -96,7 +106,7 @@ class UuidValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($uuid, $constraint);
 
         $this->buildViolation('testMessage')
-            ->setParameter('{{ value }}', '"' . $uuid . '"')
+            ->setParameter('{{ value }}', '"'.$uuid.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -191,7 +201,7 @@ class UuidValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($uuid, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $uuid . '"')
+            ->setParameter('{{ value }}', '"'.$uuid.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -207,15 +217,5 @@ class UuidValidatorTest extends AbstractConstraintValidatorTest
             array('216fff40-98d9-11e3-a5e2-0800200c9a6', Uuid::TOO_SHORT_ERROR),
             array('216fff40-98d9-11e3-a5e2-0800200c9a666', Uuid::TOO_LONG_ERROR),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new UuidValidator();
     }
 }

@@ -163,9 +163,9 @@ class FormTypeTest extends BaseTypeTest
     public function testLegacyNonReadOnlyFormWithNonReadOnlyParentIsNotReadOnly()
     {
         $view = $this->factory->createNamedBuilder('parent', static::TESTED_TYPE)
-            ->add('child', static::TESTED_TYPE)
-            ->getForm()
-            ->createView();
+                ->add('child', static::TESTED_TYPE)
+                ->getForm()
+                ->createView();
 
         $this->assertFalse($view['child']->vars['read_only']);
     }
@@ -436,7 +436,7 @@ class FormTypeTest extends BaseTypeTest
             // referenceCopy has a getter that returns a copy
             'referenceCopy' => array(
                 'firstName' => 'Foo',
-            ),
+        ),
         ));
 
         $this->assertEquals('Foo', $author->getReferenceCopy()->firstName);
@@ -472,8 +472,7 @@ class FormTypeTest extends BaseTypeTest
         $builder = $this->factory->createBuilder(static::TESTED_TYPE, $author);
         $builder->add('referenceCopy', static::TESTED_TYPE);
         $builder->get('referenceCopy')->addViewTransformer(new CallbackTransformer(
-            function () {
-            },
+            function () {},
             function ($value) { // reverseTransform
                 return 'foobar';
             }
@@ -498,8 +497,7 @@ class FormTypeTest extends BaseTypeTest
         $builder->setData($author);
         $builder->add('referenceCopy', static::TESTED_TYPE);
         $builder->get('referenceCopy')->addViewTransformer(new CallbackTransformer(
-            function () {
-            },
+            function () {},
             function ($value) use ($ref2) { // reverseTransform
                 return $ref2;
             }
@@ -529,9 +527,9 @@ class FormTypeTest extends BaseTypeTest
     public function testViewIsNotRenderedByDefault()
     {
         $view = $this->factory->createBuilder(static::TESTED_TYPE)
-            ->add('foo', static::TESTED_TYPE)
-            ->getForm()
-            ->createView();
+                ->add('foo', static::TESTED_TYPE)
+                ->getForm()
+                ->createView();
 
         $this->assertFalse($view->isRendered());
     }
@@ -682,8 +680,8 @@ class FormTypeTest extends BaseTypeTest
     public function testPassZeroLabelToView()
     {
         $view = $this->factory->create(static::TESTED_TYPE, null, array(
-            'label' => '0',
-        ))
+                'label' => '0',
+            ))
             ->createView();
 
         $this->assertSame('0', $view->vars['label']);

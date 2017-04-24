@@ -24,6 +24,11 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 class LocaleTest extends TestCase
 {
+    protected function setUp()
+    {
+        \Locale::setDefault('en');
+    }
+
     public function testGetDisplayCountries()
     {
         $countries = Locale::getDisplayCountries('en');
@@ -72,10 +77,5 @@ class LocaleTest extends TestCase
     {
         $locales = Locale::getLocales();
         $this->assertContains('pt', $locales);
-    }
-
-    protected function setUp()
-    {
-        \Locale::setDefault('en');
     }
 }

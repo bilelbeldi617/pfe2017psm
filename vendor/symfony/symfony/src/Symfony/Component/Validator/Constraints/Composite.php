@@ -96,7 +96,7 @@ abstract class Composite extends Constraint
 
                 if (count($excessGroups) > 0) {
                     throw new ConstraintDefinitionException(sprintf(
-                        'The group(s) "%s" passed to the constraint %s ' .
+                        'The group(s) "%s" passed to the constraint %s '.
                         'should also be passed to its containing constraint %s',
                         implode('", "', $excessGroups),
                         get_class($constraint),
@@ -110,25 +110,6 @@ abstract class Composite extends Constraint
 
         $this->$compositeOption = $nestedConstraints;
     }
-
-    /**
-     * Initializes the nested constraints.
-     *
-     * This method can be overwritten in subclasses to clean up the nested
-     * constraints passed to the constructor.
-     *
-     * @see Collection::initializeNestedConstraints()
-     */
-    protected function initializeNestedConstraints()
-    {
-    }
-
-    /**
-     * Returns the name of the property that contains the nested constraints.
-     *
-     * @return string The property name
-     */
-    abstract protected function getCompositeOption();
 
     /**
      * {@inheritdoc}
@@ -147,5 +128,24 @@ abstract class Composite extends Constraint
         foreach ($nestedConstraints as $constraint) {
             $constraint->addImplicitGroupName($group);
         }
+    }
+
+    /**
+     * Returns the name of the property that contains the nested constraints.
+     *
+     * @return string The property name
+     */
+    abstract protected function getCompositeOption();
+
+    /**
+     * Initializes the nested constraints.
+     *
+     * This method can be overwritten in subclasses to clean up the nested
+     * constraints passed to the constructor.
+     *
+     * @see Collection::initializeNestedConstraints()
+     */
+    protected function initializeNestedConstraints()
+    {
     }
 }

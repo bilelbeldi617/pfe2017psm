@@ -18,6 +18,6 @@ class TestUserRepository
 {
     public function findByFullName($firstName, $lastName)
     {
-        return $firstName . ' ' . $lastName;
+        return $firstName.' '.$lastName;
     }
 }

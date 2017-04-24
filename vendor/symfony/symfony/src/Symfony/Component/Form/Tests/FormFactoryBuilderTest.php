@@ -21,6 +21,16 @@ class FormFactoryBuilderTest extends TestCase
     private $guesser;
     private $type;
 
+    protected function setUp()
+    {
+        $factory = new \ReflectionClass('Symfony\Component\Form\FormFactory');
+        $this->registry = $factory->getProperty('registry');
+        $this->registry->setAccessible(true);
+
+        $this->guesser = $this->getMockBuilder('Symfony\Component\Form\FormTypeGuesserInterface')->getMock();
+        $this->type = new LegacyFooType();
+    }
+
     public function testAddType()
     {
         $factoryBuilder = new FormFactoryBuilder();
@@ -46,15 +56,5 @@ class FormFactoryBuilderTest extends TestCase
 
         $this->assertCount(1, $extensions);
         $this->assertNotNull($extensions[0]->getTypeGuesser());
-    }
-
-    protected function setUp()
-    {
-        $factory = new \ReflectionClass('Symfony\Component\Form\FormFactory');
-        $this->registry = $factory->getProperty('registry');
-        $this->registry->setAccessible(true);
-
-        $this->guesser = $this->getMockBuilder('Symfony\Component\Form\FormTypeGuesserInterface')->getMock();
-        $this->type = new LegacyFooType();
     }
 }

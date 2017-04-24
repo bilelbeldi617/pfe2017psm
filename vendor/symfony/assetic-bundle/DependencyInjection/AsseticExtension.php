@@ -29,7 +29,7 @@ class AsseticExtension extends Extension
     /**
      * Loads the configuration.
      *
-     * @param array $configs An array of configuration settings
+     * @param array            $configs   An array of configuration settings
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
     public function load(array $configs, ContainerBuilder $container)
@@ -86,11 +86,11 @@ class AsseticExtension extends Extension
                 $loader->load($container->getParameterBag()->resolveValue($filter['resource']));
                 unset($filter['resource']);
             } else {
-                $loader->load('filters/' . $name . '.xml');
+                $loader->load('filters/'.$name.'.xml');
             }
 
             if (isset($filter['file'])) {
-                $container->getDefinition('assetic.filter.' . $name)->setFile($filter['file']);
+                $container->getDefinition('assetic.filter.'.$name)->setFile($filter['file']);
                 unset($filter['file']);
             }
 
@@ -101,18 +101,18 @@ class AsseticExtension extends Extension
 
                 foreach ($filter['apply_to'] as $i => $pattern) {
                     $worker = new DefinitionDecorator('assetic.worker.ensure_filter');
-                    $worker->replaceArgument(0, '/' . $pattern . '/');
-                    $worker->replaceArgument(1, new Reference('assetic.filter.' . $name));
+                    $worker->replaceArgument(0, '/'.$pattern.'/');
+                    $worker->replaceArgument(1, new Reference('assetic.filter.'.$name));
                     $worker->addTag('assetic.factory_worker');
 
-                    $container->setDefinition('assetic.filter.' . $name . '.worker' . $i, $worker);
+                    $container->setDefinition('assetic.filter.'.$name.'.worker'.$i, $worker);
                 }
 
                 unset($filter['apply_to']);
             }
 
             foreach ($filter as $key => $value) {
-                $container->setParameter('assetic.filter.' . $name . '.' . $key, $value);
+                $container->setParameter('assetic.filter.'.$name.'.'.$key, $value);
             }
         }
 
@@ -146,13 +146,6 @@ class AsseticExtension extends Extension
         }
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
-    {
-        $bundles = $container->getParameter('kernel.bundles');
-
-        return new Configuration(array_keys($bundles));
-    }
-
     /**
      * Returns the base path for the XSD files.
      *
@@ -166,5 +159,12 @@ class AsseticExtension extends Extension
     public function getNamespace()
     {
         return 'http://symfony.com/schema/dic/assetic';
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        $bundles = $container->getParameter('kernel.bundles');
+
+        return new Configuration(array_keys($bundles));
     }
 }

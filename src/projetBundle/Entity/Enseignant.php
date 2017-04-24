@@ -34,55 +34,7 @@ class Enseignant
      * @ORM\ManyToOne(targetEntity="Grade")
      *
      */
-    private $grade;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom_enseignant", type="string", length=50)
-     */
-    private $prenomEnseignant;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="num_tel_enseignant", type="integer", unique=true)
-     */
-    private $numTelEnseignant;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="adresse_enseignant", type="string", length=100)
-     */
-    private $adresseEnseignant;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="cin_enseignant", type="string", length=8, unique=true)
-     */
-    private $cinEnseignant;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email_enseignant", type="string", length=100, unique=true)
-     */
-    private $emailEnseignant;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="login_enseignant", type="string", length=50)
-     */
-    private $loginEnseignant;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password_enseignant", type="string", length=50)
-     */
-    private $passwordEnseignant;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="matricule_enseignant", type="string", length=8, unique=true)
-     */
-    private $matriculeEnseignant;
+    private $grade ;
 
     /**
      * @return mixed
@@ -100,24 +52,77 @@ class Enseignant
         $this->grade = $grade;
     }
 
+
+
+
+
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="prenom_enseignant", type="string", length=50)
+     */
+    private $prenomEnseignant;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="num_tel_enseignant", type="integer", unique=true)
+     */
+    private $numTelEnseignant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="adresse_enseignant", type="string", length=100)
+     */
+    private $adresseEnseignant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cin_enseignant", type="string", length=8, unique=true)
+     */
+    private $cinEnseignant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email_enseignant", type="string", length=100, unique=true)
+     */
+    private $emailEnseignant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="login_enseignant", type="string", length=50)
+     */
+    private $loginEnseignant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password_enseignant", type="string", length=50)
+     */
+    private $passwordEnseignant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="matricule_enseignant", type="string", length=8, unique=true)
+     */
+    private $matriculeEnseignant;
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get nomEnseignant
-     *
-     * @return string
-     */
-    public function getNomEnseignant()
-    {
-        return $this->nomEnseignant;
     }
 
     /**
@@ -134,13 +139,13 @@ class Enseignant
     }
 
     /**
-     * Get prenomEnseignant
+     * Get nomEnseignant
      *
-     * @return string
+     * @return string 
      */
-    public function getPrenomEnseignant()
+    public function getNomEnseignant()
     {
-        return $this->prenomEnseignant;
+        return $this->nomEnseignant;
     }
 
     /**
@@ -157,13 +162,13 @@ class Enseignant
     }
 
     /**
-     * Get numTelEnseignant
+     * Get prenomEnseignant
      *
-     * @return integer
+     * @return string 
      */
-    public function getNumTelEnseignant()
+    public function getPrenomEnseignant()
     {
-        return $this->numTelEnseignant;
+        return $this->prenomEnseignant;
     }
 
     /**
@@ -180,13 +185,13 @@ class Enseignant
     }
 
     /**
-     * Get adresseEnseignant
+     * Get numTelEnseignant
      *
-     * @return string
+     * @return integer 
      */
-    public function getAdresseEnseignant()
+    public function getNumTelEnseignant()
     {
-        return $this->adresseEnseignant;
+        return $this->numTelEnseignant;
     }
 
     /**
@@ -203,13 +208,13 @@ class Enseignant
     }
 
     /**
-     * Get cinEnseignant
+     * Get adresseEnseignant
      *
-     * @return string
+     * @return string 
      */
-    public function getCinEnseignant()
+    public function getAdresseEnseignant()
     {
-        return $this->cinEnseignant;
+        return $this->adresseEnseignant;
     }
 
     /**
@@ -226,13 +231,13 @@ class Enseignant
     }
 
     /**
-     * Get emailEnseignant
+     * Get cinEnseignant
      *
-     * @return string
+     * @return string 
      */
-    public function getEmailEnseignant()
+    public function getCinEnseignant()
     {
-        return $this->emailEnseignant;
+        return $this->cinEnseignant;
     }
 
     /**
@@ -249,13 +254,13 @@ class Enseignant
     }
 
     /**
-     * Get loginEnseignant
+     * Get emailEnseignant
      *
-     * @return string
+     * @return string 
      */
-    public function getLoginEnseignant()
+    public function getEmailEnseignant()
     {
-        return $this->loginEnseignant;
+        return $this->emailEnseignant;
     }
 
     /**
@@ -272,13 +277,13 @@ class Enseignant
     }
 
     /**
-     * Get passwordEnseignant
+     * Get loginEnseignant
      *
-     * @return string
+     * @return string 
      */
-    public function getPasswordEnseignant()
+    public function getLoginEnseignant()
     {
-        return $this->passwordEnseignant;
+        return $this->loginEnseignant;
     }
 
     /**
@@ -295,13 +300,13 @@ class Enseignant
     }
 
     /**
-     * Get matriculeEnseignant
+     * Get passwordEnseignant
      *
-     * @return string
+     * @return string 
      */
-    public function getMatriculeEnseignant()
+    public function getPasswordEnseignant()
     {
-        return $this->matriculeEnseignant;
+        return $this->passwordEnseignant;
     }
 
     /**
@@ -315,5 +320,15 @@ class Enseignant
         $this->matriculeEnseignant = $matriculeEnseignant;
 
         return $this;
+    }
+
+    /**
+     * Get matriculeEnseignant
+     *
+     * @return string 
+     */
+    public function getMatriculeEnseignant()
+    {
+        return $this->matriculeEnseignant;
     }
 }

@@ -31,96 +31,6 @@ abstract class KernelTestCase extends TestCase
     protected static $kernel;
 
     /**
-     * Boots the Kernel for this test.
-     *
-     * @param array $options
-     */
-    protected static function bootKernel(array $options = array())
-    {
-        static::ensureKernelShutdown();
-
-        static::$kernel = static::createKernel($options);
-        static::$kernel->boot();
-    }
-
-    /**
-     * Shuts the kernel down if it was used in the test.
-     */
-    protected static function ensureKernelShutdown()
-    {
-        if (null !== static::$kernel) {
-            $container = static::$kernel->getContainer();
-            static::$kernel->shutdown();
-            if ($container instanceof ResettableContainerInterface) {
-                $container->reset();
-            }
-        }
-    }
-
-    /**
-     * Creates a Kernel.
-     *
-     * Available options:
-     *
-     *  * environment
-     *  * debug
-     *
-     * @param array $options An array of options
-     *
-     * @return KernelInterface A KernelInterface instance
-     */
-    protected static function createKernel(array $options = array())
-    {
-        if (null === static::$class) {
-            static::$class = static::getKernelClass();
-        }
-
-        return new static::$class(
-            isset($options['environment']) ? $options['environment'] : 'test',
-            isset($options['debug']) ? $options['debug'] : true
-        );
-    }
-
-    /**
-     * Attempts to guess the kernel location.
-     *
-     * When the Kernel is located, the file is required.
-     *
-     * @return string The Kernel class name
-     *
-     * @throws \RuntimeException
-     */
-    protected static function getKernelClass()
-    {
-        if (isset($_SERVER['KERNEL_DIR'])) {
-            $dir = $_SERVER['KERNEL_DIR'];
-
-            if (!is_dir($dir)) {
-                $phpUnitDir = static::getPhpUnitXmlDir();
-                if (is_dir("$phpUnitDir/$dir")) {
-                    $dir = "$phpUnitDir/$dir";
-                }
-            }
-        } else {
-            $dir = static::getPhpUnitXmlDir();
-        }
-
-        $finder = new Finder();
-        $finder->name('*Kernel.php')->depth(0)->in($dir);
-        $results = iterator_to_array($finder);
-        if (!count($results)) {
-            throw new \RuntimeException('Either set KERNEL_DIR in your phpunit.xml according to https://symfony.com/doc/current/book/testing.html#your-first-functional-test or override the WebTestCase::createKernel() method.');
-        }
-
-        $file = current($results);
-        $class = $file->getBasename('.php');
-
-        require_once $file;
-
-        return $class;
-    }
-
-    /**
      * Finds the directory where the phpunit.xml(.dist) is stored.
      *
      * If you run tests with the PHPUnit CLI tool, everything will work as expected.
@@ -138,9 +48,8 @@ abstract class KernelTestCase extends TestCase
 
         $dir = static::getPhpUnitCliConfigArgument();
         if (null === $dir &&
-            (is_file(getcwd() . DIRECTORY_SEPARATOR . 'phpunit.xml') ||
-                is_file(getcwd() . DIRECTORY_SEPARATOR . 'phpunit.xml.dist'))
-        ) {
+            (is_file(getcwd().DIRECTORY_SEPARATOR.'phpunit.xml') ||
+            is_file(getcwd().DIRECTORY_SEPARATOR.'phpunit.xml.dist'))) {
             $dir = getcwd();
         }
 
@@ -184,6 +93,96 @@ abstract class KernelTestCase extends TestCase
         }
 
         return $dir;
+    }
+
+    /**
+     * Attempts to guess the kernel location.
+     *
+     * When the Kernel is located, the file is required.
+     *
+     * @return string The Kernel class name
+     *
+     * @throws \RuntimeException
+     */
+    protected static function getKernelClass()
+    {
+        if (isset($_SERVER['KERNEL_DIR'])) {
+            $dir = $_SERVER['KERNEL_DIR'];
+
+            if (!is_dir($dir)) {
+                $phpUnitDir = static::getPhpUnitXmlDir();
+                if (is_dir("$phpUnitDir/$dir")) {
+                    $dir = "$phpUnitDir/$dir";
+                }
+            }
+        } else {
+            $dir = static::getPhpUnitXmlDir();
+        }
+
+        $finder = new Finder();
+        $finder->name('*Kernel.php')->depth(0)->in($dir);
+        $results = iterator_to_array($finder);
+        if (!count($results)) {
+            throw new \RuntimeException('Either set KERNEL_DIR in your phpunit.xml according to https://symfony.com/doc/current/book/testing.html#your-first-functional-test or override the WebTestCase::createKernel() method.');
+        }
+
+        $file = current($results);
+        $class = $file->getBasename('.php');
+
+        require_once $file;
+
+        return $class;
+    }
+
+    /**
+     * Boots the Kernel for this test.
+     *
+     * @param array $options
+     */
+    protected static function bootKernel(array $options = array())
+    {
+        static::ensureKernelShutdown();
+
+        static::$kernel = static::createKernel($options);
+        static::$kernel->boot();
+    }
+
+    /**
+     * Creates a Kernel.
+     *
+     * Available options:
+     *
+     *  * environment
+     *  * debug
+     *
+     * @param array $options An array of options
+     *
+     * @return KernelInterface A KernelInterface instance
+     */
+    protected static function createKernel(array $options = array())
+    {
+        if (null === static::$class) {
+            static::$class = static::getKernelClass();
+        }
+
+        return new static::$class(
+            isset($options['environment']) ? $options['environment'] : 'test',
+            isset($options['debug']) ? $options['debug'] : true
+        );
+    }
+
+    /**
+     * Shuts the kernel down if it was used in the test.
+     */
+    protected static function ensureKernelShutdown()
+    {
+        if (null !== static::$kernel) {
+            $container = static::$kernel->getContainer();
+            static::$kernel->shutdown();
+            if ($container instanceof ResettableContainerInterface) {
+                $container->reset();
+            }
+        }
     }
 
     /**

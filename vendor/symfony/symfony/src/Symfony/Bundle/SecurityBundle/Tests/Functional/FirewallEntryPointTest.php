@@ -15,16 +15,6 @@ use Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\FirewallEntryPointBund
 
 class FirewallEntryPointTest extends WebTestCase
 {
-    public static function setUpBeforeClass()
-    {
-        parent::deleteTmpDir('FirewallEntryPoint');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::deleteTmpDir('FirewallEntryPoint');
-    }
-
     public function testItUsesTheConfiguredEntryPointWhenUsingUnknownCredentials()
     {
         $client = $this->createClient(array('test_case' => 'FirewallEntryPoint'));
@@ -52,5 +42,15 @@ class FirewallEntryPointTest extends WebTestCase
             $client->getResponse()->getContent(),
             "Custom entry point wasn't started"
         );
+    }
+
+    public static function setUpBeforeClass()
+    {
+        parent::deleteTmpDir('FirewallEntryPoint');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::deleteTmpDir('FirewallEntryPoint');
     }
 }

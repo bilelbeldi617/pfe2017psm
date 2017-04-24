@@ -118,20 +118,6 @@ class GuardAuthenticationFactoryTest extends TestCase
         $this->assertEquals(array(new Reference('authenticator123')), $listenerDefinition->getArgument(3));
     }
 
-    private function executeCreate(array $config, $defaultEntryPointId)
-    {
-        $container = new ContainerBuilder();
-        $container->register('security.authentication.provider.guard');
-        $container->register('security.authentication.listener.guard');
-        $id = 'my_firewall';
-        $userProviderId = 'my_user_provider';
-
-        $factory = new GuardAuthenticationFactory();
-        list($providerId, $listenerId, $entryPointId) = $factory->create($container, $id, $config, $userProviderId, $defaultEntryPointId);
-
-        return array($container, $entryPointId);
-    }
-
     public function testExistingDefaultEntryPointUsed()
     {
         // any existing default entry point is used
@@ -178,5 +164,19 @@ class GuardAuthenticationFactoryTest extends TestCase
         );
         list($container, $entryPointId) = $this->executeCreate($config, null);
         $this->assertEquals('authenticatorABC', $entryPointId);
+    }
+
+    private function executeCreate(array $config, $defaultEntryPointId)
+    {
+        $container = new ContainerBuilder();
+        $container->register('security.authentication.provider.guard');
+        $container->register('security.authentication.listener.guard');
+        $id = 'my_firewall';
+        $userProviderId = 'my_user_provider';
+
+        $factory = new GuardAuthenticationFactory();
+        list($providerId, $listenerId, $entryPointId) = $factory->create($container, $id, $config, $userProviderId, $defaultEntryPointId);
+
+        return array($container, $entryPointId);
     }
 }

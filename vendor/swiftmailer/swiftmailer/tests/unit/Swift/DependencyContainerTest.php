@@ -16,6 +16,11 @@ class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
 {
     private $_container;
 
+    protected function setUp()
+    {
+        $this->_container = new Swift_DependencyContainer();
+    }
+
     public function testRegisterAndLookupValue()
     {
         $this->_container->register('foo')->asValue('bar');
@@ -136,7 +141,7 @@ class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $deps = $this->_container->createDependenciesFor('two');
         $this->assertEquals(
             array($this->_container->lookup('one'), 'FOO'), $deps
-        );
+            );
     }
 
     public function testArrayOfDependenciesCanBeSpecified()
@@ -167,10 +172,5 @@ class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $this->_container->register('button')->asAliasOf('zip');
 
         $this->assertSame('FOO', $this->_container->lookup('button'));
-    }
-
-    protected function setUp()
-    {
-        $this->_container = new Swift_DependencyContainer();
     }
 }

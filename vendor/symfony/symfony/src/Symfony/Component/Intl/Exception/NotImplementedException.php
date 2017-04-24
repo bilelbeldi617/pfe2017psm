@@ -27,6 +27,6 @@ class NotImplementedException extends RuntimeException
      */
     public function __construct($message)
     {
-        parent::__construct($message . ' ' . self::INTL_INSTALL_MESSAGE);
+        parent::__construct($message.' '.self::INTL_INSTALL_MESSAGE);
     }
 }

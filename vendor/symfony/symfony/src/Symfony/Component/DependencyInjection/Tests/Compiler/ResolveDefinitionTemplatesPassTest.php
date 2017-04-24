@@ -26,7 +26,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container->setDefinition('child', new DefinitionDecorator('parent'))
             ->replaceArgument(0, 'a')
             ->setProperty('foo', 'bar')
-            ->setClass('bar');
+            ->setClass('bar')
+        ;
 
         $this->process($container);
 
@@ -37,23 +38,19 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $this->assertEquals(array('foo' => 'bar'), $def->getProperties());
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new ResolveDefinitionTemplatesPass();
-        $pass->process($container);
-    }
-
     public function testProcessAppendsMethodCallsAlways()
     {
         $container = new ContainerBuilder();
 
         $container
             ->register('parent')
-            ->addMethodCall('foo', array('bar'));
+            ->addMethodCall('foo', array('bar'))
+        ;
 
         $container
             ->setDefinition('child', new DefinitionDecorator('parent'))
-            ->addMethodCall('bar', array('foo'));
+            ->addMethodCall('bar', array('foo'))
+        ;
 
         $this->process($container);
 
@@ -70,10 +67,12 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent')
-            ->setAbstract(true);
+            ->setAbstract(true)
+        ;
 
         $container
-            ->setDefinition('child', new DefinitionDecorator('parent'));
+            ->setDefinition('child', new DefinitionDecorator('parent'))
+        ;
 
         $this->process($container);
 
@@ -90,10 +89,12 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent')
-            ->setScope('foo');
+            ->setScope('foo')
+        ;
 
         $container
-            ->setDefinition('child', new DefinitionDecorator('parent'));
+            ->setDefinition('child', new DefinitionDecorator('parent'))
+        ;
 
         $this->process($container);
 
@@ -107,10 +108,12 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent')
-            ->setShared(false);
+            ->setShared(false)
+        ;
 
         $container
-            ->setDefinition('child', new DefinitionDecorator('parent'));
+            ->setDefinition('child', new DefinitionDecorator('parent'))
+        ;
 
         $this->process($container);
 
@@ -124,10 +127,12 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent')
-            ->addTag('foo');
+            ->addTag('foo')
+        ;
 
         $container
-            ->setDefinition('child', new DefinitionDecorator('parent'));
+            ->setDefinition('child', new DefinitionDecorator('parent'))
+        ;
 
         $this->process($container);
 
@@ -141,10 +146,12 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent')
-            ->setDecoratedService('foo');
+            ->setDecoratedService('foo')
+        ;
 
         $container
-            ->setDefinition('child', new DefinitionDecorator('parent'));
+            ->setDefinition('child', new DefinitionDecorator('parent'))
+        ;
 
         $this->process($container);
 
@@ -157,11 +164,13 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container = new ContainerBuilder();
 
         $container
-            ->register('parent');
+            ->register('parent')
+        ;
 
         $container
             ->setDefinition('child', new DefinitionDecorator('parent'))
-            ->setShared(false);
+            ->setShared(false)
+        ;
 
         $this->process($container);
 
@@ -175,15 +184,18 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent', 'foo')
-            ->setArguments(array('foo', 'bar', 'c'));
+            ->setArguments(array('foo', 'bar', 'c'))
+        ;
 
         $container
             ->setDefinition('child2', new DefinitionDecorator('child1'))
-            ->replaceArgument(1, 'b');
+            ->replaceArgument(1, 'b')
+        ;
 
         $container
             ->setDefinition('child1', new DefinitionDecorator('parent'))
-            ->replaceArgument(0, 'a');
+            ->replaceArgument(0, 'a')
+        ;
 
         $this->process($container);
 
@@ -199,7 +211,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container->register('parent', 'stdClass');
 
         $container->setDefinition('child1', new DefinitionDecorator('parent'))
-            ->setLazy(true);
+            ->setLazy(true)
+        ;
 
         $this->process($container);
 
@@ -211,7 +224,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container = new ContainerBuilder();
 
         $container->register('parent', 'stdClass')
-            ->setLazy(true);
+            ->setLazy(true)
+        ;
 
         $container->setDefinition('child1', new DefinitionDecorator('parent'));
 
@@ -227,7 +241,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container->register('parent', 'stdClass');
 
         $container->setDefinition('child1', new DefinitionDecorator('parent'))
-            ->setAutowired(true);
+            ->setAutowired(true)
+        ;
 
         $this->process($container);
 
@@ -239,7 +254,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container = new ContainerBuilder();
 
         $container->register('parent', 'stdClass')
-            ->setAutowired(true);
+            ->setAutowired(true)
+        ;
 
         $container->setDefinition('child1', new DefinitionDecorator('parent'));
 
@@ -258,7 +274,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
             ->setFactory(array(new DefinitionDecorator('parent'), 'foo'))
             ->addArgument(new DefinitionDecorator('parent'))
             ->setProperty('prop', new DefinitionDecorator('parent'))
-            ->addMethodCall('meth', array(new DefinitionDecorator('parent')));
+            ->addMethodCall('meth', array(new DefinitionDecorator('parent')))
+        ;
 
         $this->process($container);
 
@@ -290,7 +307,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
         $container->register('parent', 'stdClass');
 
         $container->setDefinition('child1', new DefinitionDecorator('parent'))
-            ->setDecoratedService('foo', 'foo_inner', 5);
+            ->setDecoratedService('foo', 'foo_inner', 5)
+        ;
 
         $this->process($container);
 
@@ -301,7 +319,8 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
     {
         $container = new ContainerBuilder();
         $container->register('deprecated_parent')
-            ->setDeprecated(true);
+            ->setDeprecated(true)
+        ;
 
         $container->setDefinition('decorated_deprecated_parent', new DefinitionDecorator('deprecated_parent'));
 
@@ -314,10 +333,12 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
     {
         $container = new ContainerBuilder();
         $container->register('deprecated_parent')
-            ->setDeprecated(true);
+            ->setDeprecated(true)
+        ;
 
         $container->setDefinition('decorated_deprecated_parent', new DefinitionDecorator('deprecated_parent'))
-            ->setDeprecated(false);
+            ->setDeprecated(false)
+        ;
 
         $this->process($container);
 
@@ -330,11 +351,13 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $container
             ->register('parent')
-            ->addAutowiringType('Foo');
+            ->addAutowiringType('Foo')
+        ;
 
         $container
             ->setDefinition('child', new DefinitionDecorator('parent'))
-            ->addAutowiringType('Bar');
+            ->addAutowiringType('Bar')
+        ;
 
         $this->process($container);
 
@@ -343,5 +366,11 @@ class ResolveDefinitionTemplatesPassTest extends TestCase
 
         $parentDef = $container->getDefinition('parent');
         $this->assertSame(array('Foo'), $parentDef->getAutowiringTypes());
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new ResolveDefinitionTemplatesPass();
+        $pass->process($container);
     }
 }

@@ -27,6 +27,19 @@ class InMemoryUserProviderTest extends TestCase
         $this->assertFalse($user->isEnabled());
     }
 
+    public function testRefresh()
+    {
+        $user = new User('fabien', 'bar');
+
+        $provider = $this->createProvider();
+
+        $refreshedUser = $provider->refreshUser($user);
+        $this->assertEquals('foo', $refreshedUser->getPassword());
+        $this->assertEquals(array('ROLE_USER'), $refreshedUser->getRoles());
+        $this->assertFalse($refreshedUser->isEnabled());
+        $this->assertFalse($refreshedUser->isCredentialsNonExpired());
+    }
+
     /**
      * @return InMemoryUserProvider
      */
@@ -39,19 +52,6 @@ class InMemoryUserProviderTest extends TestCase
                 'roles' => array('ROLE_USER'),
             ),
         ));
-    }
-
-    public function testRefresh()
-    {
-        $user = new User('fabien', 'bar');
-
-        $provider = $this->createProvider();
-
-        $refreshedUser = $provider->refreshUser($user);
-        $this->assertEquals('foo', $refreshedUser->getPassword());
-        $this->assertEquals(array('ROLE_USER'), $refreshedUser->getRoles());
-        $this->assertFalse($refreshedUser->isEnabled());
-        $this->assertFalse($refreshedUser->isCredentialsNonExpired());
     }
 
     public function testCreateUser()

@@ -32,11 +32,16 @@ abstract class DelegateCommand extends Command
     protected $command;
 
     /**
-     * {@inheritDoc}
+     * @return \Symfony\Component\Console\Command\Command
      */
-    public function isEnabled()
+    abstract protected function createCommand();
+
+    /**
+     * @return string
+     */
+    protected function getMinimalVersion()
     {
-        return $this->isVersionCompatible();
+        return '2.3.0-DEV';
     }
 
     /**
@@ -48,11 +53,28 @@ abstract class DelegateCommand extends Command
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    protected function getMinimalVersion()
+    public function isEnabled()
     {
-        return '2.3.0-DEV';
+        return $this->isVersionCompatible();
+    }
+
+    /**
+     * @param string $entityManagerName
+     *
+     * @return Command
+     */
+    protected function wrapCommand($entityManagerName)
+    {
+        if (!$this->isVersionCompatible()) {
+            throw new \RuntimeException(sprintf('"%s" requires doctrine-orm "%s" or newer', $this->getName(), $this->getMinimalVersion()));
+        }
+
+        DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $entityManagerName);
+        $this->command->setApplication($this->getApplication());
+
+        return $this->command;
     }
 
     /**
@@ -72,33 +94,11 @@ abstract class DelegateCommand extends Command
     }
 
     /**
-     * @return \Symfony\Component\Console\Command\Command
-     */
-    abstract protected function createCommand();
-
-    /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         return $this->wrapCommand($input->getOption('em'))->execute($input, $output);
-    }
-
-    /**
-     * @param string $entityManagerName
-     *
-     * @return Command
-     */
-    protected function wrapCommand($entityManagerName)
-    {
-        if (!$this->isVersionCompatible()) {
-            throw new \RuntimeException(sprintf('"%s" requires doctrine-orm "%s" or newer', $this->getName(), $this->getMinimalVersion()));
-        }
-
-        DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $entityManagerName);
-        $this->command->setApplication($this->getApplication());
-
-        return $this->command;
     }
 
     /**

@@ -33,29 +33,6 @@ class ControllerResolverTest extends BaseControllerResolverTest
         $this->assertSame('testAction', $controller[1]);
     }
 
-    protected function createControllerResolver(LoggerInterface $logger = null, ControllerNameParser $parser = null, ContainerInterface $container = null)
-    {
-        if (!$parser) {
-            $parser = $this->createMockParser();
-        }
-
-        if (!$container) {
-            $container = $this->createMockContainer();
-        }
-
-        return new ControllerResolver($container, $parser, $logger);
-    }
-
-    protected function createMockParser()
-    {
-        return $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser')->disableOriginalConstructor()->getMock();
-    }
-
-    protected function createMockContainer()
-    {
-        return $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
-    }
-
     public function testGetControllerOnContainerAwareInvokable()
     {
         $resolver = $this->createControllerResolver();
@@ -75,7 +52,8 @@ class ControllerResolverTest extends BaseControllerResolverTest
         $parser->expects($this->once())
             ->method('parse')
             ->with($shortName)
-            ->will($this->returnValue('Symfony\Bundle\FrameworkBundle\Tests\Controller\ContainerAwareController::testAction'));
+            ->will($this->returnValue('Symfony\Bundle\FrameworkBundle\Tests\Controller\ContainerAwareController::testAction'))
+        ;
 
         $resolver = $this->createControllerResolver(null, $parser);
         $request = Request::create('/');
@@ -94,7 +72,8 @@ class ControllerResolverTest extends BaseControllerResolverTest
         $container->expects($this->once())
             ->method('get')
             ->with('foo')
-            ->will($this->returnValue($this));
+            ->will($this->returnValue($this))
+        ;
 
         $resolver = $this->createControllerResolver(null, null, $container);
         $request = Request::create('/');
@@ -114,11 +93,13 @@ class ControllerResolverTest extends BaseControllerResolverTest
         $container->expects($this->once())
             ->method('has')
             ->with('foo')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
         $container->expects($this->once())
             ->method('get')
             ->with('foo')
-            ->will($this->returnValue($invokableController));
+            ->will($this->returnValue($invokableController))
+        ;
 
         $resolver = $this->createControllerResolver(null, null, $container);
         $request = Request::create('/');
@@ -132,17 +113,19 @@ class ControllerResolverTest extends BaseControllerResolverTest
     public function testGetControllerInvokableServiceWithClassNameAsName()
     {
         $invokableController = new InvokableController('bar');
-        $className = __NAMESPACE__ . '\InvokableController';
+        $className = __NAMESPACE__.'\InvokableController';
 
         $container = $this->createMockContainer();
         $container->expects($this->once())
             ->method('has')
             ->with($className)
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
         $container->expects($this->once())
             ->method('get')
             ->with($className)
-            ->will($this->returnValue($invokableController));
+            ->will($this->returnValue($invokableController))
+        ;
 
         $resolver = $this->createControllerResolver(null, null, $container);
         $request = Request::create('/');
@@ -181,20 +164,43 @@ class ControllerResolverTest extends BaseControllerResolverTest
             ),
         );
     }
+
+    protected function createControllerResolver(LoggerInterface $logger = null, ControllerNameParser $parser = null, ContainerInterface $container = null)
+    {
+        if (!$parser) {
+            $parser = $this->createMockParser();
+        }
+
+        if (!$container) {
+            $container = $this->createMockContainer();
+        }
+
+        return new ControllerResolver($container, $parser, $logger);
+    }
+
+    protected function createMockParser()
+    {
+        return $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser')->disableOriginalConstructor()->getMock();
+    }
+
+    protected function createMockContainer()
+    {
+        return $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
+    }
 }
 
 class ContainerAwareController implements ContainerAwareInterface
 {
     private $container;
 
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     public function testAction()

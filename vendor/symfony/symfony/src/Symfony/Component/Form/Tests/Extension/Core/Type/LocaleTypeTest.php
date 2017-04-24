@@ -18,6 +18,13 @@ class LocaleTypeTest extends BaseTypeTest
 {
     const TESTED_TYPE = 'Symfony\Component\Form\Extension\Core\Type\LocaleType';
 
+    protected function setUp()
+    {
+        IntlTestHelper::requireIntl($this, false);
+
+        parent::setUp();
+    }
+
     /**
      * @group legacy
      */
@@ -41,12 +48,5 @@ class LocaleTypeTest extends BaseTypeTest
     public function testSubmitNull($expected = null, $norm = null, $view = null)
     {
         parent::testSubmitNull($expected, $norm, '');
-    }
-
-    protected function setUp()
-    {
-        IntlTestHelper::requireIntl($this, false);
-
-        parent::setUp();
     }
 }

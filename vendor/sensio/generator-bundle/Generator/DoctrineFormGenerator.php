@@ -50,19 +50,19 @@ class DoctrineFormGenerator extends Generator
     /**
      * Generates the entity form class.
      *
-     * @param BundleInterface $bundle The bundle in which to create the class
-     * @param string $entity The entity relative class name
-     * @param ClassMetadataInfo $metadata The entity metadata class
-     * @param bool $forceOverwrite If true, remove any existing form class before generating it again
+     * @param BundleInterface   $bundle         The bundle in which to create the class
+     * @param string            $entity         The entity relative class name
+     * @param ClassMetadataInfo $metadata       The entity metadata class
+     * @param bool              $forceOverwrite If true, remove any existing form class before generating it again
      */
     public function generate(BundleInterface $bundle, $entity, ClassMetadataInfo $metadata, $forceOverwrite = false)
     {
         $parts = explode('\\', $entity);
         $entityClass = array_pop($parts);
 
-        $this->className = $entityClass . 'Type';
-        $dirPath = $bundle->getPath() . '/Form';
-        $this->classPath = $dirPath . '/' . str_replace('\\', '/', $entity) . 'Type.php';
+        $this->className = $entityClass.'Type';
+        $dirPath = $bundle->getPath().'/Form';
+        $this->classPath = $dirPath.'/'.str_replace('\\', '/', $entity).'Type.php';
 
         if (!$forceOverwrite && file_exists($this->classPath)) {
             throw new \RuntimeException(sprintf('Unable to generate the %s form class as it already exists under the %s file', $this->className, $this->classPath));
@@ -82,7 +82,7 @@ class DoctrineFormGenerator extends Generator
             'entity_class' => $entityClass,
             'bundle' => $bundle->getName(),
             'form_class' => $this->className,
-            'form_type_name' => strtolower(str_replace('\\', '_', $bundle->getNamespace()) . ($parts ? '_' : '') . implode('_', $parts) . '_' . substr($this->className, 0, -4)),
+            'form_type_name' => strtolower(str_replace('\\', '_', $bundle->getNamespace()).($parts ? '_' : '').implode('_', $parts).'_'.substr($this->className, 0, -4)),
             // BC with Symfony 2.7
             'get_name_required' => !method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix'),
         ));
@@ -98,7 +98,7 @@ class DoctrineFormGenerator extends Generator
      */
     private function getFieldsFromMetadata(ClassMetadataInfo $metadata)
     {
-        $fields = (array)$metadata->fieldNames;
+        $fields = (array) $metadata->fieldNames;
 
         // Remove the primary key field if it's not managed manually
         if (!$metadata->isIdentifierNatural()) {

@@ -35,9 +35,7 @@ class AutowirePass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $throwingAutoloader = function ($class) {
-            throw new \ReflectionException(sprintf('Class %s does not exist', $class));
-        };
+        $throwingAutoloader = function ($class) { throw new \ReflectionException(sprintf('Class %s does not exist', $class)); };
         spl_autoload_register($throwingAutoloader);
 
         try {
@@ -78,7 +76,7 @@ class AutowirePass implements CompilerPassInterface
     /**
      * Wires the given definition.
      *
-     * @param string $id
+     * @param string     $id
      * @param Definition $definition
      *
      * @throws RuntimeException
@@ -157,36 +155,6 @@ class AutowirePass implements CompilerPassInterface
     }
 
     /**
-     * Retrieves the reflection class associated with the given service.
-     *
-     * @param string $id
-     * @param Definition $definition
-     *
-     * @return \ReflectionClass|false
-     */
-    private function getReflectionClass($id, Definition $definition)
-    {
-        if (isset($this->reflectionClasses[$id])) {
-            return $this->reflectionClasses[$id];
-        }
-
-        // Cannot use reflection if the class isn't set
-        if (!$class = $definition->getClass()) {
-            return false;
-        }
-
-        $class = $this->container->getParameterBag()->resolveValue($class);
-
-        try {
-            $reflector = new \ReflectionClass($class);
-        } catch (\ReflectionException $e) {
-            $reflector = false;
-        }
-
-        return $this->reflectionClasses[$id] = $reflector;
-    }
-
-    /**
      * Populates the list of available types.
      */
     private function populateAvailableTypes()
@@ -201,7 +169,7 @@ class AutowirePass implements CompilerPassInterface
     /**
      * Populates the list of available types for a given definition.
      *
-     * @param string $id
+     * @param string     $id
      * @param Definition $definition
      */
     private function populateAvailableType($id, Definition $definition)
@@ -254,7 +222,7 @@ class AutowirePass implements CompilerPassInterface
 
         if (!isset($this->notGuessableTypes[$type])) {
             $this->notGuessableTypes[$type] = true;
-            $this->types[$type] = (array)$this->types[$type];
+            $this->types[$type] = (array) $this->types[$type];
         }
 
         $this->types[$type][] = $id;
@@ -264,7 +232,7 @@ class AutowirePass implements CompilerPassInterface
      * Registers a definition for the type if possible or throws an exception.
      *
      * @param \ReflectionClass $typeHint
-     * @param string $id
+     * @param string           $id
      *
      * @return Reference A reference to the registered definition
      *
@@ -300,5 +268,35 @@ class AutowirePass implements CompilerPassInterface
         }
 
         return new Reference($argumentId);
+    }
+
+    /**
+     * Retrieves the reflection class associated with the given service.
+     *
+     * @param string     $id
+     * @param Definition $definition
+     *
+     * @return \ReflectionClass|false
+     */
+    private function getReflectionClass($id, Definition $definition)
+    {
+        if (isset($this->reflectionClasses[$id])) {
+            return $this->reflectionClasses[$id];
+        }
+
+        // Cannot use reflection if the class isn't set
+        if (!$class = $definition->getClass()) {
+            return false;
+        }
+
+        $class = $this->container->getParameterBag()->resolveValue($class);
+
+        try {
+            $reflector = new \ReflectionClass($class);
+        } catch (\ReflectionException $e) {
+            $reflector = false;
+        }
+
+        return $this->reflectionClasses[$id] = $reflector;
     }
 }

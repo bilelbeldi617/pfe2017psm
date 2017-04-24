@@ -91,7 +91,7 @@ class ClassMetadata implements \Serializable
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt
-            ) = unserialize($str);
+        ) = unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
     }

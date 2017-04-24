@@ -40,20 +40,12 @@ class StaticReflectionProperty extends ReflectionProperty
 
     /**
      * @param StaticReflectionParser $staticReflectionParser
-     * @param string|null $propertyName
+     * @param string|null            $propertyName
      */
     public function __construct(StaticReflectionParser $staticReflectionParser, $propertyName)
     {
         $this->staticReflectionParser = $staticReflectionParser;
         $this->propertyName = $propertyName;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function export($class, $name, $return = false)
-    {
-        throw new ReflectionException('Method not implemented');
     }
 
     /**
@@ -65,19 +57,19 @@ class StaticReflectionProperty extends ReflectionProperty
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getDeclaringClass()
-    {
-        return $this->getStaticReflectionParser()->getReflectionClass();
-    }
-
-    /**
      * @return StaticReflectionParser
      */
     protected function getStaticReflectionParser()
     {
         return $this->staticReflectionParser->getStaticReflectionParserForDeclaringClass('property', $this->propertyName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDeclaringClass()
+    {
+        return $this->getStaticReflectionParser()->getReflectionClass();
     }
 
     /**
@@ -94,6 +86,14 @@ class StaticReflectionProperty extends ReflectionProperty
     public function getUseStatements()
     {
         return $this->getStaticReflectionParser()->getUseStatements();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function export ($class, $name, $return = false)
+    {
+        throw new ReflectionException('Method not implemented');
     }
 
     /**
@@ -155,7 +155,7 @@ class StaticReflectionProperty extends ReflectionProperty
     /**
      * {@inheritDoc}
      */
-    public function setAccessible($accessible)
+    public function setAccessible ($accessible)
     {
         throw new ReflectionException('Method not implemented');
     }
@@ -163,7 +163,7 @@ class StaticReflectionProperty extends ReflectionProperty
     /**
      * {@inheritDoc}
      */
-    public function setValue($object, $value = null)
+    public function setValue ($object, $value = null)
     {
         throw new ReflectionException('Method not implemented');
     }

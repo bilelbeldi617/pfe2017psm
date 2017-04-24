@@ -1,7 +1,6 @@
 <?php
 
 /* baseForParent.html.twig */
-
 class __TwigTemplate_3050827b68ce19e0986b2fa6ba46cfadd01c4a02ffb826997d2613b5e75a48a2 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -15,57 +14,6 @@ class __TwigTemplate_3050827b68ce19e0986b2fa6ba46cfadd01c4a02ffb826997d2613b5e75
             'script' => array($this, 'block_script'),
             'mainContent' => array($this, 'block_mainContent'),
         );
-    }
-
-    public function block_title($context, array $blocks = array())
-    {
-        echo " ";
-    }
-
-    // line 6
-
-    public function block_script($context, array $blocks = array())
-    {
-    }
-
-    // line 50
-
-    public function block_mainContent($context, array $blocks = array())
-    {
-        // line 544
-        echo "
-
-                        ";
-    }
-
-    // line 543
-
-    public function getTemplateName()
-    {
-        return "baseForParent.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(733 => 544, 730 => 543, 725 => 50, 719 => 6, 712 => 1057, 706 => 599, 702 => 598, 696 => 595, 692 => 594, 688 => 593, 684 => 592, 680 => 591, 676 => 590, 671 => 589, 661 => 578, 628 => 547, 626 => 543, 587 => 507, 556 => 479, 544 => 470, 532 => 461, 504 => 436, 481 => 416, 114 => 51, 112 => 50, 103 => 44, 97 => 41, 93 => 40, 85 => 35, 76 => 29, 70 => 26, 66 => 25, 61 => 23, 55 => 20, 49 => 17, 41 => 12, 37 => 11, 31 => 7, 29 => 6, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "baseForParent.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\app\\Resources\\views\\baseForParent.html.twig");
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -765,5 +713,53 @@ class __TwigTemplate_3050827b68ce19e0986b2fa6ba46cfadd01c4a02ffb826997d2613b5e75
 </body>
 </html>
 ";
+    }
+
+    // line 6
+    public function block_title($context, array $blocks = array())
+    {
+        echo " ";
+    }
+
+    // line 50
+    public function block_script($context, array $blocks = array())
+    {
+    }
+
+    // line 543
+    public function block_mainContent($context, array $blocks = array())
+    {
+        // line 544
+        echo "
+
+                        ";
+    }
+
+    public function getTemplateName()
+    {
+        return "baseForParent.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  733 => 544,  730 => 543,  725 => 50,  719 => 6,  712 => 1057,  706 => 599,  702 => 598,  696 => 595,  692 => 594,  688 => 593,  684 => 592,  680 => 591,  676 => 590,  671 => 589,  661 => 578,  628 => 547,  626 => 543,  587 => 507,  556 => 479,  544 => 470,  532 => 461,  504 => 436,  481 => 416,  114 => 51,  112 => 50,  103 => 44,  97 => 41,  93 => 40,  85 => 35,  76 => 29,  70 => 26,  66 => 25,  61 => 23,  55 => 20,  49 => 17,  41 => 12,  37 => 11,  31 => 7,  29 => 6,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "baseForParent.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\app\\Resources\\views\\baseForParent.html.twig");
     }
 }

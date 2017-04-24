@@ -51,17 +51,6 @@ abstract class DoctrineType extends AbstractType
      */
     private $choiceLoaders = array();
 
-    public function __construct(ManagerRegistry $registry, PropertyAccessorInterface $propertyAccessor = null, ChoiceListFactoryInterface $choiceListFactory = null)
-    {
-        $this->registry = $registry;
-        $this->choiceListFactory = $choiceListFactory ?: new CachingFactoryDecorator(
-            new PropertyAccessDecorator(
-                new DefaultChoiceListFactory(),
-                $propertyAccessor
-            )
-        );
-    }
-
     /**
      * Creates the label for a choice.
      *
@@ -76,7 +65,7 @@ abstract class DoctrineType extends AbstractType
      */
     public static function createChoiceLabel($choice)
     {
-        return (string)$choice;
+        return (string) $choice;
     }
 
     /**
@@ -86,9 +75,9 @@ abstract class DoctrineType extends AbstractType
      * a single-column integer ID. In that case, the value of the field is
      * the ID of the object. That ID is also used as field name.
      *
-     * @param object $choice The object
-     * @param int|string $key The choice key
-     * @param string $value The choice value. Corresponds to the object's
+     * @param object     $choice The object
+     * @param int|string $key    The choice key
+     * @param string     $value  The choice value. Corresponds to the object's
      *                           ID here.
      *
      * @return string The field name
@@ -98,7 +87,36 @@ abstract class DoctrineType extends AbstractType
      */
     public static function createChoiceName($choice, $key, $value)
     {
-        return str_replace('-', '_', (string)$value);
+        return str_replace('-', '_', (string) $value);
+    }
+
+    /**
+     * Gets important parts from QueryBuilder that will allow to cache its results.
+     * For instance in ORM two query builders with an equal SQL string and
+     * equal parameters are considered to be equal.
+     *
+     * @param object $queryBuilder
+     *
+     * @return array|false Array with important QueryBuilder parts or false if
+     *                     they can't be determined
+     *
+     * @internal This method is public to be usable as callback. It should not
+     *           be used in user code.
+     */
+    public function getQueryBuilderPartsForCachingHash($queryBuilder)
+    {
+        return false;
+    }
+
+    public function __construct(ManagerRegistry $registry, PropertyAccessorInterface $propertyAccessor = null, ChoiceListFactoryInterface $choiceListFactory = null)
+    {
+        $this->registry = $registry;
+        $this->choiceListFactory = $choiceListFactory ?: new CachingFactoryDecorator(
+            new PropertyAccessDecorator(
+                new DefaultChoiceListFactory(),
+                $propertyAccessor
+            )
+        );
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -106,7 +124,8 @@ abstract class DoctrineType extends AbstractType
         if ($options['multiple']) {
             $builder
                 ->addEventSubscriber(new MergeDoctrineCollectionListener())
-                ->addViewTransformer(new CollectionToArrayTransformer(), true);
+                ->addViewTransformer(new CollectionToArrayTransformer(), true)
+            ;
         }
     }
 
@@ -219,7 +238,7 @@ abstract class DoctrineType extends AbstractType
 
             if (null === $em) {
                 throw new RuntimeException(sprintf(
-                    'Class "%s" seems not to be a managed Doctrine entity. ' .
+                    'Class "%s" seems not to be a managed Doctrine entity. '.
                     'Did you forget to map it?',
                     $options['class']
                 ));
@@ -306,29 +325,11 @@ abstract class DoctrineType extends AbstractType
     }
 
     /**
-     * Gets important parts from QueryBuilder that will allow to cache its results.
-     * For instance in ORM two query builders with an equal SQL string and
-     * equal parameters are considered to be equal.
-     *
-     * @param object $queryBuilder
-     *
-     * @return array|false Array with important QueryBuilder parts or false if
-     *                     they can't be determined
-     *
-     * @internal This method is public to be usable as callback. It should not
-     *           be used in user code.
-     */
-    public function getQueryBuilderPartsForCachingHash($queryBuilder)
-    {
-        return false;
-    }
-
-    /**
      * Return the default loader object.
      *
      * @param ObjectManager $manager
-     * @param mixed $queryBuilder
-     * @param string $class
+     * @param mixed         $queryBuilder
+     * @param string        $class
      *
      * @return EntityLoaderInterface
      */

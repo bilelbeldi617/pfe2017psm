@@ -36,9 +36,9 @@ class RouterHelper extends Helper
     /**
      * Generates a URL from the given parameters.
      *
-     * @param string $name The name of the route
-     * @param mixed $parameters An array of parameters
-     * @param int $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
+     * @param string $name          The name of the route
+     * @param mixed  $parameters    An array of parameters
+     * @param int    $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
      *
      * @return string The generated URL
      *
@@ -46,7 +46,7 @@ class RouterHelper extends Helper
      */
     public function generate($name, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0. Use the "path" or "url" method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Use the "path" or "url" method instead.', E_USER_DEPRECATED);
 
         return $this->generator->generate($name, $parameters, $referenceType);
     }
@@ -54,9 +54,9 @@ class RouterHelper extends Helper
     /**
      * Generates a URL reference (as an absolute or relative path) to the route with the given parameters.
      *
-     * @param string $name The name of the route
-     * @param mixed $parameters An array of parameters
-     * @param bool $relative Whether to generate a relative or absolute path
+     * @param string $name       The name of the route
+     * @param mixed  $parameters An array of parameters
+     * @param bool   $relative   Whether to generate a relative or absolute path
      *
      * @return string The generated URL reference
      *
@@ -70,9 +70,9 @@ class RouterHelper extends Helper
     /**
      * Generates a URL reference (as an absolute URL or network path) to the route with the given parameters.
      *
-     * @param string $name The name of the route
-     * @param mixed $parameters An array of parameters
-     * @param bool $schemeRelative Whether to omit the scheme in the generated URL reference
+     * @param string $name           The name of the route
+     * @param mixed  $parameters     An array of parameters
+     * @param bool   $schemeRelative Whether to omit the scheme in the generated URL reference
      *
      * @return string The generated URL reference
      *

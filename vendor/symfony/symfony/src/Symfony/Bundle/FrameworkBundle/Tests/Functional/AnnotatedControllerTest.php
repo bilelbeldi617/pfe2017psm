@@ -19,7 +19,7 @@ class AnnotatedControllerTest extends WebTestCase
     public function testAnnotatedController($path, $expectedValue)
     {
         $client = $this->createClient(array('test_case' => 'AnnotatedController', 'root_config' => 'config.yml'));
-        $client->request('GET', '/annotated' . $path);
+        $client->request('GET', '/annotated'.$path);
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
         $this->assertSame($expectedValue, $client->getResponse()->getContent());

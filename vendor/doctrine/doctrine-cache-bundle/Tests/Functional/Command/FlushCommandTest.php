@@ -30,7 +30,7 @@ class FlushCommandTest extends CommandTestCase
         parent::setUp();
 
         $this->command = new FlushCommand();
-        $this->tester = $this->getTester($this->command);
+        $this->tester  = $this->getTester($this->command);
     }
 
     /**

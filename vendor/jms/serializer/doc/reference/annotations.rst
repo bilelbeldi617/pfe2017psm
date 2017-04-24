@@ -232,7 +232,7 @@ by the object iself.
 ~~~~~~~~~~~~~~
 
 .. versionadded : 0.12
-@Discriminator was added
+    @Discriminator was added
 
 This annotation allows deserialization of relations which are polymorphic, but
 where a common base class exists. The ``@Discriminator`` annotation has to be applied

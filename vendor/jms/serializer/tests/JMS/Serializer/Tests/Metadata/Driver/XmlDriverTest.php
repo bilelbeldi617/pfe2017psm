@@ -34,19 +34,7 @@ class XmlDriverTest extends BaseDriverTest
 
         $ref = new \ReflectionMethod($driver, 'loadMetadataFromFile');
         $ref->setAccessible(true);
-        $ref->invoke($driver, new \ReflectionClass('stdClass'), __DIR__ . '/xml/invalid.xml');
-    }
-
-    protected function getDriver()
-    {
-        $append = '';
-        if (func_num_args() == 1) {
-            $append = '/' . func_get_arg(0);
-        }
-
-        return new XmlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
-        )));
+        $ref->invoke($driver, new \ReflectionClass('stdClass'), __DIR__.'/xml/invalid.xml');
     }
 
     public function testBlogPostExcludeAllStrategy()
@@ -92,5 +80,17 @@ class XmlDriverTest extends BaseDriverTest
         $p->setter = 'setCapitalizedName';
 
         $this->assertEquals($p, $m->propertyMetadata['name']);
+    }
+
+    protected function getDriver()
+    {
+        $append = '';
+        if (func_num_args() == 1) {
+            $append = '/'.func_get_arg(0);
+        }
+
+        return new XmlDriver(new FileLocator(array(
+            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/xml'.$append,
+        )));
     }
 }

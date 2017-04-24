@@ -139,6 +139,6 @@ class ArrayInputTest extends TestCase
     public function testToString()
     {
         $input = new ArrayInput(array('-f' => null, '-b' => 'bar', '--foo' => 'b a z', '--lala' => null, 'test' => 'Foo', 'test2' => "A\nB'C"));
-        $this->assertEquals('-f -b=bar --foo=' . escapeshellarg('b a z') . ' --lala Foo ' . escapeshellarg("A\nB'C"), (string)$input);
+        $this->assertEquals('-f -b=bar --foo='.escapeshellarg('b a z').' --lala Foo '.escapeshellarg("A\nB'C"), (string) $input);
     }
 }

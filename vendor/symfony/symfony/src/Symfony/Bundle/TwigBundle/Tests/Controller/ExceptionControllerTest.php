@@ -30,8 +30,7 @@ class ExceptionControllerTest extends TestCase
         $request->headers->set('X-Php-Ob-Level', 1);
         $request->attributes->set('showException', false);
         $exception = FlattenException::create(new \Exception(), 404);
-        $controller = new ExceptionController($twig, /* "showException" defaults to --> */
-            true);
+        $controller = new ExceptionController($twig, /* "showException" defaults to --> */ true);
 
         $response = $controller->showAction($request, $exception, null);
 

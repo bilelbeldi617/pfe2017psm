@@ -37,9 +37,9 @@ class SortedSequenceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->seq = new SortedSequence(function ($a, $b) {
+        $this->seq = new SortedSequence(function($a, $b) {
             if (is_integer($a)) {
-                if (!is_integer($b)) {
+                if ( ! is_integer($b)) {
                     return -1;
                 }
 

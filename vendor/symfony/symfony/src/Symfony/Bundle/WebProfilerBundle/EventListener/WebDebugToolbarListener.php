@@ -45,17 +45,10 @@ class WebDebugToolbarListener implements EventSubscriberInterface
     {
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
-        $this->interceptRedirects = (bool)$interceptRedirects;
-        $this->mode = (int)$mode;
+        $this->interceptRedirects = (bool) $interceptRedirects;
+        $this->mode = (int) $mode;
         $this->position = $position;
         $this->excludedAjaxPaths = $excludedAjaxPaths;
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::RESPONSE => array('onKernelResponse', -128),
-        );
     }
 
     public function isEnabled()
@@ -75,7 +68,7 @@ class WebDebugToolbarListener implements EventSubscriberInterface
                     $this->urlGenerator->generate('_profiler', array('token' => $response->headers->get('X-Debug-Token')), UrlGeneratorInterface::ABSOLUTE_URL)
                 );
             } catch (\Exception $e) {
-                $response->headers->set('X-Debug-Error', get_class($e) . ': ' . $e->getMessage());
+                $response->headers->set('X-Debug-Error', get_class($e).': '.$e->getMessage());
             }
         }
 
@@ -122,17 +115,24 @@ class WebDebugToolbarListener implements EventSubscriberInterface
         $pos = strripos($content, '</body>');
 
         if (false !== $pos) {
-            $toolbar = "\n" . str_replace("\n", '', $this->twig->render(
-                    '@WebProfiler/Profiler/toolbar_js.html.twig',
-                    array(
-                        'position' => $this->position,
-                        'excluded_ajax_paths' => $this->excludedAjaxPaths,
-                        'token' => $response->headers->get('X-Debug-Token'),
-                        'request' => $request,
-                    )
-                )) . "\n";
-            $content = substr($content, 0, $pos) . $toolbar . substr($content, $pos);
+            $toolbar = "\n".str_replace("\n", '', $this->twig->render(
+                '@WebProfiler/Profiler/toolbar_js.html.twig',
+                array(
+                    'position' => $this->position,
+                    'excluded_ajax_paths' => $this->excludedAjaxPaths,
+                    'token' => $response->headers->get('X-Debug-Token'),
+                    'request' => $request,
+                )
+            ))."\n";
+            $content = substr($content, 0, $pos).$toolbar.substr($content, $pos);
             $response->setContent($content);
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::RESPONSE => array('onKernelResponse', -128),
+        );
     }
 }

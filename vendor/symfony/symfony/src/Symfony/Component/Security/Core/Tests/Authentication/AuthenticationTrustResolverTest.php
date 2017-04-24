@@ -26,29 +26,6 @@ class AuthenticationTrustResolverTest extends TestCase
         $this->assertTrue($resolver->isAnonymous($this->getAnonymousToken()));
     }
 
-    protected function getResolver()
-    {
-        return new AuthenticationTrustResolver(
-            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\AnonymousToken',
-            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\RememberMeToken'
-        );
-    }
-
-    protected function getToken()
-    {
-        return $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
-    }
-
-    protected function getRememberMeToken()
-    {
-        return $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\RememberMeToken')->setMethods(array('setPersistent'))->disableOriginalConstructor()->getMock();
-    }
-
-    protected function getAnonymousToken()
-    {
-        return $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\AnonymousToken')->setConstructorArgs(array('', ''))->getMock();
-    }
-
     public function testIsRememberMe()
     {
         $resolver = $this->getResolver();
@@ -67,5 +44,28 @@ class AuthenticationTrustResolverTest extends TestCase
         $this->assertFalse($resolver->isFullFledged($this->getAnonymousToken()));
         $this->assertFalse($resolver->isFullFledged($this->getRememberMeToken()));
         $this->assertTrue($resolver->isFullFledged($this->getToken()));
+    }
+
+    protected function getToken()
+    {
+        return $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+    }
+
+    protected function getAnonymousToken()
+    {
+        return $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\AnonymousToken')->setConstructorArgs(array('', ''))->getMock();
+    }
+
+    protected function getRememberMeToken()
+    {
+        return $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\RememberMeToken')->setMethods(array('setPersistent'))->disableOriginalConstructor()->getMock();
+    }
+
+    protected function getResolver()
+    {
+        return new AuthenticationTrustResolver(
+            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\AnonymousToken',
+            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\RememberMeToken'
+        );
     }
 }

@@ -43,6 +43,22 @@ class FormFactory implements FormFactoryInterface
     /**
      * {@inheritdoc}
      */
+    public function createNamed($name, $type = 'Symfony\Component\Form\Extension\Core\Type\FormType', $data = null, array $options = array())
+    {
+        return $this->createNamedBuilder($name, $type, $data, $options)->getForm();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createForProperty($class, $property, $data = null, array $options = array())
+    {
+        return $this->createBuilderForProperty($class, $property, $data, $options)->getForm();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createBuilder($type = 'Symfony\Component\Form\Extension\Core\Type\FormType', $data = null, array $options = array())
     {
         $name = null;
@@ -105,50 +121,6 @@ class FormFactory implements FormFactoryInterface
     }
 
     /**
-     * Wraps a type into a ResolvedFormTypeInterface implementation and connects
-     * it with its parent type.
-     *
-     * @param FormTypeInterface $type The type to resolve
-     *
-     * @return ResolvedFormTypeInterface The resolved type
-     */
-    private function resolveType(FormTypeInterface $type)
-    {
-        $parentType = $type->getParent();
-
-        if ($parentType instanceof FormTypeInterface) {
-            $parentType = $this->resolveType($parentType);
-        } elseif (null !== $parentType) {
-            $parentType = $this->registry->getType($parentType);
-        }
-
-        return $this->resolvedTypeFactory->createResolvedType(
-            $type,
-            // Type extensions are not supported for unregistered type instances,
-            // i.e. type instances that are passed to the FormFactory directly,
-            // nor for their parents, if getParent() also returns a type instance.
-            array(),
-            $parentType
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createNamed($name, $type = 'Symfony\Component\Form\Extension\Core\Type\FormType', $data = null, array $options = array())
-    {
-        return $this->createNamedBuilder($name, $type, $data, $options)->getForm();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createForProperty($class, $property, $data = null, array $options = array())
-    {
-        return $this->createBuilderForProperty($class, $property, $data, $options)->getForm();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function createBuilderForProperty($class, $property, $data = null, array $options = array())
@@ -185,5 +157,33 @@ class FormFactory implements FormFactoryInterface
         }
 
         return $this->createNamedBuilder($property, $type, $data, $options);
+    }
+
+    /**
+     * Wraps a type into a ResolvedFormTypeInterface implementation and connects
+     * it with its parent type.
+     *
+     * @param FormTypeInterface $type The type to resolve
+     *
+     * @return ResolvedFormTypeInterface The resolved type
+     */
+    private function resolveType(FormTypeInterface $type)
+    {
+        $parentType = $type->getParent();
+
+        if ($parentType instanceof FormTypeInterface) {
+            $parentType = $this->resolveType($parentType);
+        } elseif (null !== $parentType) {
+            $parentType = $this->registry->getType($parentType);
+        }
+
+        return $this->resolvedTypeFactory->createResolvedType(
+            $type,
+            // Type extensions are not supported for unregistered type instances,
+            // i.e. type instances that are passed to the FormFactory directly,
+            // nor for their parents, if getParent() also returns a type instance.
+            array(),
+            $parentType
+        );
     }
 }

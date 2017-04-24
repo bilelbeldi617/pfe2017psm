@@ -19,9 +19,9 @@ class DoctrineFormGeneratorTest extends GeneratorTest
     {
         $this->generateForm(false);
 
-        $this->assertTrue(file_exists($this->tmpDir . '/Form/PostType.php'));
+        $this->assertTrue(file_exists($this->tmpDir.'/Form/PostType.php'));
 
-        $content = file_get_contents($this->tmpDir . '/Form/PostType.php');
+        $content = file_get_contents($this->tmpDir.'/Form/PostType.php');
         $this->assertContains('namespace Foo\BarBundle\Form', $content);
         $this->assertContains('class PostType extends AbstractType', $content);
         $this->assertContains('->add(\'title\')', $content);
@@ -32,35 +32,13 @@ class DoctrineFormGeneratorTest extends GeneratorTest
         $this->assertContains('\'data_class\' => \'Foo\BarBundle\Entity\Post\'', $content);
     }
 
-    private function generateForm($overwrite)
-    {
-        $generator = new DoctrineFormGenerator($this->filesystem);
-        $generator->setSkeletonDirs(__DIR__ . '/../../Resources/skeleton');
-
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
-        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
-
-        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
-        $metadata->identifier = array('id');
-        $metadata->fieldMappings = array(
-            'title' => array('type' => 'string'),
-            'createdAt' => array('type' => 'date'),
-            'publishedAt' => array('type' => 'time'),
-            'updatedAt' => array('type' => 'datetime'),
-        );
-        $metadata->associationMappings = $metadata->fieldMappings;
-
-        $generator->generate($bundle, 'Post', $metadata, $overwrite);
-    }
-
     public function testGenerateSubNamespacedEntity()
     {
         $this->generateSubNamespacedEntityForm(false);
 
-        $this->assertTrue(file_exists($this->tmpDir . '/Form/Blog/PostType.php'));
+        $this->assertTrue(file_exists($this->tmpDir.'/Form/Blog/PostType.php'));
 
-        $content = file_get_contents($this->tmpDir . '/Form/Blog/PostType.php');
+        $content = file_get_contents($this->tmpDir.'/Form/Blog/PostType.php');
         $this->assertContains('namespace Foo\BarBundle\Form\Blog', $content);
         $this->assertContains('class PostType extends AbstractType', $content);
         $this->assertContains('->add(\'title\')', $content);
@@ -80,10 +58,50 @@ class DoctrineFormGeneratorTest extends GeneratorTest
         }
     }
 
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessageRegExp: Unable to generate the PostType form class as it already exists under the .* file
+     */
+    public function testNonOverwrittenForm()
+    {
+        $this->generateForm(false);
+        $this->generateForm(false);
+    }
+
+    public function testOverwrittenForm()
+    {
+        $this->generateForm(false);
+        $this->generateForm(true);
+
+        $this->assertTrue(file_exists($this->tmpDir.'/Form/PostType.php'));
+    }
+
+    private function generateForm($overwrite)
+    {
+        $generator = new DoctrineFormGenerator($this->filesystem);
+        $generator->setSkeletonDirs(__DIR__.'/../../Resources/skeleton');
+
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
+        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
+
+        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
+        $metadata->identifier = array('id');
+        $metadata->fieldMappings = array(
+            'title' => array('type' => 'string'),
+            'createdAt' => array('type' => 'date'),
+            'publishedAt' => array('type' => 'time'),
+            'updatedAt' => array('type' => 'datetime'),
+        );
+        $metadata->associationMappings = $metadata->fieldMappings;
+
+        $generator->generate($bundle, 'Post', $metadata, $overwrite);
+    }
+
     private function generateSubNamespacedEntityForm($overwrite)
     {
         $generator = new DoctrineFormGenerator($this->filesystem);
-        $generator->setSkeletonDirs(__DIR__ . '/../../Resources/skeleton');
+        $generator->setSkeletonDirs(__DIR__.'/../../Resources/skeleton');
 
         $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
         $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
@@ -100,23 +118,5 @@ class DoctrineFormGeneratorTest extends GeneratorTest
         $metadata->associationMappings = $metadata->fieldMappings;
 
         $generator->generate($bundle, 'Blog\Post', $metadata, $overwrite);
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp: Unable to generate the PostType form class as it already exists under the .* file
-     */
-    public function testNonOverwrittenForm()
-    {
-        $this->generateForm(false);
-        $this->generateForm(false);
-    }
-
-    public function testOverwrittenForm()
-    {
-        $this->generateForm(false);
-        $this->generateForm(true);
-
-        $this->assertTrue(file_exists($this->tmpDir . '/Form/PostType.php'));
     }
 }

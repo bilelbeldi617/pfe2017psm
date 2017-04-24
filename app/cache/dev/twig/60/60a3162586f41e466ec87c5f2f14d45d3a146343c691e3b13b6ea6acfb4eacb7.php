@@ -15,50 +15,69 @@ class __TwigTemplate_eab8779058fa982f698bb25428929d517425c620948efa1d88f761153d6
         );
     }
 
-    public function block_title($context, array $blocks = array())
+    protected function doGetParent(array $context)
     {
-        $__internal_9766c5cd74c7725dd95ad58a9b67c2d7686a37ee269887fe044e4730e6c0f10f = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_9766c5cd74c7725dd95ad58a9b67c2d7686a37ee269887fe044e4730e6c0f10f->enter($__internal_9766c5cd74c7725dd95ad58a9b67c2d7686a37ee269887fe044e4730e6c0f10f_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
-
-        // line 3
-        echo "    Contacter Admin
-";
-
-        $__internal_9766c5cd74c7725dd95ad58a9b67c2d7686a37ee269887fe044e4730e6c0f10f->leave($__internal_9766c5cd74c7725dd95ad58a9b67c2d7686a37ee269887fe044e4730e6c0f10f_prof);
-
+        return "baseForParent.html.twig";
     }
 
-    public function block_mainContent($context, array $blocks = array())
+    protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_d7b340b9f29ec0e91b0770837f8a466ca500d547082eebf2e94725aae96c6024 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d7b340b9f29ec0e91b0770837f8a466ca500d547082eebf2e94725aae96c6024->enter($__internal_d7b340b9f29ec0e91b0770837f8a466ca500d547082eebf2e94725aae96c6024_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_6ebbd93e172fbe875fc991a4ee0b46e3eda0f1d841e98c39ac8658c45215c1da = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_6ebbd93e172fbe875fc991a4ee0b46e3eda0f1d841e98c39ac8658c45215c1da->enter($__internal_6ebbd93e172fbe875fc991a4ee0b46e3eda0f1d841e98c39ac8658c45215c1da_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Parent/contacterAdmin.html.twig"));
 
-        // line 7
-        echo "
-";
-
-        $__internal_d7b340b9f29ec0e91b0770837f8a466ca500d547082eebf2e94725aae96c6024->leave($__internal_d7b340b9f29ec0e91b0770837f8a466ca500d547082eebf2e94725aae96c6024_prof);
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_6ebbd93e172fbe875fc991a4ee0b46e3eda0f1d841e98c39ac8658c45215c1da->leave($__internal_6ebbd93e172fbe875fc991a4ee0b46e3eda0f1d841e98c39ac8658c45215c1da_prof);
 
     }
 
     // line 2
+    public function block_title($context, array $blocks = array())
+    {
+        $__internal_c48066609968554904922f0028fc770db49e98580ac53e5bfb5f506de110152f = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_c48066609968554904922f0028fc770db49e98580ac53e5bfb5f506de110152f->enter($__internal_c48066609968554904922f0028fc770db49e98580ac53e5bfb5f506de110152f_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+
+        // line 3
+        echo "    Contacter Admin
+";
+        
+        $__internal_c48066609968554904922f0028fc770db49e98580ac53e5bfb5f506de110152f->leave($__internal_c48066609968554904922f0028fc770db49e98580ac53e5bfb5f506de110152f_prof);
+
+    }
+
+    // line 6
+    public function block_mainContent($context, array $blocks = array())
+    {
+        $__internal_c168d08cd4cabee96425e8a11dc1dcd7f21c1bfb436d615744baf0f2bd48b1f1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_c168d08cd4cabee96425e8a11dc1dcd7f21c1bfb436d615744baf0f2bd48b1f1->enter($__internal_c168d08cd4cabee96425e8a11dc1dcd7f21c1bfb436d615744baf0f2bd48b1f1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+
+        // line 7
+        echo "
+";
+        
+        $__internal_c168d08cd4cabee96425e8a11dc1dcd7f21c1bfb436d615744baf0f2bd48b1f1->leave($__internal_c168d08cd4cabee96425e8a11dc1dcd7f21c1bfb436d615744baf0f2bd48b1f1_prof);
+
+    }
+
+    public function getTemplateName()
+    {
+        return "@projet/Default/Parent/contacterAdmin.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 6
-
     public function getDebugInfo()
     {
-        return array(55 => 7, 49 => 6, 41 => 3, 35 => 2, 11 => 1,);
+        return array (  55 => 7,  49 => 6,  41 => 3,  35 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -73,26 +92,5 @@ class __TwigTemplate_eab8779058fa982f698bb25428929d517425c620948efa1d88f761153d6
 {% block mainContent %}
 
 {% endblock %}", "@projet/Default/Parent/contacterAdmin.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Parent\\contacterAdmin.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "baseForParent.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_e757df4502b9f860861579b7987b3c0dc576b9a9ddbdbdc700c3d5f6de1fdf97 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_e757df4502b9f860861579b7987b3c0dc576b9a9ddbdbdc700c3d5f6de1fdf97->enter($__internal_e757df4502b9f860861579b7987b3c0dc576b9a9ddbdbdc700c3d5f6de1fdf97_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Parent/contacterAdmin.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_e757df4502b9f860861579b7987b3c0dc576b9a9ddbdbdc700c3d5f6de1fdf97->leave($__internal_e757df4502b9f860861579b7987b3c0dc576b9a9ddbdbdc700c3d5f6de1fdf97_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@projet/Default/Parent/contacterAdmin.html.twig";
     }
 }

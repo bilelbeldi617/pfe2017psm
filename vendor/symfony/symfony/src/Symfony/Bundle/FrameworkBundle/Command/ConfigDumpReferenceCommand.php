@@ -56,7 +56,8 @@ When the option is not provided, <comment>yaml</comment> is used.
   <info>php %command.full_name% FrameworkBundle --format=xml</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

@@ -97,6 +97,6 @@ class UserTest extends TestCase
     public function testToString()
     {
         $user = new User('fabien', 'superpass');
-        $this->assertEquals('fabien', (string)$user);
+        $this->assertEquals('fabien', (string) $user);
     }
 }

@@ -63,7 +63,8 @@ class ProfilerControllerTest extends TestCase
                 if ('found' == $token) {
                     return new Profile($token);
                 }
-            }));
+            }))
+        ;
 
         $response = $controller->toolbarAction(Request::create('/_wdt/found'), 'found');
         $this->assertEquals(200, $response->getStatusCode());
@@ -109,10 +110,10 @@ class ProfilerControllerTest extends TestCase
             ->will($this->returnValue($tokens));
 
         $request = Request::create('/_profiler/empty/search/results', 'GET', array(
-            'limit' => 2,
-            'ip' => '127.0.0.1',
-            'method' => 'GET',
-            'url' => 'http://example.com/',
+                'limit' => 2,
+                'ip' => '127.0.0.1',
+                'method' => 'GET',
+                'url' => 'http://example.com/',
         ));
 
         $twig->expects($this->once())

@@ -19,6 +19,16 @@ class ConstraintViolationListTest extends TestCase
 {
     protected $list;
 
+    protected function setUp()
+    {
+        $this->list = new ConstraintViolationList();
+    }
+
+    protected function tearDown()
+    {
+        $this->list = null;
+    }
+
     public function testInit()
     {
         $this->assertCount(0, $this->list);
@@ -31,11 +41,6 @@ class ConstraintViolationListTest extends TestCase
 
         $this->assertCount(1, $this->list);
         $this->assertSame($violation, $this->list[0]);
-    }
-
-    protected function getViolation($message, $root = null, $propertyPath = null)
-    {
-        return new ConstraintViolation($message, $message, array(), $root, $propertyPath, null);
     }
 
     public function testAdd()
@@ -120,16 +125,11 @@ foo.bar:
 
 EOF;
 
-        $this->assertEquals($expected, (string)$this->list);
+        $this->assertEquals($expected, (string) $this->list);
     }
 
-    protected function setUp()
+    protected function getViolation($message, $root = null, $propertyPath = null)
     {
-        $this->list = new ConstraintViolationList();
-    }
-
-    protected function tearDown()
-    {
-        $this->list = null;
+        return new ConstraintViolation($message, $message, array(), $root, $propertyPath, null);
     }
 }

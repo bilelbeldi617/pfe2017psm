@@ -11,7 +11,7 @@
 
 namespace Symfony\Bridge\Swiftmailer\DataCollector;
 
-@trigger_error('The ' . __NAMESPACE__ . '\MessageDataCollector class is deprecated since version 2.4 and will be removed in 3.0. Use the Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector class from SwiftmailerBundle instead. Require symfony/swiftmailer-bundle package to download SwiftmailerBundle with Composer.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\MessageDataCollector class is deprecated since version 2.4 and will be removed in 3.0. Use the Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector class from SwiftmailerBundle instead. Require symfony/swiftmailer-bundle package to download SwiftmailerBundle with Composer.', E_USER_DEPRECATED);
 
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class MessageDataCollector extends DataCollector
      * to avoid the creation of these objects when no emails are sent.
      *
      * @param ContainerInterface $container A ContainerInterface instance
-     * @param bool $isSpool
+     * @param bool               $isSpool
      */
     public function __construct(ContainerInterface $container, $isSpool)
     {

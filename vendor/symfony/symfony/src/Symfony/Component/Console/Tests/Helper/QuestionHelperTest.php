@@ -86,30 +86,6 @@ class QuestionHelperTest extends TestCase
         $this->assertEquals(array('Superman', 'Batman'), $questionHelper->ask($this->createInputInterfaceMock(), $this->createOutputInterface(), $question));
     }
 
-    protected function getInputStream($input)
-    {
-        $stream = fopen('php://memory', 'r+', false);
-        fwrite($stream, $input);
-        rewind($stream);
-
-        return $stream;
-    }
-
-    protected function createInputInterfaceMock($interactive = true)
-    {
-        $mock = $this->getMockBuilder('Symfony\Component\Console\Input\InputInterface')->getMock();
-        $mock->expects($this->any())
-            ->method('isInteractive')
-            ->will($this->returnValue($interactive));
-
-        return $mock;
-    }
-
-    protected function createOutputInterface()
-    {
-        return new StreamOutput(fopen('php://memory', 'r+', false));
-    }
-
     public function testAsk()
     {
         $dialog = new QuestionHelper();
@@ -160,13 +136,6 @@ class QuestionHelperTest extends TestCase
         $this->assertEquals('FooBundle', $dialog->ask($this->createInputInterfaceMock(), $this->createOutputInterface(), $question));
     }
 
-    private function hasSttyAvailable()
-    {
-        exec('stty 2>&1', $output, $exitcode);
-
-        return $exitcode === 0;
-    }
-
     public function testAskWithAutocompleteWithNonSequentialKeys()
     {
         if (!$this->hasSttyAvailable()) {
@@ -209,9 +178,9 @@ class QuestionHelperTest extends TestCase
     {
         $dialog = new QuestionHelper();
 
-        $dialog->setInputStream($this->getInputStream($question . "\n"));
+        $dialog->setInputStream($this->getInputStream($question."\n"));
         $question = new ConfirmationQuestion('Do you like French fries?', $default);
-        $this->assertEquals($expected, $dialog->ask($this->createInputInterfaceMock(), $this->createOutputInterface(), $question), 'confirmation question should ' . ($expected ? 'pass' : 'cancel'));
+        $this->assertEquals($expected, $dialog->ask($this->createInputInterfaceMock(), $this->createOutputInterface(), $question), 'confirmation question should '.($expected ? 'pass' : 'cancel'));
     }
 
     public function getAskConfirmationData()
@@ -281,7 +250,7 @@ class QuestionHelperTest extends TestCase
         );
 
         $dialog = new QuestionHelper();
-        $dialog->setInputStream($this->getInputStream($providedAnswer . "\n"));
+        $dialog->setInputStream($this->getInputStream($providedAnswer."\n"));
         $helperSet = new HelperSet(array(new FormatterHelper()));
         $dialog->setHelperSet($helperSet);
 
@@ -317,7 +286,7 @@ class QuestionHelperTest extends TestCase
         );
 
         $dialog = new QuestionHelper();
-        $dialog->setInputStream($this->getInputStream($providedAnswer . "\n"));
+        $dialog->setInputStream($this->getInputStream($providedAnswer."\n"));
         $helperSet = new HelperSet(array(new FormatterHelper()));
         $dialog->setHelperSet($helperSet);
 
@@ -352,7 +321,7 @@ class QuestionHelperTest extends TestCase
         );
 
         $dialog = new QuestionHelper();
-        $dialog->setInputStream($this->getInputStream($providedAnswer . "\n"));
+        $dialog->setInputStream($this->getInputStream($providedAnswer."\n"));
         $helperSet = new HelperSet(array(new FormatterHelper()));
         $dialog->setHelperSet($helperSet);
 
@@ -463,5 +432,36 @@ class QuestionHelperTest extends TestCase
         });
 
         $dialog->ask($this->createInputInterfaceMock(), $this->createOutputInterface(), $question);
+    }
+
+    protected function getInputStream($input)
+    {
+        $stream = fopen('php://memory', 'r+', false);
+        fwrite($stream, $input);
+        rewind($stream);
+
+        return $stream;
+    }
+
+    protected function createOutputInterface()
+    {
+        return new StreamOutput(fopen('php://memory', 'r+', false));
+    }
+
+    protected function createInputInterfaceMock($interactive = true)
+    {
+        $mock = $this->getMockBuilder('Symfony\Component\Console\Input\InputInterface')->getMock();
+        $mock->expects($this->any())
+            ->method('isInteractive')
+            ->will($this->returnValue($interactive));
+
+        return $mock;
+    }
+
+    private function hasSttyAvailable()
+    {
+        exec('stty 2>&1', $output, $exitcode);
+
+        return $exitcode === 0;
     }
 }

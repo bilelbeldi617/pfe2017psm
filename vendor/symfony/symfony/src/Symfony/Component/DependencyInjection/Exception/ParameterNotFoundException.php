@@ -24,11 +24,11 @@ class ParameterNotFoundException extends InvalidArgumentException
     private $alternatives;
 
     /**
-     * @param string $key The requested parameter key
-     * @param string $sourceId The service id that references the non-existent parameter
-     * @param string $sourceKey The parameter key that references the non-existent parameter
-     * @param \Exception $previous The previous exception
-     * @param string[] $alternatives Some parameter name alternatives
+     * @param string     $key          The requested parameter key
+     * @param string     $sourceId     The service id that references the non-existent parameter
+     * @param string     $sourceKey    The parameter key that references the non-existent parameter
+     * @param \Exception $previous     The previous exception
+     * @param string[]   $alternatives Some parameter name alternatives
      */
     public function __construct($key, $sourceId = null, $sourceKey = null, \Exception $previous = null, array $alternatives = array())
     {
@@ -58,7 +58,7 @@ class ParameterNotFoundException extends InvalidArgumentException
             } else {
                 $this->message .= ' Did you mean one of these: "';
             }
-            $this->message .= implode('", "', $this->alternatives) . '"?';
+            $this->message .= implode('", "', $this->alternatives).'"?';
         }
     }
 
@@ -72,16 +72,16 @@ class ParameterNotFoundException extends InvalidArgumentException
         return $this->sourceId;
     }
 
+    public function getSourceKey()
+    {
+        return $this->sourceKey;
+    }
+
     public function setSourceId($sourceId)
     {
         $this->sourceId = $sourceId;
 
         $this->updateRepr();
-    }
-
-    public function getSourceKey()
-    {
-        return $this->sourceKey;
     }
 
     public function setSourceKey($sourceKey)

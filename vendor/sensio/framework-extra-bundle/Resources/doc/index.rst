@@ -115,15 +115,15 @@ advantages over the classic Symfony configuration methods:
 The following annotations are defined by the bundle:
 
 .. toctree::
-:maxdepth: 1
+   :maxdepth: 1
 
-       annotations/routing
-       annotations/converters
-       annotations/view
-       annotations/cache
-       annotations/security
+   annotations/routing
+   annotations/converters
+   annotations/view
+   annotations/cache
+   annotations/security
 
-    This example shows all the available annotations in action::
+This example shows all the available annotations in action::
 
     use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
     use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;

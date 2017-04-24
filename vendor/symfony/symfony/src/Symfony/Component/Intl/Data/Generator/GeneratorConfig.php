@@ -46,8 +46,8 @@ class GeneratorConfig
     /**
      * Adds a writer to be used during the data conversion.
      *
-     * @param string $targetDir The output directory
-     * @param BundleWriterInterface $writer The writer instance
+     * @param string                $targetDir The output directory
+     * @param BundleWriterInterface $writer    The writer instance
      */
     public function addBundleWriter($targetDir, BundleWriterInterface $writer)
     {

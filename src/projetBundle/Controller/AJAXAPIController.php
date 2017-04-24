@@ -40,17 +40,16 @@ class AJAXAPIController extends Controller
     /**
      * @Route("/ajouterPaiementTot", name="ajouterPaiementTot")
      */
-    public function ajouterPaiementTot(Request $request)
-    {
-        $serializer = SerializerBuilder::create()->build();
+    public function ajouterPaiementTot(Request $request){
+        $serializer = SerializerBuilder::create()->build() ;
         $typePaiement = $request->get("typePaiementTot");
         $idTranche = $request->get("idTranche");
         $dateAujourdhui = new \DateTime("now");
         $dateAujourdhui = $dateAujourdhui->format("Y-m-d");
 
-        $tranche = $this->getDoctrine()->getRepository("projetBundle:Tranche")->findOneBy(array("id" => $idTranche));
+        $tranche = $this->getDoctrine()->getRepository("projetBundle:Tranche")->findOneBy(array("id"=>$idTranche));
         $em = $this->getDoctrine()->getManager();
-        if ($typePaiement == "virement") {
+        if($typePaiement == "virement"){
             $paiement = new TypePaiement();
             $paiement->setNomBanque(null);
             $paiement->setNumeroCheque(null);
@@ -62,13 +61,13 @@ class AJAXAPIController extends Controller
             $em->persist($paiement);
             $em->flush();
 
-            $tranche->setEtatTranche("Payé le : " . $dateAujourdhui);
+            $tranche->setEtatTranche("Payé le : ".$dateAujourdhui);
             $em->merge($tranche);
             $em->flush();
 
             $p = new Paiement();
-            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $tranche->getPaiement()));
-            if ($p->getEtatPaiement() == "NP") {
+            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$tranche->getPaiement()));
+            if($p->getEtatPaiement() == "NP") {
                 $etat = "Payé en totalité le" . $dateAujourdhui;
                 $p->setEtatPaiement($etat);
             }
@@ -77,9 +76,10 @@ class AJAXAPIController extends Controller
             $em->flush($p);
 
 
+
         }
 
-        if ($typePaiement == "cheque") {
+        if($typePaiement == "cheque"){
             $nomBanque = $request->get("nomBanqueTot");
             $numCheque = $request->get("numChequeTot");
 
@@ -94,13 +94,13 @@ class AJAXAPIController extends Controller
             $em->persist($paiement);
             $em->flush();
 
-            $tranche->setEtatTranche("Payé le : " . $dateAujourdhui);
+            $tranche->setEtatTranche("Payé le : ".$dateAujourdhui);
             $em->merge($tranche);
             $em->flush();
 
             $p = new Paiement();
-            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $tranche->getPaiement()));
-            if ($p->getEtatPaiement() == "NP") {
+            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$tranche->getPaiement()));
+            if($p->getEtatPaiement() == "NP") {
                 $etat = "Payé en totalité le" . $dateAujourdhui;
                 $p->setEtatPaiement($etat);
             }
@@ -108,7 +108,7 @@ class AJAXAPIController extends Controller
             $em->flush($p);
         }
 
-        if ($typePaiement == "espece") {
+        if($typePaiement == "espece"){
             //$nomBanque = $request->get("nomBanque");
             //$numCheque = $request->get("numCheque");
 
@@ -123,13 +123,13 @@ class AJAXAPIController extends Controller
             $em->persist($paiement);
             $em->flush();
 
-            $tranche->setEtatTranche("Payé le : " . $dateAujourdhui);
+            $tranche->setEtatTranche("Payé le : ".$dateAujourdhui);
             $em->merge($tranche);
             $em->flush();
 
             $p = new Paiement();
-            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $tranche->getPaiement()));
-            if ($p->getEtatPaiement() == "NP") {
+            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$tranche->getPaiement()));
+            if($p->getEtatPaiement() == "NP") {
                 $etat = "Payé en totalité le" . $dateAujourdhui;
                 $p->setEtatPaiement($etat);
             }
@@ -144,17 +144,16 @@ class AJAXAPIController extends Controller
     /**
      * @Route("/ajouterPaiement", name="ajouterPaiement")
      */
-    public function ajouterPaiement(Request $request)
-    {
-        $serializer = SerializerBuilder::create()->build();
+    public function ajouterPaiement(Request $request){
+        $serializer = SerializerBuilder::create()->build() ;
         $typePaiement = $request->get("typePaiement2");
         $idTranche = $request->get("idTranche");
         $dateAujourdhui = new \DateTime("now");
         $dateAujourdhui = $dateAujourdhui->format("Y-m-d");
 
-        $tranche = $this->getDoctrine()->getRepository("projetBundle:Tranche")->findOneBy(array("id" => $idTranche));
+        $tranche = $this->getDoctrine()->getRepository("projetBundle:Tranche")->findOneBy(array("id"=>$idTranche));
         $em = $this->getDoctrine()->getManager();
-        if ($typePaiement == "virement") {
+        if($typePaiement == "virement"){
             $paiement = new TypePaiement();
             $paiement->setNomBanque(null);
             $paiement->setNumeroCheque(null);
@@ -166,16 +165,16 @@ class AJAXAPIController extends Controller
             $em->persist($paiement);
             $em->flush();
 
-            $tranche->setEtatTranche("Payé le : " . $dateAujourdhui);
+            $tranche->setEtatTranche("Payé le : ".$dateAujourdhui);
             $em->merge($tranche);
             $em->flush();
 
             $p = new Paiement();
-            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $tranche->getPaiement()));
-            if ($p->getEtatPaiement() == "NP") {
+            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$tranche->getPaiement()));
+            if($p->getEtatPaiement() == "NP") {
                 $etat = "Tranche " . $tranche->getNumeroTranche() . " payé le " . $dateAujourdhui;
                 $p->setEtatPaiement($etat);
-            } else {
+            }else{
                 $p->setEtatPaiement("2 tranches payés");
             }
 
@@ -183,9 +182,10 @@ class AJAXAPIController extends Controller
             $em->flush($p);
 
 
+
         }
 
-        if ($typePaiement == "cheque") {
+        if($typePaiement == "cheque"){
             $nomBanque = $request->get("nomBanque");
             $numCheque = $request->get("numCheque");
 
@@ -200,23 +200,23 @@ class AJAXAPIController extends Controller
             $em->persist($paiement);
             $em->flush();
 
-            $tranche->setEtatTranche("Payé le : " . $dateAujourdhui);
+            $tranche->setEtatTranche("Payé le : ".$dateAujourdhui);
             $em->merge($tranche);
             $em->flush();
 
             $p = new Paiement();
-            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $tranche->getPaiement()));
-            if ($p->getEtatPaiement() == "NP") {
+            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$tranche->getPaiement()));
+            if($p->getEtatPaiement() == "NP") {
                 $etat = "Tranche " . $tranche->getNumeroTranche() . " payé le " . $dateAujourdhui;
                 $p->setEtatPaiement($etat);
-            } else {
+            }else{
                 $p->setEtatPaiement("2 tranches payés");
             }
             $em->merge($p);
             $em->flush($p);
         }
 
-        if ($typePaiement == "espece") {
+        if($typePaiement == "espece"){
             //$nomBanque = $request->get("nomBanque");
             //$numCheque = $request->get("numCheque");
 
@@ -231,16 +231,16 @@ class AJAXAPIController extends Controller
             $em->persist($paiement);
             $em->flush();
 
-            $tranche->setEtatTranche("Payé le : " . $dateAujourdhui);
+            $tranche->setEtatTranche("Payé le : ".$dateAujourdhui);
             $em->merge($tranche);
             $em->flush();
 
             $p = new Paiement();
-            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id" => $tranche->getPaiement()));
-            if ($p->getEtatPaiement() == "NP") {
+            $p = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findOneBy(array("id"=>$tranche->getPaiement()));
+            if($p->getEtatPaiement() == "NP") {
                 $etat = "Tranche " . $tranche->getNumeroTranche() . " payé le " . $dateAujourdhui;
                 $p->setEtatPaiement($etat);
-            } else {
+            }else{
                 $p->setEtatPaiement("2 tranches payés");
             }
             $em->merge($p);
@@ -312,33 +312,31 @@ class AJAXAPIController extends Controller
     /**
      * @Route("/getNotif", name="getNotif")
      */
-    public function getNotif(Request $request)
-    {
-        $serializer = SerializerBuilder::create()->build();
+    public function getNotif(Request $request){
+        $serializer = SerializerBuilder::create()->build() ;
         $id = $request->get("parent");
 
         $parent = new ParentEleve();
-        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id" => $id));
+        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id"=>$id));
 
-        $notifs = $this->getDoctrine()->getRepository("projetBundle:Notification")->findBy(array("reciever" => $parent->getId(), "recieverType" => "parent", "vu" => 0));
+        $notifs = $this->getDoctrine()->getRepository("projetBundle:Notification")->findBy(array("reciever"=>$parent->getId(), "recieverType"=>"parent", "vu"=>0));
         $nbrNvNotifs = 0;
         $listNotifs = array();
-        foreach ($notifs as $n) {
+        foreach($notifs as $n){
 
-            $nbrNvNotifs++;
+                $nbrNvNotifs++;
 
             $listNotifs[] = $n;
         }
 
-        return new Response($serializer->serialize(array("listNotifs" => $listNotifs, "nbrNvNotifs" => $nbrNvNotifs), "json"));
+        return new Response($serializer->serialize( array("listNotifs"=>$listNotifs, "nbrNvNotifs"=>$nbrNvNotifs), "json"));
     }
 
     /**
      * @Route("/ajouterParent", name="ajouterParent")
      */
-    public function ajouterParent(Request $request)
-    {
-        $serializer = SerializerBuilder::create()->build();
+    public function ajouterParent(Request $request){
+        $serializer = SerializerBuilder::create()->build() ;
         $nomParent = $request->get("nomParent");
         $prenomParent = $request->get("prenomParent");
         $cinParent = $request->get("cinParent");
@@ -359,43 +357,44 @@ class AJAXAPIController extends Controller
         $parent->setPasswordParent($cinParent);
 
 
-        $message = \Swift_Message::newInstance(null);
-        $messageCorps = "Votre compte a ete cree avec succes \n votre Login : " . $emailParent . " \n votre MPD :" . $cinParent;
-        $message->setFrom("primaschooltest@gmail.com");
-        $message->setTo($emailParent);
-        $message->setSubject("Votre compte chez primaSchoolManager");
-        $message->setContentType("text/html");
-        $message->setBody($messageCorps);
-        $mailer = $this->get("mailer");
-        $mailer->send($message);
+
+
+            $message = \Swift_Message::newInstance(null);
+        $messageCorps = "Votre compte a ete cree avec succes \n votre Login : ".$emailParent." \n votre MPD :".$cinParent;
+            $message->setFrom("primaschooltest@gmail.com");
+            $message->setTo($emailParent);
+            $message->setSubject("Votre compte chez primaSchoolManager");
+            $message->setContentType("text/html") ;
+            $message->setBody($messageCorps);
+            $mailer = $this->get("mailer");
+            $mailer->send($message);
 
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($parent);
         $em->flush();
 
-        return new Response($serializer->serialize(array("status" => "inserted", "idParent" => $parent->getId()), "json"));
+        return new Response($serializer->serialize(array("status"=>"inserted", "idParent"=>$parent->getId()), "json")) ;
     }
 
     /**
      * @Route("/affecterUnEleve", name="affecterUnEleve")
      */
-    public function affecterUnEleve(Request $request)
-    {
+    public function affecterUnEleve(Request $request){
 
 
         $idEleve = $request->get("idEleve");
         $idGroupe = $request->get("idGroupe");
 
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilder::create()->build() ;
 
         $eleve = new Eleve();
-        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("id" => $idEleve));
+        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("id"=>$idEleve));
 
         //echo($eleve->getNomEleve());
 
         $groupe = new Groupe();
-        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $idGroupe));
+        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id"=>$idGroupe));
 
         //echo($groupe->getNomGroupe());
 
@@ -413,18 +412,18 @@ class AJAXAPIController extends Controller
         $eleveGroupe->setEleve($eleve);
 
         $parent = new ParentEleve();
-        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id" => $eleve->getParent()));
+        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id"=>$eleve->getParent()));
 
         $em = $this->getDoctrine()->getManager();
         $em->merge($eleveGroupe);
         $em->flush();
 
         $message = \Swift_Message::newInstance(null);
-        $messageCorps = "Votre enfant : " . $eleve->getPrenomEleve() . " " . $eleve->getNomEleve() . " a ete affecte dans le groupe : " . $groupe->getNomGroupe() . " " . $groupe->getNumGroupe() . " pour l'annee scolaire : " . $annee->getPeriode();
+        $messageCorps = "Votre enfant : ".$eleve->getPrenomEleve()." ".$eleve->getNomEleve()." a ete affecte dans le groupe : ".$groupe->getNomGroupe()." ".$groupe->getNumGroupe()." pour l'annee scolaire : ".$annee->getPeriode();
         $message->setFrom("primaschooltest@gmail.com");
         $message->setTo($parent->getEmailParent());
         $message->setSubject("Votre enfant a ete affecte a un groupe");
-        $message->setContentType("text/html");
+        $message->setContentType("text/html") ;
         $message->setBody($messageCorps);
         $mailer = $this->get("mailer");
         $mailer->send($message);
@@ -435,7 +434,7 @@ class AJAXAPIController extends Controller
         $notification->setTexteNotification($messageCorps);
         $session = $request->getSession();
         $user = $session->get("user");
-        $notification->setTitreNotification($session->get("userType") . " : Votre enfant a ete affecte a un groupe");
+        $notification->setTitreNotification($session->get("userType")." : Votre enfant a ete affecte a un groupe");
         $notification->setSender($user->getId());
         $notification->setRecieverType("parent");
         $notification->setVu(0);
@@ -445,23 +444,22 @@ class AJAXAPIController extends Controller
         $em->flush();
 
 
-        return new Response($serializer->serialize(array("status" => "inserted"), "json"));
+        return new Response($serializer->serialize(array("status"=>"inserted"), "json")) ;
     }
 
     /**
      * @Route("/getNumeroGroupe", name="getNumeroGroupe")
      */
-    public function getNumeroGroupe(Request $request)
-    {
+    public function getNumeroGroupe(Request $request){
         $numGroupeSuivant = 0;
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilder::create()->build() ;
 
         $niveau = $request->get("niveauGroupe");
 
-        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe" => $niveau));
-        $numGroupeSuivant = (count($groupes)) + 1;
+        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe"=>$niveau));
+        $numGroupeSuivant = (count($groupes))+1;
 
-        return new Response($serializer->serialize(array("numGroupeSuivant" => $numGroupeSuivant), "json"));
+        return new Response($serializer->serialize( array("numGroupeSuivant"=>$numGroupeSuivant), "json"));
 
     }
 
@@ -469,49 +467,55 @@ class AJAXAPIController extends Controller
     /**
      * @Route("/voirInfo", name="voirInfoAJAX")
      */
-    public function voirInfo(Request $request)
-    {
-        $serializer = SerializerBuilder::create()->build();
+    public function voirInfo(Request $request){
+        $serializer = SerializerBuilder::create()->build() ;
         $matricule = $request->get("mat");
-        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve" => $matricule));
+        $eleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findOneBy(array("matriculeEleve"=>$matricule));
+
+
+
 
 
         $session = $request->getSession();
         $annee = $session->get("anneeScolaireCourante");
 
 
-        $g = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findOneBy(array("anneeScolaire" => $annee, "eleve" => $eleve));
+
+
+        $g = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findOneBy(array("anneeScolaire"=>$annee, "eleve"=>$eleve));
         $g2 = new EleveGroupe();
         $g2 = $g;
 
-        if ($g == null) {
-            $groupe = null;
-        } else {
+        if($g==null){
+            $groupe=null ;
+        }else{
             $idGroupe = $g->getGroupe()->getId();
 
 
-            $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $idGroupe));
+            $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id"=>$idGroupe));
 
         }
 
 
-        $matieres = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("groupe" => $groupe));
+
+
+        $matieres = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("groupe"=>$groupe));
         $listEnseignant = array();
         $listMatiere = array();
-        foreach ($matieres as $mat) {
+        foreach($matieres as $mat){
             $listMatiere[] = $mat;
-            $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("id" => $mat->getEnseignant()));
+            $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("id"=>$mat->getEnseignant()));
             $listEnseignant[] = $enseignant;
         }
 
-        $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findBy(array("eleve" => $eleve, "anneeScolaire" => $annee));
+        $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findBy(array("eleve"=>$eleve, "anneeScolaire"=>$annee));
 
         $listPaiement = array();
-        foreach ($paiement as $p) {
+        foreach($paiement as $p){
             $listPaiement[] = $p;
         }
 
-        $infos = array("eleve" => $eleve, "groupe" => $groupe, "listMatiere" => $listMatiere, "listPaiement" => $listPaiement);
+        $infos = array("eleve"=>$eleve, "groupe"=>$groupe, "listMatiere"=>$listMatiere, "listPaiement"=>$listPaiement);
 
         return new Response($serializer->serialize($infos, "json"));
     }
@@ -525,51 +529,54 @@ class AJAXAPIController extends Controller
         $trimestre = $request->get("trimestre");
 
 
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilder::create()->build() ;
         $annneScolaire = $request->get("anneeScolaire");
 
 
         $idEnseignant = $request->get("idEnseignant");
-        $MatiereEtGroupe = explode("|", $request->get('idMatiere'));
-        $idGroupe = $MatiereEtGroupe[0];
-        $idMatiere = $MatiereEtGroupe[1];
-        $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("id" => $idEnseignant));
-        $anneeObject = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id" => $annneScolaire));
-        $matiere = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findOneBy(array("id" => $idMatiere, "anneeScolaire" => $annneScolaire, "enseignant" => $enseignant));
-        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $idGroupe, "anneeScolaire" => $annneScolaire));
-        $listEleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("groupe" => $groupe));
+        $MatiereEtGroupe = explode("|",$request->get('idMatiere') ) ;
+        $idGroupe = $MatiereEtGroupe[0] ;
+        $idMatiere = $MatiereEtGroupe[1] ;
+        $enseignant=$this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("id"=>$idEnseignant)) ;
+        $anneeObject=$this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id"=>$annneScolaire)) ;
+        $matiere = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findOneBy(array("id"=>$idMatiere, "anneeScolaire"=>$annneScolaire,"enseignant"=>$enseignant));
+        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id"=>$idGroupe, "anneeScolaire"=>$annneScolaire));
+        $listEleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("groupe"=>$groupe));
 
         foreach ($listEleve as $eleve) {
             $idEleve = $eleve->getId();
 
 
-            for ($i = 1; $i < 4; $i++) {
-                $noteVariableName = "note" . $idEleve . $i;
+            for($i=1; $i<4; $i++){
+                $noteVariableName = "note".$idEleve.$i ;
 
-                $note = $request->get($noteVariableName);
+                $note =  $request->get($noteVariableName);
 
 
-                if ($note == "") {
-                } else {
-                    $examen = new Examen();
-                    $examen->setMatiere($matiere);
-                    $examen->setNoteExamen($note);
-                    $examen->setAnneeScolaire($anneeObject);
-                    $examen->setEleve($eleve);
-                    $examen->setTrimestreExamen($trimestre);
-                    $examen->setGroupe($groupe);
-                    $em = $this->getDoctrine()->getManager();
+                if($note==""){
+                }else{
+                    $examen = new Examen() ;
+                    $examen->setMatiere($matiere) ;
+                    $examen->setNoteExamen($note) ;
+                    $examen->setAnneeScolaire($anneeObject) ;
+                    $examen->setEleve($eleve) ;
+                    $examen->setTrimestreExamen($trimestre) ;
+                    $examen->setGroupe($groupe) ;
+                    $em = $this->getDoctrine()->getManager() ;
                     $em->persist($examen);
-                    $em->flush();
+                    $em->flush() ;
                 }
+
+
 
 
             }
 
 
+
         }
 
-        return new Response($serializer->serialize(array("status" => "inserted"), "json"));
+        return new Response($serializer->serialize(array("status"=>"inserted"), "json")) ;
 
     }
 
@@ -578,13 +585,14 @@ class AJAXAPIController extends Controller
      */
     public function listerEleveParIDGroupes(Request $request)
     {
-        $serializer = SerializerBuilder::create()->build();
-        $receivedVariable = explode("|", $request->get("selectGroupe"));
-        $idGroupe = $receivedVariable[0];
-        $listEleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("groupe" => $idGroupe));
+        $serializer = SerializerBuilder::create()->build() ;
+        $receivedVariable=explode("|", $request->get("selectGroupe"));
+        $idGroupe =$receivedVariable[0] ;
+        $listEleve = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("groupe"=>$idGroupe));
 
-        return new Response($serializer->serialize($listEleve, "json"));
+        return new Response($serializer->serialize($listEleve, "json")) ;
     }
+
 
 
     /**
@@ -592,22 +600,26 @@ class AJAXAPIController extends Controller
      */
     public function chargerGroupes(Request $request)
     {
-        $serializer = SerializerBuilder::create()->build();
-        $annee = $request->get("annee");
+        $serializer = SerializerBuilder::create()->build() ;
+        $annee = $request->get("annee") ;
         $idEnseignant = $request->get("idEnseignant");
-        $listMatieres = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("anneeScolaire" => $annee, "enseignant" => $idEnseignant));
+        $listMatieres = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("anneeScolaire"=>$annee, "enseignant"=>$idEnseignant));
         $listMatiereGroupe = array();
-        foreach ($listMatieres as $mat) {
-            $matiere = new Matiere();
-            $matiere = $mat;
-            $matiereGroupe = new MatiereGroupe();
-            $matiereGroupe->setGroupe($matiere->getGroupe());
+        foreach ($listMatieres as $mat){
+            $matiere = new Matiere() ;
+            $matiere = $mat ;
+            $matiereGroupe = new MatiereGroupe() ;
+            $matiereGroupe->setGroupe($matiere->getGroupe()) ;
             $matiereGroupe->setMatiere($matiere);
             // echo "<br>".$matiere->getGroupe()->getNomGroupe()." ".$matiere->getLibelleMatiere() ;
-            $listMatiereGroupe[] = $matiereGroupe;
+            $listMatiereGroupe[]=$matiereGroupe ;
         }
-        return new Response($serializer->serialize($listMatiereGroupe, "json"));
+        return new Response($serializer->serialize($listMatiereGroupe, "json")) ;
     }
+
+
+
+
 
 
     /**
@@ -615,13 +627,14 @@ class AJAXAPIController extends Controller
      */
     public function ListerGroupesParAnnees(Request $request)
     {
-        $serializer = SerializerBuilder::create()->build();
-        $idAnnee = $request->get("idAnnee");
-        $annee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id" => $idAnnee));
-        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("anneeScolaire" => $annee));
+        $serializer = SerializerBuilder::create()->build() ;
+        $idAnnee =$request->get("idAnnee");
+        $annee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id"=>$idAnnee));
+        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("anneeScolaire"=>$annee));
         return new Response($serializer->serialize($groupes, "json"));
 
     }
+
 
 
     /**
@@ -629,47 +642,52 @@ class AJAXAPIController extends Controller
      */
     public function ListerEleves(Request $request)
     {
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilder::create()->build() ;
         $session = $request->getSession();
         $annee = $session->get("anneeScolaireCourante");
 
         $eleves = $this->getDoctrine()->getManager()->getRepository("projetBundle:Eleve")->findAll();
-        $listEleves = array();
-        foreach ($eleves as $e) {
+        $listEleves =  array() ;
+        foreach ($eleves as $e){
 
-            $g = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findOneBy(array("eleve" => $e, "anneeScolaire" => $annee));
-            if ($g == null) {
-                $groupe = null;
-            } else {
-                $idGroupe = $g->getGroupe()->getId();
-
-
-                $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $idGroupe));
-
-            }
+            $g = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findOneBy(array("eleve"=>$e, "anneeScolaire"=>$annee));
+                if($g==null){
+                    $groupe=null ;
+                }else{
+                    $idGroupe = $g->getGroupe()->getId();
 
 
-            $eleve = new Eleve();
-            $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findBy(array("eleve" => $e->getId()));
-            $eleve->setParent($e->getParent());
-            $eleve->setPrenomEleve($e->getPrenomEleve());
-            $eleve->setNomEleve($e->getNomEleve());
-            $eleve->setMatriculeEleve($e->getMatriculeEleve());
+                    $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id"=>$idGroupe));
+
+                }
+
+
+
+
+            $eleve = new Eleve() ;
+            $paiement = $this->getDoctrine()->getRepository("projetBundle:Paiement")->findBy(array("eleve"=>$e->getId()));
+            $eleve->setParent($e->getParent()) ;
+            $eleve->setPrenomEleve($e->getPrenomEleve()) ;
+            $eleve->setNomEleve($e->getNomEleve()) ;
+            $eleve->setMatriculeEleve($e->getMatriculeEleve()) ;
             $eleve->setNiveauEleve($e->getNiveauEleve());
             $dateNaissance = new \DateTime("now");
             $dateNaissance = $e->getDateNaissanceEleve();
 
-            $eleve->setDateNaissanceEleve($dateNaissance->format("d-m-Y"));
+            $eleve->setDateNaissanceEleve($dateNaissance->format("d-m-Y")) ;
             $eleve->setPaiement($paiement);
             $eleve->setGroupe($groupe);
-            $listEleves[] = $eleve;
+            $listEleves[]=$eleve ;
 
 
         }
 
 
-        return new Response($serializer->serialize(array("listEleve" => $listEleves), "json"));
+
+
+        return new Response($serializer->serialize(array("listEleve"=>$listEleves), "json"));
     }
+
 
 
     /**
@@ -677,9 +695,9 @@ class AJAXAPIController extends Controller
      */
     public function testREST()
     {
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilder::create()->build() ;
 
-        return new Response($serializer->serialize(array("status" => "inserted"), 'json'));
+        return new Response($serializer->serialize(array("status"=>"inserted"), 'json')) ;
     }
 
 
@@ -688,39 +706,39 @@ class AJAXAPIController extends Controller
      */
     public function AjouterEleveREST(Request $request)
     {
-        $matricule = $request->get("matriculeEleve");
+        $matricule = $request->get("matriculeEleve") ;
         $idParent = $request->get("idParent");
-        $nom = $request->get("nomEleve");
-        $prenom = $request->get("prenomEleve");
+        $nom = $request->get("nomEleve") ;
+        $prenom = $request->get("prenomEleve") ;
         $sexe = $request->get("sexeEleve");
-        $idGroupe = $request->get("idGroupe");
+        $idGroupe = $request->get("idGroupe") ;
         $niveau = $request->get("niveauEleve");
-        $session = $request->getSession();
-        $annee = $session->get("anneeScolaireCourante");
+        $session = $request->getSession() ;
+        $annee = $session->get("anneeScolaireCourante") ;
 
         $dateNaissance = $request->get("dateNaissanceEleve");
         $d = new \DateTime($dateNaissance);
         $frais = $request->get("fraisEleve");
 
-        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id" => $idParent));
-        $groupe = new Groupe();
-        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $idGroupe));
-        $serializer = SerializerBuilder::create()->build();
-        $eleve = new Eleve();
-        $eleve->setMatriculeEleve($matricule);
+        $parent = $this->getDoctrine()->getRepository("projetBundle:ParentEleve")->findOneBy(array("id"=>$idParent)) ;
+        $groupe = new Groupe() ;
+        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id"=>$idGroupe));
+        $serializer = SerializerBuilder::create()->build() ;
+        $eleve = new Eleve() ;
+        $eleve->setMatriculeEleve($matricule) ;
         $eleve->setParent($parent);
-        $eleve->setNomEleve($nom);
-        $eleve->setPrenomEleve($prenom);
+        $eleve->setNomEleve($nom) ;
+        $eleve->setPrenomEleve($prenom) ;
         $eleve->setDateNaissanceEleve($d);
         $eleve->setSexeEleve($sexe);
         $eleve->setNiveauEleve($niveau);
 
         $message = \Swift_Message::newInstance(null);
-        $messageCorps = "Un eleve vous a ete affecte\n Eleve : " . $eleve->getPrenomEleve() . " " . $eleve->getNomEleve();
+        $messageCorps = "Un eleve vous a ete affecte\n Eleve : ".$eleve->getPrenomEleve()." ".$eleve->getNomEleve();
         $message->setFrom("primaschooltest@gmail.com");
         $message->setTo($parent->getEmailParent());
         $message->setSubject("Un eleve vous a ete affecte");
-        $message->setContentType("text/html");
+        $message->setContentType("text/html") ;
         $message->setBody($messageCorps);
         $mailer = $this->get("mailer");
         $mailer->send($message);
@@ -732,7 +750,7 @@ class AJAXAPIController extends Controller
         $notification->setTexteNotification($messageCorps);
         $session = $request->getSession();
         $user = $session->get("user");
-        $notification->setTitreNotification($session->get("userType") . " : Un eleve vous a ete affecte");
+        $notification->setTitreNotification($session->get("userType")." : Un eleve vous a ete affecte");
         $notification->setSender($user->getId());
         $notification->setRecieverType("parent");
         $notification->setVu(0);
@@ -741,20 +759,20 @@ class AJAXAPIController extends Controller
         $em->persist($notification);
         $em->flush();
 
-        $em = $this->getDoctrine()->getManager();
+       $em = $this->getDoctrine()->getManager() ;
 
 
-        $em->persist($eleve);
-        $em->flush();
+            $em->persist($eleve);
+            $em->flush();
         $fraisString = "";
         $tot = 0;
-        foreach ($frais as $f) {
-            $fr = new Frais();
-            $fr = $this->getDoctrine()->getRepository("projetBundle:Frais")->findOneBy(array("id" => $f));
-            $fraisString .= $fr->getTypeFrais();
-            $tot += $fr->getMontantFrais();
+                foreach($frais as $f){
+                    $fr = new Frais() ;
+                    $fr=$this->getDoctrine()->getRepository("projetBundle:Frais")->findOneBy(array("id"=>$f)) ;
+                    $fraisString .= $fr->getTypeFrais();
+                    $tot += $fr->getMontantFrais();
 
-        }
+                }
 
         $p = new Paiement();
         $p->setEtatPaiement("NP");
@@ -765,10 +783,20 @@ class AJAXAPIController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->merge($p);
         $em->flush();
-        return new Response($serializer->serialize(array("status" => "inserted"), 'json'));
+            return new Response($serializer->serialize(array("status"=>"inserted"), 'json')) ;
+
+
+
+
 
 
     }
+
+
+
+
+
+
 
 
     /**
@@ -776,19 +804,19 @@ class AJAXAPIController extends Controller
      */
     public function AjouterEnseignantREST(Request $request)
     {
-        $matricule = $request->get("matriculeEnseignant");
-        $nom = $request->get("nomEnseignant");
-        $prenom = $request->get("prenomEnseignant");
+        $matricule = $request->get("matriculeEnseignant") ;
+        $nom = $request->get("nomEnseignant") ;
+        $prenom = $request->get("prenomEnseignant") ;
         $adresse = $request->get("adresseEnseignant");
         $cin = $request->get("cinEnseignant");
         $email = $request->get("emailEnseignant");
         $numTel = $request->get("numTelEnseignant");
-        $idGrade = $request->get("idGrade");
-        $grade = new grade();
-        $grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findOneBy(array("id" => $idGrade));
-        $serializer = SerializerBuilder::create()->build();
-        $enseignant = new Enseignant();
-        $enseignant->setMatriculeEnseignant($matricule);
+        $idGrade = $request->get("idGrade") ;
+        $grade = new grade() ;
+        $grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findOneBy(array("id"=>$idGrade));
+        $serializer = SerializerBuilder::create()->build() ;
+        $enseignant = new Enseignant() ;
+        $enseignant->setMatriculeEnseignant($matricule) ;
         $enseignant->setNomEnseignant($nom);
         $enseignant->setPrenomEnseignant($prenom);
         $enseignant->setAdresseEnseignant($adresse);
@@ -798,18 +826,22 @@ class AJAXAPIController extends Controller
         $enseignant->setGrade($grade);
         $enseignant->setLoginEnseignant("Bilel2");
         $enseignant->setPasswordEnseignant("beldi2");
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager() ;
 
-        try {
+        try{
             $em->persist($enseignant);
             $em->flush();
-            return new Response($serializer->serialize(array("status" => "inserted"), 'json'));
+            return new Response($serializer->serialize(array("status"=>"inserted"), 'json')) ;
         } catch (UniqueConstraintViolationException $e) {
-            return new Response($serializer->serialize(array("status" => "error"), 'json'));
+            return new Response($serializer->serialize(array("status"=>"error"), 'json')) ;
         }
 
 
+
+
+
     }
+
 
 
     /**
@@ -818,10 +850,10 @@ class AJAXAPIController extends Controller
     public function ListerEnseignant(Request $request)
     {
         $idGrade = $this->getRequest()->get("idGrade");
-        $serializer = SerializerBuilder::create()->build();
-        $enseignants = $this->getDoctrine()->getManager()->getRepository("projetBundle:Enseignant")->findBy(array("grade" => $idGrade));
-        $listEnseignants = array();
-        foreach ($enseignants as $e) {
+        $serializer = SerializerBuilder::create()->build() ;
+        $enseignants = $this->getDoctrine()->getManager()->getRepository("projetBundle:Enseignant")->findBy(array("grade"=>$idGrade));
+        $listEnseignants =  array() ;
+        foreach ($enseignants as $e){
             $enseignant = new Enseignant();
             $enseignant->setMatriculeEnseignant($e->getMatriculeEnseignant());
             $enseignant->setNomEnseignant($e->getNomEnseignant());
@@ -833,13 +865,15 @@ class AJAXAPIController extends Controller
             $enseignant->setLoginEnseignant("bilel");
             $enseignant->setPasswordEnseignant("beldi");
 
-            $listEnseignants[] = $enseignant;
+            $listEnseignants[]=$enseignant ;
 
         }
 
 
-        return new Response($serializer->serialize(array("listEnseignant" => $listEnseignants), "json"));
-        die;
+
+
+        return new Response($serializer->serialize(array("listEnseignant"=>$listEnseignants), "json"));
+        die ;
     }
 
     /**
@@ -852,9 +886,9 @@ class AJAXAPIController extends Controller
         $anneeScolaire = $request->get("annee");
         $annee = new AnneeScolaire();
 
-        $annee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id" => $anneeScolaire));
+        $annee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id"=>$anneeScolaire));
         $nomGroupe = "";
-        switch ($niveauGroupe) {
+        switch($niveauGroupe){
             case 1:
                 $nomGroupe = "Premiere Annee";
                 break;
@@ -879,7 +913,8 @@ class AJAXAPIController extends Controller
         }
 
 
-        $serializer = SerializerBuilder::create()->build();
+
+        $serializer = SerializerBuilder::create()->build() ;
 
 
         $groupe = new Groupe();
@@ -894,40 +929,42 @@ class AJAXAPIController extends Controller
         $em->persist($groupe);
         $em->flush();
 
-        return new Response($serializer->serialize(array("status" => "inserted"), 'json'));
+        return new Response($serializer->serialize(array("status"=>"inserted"), 'json')) ;
 
-    }
+        }
+
+
+
 
 
     /**
      * @Route("/affecter", name="affecter2")
      */
-    public function affecterAction(Request $request)
-    {
+    public function affecterAction(Request $request){
 
         $niveau = $request->get("niveau");
-        $eleves = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("niveauEleve" => $niveau, "groupe" => null));
-        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe" => $niveau));
-        $nbGroupes = count($groupes);
-        $compteur = 0;
-        foreach ($eleves as $e) {
+        $eleves = $this->getDoctrine()->getRepository("projetBundle:Eleve")->findBy(array("niveauEleve"=>$niveau, "groupe"=>null));
+        $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("niveauGroupe"=>$niveau));
+        $nbGroupes = count($groupes) ;
+        $compteur = 0 ;
+        foreach($eleves as $e){
 
-            $groupe = new Groupe();
-            $groupe = $groupes[$compteur];
-            $newEleve = new Eleve();
-            $newEleve = $e;
-            $newEleve->setGroupe($groupe);
-            $em = $this->getDoctrine()->getManager();
+            $groupe = new Groupe() ;
+            $groupe = $groupes[$compteur] ;
+            $newEleve = new Eleve() ;
+            $newEleve = $e ;
+            $newEleve->setGroupe($groupe) ;
+            $em = $this->getDoctrine()->getManager() ;
             $em->persist($newEleve);
-            $em->flush();
-            $compteur++;
-            if ($compteur == $nbGroupes) {
-                $compteur = 0;
+            $em->flush() ;
+            $compteur++ ;
+            if ($compteur==$nbGroupes){
+                $compteur=0 ;
             }
 
         }
 
-        return new JsonResponse(array("result" => "affected"));
+        return new JsonResponse(array("result"=>"affected")) ;
 
 
     }
@@ -940,34 +977,36 @@ class AJAXAPIController extends Controller
         $nomGroupe = $this->getRequest()->get("listGroupe");
         $anneeScolaire = $this->getRequest()->get("annees");
         $annee = new AnneeScolaire();
-        $annee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id" => $anneeScolaire));
+        $annee = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findOneBy(array("id"=>$anneeScolaire));
 
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilder::create()->build() ;
 
         //$enseignants = $this->getDoctrine()->getManager()->getRepository("projetBundle:Enseignant")->findBy(array("grade"=>$idGrade));
-        $groupes = $this->getDoctrine()->getManager()->getRepository("projetBundle:Groupe")->findBy(array("nomGroupe" => $nomGroupe, "anneeScolaire" => $annee));
-        $listGroupes = array();
-        foreach ($groupes as $g) {
+        $groupes = $this->getDoctrine()->getManager()->getRepository("projetBundle:Groupe")->findBy(array("nomGroupe"=>$nomGroupe, "anneeScolaire"=>$annee));
+        $listGroupes =  array() ;
+        foreach ($groupes as $g){
             $groupe = new Groupe();
             $groupe->setNomGroupe($g->getNomGroupe());
             $groupe->setNumGroupe($g->getNumGroupe());
             $groupe->setAnneeScolaire($g->getAnneeScolaire());
-            $g2 = $this->getDoctrine()->getManager()->getRepository("projetBundle:Groupe")->findOneBy(array("nomGroupe" => $g->getNomGroupe(), "numGroupe" => $g->getNumGroupe()));
+            $g2 = $this->getDoctrine()->getManager()->getRepository("projetBundle:Groupe")->findOneBy(array("nomGroupe"=>$g->getNomGroupe(), "numGroupe"=>$g->getNumGroupe()));
             $idGroupe = $g2->getId();
-            $elevs = $this->getDoctrine()->getManager()->getRepository("projetBundle:Eleve")->findBy(array("groupe" => $idGroupe));
+            $elevs = $this->getDoctrine()->getManager()->getRepository("projetBundle:Eleve")->findBy(array("groupe"=>$idGroupe));
             $nbrEleves = 0;
-            foreach ($elevs as $e) {
+            foreach($elevs as $e){
                 $nbrEleves++;
             }
             $groupe->setId($idGroupe);
             $groupe->setNbrEleves($nbrEleves);
 
-            $listGroupes[] = $groupe;
+            $listGroupes[]=$groupe ;
 
         }
-        return new Response($serializer->serialize(array("listGroupe" => $listGroupes), "json"));
+        return new Response($serializer->serialize(array("listGroupe"=>$listGroupes), "json"));
 
     }
+
+
 
 
     /**
@@ -975,17 +1014,17 @@ class AJAXAPIController extends Controller
      */
     public function AjouterPersonnelREST(Request $request)
     {
-        $matricule = $request->get("matriculePersonnel");
-        $nom = $request->get("nomPersonnel");
-        $prenom = $request->get("prenomPersonnel");
+        $matricule = $request->get("matriculePersonnel") ;
+        $nom = $request->get("nomPersonnel") ;
+        $prenom = $request->get("prenomPersonnel") ;
         $adresse = $request->get("adressePersonnel");
         $cin = $request->get("cinPersonnel");
         $email = $request->get("emailPersonnel");
         $numTel = $request->get("numTelPersonnel");
-        $idPoste = $request->get("idPoste");
-        $poste = new Poste();
-        $poste = $this->getDoctrine()->getRepository("projetBundle:Poste")->findOneBy(array("id" => $idPoste));
-        $serializer = SerializerBuilder::create()->build();
+        $idPoste = $request->get("idPoste") ;
+        $poste = new Poste() ;
+        $poste = $this->getDoctrine()->getRepository("projetBundle:Poste")->findOneBy(array("id"=>$idPoste));
+        $serializer = SerializerBuilder::create()->build() ;
         $personnel = new Personnel();
         $personnel->setMatriculePersonnel($matricule);
         $personnel->setNomPersonnel($nom);
@@ -997,18 +1036,23 @@ class AJAXAPIController extends Controller
         $personnel->setPoste($poste);
         $personnel->setLoginPersonnel("Bilel");
         $personnel->setPasswordPersonnel("Beldi");
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager() ;
 
-        try {
+        try{
             $em->persist($personnel);
             $em->flush();
-            return new Response($serializer->serialize(array("status" => "inserted"), 'json'));
+            return new Response($serializer->serialize(array("status"=>"inserted"), 'json')) ;
         } catch (UniqueConstraintViolationException $e) {
-            return new Response($serializer->serialize(array("status" => "error"), 'json'));
+            return new Response($serializer->serialize(array("status"=>"error"), 'json')) ;
         }
 
 
+
+
+
     }
+
+
 
 
     /**
@@ -1017,10 +1061,10 @@ class AJAXAPIController extends Controller
     public function ListerPersonnel(Request $request)
     {
         $idPoste = $this->getRequest()->get("idPoste");
-        $serializer = SerializerBuilder::create()->build();
-        $personnels = $this->getDoctrine()->getManager()->getRepository("projetBundle:Personnel")->findBy(array("poste" => $idPoste));
-        $listPersonnel = array();
-        foreach ($personnels as $p) {
+        $serializer = SerializerBuilder::create()->build() ;
+        $personnels = $this->getDoctrine()->getManager()->getRepository("projetBundle:Personnel")->findBy(array("poste"=>$idPoste));
+        $listPersonnel =  array() ;
+        foreach ($personnels as $p){
             $personnel = new Personnel();
             $personnel->setMatriculePersonnel($p->getMatriculePersonnel());
             $personnel->setNomPersonnel($p->getNomPersonnel());
@@ -1032,14 +1076,19 @@ class AJAXAPIController extends Controller
             $personnel->setLoginPersonnel("bilel");
             $personnel->setPasswordPersonnel("beldi");
 
-            $listPersonnel[] = $personnel;
+            $listPersonnel[]=$personnel ;
 
         }
 
 
-        return new Response($serializer->serialize(array("listPersonnels" => $listPersonnel), "json"));
-        die;
+
+
+        return new Response($serializer->serialize(array("listPersonnels"=>$listPersonnel), "json"));
+        die ;
     }
+
+
+
 
 
 }

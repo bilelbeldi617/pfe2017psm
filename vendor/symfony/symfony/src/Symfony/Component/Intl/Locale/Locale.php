@@ -76,9 +76,9 @@ class Locale
     /**
      * Not supported. Checks if a language tag filter matches with locale.
      *
-     * @param string $langtag The language tag to check
-     * @param string $locale The language range to check against
-     * @param bool $canonicalize
+     * @param string $langtag      The language tag to check
+     * @param string $locale       The language range to check against
+     * @param bool   $canonicalize
      *
      * @return string The corresponding locale code
      *
@@ -122,7 +122,7 @@ class Locale
     /**
      * Not supported. Returns the localized display name for the locale language.
      *
-     * @param string $locale The locale code to return the display language from
+     * @param string $locale   The locale code to return the display language from
      * @param string $inLocale Optional format locale code to use to display the language name
      *
      * @return string The localized language display name
@@ -139,7 +139,7 @@ class Locale
     /**
      * Not supported. Returns the localized display name for the locale.
      *
-     * @param string $locale The locale code to return the display locale name from
+     * @param string $locale   The locale code to return the display locale name from
      * @param string $inLocale Optional format locale code to use to display the locale name
      *
      * @return string The localized locale display name
@@ -156,7 +156,7 @@ class Locale
     /**
      * Not supported. Returns the localized display name for the locale region.
      *
-     * @param string $locale The locale code to return the display region from
+     * @param string $locale   The locale code to return the display region from
      * @param string $inLocale Optional format locale code to use to display the region name
      *
      * @return string The localized region display name
@@ -173,7 +173,7 @@ class Locale
     /**
      * Not supported. Returns the localized display name for the locale script.
      *
-     * @param string $locale The locale code to return the display script from
+     * @param string $locale   The locale code to return the display script from
      * @param string $inLocale Optional format locale code to use to display the script name
      *
      * @return string The localized script display name
@@ -190,7 +190,7 @@ class Locale
     /**
      * Not supported. Returns the localized display name for the locale variant.
      *
-     * @param string $locale The locale code to return the display variant from
+     * @param string $locale   The locale code to return the display variant from
      * @param string $inLocale Optional format locale code to use to display the variant name
      *
      * @return string The localized variant display name
@@ -271,10 +271,10 @@ class Locale
     /**
      * Not supported. Returns the closest language tag for the locale.
      *
-     * @param array $langtag A list of the language tags to compare to locale
-     * @param string $locale The locale to use as the language range when matching
-     * @param bool $canonicalize If true, the arguments will be converted to canonical form before matching
-     * @param string $default The locale to use if no match is found
+     * @param array  $langtag      A list of the language tags to compare to locale
+     * @param string $locale       The locale to use as the language range when matching
+     * @param bool   $canonicalize If true, the arguments will be converted to canonical form before matching
+     * @param string $default      The locale to use if no match is found
      *
      * @see http://www.php.net/manual/en/locale.lookup.php
      *

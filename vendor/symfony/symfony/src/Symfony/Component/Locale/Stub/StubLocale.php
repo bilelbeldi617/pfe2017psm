@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Locale\Stub;
 
-@trigger_error('The ' . __NAMESPACE__ . '\StubLocale class is deprecated since version 2.3 and will be removed in 3.0. Use the Symfony\Component\Intl\Locale\Locale and Symfony\Component\Intl\Intl classes instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\StubLocale class is deprecated since version 2.3 and will be removed in 3.0. Use the Symfony\Component\Intl\Locale\Locale and Symfony\Component\Intl\Intl classes instead.', E_USER_DEPRECATED);
 
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\Intl\Locale\Locale;
@@ -42,6 +42,22 @@ class StubLocale extends Locale
     protected static $currenciesNames;
 
     /**
+     * Returns the currencies data.
+     *
+     * @param string $locale
+     *
+     * @return array The currencies data
+     */
+    public static function getCurrenciesData($locale)
+    {
+        if (null === self::$currencies) {
+            self::prepareCurrencies($locale);
+        }
+
+        return self::$currencies;
+    }
+
+    /**
      *  Returns the currencies names for a locale.
      *
      * @param string $locale The locale to use for the currencies names
@@ -57,6 +73,21 @@ class StubLocale extends Locale
         }
 
         return self::$currenciesNames;
+    }
+
+    /**
+     * Returns all available currencies codes.
+     *
+     * @return array The currencies codes
+     */
+    public static function getCurrencies()
+    {
+        return array_keys(self::getCurrenciesData(self::getDefault()));
+    }
+
+    public static function getDataDirectory()
+    {
+        return Intl::getDataDirectory();
     }
 
     private static function prepareCurrencies($locale)
@@ -75,36 +106,5 @@ class StubLocale extends Locale
             );
             self::$currenciesNames[$currency] = $name;
         }
-    }
-
-    /**
-     * Returns all available currencies codes.
-     *
-     * @return array The currencies codes
-     */
-    public static function getCurrencies()
-    {
-        return array_keys(self::getCurrenciesData(self::getDefault()));
-    }
-
-    /**
-     * Returns the currencies data.
-     *
-     * @param string $locale
-     *
-     * @return array The currencies data
-     */
-    public static function getCurrenciesData($locale)
-    {
-        if (null === self::$currencies) {
-            self::prepareCurrencies($locale);
-        }
-
-        return self::$currencies;
-    }
-
-    public static function getDataDirectory()
-    {
-        return Intl::getDataDirectory();
     }
 }

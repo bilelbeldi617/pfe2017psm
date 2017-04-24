@@ -33,7 +33,7 @@ interface DumperInterface
      * Generates the code to be used to instantiate a proxy in the dumped factory code.
      *
      * @param Definition $definition
-     * @param string $id service identifier
+     * @param string     $id         service identifier
      *
      * @return string
      */

@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\HttpKernel\Profiler;
 
-@trigger_error('The ' . __NAMESPACE__ . '\MemcachedProfilerStorage class is deprecated since Symfony 2.8 and will be removed in 3.0. Use FileProfilerStorage instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\MemcachedProfilerStorage class is deprecated since Symfony 2.8 and will be removed in 3.0. Use FileProfilerStorage instead.', E_USER_DEPRECATED);
 
 /**
  * Memcached Profiler Storage.
@@ -27,14 +27,6 @@ class MemcachedProfilerStorage extends BaseMemcacheProfilerStorage
      * @var \Memcached
      */
     private $memcached;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getValue($key)
-    {
-        return $this->getMemcached()->get($key);
-    }
 
     /**
      * Internal convenience method that returns the instance of the Memcached.
@@ -74,6 +66,14 @@ class MemcachedProfilerStorage extends BaseMemcacheProfilerStorage
     public function setMemcached($memcached)
     {
         $this->memcached = $memcached;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getValue($key)
+    {
+        return $this->getMemcached()->get($key);
     }
 
     /**

@@ -47,33 +47,6 @@ class AbstractFactoryTest extends TestCase
         $this->assertEquals('entry_point', $entryPointId, '->create() does not change the default entry point.');
     }
 
-    protected function callFactory($id, $config, $userProviderId, $defaultEntryPointId)
-    {
-        $factory = $this->getMockForAbstractClass('Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory', array());
-
-        $factory
-            ->expects($this->once())
-            ->method('createAuthProvider')
-            ->will($this->returnValue('auth_provider'));
-        $factory
-            ->expects($this->atLeastOnce())
-            ->method('getListenerId')
-            ->will($this->returnValue('abstract_listener'));
-        $factory
-            ->expects($this->any())
-            ->method('getKey')
-            ->will($this->returnValue('abstract_factory'));
-
-        $container = new ContainerBuilder();
-        $container->register('auth_provider');
-        $container->register('custom_success_handler');
-        $container->register('custom_failure_handler');
-
-        list($authProviderId, $listenerId, $entryPointId) = $factory->create($container, $id, $config, $userProviderId, $defaultEntryPointId);
-
-        return array($container, $authProviderId, $listenerId, $entryPointId);
-    }
-
     /**
      * @dataProvider getFailureHandlers
      */
@@ -93,7 +66,7 @@ class AbstractFactoryTest extends TestCase
         $definition = $container->getDefinition('abstract_listener.foo');
         $arguments = $definition->getArguments();
         $this->assertEquals(new Reference('security.authentication.failure_handler.foo.abstract_factory'), $arguments['index_6']);
-        $failureHandler = $container->findDefinition((string)$arguments['index_6']);
+        $failureHandler = $container->findDefinition((string) $arguments['index_6']);
 
         $methodCalls = $failureHandler->getMethodCalls();
         if ($defaultHandlerInjection) {
@@ -131,7 +104,7 @@ class AbstractFactoryTest extends TestCase
         $definition = $container->getDefinition('abstract_listener.foo');
         $arguments = $definition->getArguments();
         $this->assertEquals(new Reference('security.authentication.success_handler.foo.abstract_factory'), $arguments['index_5']);
-        $successHandler = $container->findDefinition((string)$arguments['index_5']);
+        $successHandler = $container->findDefinition((string) $arguments['index_5']);
         $methodCalls = $successHandler->getMethodCalls();
 
         if ($defaultHandlerInjection) {
@@ -150,5 +123,35 @@ class AbstractFactoryTest extends TestCase
             array(null, true),
             array('custom_success_handler', false),
         );
+    }
+
+    protected function callFactory($id, $config, $userProviderId, $defaultEntryPointId)
+    {
+        $factory = $this->getMockForAbstractClass('Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory', array());
+
+        $factory
+            ->expects($this->once())
+            ->method('createAuthProvider')
+            ->will($this->returnValue('auth_provider'))
+        ;
+        $factory
+            ->expects($this->atLeastOnce())
+            ->method('getListenerId')
+            ->will($this->returnValue('abstract_listener'))
+        ;
+        $factory
+            ->expects($this->any())
+            ->method('getKey')
+            ->will($this->returnValue('abstract_factory'))
+        ;
+
+        $container = new ContainerBuilder();
+        $container->register('auth_provider');
+        $container->register('custom_success_handler');
+        $container->register('custom_failure_handler');
+
+        list($authProviderId, $listenerId, $entryPointId) = $factory->create($container, $id, $config, $userProviderId, $defaultEntryPointId);
+
+        return array($container, $authProviderId, $listenerId, $entryPointId);
     }
 }

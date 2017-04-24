@@ -30,11 +30,6 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
     }
 
     /**
-     * @return \Doctrine\Common\Cache\CacheProvider
-     */
-    abstract protected function _getCacheDriver();
-
-    /**
      * @dataProvider provideDataToCache
      */
     public function testUpdateExistingEntry($value)
@@ -70,9 +65,9 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
 
     public function testFetchMultiple()
     {
-        $cache = $this->_getCacheDriver();
+        $cache  = $this->_getCacheDriver();
         $values = $this->provideDataToCache();
-        $saved = array();
+        $saved  = array();
 
         foreach ($values as $key => $value) {
             $cache->save($key, $value[0]);
@@ -107,6 +102,13 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
         );
     }
 
+    public function testFetchMultipleWithNoKeys()
+    {
+        $cache = $this->_getCacheDriver();
+
+        $this->assertSame(array(), $cache->fetchMultiple(array()));
+    }
+
     public function provideDataToCache()
     {
         $obj = new \stdClass();
@@ -120,7 +122,7 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
             'array' => array(array('one', 2, 3.01)),
             'string' => array('value'),
             'string_invalid_utf8' => array("\xc3\x28"),
-            'string_null_byte' => array('with' . "\0" . 'null char'),
+            'string_null_byte' => array('with'."\0".'null char'),
             'integer' => array(1),
             'float' => array(1.5),
             'object' => array(new ArrayObject(array('one', 2, 3.01))),
@@ -135,13 +137,6 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
             'float_zero' => array(0.0),
             'string_empty' => array(''),
         );
-    }
-
-    public function testFetchMultipleWithNoKeys()
-    {
-        $cache = $this->_getCacheDriver();
-
-        $this->assertSame(array(), $cache->fetchMultiple(array()));
     }
 
     public function testDeleteIsSuccessfulWhenKeyDoesNotExist()
@@ -269,7 +264,7 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
 
     public function testDeleteAllAndNamespaceVersioningBetweenCaches()
     {
-        if (!$this->isSharedStorage()) {
+        if ( ! $this->isSharedStorage()) {
             $this->markTestSkipped('The cache storage needs to be shared.');
         }
 
@@ -306,18 +301,6 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
         $this->assertFalse($cache3->contains('key2'));
     }
 
-    /**
-     * Return whether multiple cache providers share the same storage.
-     *
-     * This is used for skipping certain tests for shared storage behavior.
-     *
-     * @return bool
-     */
-    protected function isSharedStorage()
-    {
-        return true;
-    }
-
     public function testFlushAll()
     {
         $cache = $this->_getCacheDriver();
@@ -331,7 +314,7 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
 
     public function testFlushAllAndNamespaceVersioningBetweenCaches()
     {
-        if (!$this->isSharedStorage()) {
+        if ( ! $this->isSharedStorage()) {
             $this->markTestSkipped('The cache storage needs to be shared.');
         }
 
@@ -444,4 +427,21 @@ abstract class CacheTest extends \Doctrine\Tests\DoctrineTestCase
         $this->assertTrue($cache->save('without_ttl', 'without_ttl'));
         $this->assertTrue($cache->save('with_ttl', 'with_ttl', 3600));
     }
+
+    /**
+     * Return whether multiple cache providers share the same storage.
+     *
+     * This is used for skipping certain tests for shared storage behavior.
+     *
+     * @return bool
+     */
+    protected function isSharedStorage()
+    {
+        return true;
+    }
+
+    /**
+     * @return \Doctrine\Common\Cache\CacheProvider
+     */
+    abstract protected function _getCacheDriver();
 }

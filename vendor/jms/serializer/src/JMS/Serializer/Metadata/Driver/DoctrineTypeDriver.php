@@ -30,8 +30,8 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
 {
     protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata)
     {
-        if (empty($classMetadata->discriminatorMap) && !$classMetadata->discriminatorDisabled
-            && !empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()
+        if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
+            && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()
         ) {
             $classMetadata->setDiscriminator(
                 $doctrineMetadata->discriminatorColumn['name'],
@@ -55,7 +55,7 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
             // For inheritance schemes, we cannot add any type as we would only add the super-type of the hierarchy.
             // On serialization, this would lead to only the supertype being serialized, and properties of subtypes
             // being ignored.
-            if ($targetMetadata instanceof DoctrineClassMetadata && !$targetMetadata->isInheritanceTypeNone()) {
+            if ($targetMetadata instanceof DoctrineClassMetadata && ! $targetMetadata->isInheritanceTypeNone()) {
                 return;
             }
 

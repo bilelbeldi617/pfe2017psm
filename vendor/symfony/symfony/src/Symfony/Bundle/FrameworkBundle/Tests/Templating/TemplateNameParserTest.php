@@ -20,6 +20,28 @@ class TemplateNameParserTest extends TestCase
 {
     protected $parser;
 
+    protected function setUp()
+    {
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
+        $kernel
+            ->expects($this->any())
+            ->method('getBundle')
+            ->will($this->returnCallback(function ($bundle) {
+                if (in_array($bundle, array('SensioFooBundle', 'SensioCmsFooBundle', 'FooBundle'))) {
+                    return true;
+                }
+
+                throw new \InvalidArgumentException();
+            }))
+        ;
+        $this->parser = new TemplateNameParser($kernel);
+    }
+
+    protected function tearDown()
+    {
+        $this->parser = null;
+    }
+
     /**
      * @dataProvider parseProvider
      */
@@ -63,26 +85,5 @@ class TemplateNameParserTest extends TestCase
     public function testParseValidNameWithNotFoundBundle()
     {
         $this->parser->parse('BarBundle:Post:index.html.php');
-    }
-
-    protected function setUp()
-    {
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
-        $kernel
-            ->expects($this->any())
-            ->method('getBundle')
-            ->will($this->returnCallback(function ($bundle) {
-                if (in_array($bundle, array('SensioFooBundle', 'SensioCmsFooBundle', 'FooBundle'))) {
-                    return true;
-                }
-
-                throw new \InvalidArgumentException();
-            }));
-        $this->parser = new TemplateNameParser($kernel);
-    }
-
-    protected function tearDown()
-    {
-        $this->parser = null;
     }
 }

@@ -30,6 +30,11 @@ class PropertyPathBuilderTest extends TestCase
      */
     private $builder;
 
+    protected function setUp()
+    {
+        $this->builder = new PropertyPathBuilder(new PropertyPath(self::PREFIX));
+    }
+
     public function testCreateEmpty()
     {
         $builder = new PropertyPathBuilder();
@@ -46,7 +51,7 @@ class PropertyPathBuilderTest extends TestCase
     {
         $this->builder->appendIndex('new1');
 
-        $path = new PropertyPath(self::PREFIX . '[new1]');
+        $path = new PropertyPath(self::PREFIX.'[new1]');
 
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
@@ -55,7 +60,7 @@ class PropertyPathBuilderTest extends TestCase
     {
         $this->builder->appendProperty('new1');
 
-        $path = new PropertyPath(self::PREFIX . '.new1');
+        $path = new PropertyPath(self::PREFIX.'.new1');
 
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
@@ -64,7 +69,7 @@ class PropertyPathBuilderTest extends TestCase
     {
         $this->builder->append(new PropertyPath('new1[new2]'));
 
-        $path = new PropertyPath(self::PREFIX . '.new1[new2]');
+        $path = new PropertyPath(self::PREFIX.'.new1[new2]');
 
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
@@ -73,7 +78,7 @@ class PropertyPathBuilderTest extends TestCase
     {
         $this->builder->append('new1[new2]');
 
-        $path = new PropertyPath(self::PREFIX . '.new1[new2]');
+        $path = new PropertyPath(self::PREFIX.'.new1[new2]');
 
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
@@ -82,7 +87,7 @@ class PropertyPathBuilderTest extends TestCase
     {
         $this->builder->append(new PropertyPath('new1[new2].new3'), 1);
 
-        $path = new PropertyPath(self::PREFIX . '[new2].new3');
+        $path = new PropertyPath(self::PREFIX.'[new2].new3');
 
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
@@ -91,7 +96,7 @@ class PropertyPathBuilderTest extends TestCase
     {
         $this->builder->append(new PropertyPath('new1[new2].new3'), 1, 1);
 
-        $path = new PropertyPath(self::PREFIX . '[new2]');
+        $path = new PropertyPath(self::PREFIX.'[new2]');
 
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
@@ -235,6 +240,7 @@ class PropertyPathBuilderTest extends TestCase
         $this->assertEquals($path, $this->builder->getPropertyPath());
     }
 
+    // https://github.com/symfony/symfony/issues/5605
     public function testReplaceWithLongerPath()
     {
         // error occurs when path contains at least two more elements
@@ -246,8 +252,6 @@ class PropertyPathBuilderTest extends TestCase
 
         $this->assertEquals($path, $builder->getPropertyPath());
     }
-
-    // https://github.com/symfony/symfony/issues/5605
 
     public function testReplaceWithLongerPathKeepsOrder()
     {
@@ -283,10 +287,5 @@ class PropertyPathBuilderTest extends TestCase
     public function testRemoveDoesNotAllowNegativeOffsets()
     {
         $this->builder->remove(-1);
-    }
-
-    protected function setUp()
-    {
-        $this->builder = new PropertyPathBuilder(new PropertyPath(self::PREFIX));
     }
 }

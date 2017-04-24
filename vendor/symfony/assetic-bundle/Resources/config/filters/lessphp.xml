@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 
-<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns="http://symfony.com/schema/dic/services"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
         <parameter key="assetic.filter.lessphp.class">Assetic\Filter\LessphpFilter</parameter>
@@ -18,19 +18,11 @@
 
     <services>
         <service id="assetic.filter.lessphp" class="%assetic.filter.lessphp.class%">
-            <tag name="assetic.filter" alias="lessphp"/>
-            <call method="setPresets">
-                <argument>%assetic.filter.lessphp.presets%</argument>
-            </call>
-            <call method="setLoadPaths">
-                <argument>%assetic.filter.lessphp.paths%</argument>
-            </call>
-            <call method="setFormatter">
-                <argument>%assetic.filter.lessphp.formatter%</argument>
-            </call>
-            <call method="setPreserveComments">
-                <argument>%assetic.filter.lessphp.preserve_comments%</argument>
-            </call>
+            <tag name="assetic.filter" alias="lessphp" />
+            <call method="setPresets"><argument>%assetic.filter.lessphp.presets%</argument></call>
+            <call method="setLoadPaths"><argument>%assetic.filter.lessphp.paths%</argument></call>
+            <call method="setFormatter"><argument>%assetic.filter.lessphp.formatter%</argument></call>
+            <call method="setPreserveComments"><argument>%assetic.filter.lessphp.preserve_comments%</argument></call>
         </service>
     </services>
 </container>

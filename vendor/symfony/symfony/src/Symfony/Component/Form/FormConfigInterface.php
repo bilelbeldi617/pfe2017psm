@@ -150,8 +150,8 @@ interface FormConfigInterface
     /**
      * Returns the value of the given attribute.
      *
-     * @param string $name The attribute name
-     * @param mixed $default The value returned if the attribute does not exist
+     * @param string $name    The attribute name
+     * @param mixed  $default The value returned if the attribute does not exist
      *
      * @return mixed The attribute value
      */
@@ -237,8 +237,8 @@ interface FormConfigInterface
     /**
      * Returns the value of a specific option.
      *
-     * @param string $name The option name
-     * @param mixed $default The value returned if the option does not exist
+     * @param string $name    The option name
+     * @param mixed  $default The value returned if the option does not exist
      *
      * @return mixed The option value
      */

@@ -81,7 +81,7 @@ class FormTypeCsrfExtension extends AbstractTypeExtension
      * Adds a CSRF field to the form when the CSRF protection is enabled.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -98,22 +98,23 @@ class FormTypeCsrfExtension extends AbstractTypeExtension
                 $this->translator,
                 $this->translationDomain,
                 $this->serverParams
-            ));
+            ))
+        ;
     }
 
     /**
      * Adds a CSRF field to the root form view.
      *
-     * @param FormView $view The form view
-     * @param FormInterface $form The form
-     * @param array $options The options
+     * @param FormView      $view    The form view
+     * @param FormInterface $form    The form
+     * @param array         $options The options
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         if ($options['csrf_protection'] && !$view->parent && $options['compound']) {
             $factory = $form->getConfig()->getFormFactory();
             $tokenId = $options['csrf_token_id'] ?: ($form->getName() ?: get_class($form->getConfig()->getType()->getInnerType()));
-            $data = (string)$options['csrf_token_manager']->getToken($tokenId);
+            $data = (string) $options['csrf_token_manager']->getToken($tokenId);
 
             $csrfForm = $factory->createNamed($options['csrf_field_name'], 'Symfony\Component\Form\Extension\Core\Type\HiddenType', $data, array(
                 'mapped' => false,

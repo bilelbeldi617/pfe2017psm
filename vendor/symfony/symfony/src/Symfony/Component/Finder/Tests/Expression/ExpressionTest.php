@@ -48,8 +48,8 @@ class ExpressionTest extends TestCase
         return array(
             array('{foo}', Expression::TYPE_REGEX),
             array('/foo/', Expression::TYPE_REGEX),
-            array('foo', Expression::TYPE_GLOB),
-            array('foo*', Expression::TYPE_GLOB),
+            array('foo',   Expression::TYPE_GLOB),
+            array('foo*',  Expression::TYPE_GLOB),
         );
     }
 
@@ -58,7 +58,7 @@ class ExpressionTest extends TestCase
         return array(
             array('{foo}m', true),
             array('/foo/i', false),
-            array('foo*', true),
+            array('foo*',   true),
         );
     }
 

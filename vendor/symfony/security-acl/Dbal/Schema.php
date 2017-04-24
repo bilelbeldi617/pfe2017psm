@@ -26,7 +26,7 @@ final class Schema extends BaseSchema
     /**
      * Constructor.
      *
-     * @param array $options the names for tables
+     * @param array      $options    the names for tables
      * @param Connection $connection
      */
     public function __construct(array $options, Connection $connection = null)
@@ -45,6 +45,22 @@ final class Schema extends BaseSchema
     }
 
     /**
+     * Merges ACL schema with the given schema.
+     *
+     * @param BaseSchema $schema
+     */
+    public function addToSchema(BaseSchema $schema)
+    {
+        foreach ($this->getTables() as $table) {
+            $schema->_addTable($table);
+        }
+
+        foreach ($this->getSequences() as $sequence) {
+            $schema->_addSequence($sequence);
+        }
+    }
+
+    /**
      * Adds the class table to the schema.
      */
     protected function addClassTable()
@@ -57,18 +73,31 @@ final class Schema extends BaseSchema
     }
 
     /**
-     * Adds the security identity table to the schema.
+     * Adds the entry table to the schema.
      */
-    protected function addSecurityIdentitiesTable()
+    protected function addEntryTable()
     {
-        $table = $this->createTable($this->options['sid_table_name']);
+        $table = $this->createTable($this->options['entry_table_name']);
 
         $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => 'auto'));
-        $table->addColumn('identifier', 'string', array('length' => 200));
-        $table->addColumn('username', 'boolean');
+        $table->addColumn('class_id', 'integer', array('unsigned' => true));
+        $table->addColumn('object_identity_id', 'integer', array('unsigned' => true, 'notnull' => false));
+        $table->addColumn('field_name', 'string', array('length' => 50, 'notnull' => false));
+        $table->addColumn('ace_order', 'smallint', array('unsigned' => true));
+        $table->addColumn('security_identity_id', 'integer', array('unsigned' => true));
+        $table->addColumn('mask', 'integer');
+        $table->addColumn('granting', 'boolean');
+        $table->addColumn('granting_strategy', 'string', array('length' => 30));
+        $table->addColumn('audit_success', 'boolean');
+        $table->addColumn('audit_failure', 'boolean');
 
         $table->setPrimaryKey(array('id'));
-        $table->addUniqueIndex(array('identifier', 'username'));
+        $table->addUniqueIndex(array('class_id', 'object_identity_id', 'field_name', 'ace_order'));
+        $table->addIndex(array('class_id', 'object_identity_id', 'security_identity_id'));
+
+        $table->addForeignKeyConstraint($this->getTable($this->options['class_table_name']), array('class_id'), array('id'), array('onDelete' => 'CASCADE', 'onUpdate' => 'CASCADE'));
+        $table->addForeignKeyConstraint($this->getTable($this->options['oid_table_name']), array('object_identity_id'), array('id'), array('onDelete' => 'CASCADE', 'onUpdate' => 'CASCADE'));
+        $table->addForeignKeyConstraint($this->getTable($this->options['sid_table_name']), array('security_identity_id'), array('id'), array('onDelete' => 'CASCADE', 'onUpdate' => 'CASCADE'));
     }
 
     /**
@@ -109,46 +138,17 @@ final class Schema extends BaseSchema
     }
 
     /**
-     * Adds the entry table to the schema.
+     * Adds the security identity table to the schema.
      */
-    protected function addEntryTable()
+    protected function addSecurityIdentitiesTable()
     {
-        $table = $this->createTable($this->options['entry_table_name']);
+        $table = $this->createTable($this->options['sid_table_name']);
 
         $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => 'auto'));
-        $table->addColumn('class_id', 'integer', array('unsigned' => true));
-        $table->addColumn('object_identity_id', 'integer', array('unsigned' => true, 'notnull' => false));
-        $table->addColumn('field_name', 'string', array('length' => 50, 'notnull' => false));
-        $table->addColumn('ace_order', 'smallint', array('unsigned' => true));
-        $table->addColumn('security_identity_id', 'integer', array('unsigned' => true));
-        $table->addColumn('mask', 'integer');
-        $table->addColumn('granting', 'boolean');
-        $table->addColumn('granting_strategy', 'string', array('length' => 30));
-        $table->addColumn('audit_success', 'boolean');
-        $table->addColumn('audit_failure', 'boolean');
+        $table->addColumn('identifier', 'string', array('length' => 200));
+        $table->addColumn('username', 'boolean');
 
         $table->setPrimaryKey(array('id'));
-        $table->addUniqueIndex(array('class_id', 'object_identity_id', 'field_name', 'ace_order'));
-        $table->addIndex(array('class_id', 'object_identity_id', 'security_identity_id'));
-
-        $table->addForeignKeyConstraint($this->getTable($this->options['class_table_name']), array('class_id'), array('id'), array('onDelete' => 'CASCADE', 'onUpdate' => 'CASCADE'));
-        $table->addForeignKeyConstraint($this->getTable($this->options['oid_table_name']), array('object_identity_id'), array('id'), array('onDelete' => 'CASCADE', 'onUpdate' => 'CASCADE'));
-        $table->addForeignKeyConstraint($this->getTable($this->options['sid_table_name']), array('security_identity_id'), array('id'), array('onDelete' => 'CASCADE', 'onUpdate' => 'CASCADE'));
-    }
-
-    /**
-     * Merges ACL schema with the given schema.
-     *
-     * @param BaseSchema $schema
-     */
-    public function addToSchema(BaseSchema $schema)
-    {
-        foreach ($this->getTables() as $table) {
-            $schema->_addTable($table);
-        }
-
-        foreach ($this->getSequences() as $sequence) {
-            $schema->_addSequence($sequence);
-        }
+        $table->addUniqueIndex(array('identifier', 'username'));
     }
 }

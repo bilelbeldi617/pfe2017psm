@@ -15,34 +15,37 @@ use Symfony\Bundle\AsseticBundle\CacheWarmer\AssetManagerCacheWarmer;
 
 class AssetManagerCacheWarmerTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
+    }
+
     public function testWarmUp()
     {
         $am = $this
             ->getMockBuilder('Assetic\\Factory\\LazyAssetManager')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $am->expects($this->once())->method('load');
 
         $container = $this
             ->getMockBuilder('Symfony\\Component\\DependencyInjection\\Container')
             ->setConstructorArgs(array())
-            ->getMock();
+            ->getMock()
+        ;
 
         $container
             ->expects($this->once())
             ->method('get')
             ->with('assetic.asset_manager')
-            ->will($this->returnValue($am));
+            ->will($this->returnValue($am))
+        ;
 
         $warmer = new AssetManagerCacheWarmer($container);
         $warmer->warmUp('/path/to/cache');
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
     }
 }

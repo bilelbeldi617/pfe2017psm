@@ -54,10 +54,10 @@ class DoctrineCacheExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $rootConfig = $this->processConfiguration($configuration, $configs);
+        $rootConfig    = $this->processConfiguration($configuration, $configs);
 
         $locator = new FileLocator(__DIR__ . '/../Resources/config/');
-        $loader = new XmlFileLoader($container, $locator);
+        $loader  = new XmlFileLoader($container, $locator);
 
         $loader->load('services.xml');
 
@@ -68,16 +68,16 @@ class DoctrineCacheExtension extends Extension
     }
 
     /**
-     * @param array $rootConfig
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param array                                                     $rootConfig
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      */
     protected function loadAcl(array $rootConfig, ContainerBuilder $container)
     {
-        if (!isset($rootConfig['acl_cache']['id'])) {
+        if ( ! isset($rootConfig['acl_cache']['id'])) {
             return;
         }
 
-        if (!interface_exists('Symfony\Component\Security\Acl\Model\AclInterface')) {
+        if ( ! interface_exists('Symfony\Component\Security\Acl\Model\AclInterface')) {
             throw new \LogicException('You must install symfony/security-acl in order to use the acl_cache functionality.');
         }
 
@@ -96,26 +96,8 @@ class DoctrineCacheExtension extends Extension
     }
 
     /**
-     * @param array $rootConfig
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     */
-    protected function loadCustomProviders(array $rootConfig, ContainerBuilder $container)
-    {
-        foreach ($rootConfig['custom_providers'] as $type => $rootConfig) {
-            $providerParameterName = $this->loader->getCustomProviderParameter($type);
-            $definitionParameterName = $this->loader->getCustomDefinitionClassParameter($type);
-
-            $container->setParameter($providerParameterName, $rootConfig['prototype']);
-
-            if ($rootConfig['definition_class']) {
-                $container->setParameter($definitionParameterName, $rootConfig['definition_class']);
-            }
-        }
-    }
-
-    /**
-     * @param array $rootConfig
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param array                                                     $rootConfig
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      */
     protected function loadCacheProviders(array $rootConfig, ContainerBuilder $container)
     {
@@ -125,13 +107,31 @@ class DoctrineCacheExtension extends Extension
     }
 
     /**
-     * @param array $rootConfig
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param array                                                     $rootConfig
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      */
     protected function loadCacheAliases(array $rootConfig, ContainerBuilder $container)
     {
         foreach ($rootConfig['aliases'] as $alias => $name) {
             $container->setAlias($alias, 'doctrine_cache.providers.' . $name);
+        }
+    }
+
+    /**
+     * @param array                                                     $rootConfig
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
+     */
+    protected function loadCustomProviders(array $rootConfig, ContainerBuilder $container)
+    {
+        foreach ($rootConfig['custom_providers'] as $type => $rootConfig) {
+            $providerParameterName   = $this->loader->getCustomProviderParameter($type);
+            $definitionParameterName = $this->loader->getCustomDefinitionClassParameter($type);
+
+            $container->setParameter($providerParameterName, $rootConfig['prototype']);
+
+            if ($rootConfig['definition_class']) {
+                $container->setParameter($definitionParameterName, $rootConfig['definition_class']);
+            }
         }
     }
 

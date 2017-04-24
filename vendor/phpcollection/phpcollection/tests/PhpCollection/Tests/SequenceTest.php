@@ -45,9 +45,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     public function testFilter()
     {
         $seq = new Sequence(array(1, 2, 3));
-        $newSeq = $seq->filter(function ($n) {
-            return $n === 2;
-        });
+        $newSeq = $seq->filter(function($n) { return $n === 2; });
 
         $this->assertNotSame($newSeq, $seq);
         $this->assertCount(3, $seq);
@@ -58,9 +56,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     public function testFilterNot()
     {
         $seq = new Sequence(array(1, 2, 3));
-        $newSeq = $seq->filterNot(function ($n) {
-            return $n === 2;
-        });
+        $newSeq = $seq->filterNot(function($n) { return $n === 2; });
 
         $this->assertNotSame($newSeq, $seq);
         $this->assertCount(3, $seq);
@@ -72,12 +68,8 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     public function testFoldLeftRight()
     {
         $seq = new Sequence(array('a', 'b', 'c'));
-        $rsLeft = $seq->foldLeft('', function ($a, $b) {
-            return $a . $b;
-        });
-        $rsRight = $seq->foldRight('', function ($a, $b) {
-            return $a . $b;
-        });
+        $rsLeft = $seq->foldLeft('', function($a, $b) { return $a.$b; });
+        $rsRight = $seq->foldRight('', function($a, $b) { return $a.$b; });
 
         $this->assertEquals('abc', $rsLeft);
         $this->assertEquals('abc', $rsRight);
@@ -110,22 +102,14 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
     public function testIndexWhere()
     {
-        $this->assertSame(-1, $this->seq->indexWhere(function () {
-            return false;
-        }));
-        $this->assertSame(0, $this->seq->indexWhere(function () {
-            return true;
-        }));
+        $this->assertSame(-1, $this->seq->indexWhere(function() { return false; }));
+        $this->assertSame(0, $this->seq->indexWhere(function() { return true; }));
     }
 
     public function testLastIndexWhere()
     {
-        $this->assertSame(-1, $this->seq->lastIndexWhere(function () {
-            return false;
-        }));
-        $this->assertSame(3, $this->seq->lastIndexWhere(function () {
-            return true;
-        }));
+        $this->assertSame(-1, $this->seq->lastIndexWhere(function() { return false; }));
+        $this->assertSame(3, $this->seq->lastIndexWhere(function() { return true; }));
     }
 
     public function testFirst()
@@ -149,33 +133,21 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
     public function testExists()
     {
-        $this->assertTrue($this->seq->exists(function ($v) {
-            return $v === 0;
-        }));
+        $this->assertTrue($this->seq->exists(function($v) { return $v === 0; }));
 
         $a = $this->a;
-        $this->assertTrue($this->seq->exists(function ($v) use ($a) {
-            return $v === $a;
-        }));
+        $this->assertTrue($this->seq->exists(function($v) use ($a) { return $v === $a; }));
 
-        $this->assertFalse($this->seq->exists(function ($v) {
-            return $v === 9999;
-        }));
-        $this->assertFalse($this->seq->exists(function ($v) {
-            return $v === new \stdClass;
-        }));
+        $this->assertFalse($this->seq->exists(function($v) { return $v === 9999; }));
+        $this->assertFalse($this->seq->exists(function($v) { return $v === new \stdClass; }));
     }
 
     public function testFind()
     {
         $a = $this->a;
 
-        $this->assertSame($this->a, $this->seq->find(function ($x) use ($a) {
-            return $a === $x;
-        })->get());
-        $this->assertFalse($this->seq->find(function () {
-            return false;
-        })->isDefined());
+        $this->assertSame($this->a, $this->seq->find(function($x) use ($a) { return $a === $x; })->get());
+        $this->assertFalse($this->seq->find(function() { return false; })->isDefined());
     }
 
     public function testIsEmpty()
@@ -190,9 +162,9 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->seq->add(1);
         $this->assertSame(array(0, $this->a, $this->b, 0, 1), $this->seq->all());
 
-        $this->seq->sortWith(function ($a, $b) {
+        $this->seq->sortWith(function($a, $b) {
             if (is_integer($a)) {
-                if (!is_integer($b)) {
+                if ( ! is_integer($b)) {
                     return -1;
                 }
 
@@ -230,9 +202,9 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->seq->addAll(array(2, 1, 3));
         $this->assertSame(array(0, $this->a, $this->b, 0, 2, 1, 3), $this->seq->all());
 
-        $this->seq->sortWith(function ($a, $b) {
+        $this->seq->sortWith(function($a, $b) {
             if (is_integer($a)) {
-                if (!is_integer($b)) {
+                if ( ! is_integer($b)) {
                     return -1;
                 }
 
@@ -314,12 +286,8 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
     public function testDropWhile()
     {
-        $this->assertSame(array(0, $this->a, $this->b, 0), $this->seq->dropWhile(function () {
-            return false;
-        })->all());
-        $this->assertSame(array(), $this->seq->dropWhile(function () {
-            return true;
-        })->all());
+        $this->assertSame(array(0, $this->a, $this->b, 0), $this->seq->dropWhile(function() { return false; })->all());
+        $this->assertSame(array(), $this->seq->dropWhile(function() { return true; })->all());
     }
 
     public function testRemove()
@@ -345,7 +313,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $seq->add('b');
 
         $self = $this;
-        $newSeq = $seq->map(function ($elem) use ($self) {
+        $newSeq = $seq->map(function($elem) use ($self) {
             switch ($elem) {
                 case 'a':
                     return 'c';

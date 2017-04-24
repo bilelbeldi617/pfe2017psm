@@ -31,19 +31,22 @@ class UsernamePasswordFormAuthenticationListenerTest extends TestCase
         $httpUtils
             ->expects($this->any())
             ->method('checkRequestPath')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $failureHandler = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface')->getMock();
         $failureHandler
             ->expects($ok ? $this->never() : $this->once())
             ->method('onAuthenticationFailure')
-            ->will($this->returnValue(new Response()));
+            ->will($this->returnValue(new Response()))
+        ;
 
         $authenticationManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager')->disableOriginalConstructor()->getMock();
         $authenticationManager
             ->expects($ok ? $this->once() : $this->never())
             ->method('authenticate')
-            ->will($this->returnValue(new Response()));
+            ->will($this->returnValue(new Response()))
+        ;
 
         $listener = new UsernamePasswordFormAuthenticationListener(
             $this->getMockBuilder('Symfony\Component\Security\Core\SecurityContextInterface')->getMock(),
@@ -60,7 +63,8 @@ class UsernamePasswordFormAuthenticationListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
 
         $listener->handle($event);
     }

@@ -29,8 +29,8 @@ class Response
      * then the value is an array of all the values.
      *
      * @param string $content The content of the response
-     * @param int $status The response status code
-     * @param array $headers An array of headers
+     * @param int    $status  The response status code
+     * @param array  $headers An array of headers
      */
     public function __construct($content = '', $status = 200, array $headers = array())
     {
@@ -57,13 +57,13 @@ class Response
             }
         }
 
-        return $headers . "\n" . $this->content;
+        return $headers."\n".$this->content;
     }
 
     /**
      * Returns the build header line.
      *
-     * @param string $name The header name
+     * @param string $name  The header name
      * @param string $value The header value
      *
      * @return string The built header line
@@ -107,7 +107,7 @@ class Response
      * Gets a response header.
      *
      * @param string $header The header name
-     * @param bool $first Whether to return the first value or all header values
+     * @param bool   $first  Whether to return the first value or all header values
      *
      * @return string|array The first header value if $first is true, an array of values otherwise
      */

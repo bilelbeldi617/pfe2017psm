@@ -35,7 +35,7 @@ class RequestHelper extends Helper
     public function __construct($requestStack)
     {
         if ($requestStack instanceof Request) {
-            @trigger_error('Since version 2.5, passing a Request instance into the ' . __METHOD__ . ' is deprecated and support for it will be removed in 3.0. Inject a Symfony\Component\HttpFoundation\RequestStack instance instead.', E_USER_DEPRECATED);
+            @trigger_error('Since version 2.5, passing a Request instance into the '.__METHOD__.' is deprecated and support for it will be removed in 3.0. Inject a Symfony\Component\HttpFoundation\RequestStack instance instead.', E_USER_DEPRECATED);
             $this->request = $requestStack;
         } elseif ($requestStack instanceof RequestStack) {
             $this->requestStack = $requestStack;
@@ -47,7 +47,7 @@ class RequestHelper extends Helper
     /**
      * Returns a parameter from the current request object.
      *
-     * @param string $key The name of the parameter
+     * @param string $key     The name of the parameter
      * @param string $default A default value
      *
      * @return mixed
@@ -57,6 +57,16 @@ class RequestHelper extends Helper
     public function getParameter($key, $default = null)
     {
         return $this->getRequest()->get($key, $default);
+    }
+
+    /**
+     * Returns the locale.
+     *
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->getRequest()->getLocale();
     }
 
     private function getRequest()
@@ -70,16 +80,6 @@ class RequestHelper extends Helper
         }
 
         return $this->request;
-    }
-
-    /**
-     * Returns the locale.
-     *
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->getRequest()->getLocale();
     }
 
     /**

@@ -32,22 +32,6 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
      */
     private $container;
 
-    /**
-     * @dataProvider getDebugModes
-     */
-    public function testDefaultConfig($debug)
-    {
-        $this->container->setParameter('kernel.debug', $debug);
-
-        $extension = new AsseticExtension();
-        $extension->load(array(array()), $this->container);
-
-        $this->assertFalse($this->container->has('assetic.filter.yui_css'), '->load() does not load the yui_css filter when a yui value is not provided');
-        $this->assertFalse($this->container->has('assetic.filter.yui_js'), '->load() does not load the yui_js filter when a yui value is not provided');
-
-        $this->assertSaneContainer($this->getDumpedContainer());
-    }
-
     public static function assertSaneContainer(Container $container, $message = '')
     {
         $errors = array();
@@ -62,28 +46,61 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
         self::assertSame(array(), $errors, $message);
     }
 
-    /**
-     * @return Container
-     */
-    private function getDumpedContainer()
+    protected function setUp()
     {
-        static $i = 0;
-        $class = 'AsseticExtensionTestContainer' . $i++;
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
 
-        $this->container->compile();
+        if (!class_exists('Twig_Environment')) {
+            $this->markTestSkipped('Twig is not available.');
+        }
 
-        $dumper = new PhpDumper($this->container);
-        eval('?>' . $dumper->dump(array('class' => $class)));
+        $this->kernel = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\KernelInterface')->getMock();
 
-        $container = new $class();
+        $this->container = new ContainerBuilder();
         // Symfony 2.3 BC
         if (!method_exists('Symfony\Component\DependencyInjection\Definition', 'setShared')) {
-            $container->enterScope('request');
-            $container->set('request', Request::create('/'));
+            $this->container->addScope(new Scope('request'));
+            $this->container->register('request', 'Symfony\\Component\\HttpFoundation\\Request')->setScope('request');
         }
-        $container->set('kernel', $this->kernel);
+        // Symfony <2.7 BC
+        if (class_exists('Symfony\\Bundle\\FrameworkBundle\\Templating\\Helper\\AssetsHelper')) {
+            $this->container->register('assets.packages', $this->getMockClass('Symfony\\Component\\Asset\\Packages'));
+            $this->container->register('templating.helper.assets', $this->getMockClass('Symfony\\Bundle\\FrameworkBundle\\Templating\\Helper\\AssetsHelper'))
+                ->addArgument(new Reference('assets.packages'));
+        } elseif (class_exists('Symfony\\Component\\Templating\\Helper\\CoreAssetsHelper')) {
+            $this->container->register('templating.helper.assets', $this->getMockClass('Symfony\\Component\\Templating\\Helper\\CoreAssetsHelper'))
+                ->addArgument(new Definition($this->getMockClass('Symfony\Component\Templating\Asset\PackageInterface')));
+        }
+        $this->container->register('templating.helper.router', $this->getMockClass('Symfony\\Bundle\\FrameworkBundle\\Templating\\Helper\\RouterHelper'))
+            ->addArgument(new Definition($this->getMockClass('Symfony\\Component\\Routing\\RouterInterface')));
+        $this->container->register('twig', 'Twig_Environment')
+            ->addArgument(new Definition($this->getMockClass('Twig_LoaderInterface')));
+        $this->container->setParameter('kernel.bundles', array());
+        $this->container->setParameter('kernel.cache_dir', __DIR__);
+        $this->container->setParameter('kernel.debug', false);
+        $this->container->setParameter('kernel.root_dir', __DIR__);
+        $this->container->setParameter('kernel.charset', 'UTF-8');
+        $this->container->set('kernel', $this->kernel);
 
-        return $container;
+        $this->container->addCompilerPass(new StaticAsseticHelperPass());
+    }
+
+    /**
+     * @dataProvider getDebugModes
+     */
+    public function testDefaultConfig($debug)
+    {
+        $this->container->setParameter('kernel.debug', $debug);
+
+        $extension = new AsseticExtension();
+        $extension->load(array(array()), $this->container);
+
+        $this->assertFalse($this->container->has('assetic.filter.yui_css'), '->load() does not load the yui_css filter when a yui value is not provided');
+        $this->assertFalse($this->container->has('assetic.filter.yui_js'), '->load() does not load the yui_js filter when a yui value is not provided');
+
+        $this->assertSaneContainer($this->getDumpedContainer());
     }
 
     public function getDebugModes()
@@ -158,11 +175,11 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
         $extension->load(array(array('use_controller' => $bool)), $this->container);
 
         foreach ($includes as $id) {
-            $this->assertTrue($this->container->has($id), '"' . $id . '" is registered when use_controller is ' . $bool);
+            $this->assertTrue($this->container->has($id), '"'.$id.'" is registered when use_controller is '.$bool);
         }
 
         foreach ($omits as $id) {
-            $this->assertFalse($this->container->has($id), '"' . $id . '" is not registered when use_controller is ' . $bool);
+            $this->assertFalse($this->container->has($id), '"'.$id.'" is not registered when use_controller is '.$bool);
         }
 
         $this->assertSaneContainer($this->getDumpedContainer());
@@ -243,6 +260,30 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
         $this->getDumpedContainer();
     }
 
+    /**
+     * @return Container
+     */
+    private function getDumpedContainer()
+    {
+        static $i = 0;
+        $class = 'AsseticExtensionTestContainer'.$i++;
+
+        $this->container->compile();
+
+        $dumper = new PhpDumper($this->container);
+        eval('?>'.$dumper->dump(array('class' => $class)));
+
+        $container = new $class();
+        // Symfony 2.3 BC
+        if (!method_exists('Symfony\Component\DependencyInjection\Definition', 'setShared')) {
+            $container->enterScope('request');
+            $container->set('request', Request::create('/'));
+        }
+        $container->set('kernel', $this->kernel);
+
+        return $container;
+    }
+
     public function testCompassCanBeEnabled()
     {
         $extension = new AsseticExtension();
@@ -254,46 +295,5 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->container->get('assetic.filter.scssphp')->isCompassEnabled());
         //$this->getDumpedContainer();
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
-
-        if (!class_exists('Twig_Environment')) {
-            $this->markTestSkipped('Twig is not available.');
-        }
-
-        $this->kernel = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\KernelInterface')->getMock();
-
-        $this->container = new ContainerBuilder();
-        // Symfony 2.3 BC
-        if (!method_exists('Symfony\Component\DependencyInjection\Definition', 'setShared')) {
-            $this->container->addScope(new Scope('request'));
-            $this->container->register('request', 'Symfony\\Component\\HttpFoundation\\Request')->setScope('request');
-        }
-        // Symfony <2.7 BC
-        if (class_exists('Symfony\\Bundle\\FrameworkBundle\\Templating\\Helper\\AssetsHelper')) {
-            $this->container->register('assets.packages', $this->getMockClass('Symfony\\Component\\Asset\\Packages'));
-            $this->container->register('templating.helper.assets', $this->getMockClass('Symfony\\Bundle\\FrameworkBundle\\Templating\\Helper\\AssetsHelper'))
-                ->addArgument(new Reference('assets.packages'));
-        } elseif (class_exists('Symfony\\Component\\Templating\\Helper\\CoreAssetsHelper')) {
-            $this->container->register('templating.helper.assets', $this->getMockClass('Symfony\\Component\\Templating\\Helper\\CoreAssetsHelper'))
-                ->addArgument(new Definition($this->getMockClass('Symfony\Component\Templating\Asset\PackageInterface')));
-        }
-        $this->container->register('templating.helper.router', $this->getMockClass('Symfony\\Bundle\\FrameworkBundle\\Templating\\Helper\\RouterHelper'))
-            ->addArgument(new Definition($this->getMockClass('Symfony\\Component\\Routing\\RouterInterface')));
-        $this->container->register('twig', 'Twig_Environment')
-            ->addArgument(new Definition($this->getMockClass('Twig_LoaderInterface')));
-        $this->container->setParameter('kernel.bundles', array());
-        $this->container->setParameter('kernel.cache_dir', __DIR__);
-        $this->container->setParameter('kernel.debug', false);
-        $this->container->setParameter('kernel.root_dir', __DIR__);
-        $this->container->setParameter('kernel.charset', 'UTF-8');
-        $this->container->set('kernel', $this->kernel);
-
-        $this->container->addCompilerPass(new StaticAsseticHelperPass());
     }
 }

@@ -30,7 +30,7 @@ class FormValidator extends ConstraintValidator
     public function validate($form, Constraint $constraint)
     {
         if (!$constraint instanceof Form) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Form');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Form');
         }
 
         if (!$form instanceof FormInterface) {
@@ -114,7 +114,7 @@ class FormValidator extends ConstraintValidator
             // See also https://github.com/symfony/symfony/issues/4359
             if ($childrenSynchronized) {
                 $clientDataAsString = is_scalar($form->getViewData())
-                    ? (string)$form->getViewData()
+                    ? (string) $form->getViewData()
                     : gettype($form->getViewData());
 
                 if ($this->context instanceof ExecutionContextInterface) {
@@ -151,6 +151,38 @@ class FormValidator extends ConstraintValidator
                     ->addViolation();
             }
         }
+    }
+
+    /**
+     * Returns whether the data of a form may be walked.
+     *
+     * @param FormInterface $form The form to test
+     *
+     * @return bool Whether the graph walker may walk the data
+     */
+    private static function allowDataWalking(FormInterface $form)
+    {
+        $data = $form->getData();
+
+        // Scalar values cannot have mapped constraints
+        if (!is_object($data) && !is_array($data)) {
+            return false;
+        }
+
+        // Root forms are always validated
+        if ($form->isRoot()) {
+            return true;
+        }
+
+        // Non-root forms are validated if validation cascading
+        // is enabled in all ancestor forms
+        while (null !== ($form = $form->getParent())) {
+            if (!$form->getConfig()->getOption('cascade_validation')) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -194,7 +226,7 @@ class FormValidator extends ConstraintValidator
      * Post-processes the validation groups option for a given form.
      *
      * @param array|callable $groups The validation groups
-     * @param FormInterface $form The validated form
+     * @param FormInterface  $form   The validated form
      *
      * @return array The validation groups
      */
@@ -208,38 +240,6 @@ class FormValidator extends ConstraintValidator
             return $groups;
         }
 
-        return (array)$groups;
-    }
-
-    /**
-     * Returns whether the data of a form may be walked.
-     *
-     * @param FormInterface $form The form to test
-     *
-     * @return bool Whether the graph walker may walk the data
-     */
-    private static function allowDataWalking(FormInterface $form)
-    {
-        $data = $form->getData();
-
-        // Scalar values cannot have mapped constraints
-        if (!is_object($data) && !is_array($data)) {
-            return false;
-        }
-
-        // Root forms are always validated
-        if ($form->isRoot()) {
-            return true;
-        }
-
-        // Non-root forms are validated if validation cascading
-        // is enabled in all ancestor forms
-        while (null !== ($form = $form->getParent())) {
-            if (!$form->getConfig()->getOption('cascade_validation')) {
-                return false;
-            }
-        }
-
-        return true;
+        return (array) $groups;
     }
 }

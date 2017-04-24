@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Validator\Context;
 
-@trigger_error('The ' . __NAMESPACE__ . '\LegacyExecutionContextFactory class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\LegacyExecutionContextFactory class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface;
@@ -46,9 +46,9 @@ class LegacyExecutionContextFactory implements ExecutionContextFactoryInterface
     /**
      * Creates a new context factory.
      *
-     * @param MetadataFactoryInterface $metadataFactory The metadata factory
-     * @param TranslatorInterface $translator The translator
-     * @param string|null $translationDomain The translation domain
+     * @param MetadataFactoryInterface $metadataFactory   The metadata factory
+     * @param TranslatorInterface      $translator        The translator
+     * @param string|null              $translationDomain The translation domain
      *                                                    to use for translating
      *                                                    violation messages
      */

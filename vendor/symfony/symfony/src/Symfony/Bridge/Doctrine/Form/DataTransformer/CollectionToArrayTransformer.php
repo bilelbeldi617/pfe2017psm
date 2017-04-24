@@ -61,7 +61,7 @@ class CollectionToArrayTransformer implements DataTransformerInterface
         if ('' === $array || null === $array) {
             $array = array();
         } else {
-            $array = (array)$array;
+            $array = (array) $array;
         }
 
         return new ArrayCollection($array);

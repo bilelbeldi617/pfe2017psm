@@ -36,6 +36,14 @@ class LazyChoiceListTest extends TestCase
 
     private $value;
 
+    protected function setUp()
+    {
+        $this->innerList = $this->getMockBuilder('Symfony\Component\Form\ChoiceList\ChoiceListInterface')->getMock();
+        $this->loader = $this->getMockBuilder('Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface')->getMock();
+        $this->value = function () {};
+        $this->list = new LazyChoiceList($this->loader, $this->value);
+    }
+
     public function testGetChoicesLoadsInnerListOnFirstCall()
     {
         $this->loader->expects($this->once())
@@ -160,14 +168,5 @@ class LazyChoiceListTest extends TestCase
 
         $this->assertSame('RESULT', $this->list->getValuesForChoices(array('a', 'b')));
         $this->assertSame('RESULT', $this->list->getValuesForChoices(array('a', 'b')));
-    }
-
-    protected function setUp()
-    {
-        $this->innerList = $this->getMockBuilder('Symfony\Component\Form\ChoiceList\ChoiceListInterface')->getMock();
-        $this->loader = $this->getMockBuilder('Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface')->getMock();
-        $this->value = function () {
-        };
-        $this->list = new LazyChoiceList($this->loader, $this->value);
     }
 }

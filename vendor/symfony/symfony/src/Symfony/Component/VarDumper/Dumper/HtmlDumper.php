@@ -51,7 +51,7 @@ class HtmlDumper extends CliDumper
     public function __construct($output = null, $charset = null)
     {
         AbstractDumper::__construct($output, $charset);
-        $this->dumpId = 'sf-dump-' . mt_rand();
+        $this->dumpId = 'sf-dump-'.mt_rand();
     }
 
     /**
@@ -61,6 +61,16 @@ class HtmlDumper extends CliDumper
     {
         $this->headerIsDumped = false;
         $this->styles = $styles + $this->styles;
+    }
+
+    /**
+     * Sets an HTML header that will be dumped once in the output stream.
+     *
+     * @param string $header An HTML string
+     */
+    public function setDumpHeader($header)
+    {
+        $this->dumpHeader = $header;
     }
 
     /**
@@ -81,52 +91,7 @@ class HtmlDumper extends CliDumper
     public function dump(Data $data, $output = null)
     {
         parent::dump($data, $output);
-        $this->dumpId = 'sf-dump-' . mt_rand();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function enterHash(Cursor $cursor, $type, $class, $hasChild)
-    {
-        parent::enterHash($cursor, $type, $class, false);
-
-        if ($hasChild) {
-            if ($cursor->refIndex) {
-                $r = Cursor::HASH_OBJECT !== $type ? 1 - (Cursor::HASH_RESOURCE !== $type) : 2;
-                $r .= $r && 0 < $cursor->softRefHandle ? $cursor->softRefHandle : $cursor->refIndex;
-
-                $this->line .= sprintf('<samp id=%s-ref%s>', $this->dumpId, $r);
-            } else {
-                $this->line .= '<samp>';
-            }
-            $this->dumpLine($cursor->depth);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function dumpLine($depth, $endOfValue = false)
-    {
-        if (-1 === $this->lastDepth) {
-            $this->line = sprintf($this->dumpPrefix, $this->dumpId, $this->indentPad) . $this->line;
-        }
-        if ($this->headerIsDumped !== (null !== $this->outputStream ? $this->outputStream : $this->lineDumper)) {
-            $this->line = $this->getDumpHeader() . $this->line;
-        }
-
-        if (-1 === $depth) {
-            $this->line .= sprintf($this->dumpSuffix, $this->dumpId);
-        }
-        $this->lastDepth = $depth;
-
-        $this->line = mb_convert_encoding($this->line, 'HTML-ENTITIES', 'UTF-8');
-
-        if (-1 === $depth) {
-            AbstractDumper::dumpLine(0);
-        }
-        AbstractDumper::dumpLine($depth);
+        $this->dumpId = 'sf-dump-'.mt_rand();
     }
 
     /**
@@ -349,20 +314,30 @@ pre.sf-dump a {
 EOHTML;
 
         foreach ($this->styles as $class => $style) {
-            $line .= 'pre.sf-dump' . ('default' !== $class ? ' .sf-dump-' . $class : '') . '{' . $style . '}';
+            $line .= 'pre.sf-dump'.('default' !== $class ? ' .sf-dump-'.$class : '').'{'.$style.'}';
         }
 
-        return $this->dumpHeader = preg_replace('/\s+/', ' ', $line) . '</style>' . $this->dumpHeader;
+        return $this->dumpHeader = preg_replace('/\s+/', ' ', $line).'</style>'.$this->dumpHeader;
     }
 
     /**
-     * Sets an HTML header that will be dumped once in the output stream.
-     *
-     * @param string $header An HTML string
+     * {@inheritdoc}
      */
-    public function setDumpHeader($header)
+    public function enterHash(Cursor $cursor, $type, $class, $hasChild)
     {
-        $this->dumpHeader = $header;
+        parent::enterHash($cursor, $type, $class, false);
+
+        if ($hasChild) {
+            if ($cursor->refIndex) {
+                $r = Cursor::HASH_OBJECT !== $type ? 1 - (Cursor::HASH_RESOURCE !== $type) : 2;
+                $r .= $r && 0 < $cursor->softRefHandle ? $cursor->softRefHandle : $cursor->refIndex;
+
+                $this->line .= sprintf('<samp id=%s-ref%s>', $this->dumpId, $r);
+            } else {
+                $this->line .= '<samp>';
+            }
+            $this->dumpLine($cursor->depth);
+        }
     }
 
     /**
@@ -392,7 +367,7 @@ EOHTML;
             if (empty($attr['count'])) {
                 return sprintf('<a class=sf-dump-ref>%s</a>', $v);
             }
-            $r = ('#' !== $v[0] ? 1 - ('@' !== $v[0]) : 2) . substr($value, 1);
+            $r = ('#' !== $v[0] ? 1 - ('@' !== $v[0]) : 2).substr($value, 1);
 
             return sprintf('<a class=sf-dump-ref href=#%s-ref%s title="%d occurrences">%s</a>', $this->dumpId, $r, 1 + $attr['count'], $v);
         }
@@ -420,13 +395,13 @@ EOHTML;
                 $s .= isset($map[$c[$i]]) ? $map[$c[$i]] : sprintf('\x%02X', ord($c[$i]));
             } while (isset($c[++$i]));
 
-            return $s . $style;
+            return $s.$style;
         }, $v, -1, $cchrCount);
 
         if ($cchrCount && '<' === $v[0]) {
             $v = substr($v, 7);
         } else {
-            $v = $style . $v;
+            $v = $style.$v;
         }
         if ($cchrCount && '>' === substr($v, -1)) {
             $v = substr($v, 0, -strlen($style));
@@ -435,6 +410,31 @@ EOHTML;
         }
 
         return $v;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function dumpLine($depth, $endOfValue = false)
+    {
+        if (-1 === $this->lastDepth) {
+            $this->line = sprintf($this->dumpPrefix, $this->dumpId, $this->indentPad).$this->line;
+        }
+        if ($this->headerIsDumped !== (null !== $this->outputStream ? $this->outputStream : $this->lineDumper)) {
+            $this->line = $this->getDumpHeader().$this->line;
+        }
+
+        if (-1 === $depth) {
+            $this->line .= sprintf($this->dumpSuffix, $this->dumpId);
+        }
+        $this->lastDepth = $depth;
+
+        $this->line = mb_convert_encoding($this->line, 'HTML-ENTITIES', 'UTF-8');
+
+        if (-1 === $depth) {
+            AbstractDumper::dumpLine(0);
+        }
+        AbstractDumper::dumpLine($depth);
     }
 }
 

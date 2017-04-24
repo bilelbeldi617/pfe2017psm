@@ -18,14 +18,14 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class FormEvent extends Event
 {
-    protected $data;
     private $form;
+    protected $data;
 
     /**
      * Constructs an event.
      *
      * @param FormInterface $form The associated form
-     * @param mixed $data The data
+     * @param mixed         $data The data
      */
     public function __construct(FormInterface $form, $data)
     {

@@ -33,7 +33,7 @@ class LuhnValidator extends ConstraintValidator
     /**
      * Validates a credit card number with the Luhn algorithm.
      *
-     * @param mixed $value
+     * @param mixed      $value
      * @param Constraint $constraint
      *
      * @throws UnexpectedTypeException when the given credit card number is no string
@@ -41,7 +41,7 @@ class LuhnValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Luhn) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Luhn');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Luhn');
         }
 
         if (null === $value || '' === $value) {
@@ -54,7 +54,7 @@ class LuhnValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if (!ctype_digit($value)) {
             if ($this->context instanceof ExecutionContextInterface) {

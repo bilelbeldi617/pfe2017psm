@@ -31,14 +31,14 @@
                         <tr>
                             <td>{{ r.matiere }}</td>
                             {% for i in 0..2 %}
-                                {% if r.note[i] is not defined %}
-                                    <td> ---</td>
+                                {% if r.note[i] is not defined  %}
+                                    <td> --- </td>
                                 {% else %}
                                     <td> {{ r.note[i] | number_format("2", ".", ",") }} </td>
                                 {% endif %}
 
                             {% endfor %}
-                            <td>{{ r.nomenseignant.nomenseignant }} {{ r.nomenseignant.prenomenseignant }}</td>
+                            <td>{{ r.nomenseignant.nomenseignant}} {{ r.nomenseignant.prenomenseignant }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}

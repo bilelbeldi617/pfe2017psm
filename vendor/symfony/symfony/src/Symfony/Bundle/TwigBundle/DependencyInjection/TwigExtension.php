@@ -29,12 +29,12 @@ class TwigExtension extends Extension
     /**
      * Responds to the twig configuration parameter.
      *
-     * @param array $configs
+     * @param array            $configs
      * @param ContainerBuilder $container
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('twig.xml');
 
         if (class_exists('Symfony\Component\Form\Form')) {
@@ -108,7 +108,7 @@ class TwigExtension extends Extension
             }
         }
 
-        if (is_dir($dir = $container->getParameter('kernel.root_dir') . '/Resources/views')) {
+        if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/views')) {
             $twigFilesystemLoaderDefinition->addMethodCall('addPath', array($dir));
         }
         $container->addResource(new FileExistenceResource($dir));
@@ -162,12 +162,12 @@ class TwigExtension extends Extension
                 );
             }
 
-            if (is_dir($dir = $container->getParameter('kernel.root_dir') . '/Resources/' . $name . '/views')) {
+            if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$name.'/views')) {
                 $bundleHierarchy[$name]['paths'][] = $dir;
             }
             $container->addResource(new FileExistenceResource($dir));
 
-            if (is_dir($dir = $bundle['path'] . '/Resources/views')) {
+            if (is_dir($dir = $bundle['path'].'/Resources/views')) {
                 $bundleHierarchy[$name]['paths'][] = $dir;
             }
             $container->addResource(new FileExistenceResource($dir));
@@ -217,7 +217,7 @@ class TwigExtension extends Extension
      */
     public function getXsdValidationBasePath()
     {
-        return __DIR__ . '/../Resources/config/schema';
+        return __DIR__.'/../Resources/config/schema';
     }
 
     public function getNamespace()

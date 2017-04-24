@@ -39,7 +39,7 @@ class FullTransformer
     /**
      * Constructor.
      *
-     * @param string $pattern The pattern to be used to format and/or parse values
+     * @param string $pattern  The pattern to be used to format and/or parse values
      * @param string $timezone The timezone to perform the date/time calculations
      */
     public function __construct($pattern, $timezone)
@@ -72,21 +72,13 @@ class FullTransformer
     }
 
     /**
-     * Builds a chars match regular expression.
+     * Return the array of Transformer objects.
      *
-     * @param string $specialChars A string of chars to build the regular expression
-     *
-     * @return string The chars match regular expression
+     * @return Transformer[] Associative array of Transformer objects (format char => Transformer)
      */
-    protected function buildCharsMatch($specialChars)
+    public function getTransformers()
     {
-        $specialCharsArray = str_split($specialChars);
-
-        $specialCharsMatch = implode('|', array_map(function ($char) {
-            return $char . '+';
-        }, $specialCharsArray));
-
-        return $specialCharsMatch;
+        return $this->transformers;
     }
 
     /**
@@ -110,8 +102,8 @@ class FullTransformer
     /**
      * Return the formatted ICU value for the matched date characters.
      *
-     * @param string $dateChars The date characters to be replaced with a formatted ICU value
-     * @param \DateTime $dateTime A DateTime object to be used to generate the formatted value
+     * @param string    $dateChars The date characters to be replaced with a formatted ICU value
+     * @param \DateTime $dateTime  A DateTime object to be used to generate the formatted value
      *
      * @return string The formatted value
      *
@@ -138,38 +130,10 @@ class FullTransformer
     }
 
     /**
-     * Check if the first char of a string is a single quote.
-     *
-     * @param string $quoteMatch The string to check
-     *
-     * @return bool true if matches, false otherwise
-     */
-    public function isQuoteMatch($quoteMatch)
-    {
-        return "'" === $quoteMatch[0];
-    }
-
-    /**
-     * Replaces single quotes at the start or end of a string with two single quotes.
-     *
-     * @param string $quoteMatch The string to replace the quotes
-     *
-     * @return string A string with the single quotes replaced
-     */
-    public function replaceQuoteMatch($quoteMatch)
-    {
-        if (preg_match("/^'+$/", $quoteMatch)) {
-            return str_replace("''", "'", $quoteMatch);
-        }
-
-        return str_replace("''", "'", substr($quoteMatch, 1, -1));
-    }
-
-    /**
      * Parse a pattern based string to a timestamp value.
      *
      * @param \DateTime $dateTime A configured DateTime object to use to perform the date calculation
-     * @param string $value String to convert to a time value
+     * @param string    $value    String to convert to a time value
      *
      * @return int The corresponding Unix timestamp
      *
@@ -178,7 +142,7 @@ class FullTransformer
     public function parse(\DateTime $dateTime, $value)
     {
         $reverseMatchingRegExp = $this->getReverseMatchingRegExp($this->pattern);
-        $reverseMatchingRegExp = '/^' . $reverseMatchingRegExp . '$/';
+        $reverseMatchingRegExp = '/^'.$reverseMatchingRegExp.'$/';
 
         $options = array();
 
@@ -236,7 +200,7 @@ class FullTransformer
                 $transformer = $transformers[$transformerIndex];
                 $captureName = str_repeat($transformerIndex, $length);
 
-                return "(?P<$captureName>" . $transformer->getReverseMatchingRegExp($length) . ')';
+                return "(?P<$captureName>".$transformer->getReverseMatchingRegExp($length).')';
             }
         }, $escapedPattern);
 
@@ -244,13 +208,49 @@ class FullTransformer
     }
 
     /**
-     * Return the array of Transformer objects.
+     * Check if the first char of a string is a single quote.
      *
-     * @return Transformer[] Associative array of Transformer objects (format char => Transformer)
+     * @param string $quoteMatch The string to check
+     *
+     * @return bool true if matches, false otherwise
      */
-    public function getTransformers()
+    public function isQuoteMatch($quoteMatch)
     {
-        return $this->transformers;
+        return "'" === $quoteMatch[0];
+    }
+
+    /**
+     * Replaces single quotes at the start or end of a string with two single quotes.
+     *
+     * @param string $quoteMatch The string to replace the quotes
+     *
+     * @return string A string with the single quotes replaced
+     */
+    public function replaceQuoteMatch($quoteMatch)
+    {
+        if (preg_match("/^'+$/", $quoteMatch)) {
+            return str_replace("''", "'", $quoteMatch);
+        }
+
+        return str_replace("''", "'", substr($quoteMatch, 1, -1));
+    }
+
+    /**
+     * Builds a chars match regular expression.
+     *
+     * @param string $specialChars A string of chars to build the regular expression
+     *
+     * @return string The chars match regular expression
+     */
+    protected function buildCharsMatch($specialChars)
+    {
+        $specialCharsArray = str_split($specialChars);
+
+        $specialCharsMatch = implode('|', array_map(function ($char) {
+            return $char.'+';
+        }, $specialCharsArray));
+
+        return $specialCharsMatch;
     }
 
     /**
@@ -284,7 +284,7 @@ class FullTransformer
      * expression of parse().
      *
      * @param \DateTime $dateTime The DateTime object to be used to calculate the timestamp
-     * @param array $options An array with the matched values to be used to calculate the timestamp
+     * @param array     $options  An array with the matched values to be used to calculate the timestamp
      *
      * @return bool|int The calculated timestamp or false if matched date is invalid
      */

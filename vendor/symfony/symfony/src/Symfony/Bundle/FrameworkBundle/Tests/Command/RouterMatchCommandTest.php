@@ -31,6 +31,15 @@ class RouterMatchCommandTest extends TestCase
         $this->assertContains('Route Name   | foo', $tester->getDisplay());
     }
 
+    public function testWithNotMatchPath()
+    {
+        $tester = $this->createCommandTester();
+        $ret = $tester->execute(array('path_info' => '/test', 'foo'), array('decorated' => false));
+
+        $this->assertEquals(1, $ret, 'Returns 1 in case of failure');
+        $this->assertContains('None of the routes match the path "/test"', $tester->getDisplay());
+    }
+
     /**
      * @return CommandTester
      */
@@ -58,15 +67,17 @@ class RouterMatchCommandTest extends TestCase
         $router
             ->expects($this->any())
             ->method('getRouteCollection')
-            ->will($this->returnValue($routeCollection));
+            ->will($this->returnValue($routeCollection))
+        ;
         $router
             ->expects($this->any())
             ->method('getContext')
-            ->will($this->returnValue($requestContext));
+            ->will($this->returnValue($requestContext))
+        ;
 
         $loader = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Routing\DelegatingLoader')
-            ->disableOriginalConstructor()
-            ->getMock();
+             ->disableOriginalConstructor()
+             ->getMock();
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
@@ -81,14 +92,5 @@ class RouterMatchCommandTest extends TestCase
             )));
 
         return $container;
-    }
-
-    public function testWithNotMatchPath()
-    {
-        $tester = $this->createCommandTester();
-        $ret = $tester->execute(array('path_info' => '/test', 'foo'), array('decorated' => false));
-
-        $this->assertEquals(1, $ret, 'Returns 1 in case of failure');
-        $this->assertContains('None of the routes match the path "/test"', $tester->getDisplay());
     }
 }

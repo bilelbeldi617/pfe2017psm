@@ -86,18 +86,6 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     }
 
     /**
-     * Camelizes a string.
-     *
-     * @param string $id A string to camelize
-     *
-     * @return string The camelized string
-     */
-    public static function camelize($id)
-    {
-        return strtr(ucwords(strtr($id, array('_' => ' ', '.' => '_ ', '\\' => '_ '))), array(' ' => ''));
-    }
-
-    /**
      * Compiles the container.
      *
      * This method does two things:
@@ -161,12 +149,72 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     /**
      * Sets a parameter.
      *
-     * @param string $name The parameter name
-     * @param mixed $value The parameter value
+     * @param string $name  The parameter name
+     * @param mixed  $value The parameter value
      */
     public function setParameter($name, $value)
     {
         $this->parameterBag->set($name, $value);
+    }
+
+    /**
+     * Sets a service.
+     *
+     * Setting a service to null resets the service: has() returns false and get()
+     * behaves in the same way as if the service was never created.
+     *
+     * Note: The $scope parameter is deprecated since version 2.8 and will be removed in 3.0.
+     *
+     * @param string $id      The service identifier
+     * @param object $service The service instance
+     * @param string $scope   The scope of the service
+     *
+     * @throws RuntimeException         When trying to set a service in an inactive scope
+     * @throws InvalidArgumentException When trying to set a service in the prototype scope
+     */
+    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
+    {
+        if (!in_array($scope, array('container', 'request')) || ('request' === $scope && 'request' !== $id)) {
+            @trigger_error('The concept of container scopes is deprecated since version 2.8 and will be removed in 3.0. Omit the third parameter.', E_USER_DEPRECATED);
+        }
+
+        if (self::SCOPE_PROTOTYPE === $scope) {
+            throw new InvalidArgumentException(sprintf('You cannot set service "%s" of scope "prototype".', $id));
+        }
+
+        $id = strtolower($id);
+
+        if ('service_container' === $id) {
+            // BC: 'service_container' is no longer a self-reference but always
+            // $this, so ignore this call.
+            // @todo Throw InvalidArgumentException in next major release.
+            return;
+        }
+        if (self::SCOPE_CONTAINER !== $scope) {
+            if (!isset($this->scopedServices[$scope])) {
+                throw new RuntimeException(sprintf('You cannot set service "%s" of inactive scope.', $id));
+            }
+
+            $this->scopedServices[$scope][$id] = $service;
+        }
+
+        if (isset($this->aliases[$id])) {
+            unset($this->aliases[$id]);
+        }
+
+        $this->services[$id] = $service;
+
+        if (method_exists($this, $method = 'synchronize'.strtr($id, $this->underscoreMap).'Service')) {
+            $this->$method();
+        }
+
+        if (null === $service) {
+            if (self::SCOPE_CONTAINER !== $scope) {
+                unset($this->scopedServices[$scope][$id]);
+            }
+
+            unset($this->services[$id]);
+        }
     }
 
     /**
@@ -178,7 +226,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
      */
     public function has($id)
     {
-        for ($i = 2; ;) {
+        for ($i = 2;;) {
             if ('service_container' === $id
                 || isset($this->aliases[$id])
                 || isset($this->services[$id])
@@ -189,7 +237,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
             if (--$i && $id !== $lcId = strtolower($id)) {
                 $id = $lcId;
             } else {
-                return method_exists($this, 'get' . strtr($id, $this->underscoreMap) . 'Service');
+                return method_exists($this, 'get'.strtr($id, $this->underscoreMap).'Service');
             }
         }
     }
@@ -200,8 +248,8 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
      * If a service is defined both through a set() method and
      * with a get{$id}Service() method, the former has always precedence.
      *
-     * @param string $id The service identifier
-     * @param int $invalidBehavior The behavior when the service does not exist
+     * @param string $id              The service identifier
+     * @param int    $invalidBehavior The behavior when the service does not exist
      *
      * @return object The associated service
      *
@@ -217,7 +265,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
         // available services. Service IDs are case insensitive, however since
         // this method can be called thousands of times during a request, avoid
         // calling strtolower() unless necessary.
-        for ($i = 2; ;) {
+        for ($i = 2;;) {
             if ('service_container' === $id) {
                 return $this;
             }
@@ -238,7 +286,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
             } elseif (--$i && $id !== $lcId = strtolower($id)) {
                 $id = $lcId;
                 continue;
-            } elseif (method_exists($this, $method = 'get' . strtr($id, $this->underscoreMap) . 'Service')) {
+            } elseif (method_exists($this, $method = 'get'.strtr($id, $this->underscoreMap).'Service')) {
                 // $method is set to the right value, proceed
             } else {
                 if (self::EXCEPTION_ON_INVALID_REFERENCE === $invalidBehavior) {
@@ -287,36 +335,6 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     }
 
     /**
-     * Gets all service ids.
-     *
-     * @return array An array of all defined service ids
-     */
-    public function getServiceIds()
-    {
-        $ids = array();
-        foreach (get_class_methods($this) as $method) {
-            if (preg_match('/^get(.+)Service$/', $method, $match)) {
-                $ids[] = self::underscore($match[1]);
-            }
-        }
-        $ids[] = 'service_container';
-
-        return array_unique(array_merge($ids, array_keys($this->services)));
-    }
-
-    /**
-     * A string to underscore.
-     *
-     * @param string $id The string to underscore
-     *
-     * @return string The underscored string
-     */
-    public static function underscore($id)
-    {
-        return strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('\\1_\\2', '\\1_\\2'), str_replace('_', '.', $id)));
-    }
-
-    /**
      * Returns true if the given service has actually been initialized.
      *
      * @param string $id The service identifier
@@ -353,6 +371,24 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     }
 
     /**
+     * Gets all service ids.
+     *
+     * @return array An array of all defined service ids
+     */
+    public function getServiceIds()
+    {
+        $ids = array();
+        foreach (get_class_methods($this) as $method) {
+            if (preg_match('/^get(.+)Service$/', $method, $match)) {
+                $ids[] = self::underscore($match[1]);
+            }
+        }
+        $ids[] = 'service_container';
+
+        return array_unique(array_merge($ids, array_keys($this->services)));
+    }
+
+    /**
      * This is called when you enter a scope.
      *
      * @param string $name
@@ -365,7 +401,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     public function enterScope($name)
     {
         if ('request' !== $name) {
-            @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
         }
 
         if (!isset($this->scopes[$name])) {
@@ -417,7 +453,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     public function leaveScope($name)
     {
         if ('request' !== $name) {
-            @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
         }
 
         if (!isset($this->scopedServices[$name])) {
@@ -457,66 +493,6 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     }
 
     /**
-     * Sets a service.
-     *
-     * Setting a service to null resets the service: has() returns false and get()
-     * behaves in the same way as if the service was never created.
-     *
-     * Note: The $scope parameter is deprecated since version 2.8 and will be removed in 3.0.
-     *
-     * @param string $id The service identifier
-     * @param object $service The service instance
-     * @param string $scope The scope of the service
-     *
-     * @throws RuntimeException         When trying to set a service in an inactive scope
-     * @throws InvalidArgumentException When trying to set a service in the prototype scope
-     */
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
-    {
-        if (!in_array($scope, array('container', 'request')) || ('request' === $scope && 'request' !== $id)) {
-            @trigger_error('The concept of container scopes is deprecated since version 2.8 and will be removed in 3.0. Omit the third parameter.', E_USER_DEPRECATED);
-        }
-
-        if (self::SCOPE_PROTOTYPE === $scope) {
-            throw new InvalidArgumentException(sprintf('You cannot set service "%s" of scope "prototype".', $id));
-        }
-
-        $id = strtolower($id);
-
-        if ('service_container' === $id) {
-            // BC: 'service_container' is no longer a self-reference but always
-            // $this, so ignore this call.
-            // @todo Throw InvalidArgumentException in next major release.
-            return;
-        }
-        if (self::SCOPE_CONTAINER !== $scope) {
-            if (!isset($this->scopedServices[$scope])) {
-                throw new RuntimeException(sprintf('You cannot set service "%s" of inactive scope.', $id));
-            }
-
-            $this->scopedServices[$scope][$id] = $service;
-        }
-
-        if (isset($this->aliases[$id])) {
-            unset($this->aliases[$id]);
-        }
-
-        $this->services[$id] = $service;
-
-        if (method_exists($this, $method = 'synchronize' . strtr($id, $this->underscoreMap) . 'Service')) {
-            $this->$method();
-        }
-
-        if (null === $service) {
-            if (self::SCOPE_CONTAINER !== $scope) {
-                unset($this->scopedServices[$scope][$id]);
-            }
-
-            unset($this->services[$id]);
-        }
-    }
-
-    /**
      * Adds a scope to the container.
      *
      * @param ScopeInterface $scope
@@ -531,7 +507,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
         $parentScope = $scope->getParentName();
 
         if ('request' !== $name) {
-            @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
         }
         if (self::SCOPE_CONTAINER === $name || self::SCOPE_PROTOTYPE === $name) {
             throw new InvalidArgumentException(sprintf('The scope "%s" is reserved.', $name));
@@ -565,7 +541,7 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
     public function hasScope($name)
     {
         if ('request' !== $name) {
-            @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
         }
 
         return isset($this->scopes[$name]);
@@ -584,9 +560,33 @@ class Container implements IntrospectableContainerInterface, ResettableContainer
      */
     public function isScopeActive($name)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         return isset($this->scopedServices[$name]);
+    }
+
+    /**
+     * Camelizes a string.
+     *
+     * @param string $id A string to camelize
+     *
+     * @return string The camelized string
+     */
+    public static function camelize($id)
+    {
+        return strtr(ucwords(strtr($id, array('_' => ' ', '.' => '_ ', '\\' => '_ '))), array(' ' => ''));
+    }
+
+    /**
+     * A string to underscore.
+     *
+     * @param string $id The string to underscore
+     *
+     * @return string The underscored string
+     */
+    public static function underscore($id)
+    {
+        return strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('\\1_\\2', '\\1_\\2'), str_replace('_', '.', $id)));
     }
 
     private function __clone()

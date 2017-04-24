@@ -13,15 +13,6 @@ use PhpOption\Some;
  */
 class EnsureTest extends \PHPUnit_Framework_TestCase
 {
-    public function testMixedValue()
-    {
-        $option = $this->ensure(1);
-        $this->assertTrue($option->isDefined());
-        $this->assertSame(1, $option->get());
-        $this->assertFalse($this->ensure(null)->isDefined());
-        $this->assertFalse($this->ensure(1, 1)->isDefined());
-    }
-
     protected function ensure($value, $noneValue = null)
     {
         $option = Option::ensure($value, $noneValue);
@@ -29,19 +20,22 @@ class EnsureTest extends \PHPUnit_Framework_TestCase
         return $option;
     }
 
-    public function testReturnValue()
+    public function testMixedValue()
     {
-        $option = $this->ensure(function () {
-            return 1;
-        });
+        $option = $this->ensure(1);
         $this->assertTrue($option->isDefined());
         $this->assertSame(1, $option->get());
-        $this->assertFalse($this->ensure(function () {
-            return null;
-        })->isDefined());
-        $this->assertFalse($this->ensure(function () {
-            return 1;
-        }, 1)->isDefined());
+        $this->assertFalse($this->ensure(null)->isDefined());
+        $this->assertFalse($this->ensure(1,1)->isDefined());
+    }
+
+    public function testReturnValue()
+    {
+        $option = $this->ensure(function() { return 1; });
+        $this->assertTrue($option->isDefined());
+        $this->assertSame(1, $option->get());
+        $this->assertFalse($this->ensure(function() { return null; })->isDefined());
+        $this->assertFalse($this->ensure(function() { return 1; }, 1)->isDefined());
     }
 
     public function testOptionReturnsAsSameInstance()
@@ -52,24 +46,17 @@ class EnsureTest extends \PHPUnit_Framework_TestCase
 
     public function testOptionReturnedFromClosure()
     {
-        $option = $this->ensure(function () {
-            return Some::create(1);
-        });
+        $option = $this->ensure(function() { return Some::create(1); });
         $this->assertTrue($option->isDefined());
         $this->assertSame(1, $option->get());
 
-        $option = $this->ensure(function () {
-            return None::create();
-        });
+        $option = $this->ensure(function() { return None::create(); });
         $this->assertFalse($option->isDefined());
     }
 
     public function testClosureReturnedFromClosure()
     {
-        $option = $this->ensure(function () {
-            return function () {
-            };
-        });
+        $option = $this->ensure(function() { return function() {}; });
         $this->assertTrue($option->isDefined());
         $this->assertInstanceOf('Closure', $option->get());
     }

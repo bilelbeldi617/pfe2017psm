@@ -72,6 +72,11 @@ class TransChoiceTokenParser extends TransTokenParser
         return new TransNode($body, $domain, $count, $vars, $locale, $lineno, $this->getTag());
     }
 
+    public function decideTransChoiceFork($token)
+    {
+        return $token->test(array('endtranschoice'));
+    }
+
     /**
      * Gets the tag name associated with this token parser.
      *
@@ -80,10 +85,5 @@ class TransChoiceTokenParser extends TransTokenParser
     public function getTag()
     {
         return 'transchoice';
-    }
-
-    public function decideTransChoiceFork($token)
-    {
-        return $token->test(array('endtranschoice'));
     }
 }

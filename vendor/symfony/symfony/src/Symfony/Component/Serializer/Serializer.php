@@ -107,9 +107,15 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
     /**
      * {@inheritdoc}
      */
-    public function supportsEncoding($format)
+    final public function deserialize($data, $type, $format, array $context = array())
     {
-        return $this->encoder->supportsEncoding($format);
+        if (!$this->supportsDecoding($format)) {
+            throw new UnexpectedValueException(sprintf('Deserialization for the format %s is not supported', $format));
+        }
+
+        $data = $this->decode($data, $format, $context);
+
+        return $this->denormalize($data, $type, $format, $context);
     }
 
     /**
@@ -147,9 +153,33 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function denormalize($data, $type, $format = null, array $context = array())
+    {
+        return $this->denormalizeObject($data, $type, $format, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsNormalization($data, $format = null)
+    {
+        return null !== $this->getNormalizer($data, $format);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return null !== $this->getDenormalizer($data, $type, $format);
+    }
+
+    /**
      * Returns a matching normalizer.
      *
-     * @param mixed $data Data to get the serializer for
+     * @param mixed  $data   Data to get the serializer for
      * @param string $format format name, present to give the option to normalizers to act differently based on formats
      *
      * @return NormalizerInterface|null
@@ -158,6 +188,24 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
     {
         foreach ($this->normalizers as $normalizer) {
             if ($normalizer instanceof NormalizerInterface && $normalizer->supportsNormalization($data, $format)) {
+                return $normalizer;
+            }
+        }
+    }
+
+    /**
+     * Returns a matching denormalizer.
+     *
+     * @param mixed  $data   data to restore
+     * @param string $class  the expected class to instantiate
+     * @param string $format format name, present to give the option to normalizers to act differently based on formats
+     *
+     * @return DenormalizerInterface|null
+     */
+    private function getDenormalizer($data, $class, $format)
+    {
+        foreach ($this->normalizers as $normalizer) {
+            if ($normalizer instanceof DenormalizerInterface && $normalizer->supportsDenormalization($data, $class, $format)) {
                 return $normalizer;
             }
         }
@@ -174,48 +222,18 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
     /**
      * {@inheritdoc}
      */
-    final public function deserialize($data, $type, $format, array $context = array())
-    {
-        if (!$this->supportsDecoding($format)) {
-            throw new UnexpectedValueException(sprintf('Deserialization for the format %s is not supported', $format));
-        }
-
-        $data = $this->decode($data, $format, $context);
-
-        return $this->denormalize($data, $type, $format, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDecoding($format)
-    {
-        return $this->decoder->supportsDecoding($format);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     final public function decode($data, $format, array $context = array())
     {
         return $this->decoder->decode($data, $format, $context);
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function denormalize($data, $type, $format = null, array $context = array())
-    {
-        return $this->denormalizeObject($data, $type, $format, $context);
-    }
-
-    /**
      * Denormalizes data back into an object of the given class.
      *
-     * @param mixed $data data to restore
-     * @param string $class the expected class to instantiate
-     * @param string $format format name, present to give the option to normalizers to act differently based on formats
-     * @param array $context The context data for this particular denormalization
+     * @param mixed  $data    data to restore
+     * @param string $class   the expected class to instantiate
+     * @param string $format  format name, present to give the option to normalizers to act differently based on formats
+     * @param array  $context The context data for this particular denormalization
      *
      * @return object
      *
@@ -236,36 +254,18 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
     }
 
     /**
-     * Returns a matching denormalizer.
-     *
-     * @param mixed $data data to restore
-     * @param string $class the expected class to instantiate
-     * @param string $format format name, present to give the option to normalizers to act differently based on formats
-     *
-     * @return DenormalizerInterface|null
+     * {@inheritdoc}
      */
-    private function getDenormalizer($data, $class, $format)
+    public function supportsEncoding($format)
     {
-        foreach ($this->normalizers as $normalizer) {
-            if ($normalizer instanceof DenormalizerInterface && $normalizer->supportsDenormalization($data, $class, $format)) {
-                return $normalizer;
-            }
-        }
+        return $this->encoder->supportsEncoding($format);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supportsNormalization($data, $format = null)
+    public function supportsDecoding($format)
     {
-        return null !== $this->getNormalizer($data, $format);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDenormalization($data, $type, $format = null)
-    {
-        return null !== $this->getDenormalizer($data, $type, $format);
+        return $this->decoder->supportsDecoding($format);
     }
 }

@@ -32,26 +32,28 @@ class RememberMeFactory implements SecurityFactoryInterface
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
         // authentication provider
-        $authProviderId = 'security.authentication.provider.rememberme.' . $id;
+        $authProviderId = 'security.authentication.provider.rememberme.'.$id;
         $container
             ->setDefinition($authProviderId, new DefinitionDecorator('security.authentication.provider.rememberme'))
-            ->replaceArgument(0, new Reference('security.user_checker.' . $id))
+            ->replaceArgument(0, new Reference('security.user_checker.'.$id))
             ->addArgument($config['secret'])
-            ->addArgument($id);
+            ->addArgument($id)
+        ;
 
         // remember me services
         if (isset($config['token_provider'])) {
             $templateId = 'security.authentication.rememberme.services.persistent';
-            $rememberMeServicesId = $templateId . '.' . $id;
+            $rememberMeServicesId = $templateId.'.'.$id;
         } else {
             $templateId = 'security.authentication.rememberme.services.simplehash';
-            $rememberMeServicesId = $templateId . '.' . $id;
+            $rememberMeServicesId = $templateId.'.'.$id;
         }
 
-        if ($container->hasDefinition('security.logout_listener.' . $id)) {
+        if ($container->hasDefinition('security.logout_listener.'.$id)) {
             $container
-                ->getDefinition('security.logout_listener.' . $id)
-                ->addMethodCall('addHandler', array(new Reference($rememberMeServicesId)));
+                ->getDefinition('security.logout_listener.'.$id)
+                ->addMethodCall('addHandler', array(new Reference($rememberMeServicesId)))
+            ;
         }
 
         $rememberMeServices = $container->setDefinition($rememberMeServicesId, new DefinitionDecorator($templateId));
@@ -82,13 +84,14 @@ class RememberMeFactory implements SecurityFactoryInterface
                 $userProviders[] = new Reference($attribute['provider']);
                 $container
                     ->getDefinition($serviceId)
-                    ->addMethodCall('setRememberMeServices', array(new Reference($rememberMeServicesId)));
+                    ->addMethodCall('setRememberMeServices', array(new Reference($rememberMeServicesId)))
+                ;
             }
         }
         if ($config['user_providers']) {
             $userProviders = array();
             foreach ($config['user_providers'] as $providerName) {
-                $userProviders[] = new Reference('security.user.provider.concrete.' . $providerName);
+                $userProviders[] = new Reference('security.user.provider.concrete.'.$providerName);
             }
         }
         if (count($userProviders) === 0) {
@@ -98,7 +101,7 @@ class RememberMeFactory implements SecurityFactoryInterface
         $rememberMeServices->replaceArgument(0, array_unique($userProviders));
 
         // remember-me listener
-        $listenerId = 'security.authentication.listener.rememberme.' . $id;
+        $listenerId = 'security.authentication.listener.rememberme.'.$id;
         $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.rememberme'));
         $listener->replaceArgument(1, new Reference($rememberMeServicesId));
         $listener->replaceArgument(5, $config['catch_exceptions']);
@@ -121,37 +124,34 @@ class RememberMeFactory implements SecurityFactoryInterface
         $node->fixXmlConfig('user_provider');
         $builder = $node
             ->beforeNormalization()
-            ->ifTrue(function ($v) {
-                return isset($v['key']);
-            })
-            ->then(function ($v) {
-                if (isset($v['secret'])) {
-                    throw new \LogicException('Cannot set both key and secret options for remember_me, use only secret instead.');
-                }
+                ->ifTrue(function ($v) { return isset($v['key']); })
+                ->then(function ($v) {
+                    if (isset($v['secret'])) {
+                        throw new \LogicException('Cannot set both key and secret options for remember_me, use only secret instead.');
+                    }
 
-                @trigger_error('remember_me.key is deprecated since version 2.8 and will be removed in 3.0. Use remember_me.secret instead.', E_USER_DEPRECATED);
+                    @trigger_error('remember_me.key is deprecated since version 2.8 and will be removed in 3.0. Use remember_me.secret instead.', E_USER_DEPRECATED);
 
-                $v['secret'] = $v['key'];
+                    $v['secret'] = $v['key'];
 
-                unset($v['key']);
+                    unset($v['key']);
 
-                return $v;
-            })
-            ->end()
+                    return $v;
+                })
+                ->end()
             ->children();
 
         $builder
             ->scalarNode('secret')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('token_provider')->end()
             ->arrayNode('user_providers')
-            ->beforeNormalization()
-            ->ifString()->then(function ($v) {
-                return array($v);
-            })
+                ->beforeNormalization()
+                    ->ifString()->then(function ($v) { return array($v); })
+                ->end()
+                ->prototype('scalar')->end()
             ->end()
-            ->prototype('scalar')->end()
-            ->end()
-            ->scalarNode('catch_exceptions')->defaultTrue()->end();
+            ->scalarNode('catch_exceptions')->defaultTrue()->end()
+        ;
 
         foreach ($this->options as $name => $value) {
             if (is_bool($value)) {

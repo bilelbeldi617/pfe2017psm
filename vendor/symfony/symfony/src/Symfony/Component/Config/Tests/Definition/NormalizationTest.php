@@ -25,22 +25,21 @@ class NormalizationTest extends TestCase
         $tb = new TreeBuilder();
         $tree = $tb
             ->root('root_name', 'array')
-            ->fixXmlConfig('encoder')
-            ->children()
-            ->node('encoders', 'array')
-            ->useAttributeAsKey('class')
-            ->prototype('array')
-            ->beforeNormalization()->ifString()->then(function ($v) {
-                return array('algorithm' => $v);
-            })->end()
-            ->children()
-            ->node('algorithm', 'scalar')->end()
+                ->fixXmlConfig('encoder')
+                ->children()
+                    ->node('encoders', 'array')
+                        ->useAttributeAsKey('class')
+                        ->prototype('array')
+                            ->beforeNormalization()->ifString()->then(function ($v) { return array('algorithm' => $v); })->end()
+                            ->children()
+                                ->node('algorithm', 'scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->buildTree();
+            ->buildTree()
+        ;
 
         $normalized = array(
             'encoders' => array(
@@ -49,11 +48,6 @@ class NormalizationTest extends TestCase
         );
 
         $this->assertNormalized($tree, $denormalized, $normalized);
-    }
-
-    public static function assertNormalized(NodeInterface $tree, $denormalized, $normalized)
-    {
-        self::assertSame($normalized, $tree->normalize($denormalized));
     }
 
     public function getEncoderTests()
@@ -106,18 +100,19 @@ class NormalizationTest extends TestCase
         $tb = new TreeBuilder();
         $tree = $tb
             ->root('root', 'array')
-            ->children()
-            ->node('logout', 'array')
-            ->fixXmlConfig('handler')
-            ->children()
-            ->node('handlers', 'array')
-            ->prototype('scalar')->end()
+                ->children()
+                    ->node('logout', 'array')
+                        ->fixXmlConfig('handler')
+                        ->children()
+                            ->node('handlers', 'array')
+                                ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->buildTree();
+            ->buildTree()
+        ;
 
         $normalized = array('logout' => array('handlers' => array('a', 'b', 'c')));
 
@@ -140,9 +135,7 @@ class NormalizationTest extends TestCase
             ),
         );
 
-        return array_map(function ($v) {
-            return array($v);
-        }, $configs);
+        return array_map(function ($v) { return array($v); }, $configs);
     }
 
     /**
@@ -155,25 +148,6 @@ class NormalizationTest extends TestCase
         );
 
         $this->assertNormalized($this->getNumericKeysTestTree(), $denormalized, $normalized);
-    }
-
-    private function getNumericKeysTestTree()
-    {
-        $tb = new TreeBuilder();
-        $tree = $tb
-            ->root('root', 'array')
-            ->children()
-            ->node('thing', 'array')
-            ->useAttributeAsKey('id')
-            ->prototype('array')
-            ->prototype('scalar')->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->buildTree();
-
-        return $tree;
     }
 
     public function getNumericKeysTests()
@@ -192,9 +166,7 @@ class NormalizationTest extends TestCase
             ),
         );
 
-        return array_map(function ($v) {
-            return array($v);
-        }, $configs);
+        return array_map(function ($v) { return array($v); }, $configs);
     }
 
     /**
@@ -217,16 +189,42 @@ class NormalizationTest extends TestCase
         $tb = new TreeBuilder();
         $tree = $tb
             ->root('root', 'array')
-            ->prototype('array')
-            ->children()
-            ->node('foo', 'scalar')->end()
+                ->prototype('array')
+                    ->children()
+                        ->node('foo', 'scalar')->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->buildTree();
+            ->buildTree()
+        ;
 
         $data = array('first' => array('foo' => 'bar'));
 
         $this->assertNormalized($tree, $data, $data);
+    }
+
+    public static function assertNormalized(NodeInterface $tree, $denormalized, $normalized)
+    {
+        self::assertSame($normalized, $tree->normalize($denormalized));
+    }
+
+    private function getNumericKeysTestTree()
+    {
+        $tb = new TreeBuilder();
+        $tree = $tb
+            ->root('root', 'array')
+                ->children()
+                    ->node('thing', 'array')
+                        ->useAttributeAsKey('id')
+                        ->prototype('array')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+            ->buildTree()
+        ;
+
+        return $tree;
     }
 }

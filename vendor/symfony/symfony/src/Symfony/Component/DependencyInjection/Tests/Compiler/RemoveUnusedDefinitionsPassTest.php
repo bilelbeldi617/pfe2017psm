@@ -26,13 +26,16 @@ class RemoveUnusedDefinitionsPassTest extends TestCase
         $container = new ContainerBuilder();
         $container
             ->register('foo')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
         $container
             ->register('bar')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
         $container
             ->register('moo')
-            ->setArguments(array(new Reference('bar')));
+            ->setArguments(array(new Reference('bar')))
+        ;
 
         $this->process($container);
 
@@ -41,22 +44,18 @@ class RemoveUnusedDefinitionsPassTest extends TestCase
         $this->assertTrue($container->hasDefinition('moo'));
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $repeatedPass = new RepeatedPass(array(new AnalyzeServiceReferencesPass(), new RemoveUnusedDefinitionsPass()));
-        $repeatedPass->process($container);
-    }
-
     public function testProcessRemovesUnusedDefinitionsRecursively()
     {
         $container = new ContainerBuilder();
         $container
             ->register('foo')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
         $container
             ->register('bar')
             ->setArguments(array(new Reference('foo')))
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
 
         $this->process($container);
 
@@ -69,10 +68,12 @@ class RemoveUnusedDefinitionsPassTest extends TestCase
         $container = new ContainerBuilder();
         $container
             ->register('foo')
-            ->setPublic(false);
+            ->setPublic(false)
+        ;
         $container
             ->register('bar')
-            ->setArguments(array(new Definition(null, array(new Reference('foo')))));
+            ->setArguments(array(new Definition(null, array(new Reference('foo')))))
+        ;
 
         $this->process($container);
 
@@ -103,5 +104,11 @@ class RemoveUnusedDefinitionsPassTest extends TestCase
         $this->assertTrue($container->hasDefinition('foo'));
         $this->assertTrue($container->hasDefinition('bar'));
         $this->assertTrue($container->hasDefinition('foobar'));
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $repeatedPass = new RepeatedPass(array(new AnalyzeServiceReferencesPass(), new RemoveUnusedDefinitionsPass()));
+        $repeatedPass->process($container);
     }
 }

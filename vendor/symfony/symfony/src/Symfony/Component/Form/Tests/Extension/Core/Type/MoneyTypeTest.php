@@ -17,6 +17,15 @@ class MoneyTypeTest extends BaseTypeTest
 {
     const TESTED_TYPE = 'Symfony\Component\Form\Extension\Core\Type\MoneyType';
 
+    protected function setUp()
+    {
+        // we test against different locales, so we need the full
+        // implementation
+        IntlTestHelper::requireFullIntl($this, false);
+
+        parent::setUp();
+    }
+
     /**
      * @group legacy
      */
@@ -44,9 +53,10 @@ class MoneyTypeTest extends BaseTypeTest
         $view = $this->factory->create(static::TESTED_TYPE, null, array('currency' => 'JPY'))
             ->createView();
 
-        $this->assertTrue((bool)strstr($view->vars['money_pattern'], '¥'));
+        $this->assertTrue((bool) strstr($view->vars['money_pattern'], '¥'));
     }
 
+    // https://github.com/symfony/symfony/issues/5458
     public function testPassDifferentPatternsForDifferentCurrencies()
     {
         \Locale::setDefault('de_DE');
@@ -58,19 +68,8 @@ class MoneyTypeTest extends BaseTypeTest
         $this->assertSame('{{ widget }} €', $view2->vars['money_pattern']);
     }
 
-    // https://github.com/symfony/symfony/issues/5458
-
     public function testSubmitNull($expected = null, $norm = null, $view = null)
     {
         parent::testSubmitNull($expected, $norm, '');
-    }
-
-    protected function setUp()
-    {
-        // we test against different locales, so we need the full
-        // implementation
-        IntlTestHelper::requireFullIntl($this, false);
-
-        parent::setUp();
     }
 }

@@ -35,10 +35,10 @@ abstract class CacheDefinition
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\Definition $service
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\Definition         $service
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      */
     abstract public function configure($name, array $config, Definition $service, ContainerBuilder $container);
 }

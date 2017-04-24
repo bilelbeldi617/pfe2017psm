@@ -26,7 +26,7 @@ final class DriverChain implements AdvancedDriverInterface
     {
         $this->drivers = $drivers;
     }
-
+    
     public function addDriver(DriverInterface $driver)
     {
         $this->drivers[] = $driver;
@@ -53,7 +53,7 @@ final class DriverChain implements AdvancedDriverInterface
             if (!$driver instanceof AdvancedDriverInterface) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Driver "%s" must be an instance of "AdvancedDriverInterface" to use ' .
+                        'Driver "%s" must be an instance of "AdvancedDriverInterface" to use '.
                         '"DriverChain::getAllClassNames()".',
                         get_class($driver)
                     )

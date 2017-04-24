@@ -33,27 +33,31 @@ class SimplePreAuthenticationListenerTest extends TestCase
         $this->tokenStorage
             ->expects($this->once())
             ->method('setToken')
-            ->with($this->equalTo($this->token));
+            ->with($this->equalTo($this->token))
+        ;
 
         $this->authenticationManager
             ->expects($this->once())
             ->method('authenticate')
             ->with($this->equalTo($this->token))
-            ->will($this->returnValue($this->token));
+            ->will($this->returnValue($this->token))
+        ;
 
         $simpleAuthenticator = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface')->getMock();
         $simpleAuthenticator
             ->expects($this->once())
             ->method('createToken')
             ->with($this->equalTo($this->request), $this->equalTo('secured_area'))
-            ->will($this->returnValue($this->token));
+            ->will($this->returnValue($this->token))
+        ;
 
         $loginEvent = new InteractiveLoginEvent($this->request, $this->token);
 
         $this->dispatcher
             ->expects($this->once())
             ->method('dispatch')
-            ->with($this->equalTo(SecurityEvents::INTERACTIVE_LOGIN), $this->equalTo($loginEvent));
+            ->with($this->equalTo(SecurityEvents::INTERACTIVE_LOGIN), $this->equalTo($loginEvent))
+        ;
 
         $listener = new SimplePreAuthenticationListener($this->tokenStorage, $this->authenticationManager, 'secured_area', $simpleAuthenticator, $this->logger, $this->dispatcher);
 
@@ -68,18 +72,21 @@ class SimplePreAuthenticationListenerTest extends TestCase
             ->expects($this->once())
             ->method('authenticate')
             ->with($this->equalTo($this->token))
-            ->will($this->throwException($exception));
+            ->will($this->throwException($exception))
+        ;
 
         $this->tokenStorage->expects($this->once())
             ->method('setToken')
-            ->with($this->equalTo(null));
+            ->with($this->equalTo(null))
+        ;
 
         $simpleAuthenticator = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface')->getMock();
         $simpleAuthenticator
             ->expects($this->once())
             ->method('createToken')
             ->with($this->equalTo($this->request), $this->equalTo('secured_area'))
-            ->will($this->returnValue($this->token));
+            ->will($this->returnValue($this->token))
+        ;
 
         $listener = new SimplePreAuthenticationListener($this->tokenStorage, $this->authenticationManager, 'secured_area', $simpleAuthenticator, $this->logger, $this->dispatcher);
 
@@ -90,7 +97,8 @@ class SimplePreAuthenticationListenerTest extends TestCase
     {
         $this->authenticationManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
 
@@ -100,7 +108,8 @@ class SimplePreAuthenticationListenerTest extends TestCase
         $this->event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($this->request));
+            ->will($this->returnValue($this->request))
+        ;
 
         $this->logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->getMock();
         $this->tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();

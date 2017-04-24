@@ -38,6 +38,16 @@ final class RoleSecurityIdentity implements SecurityIdentityInterface
     }
 
     /**
+     * Returns the role name.
+     *
+     * @return string
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function equals(SecurityIdentityInterface $sid)
@@ -47,16 +57,6 @@ final class RoleSecurityIdentity implements SecurityIdentityInterface
         }
 
         return $this->role === $sid->getRole();
-    }
-
-    /**
-     * Returns the role name.
-     *
-     * @return string
-     */
-    public function getRole()
-    {
-        return $this->role;
     }
 
     /**

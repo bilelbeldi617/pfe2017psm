@@ -51,14 +51,6 @@ final class User implements AdvancedUserInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getRoles()
     {
         return $this->roles;
@@ -77,6 +69,14 @@ final class User implements AdvancedUserInterface
      */
     public function getSalt()
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsername()
+    {
+        return $this->username;
     }
 
     /**

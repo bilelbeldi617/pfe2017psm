@@ -34,6 +34,43 @@ abstract class AbstractLegacyApiTest extends AbstractValidatorTest
     protected $validator;
 
     /**
+     * @param MetadataFactoryInterface $metadataFactory
+     *
+     * @return LegacyValidatorInterface
+     */
+    abstract protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array());
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->validator = $this->createValidator($this->metadataFactory);
+    }
+
+    protected function validate($value, $constraints = null, $groups = null)
+    {
+        if (null === $constraints) {
+            $constraints = new Valid();
+        }
+
+        if ($constraints instanceof Valid) {
+            return $this->validator->validate($value, $groups, $constraints->traverse, $constraints->deep);
+        }
+
+        return $this->validator->validateValue($value, $constraints, $groups);
+    }
+
+    protected function validateProperty($object, $propertyName, $groups = null)
+    {
+        return $this->validator->validateProperty($object, $propertyName, $groups);
+    }
+
+    protected function validatePropertyValue($object, $propertyName, $value, $groups = null)
+    {
+        return $this->validator->validatePropertyValue($object, $propertyName, $value, $groups);
+    }
+
+    /**
      * @expectedException \Symfony\Component\Validator\Exception\NoSuchMetadataException
      */
     public function testTraversableTraverseDisabled()
@@ -269,45 +306,8 @@ abstract class AbstractLegacyApiTest extends AbstractValidatorTest
         $this->assertTrue($entity->initialized);
     }
 
-    protected function validate($value, $constraints = null, $groups = null)
-    {
-        if (null === $constraints) {
-            $constraints = new Valid();
-        }
-
-        if ($constraints instanceof Valid) {
-            return $this->validator->validate($value, $groups, $constraints->traverse, $constraints->deep);
-        }
-
-        return $this->validator->validateValue($value, $constraints, $groups);
-    }
-
     public function testGetMetadataFactory()
     {
         $this->assertSame($this->metadataFactory, $this->validator->getMetadataFactory());
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->validator = $this->createValidator($this->metadataFactory);
-    }
-
-    /**
-     * @param MetadataFactoryInterface $metadataFactory
-     *
-     * @return LegacyValidatorInterface
-     */
-    abstract protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array());
-
-    protected function validateProperty($object, $propertyName, $groups = null)
-    {
-        return $this->validator->validateProperty($object, $propertyName, $groups);
-    }
-
-    protected function validatePropertyValue($object, $propertyName, $value, $groups = null)
-    {
-        return $this->validator->validatePropertyValue($object, $propertyName, $value, $groups);
     }
 }

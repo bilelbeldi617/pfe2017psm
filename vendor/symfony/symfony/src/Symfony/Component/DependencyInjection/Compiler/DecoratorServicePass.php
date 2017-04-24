@@ -42,7 +42,7 @@ class DecoratorServicePass implements CompilerPassInterface
             $definition->setDecoratedService(null);
 
             if (!$renamedId) {
-                $renamedId = $id . '.inner';
+                $renamedId = $id.'.inner';
             }
 
             // we create a new alias/service for the service we are replacing
@@ -50,7 +50,7 @@ class DecoratorServicePass implements CompilerPassInterface
             if ($container->hasAlias($inner)) {
                 $alias = $container->getAlias($inner);
                 $public = $alias->isPublic();
-                $container->setAlias($renamedId, new Alias((string)$alias, false));
+                $container->setAlias($renamedId, new Alias((string) $alias, false));
             } else {
                 $decoratedDefinition = $container->getDefinition($inner);
                 $definition->setTags(array_merge($decoratedDefinition->getTags(), $definition->getTags()));

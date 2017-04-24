@@ -14,6 +14,11 @@ class AppVariableTest extends TestCase
      */
     protected $appVariable;
 
+    protected function setUp()
+    {
+        $this->appVariable = new AppVariable();
+    }
+
     /**
      * @dataProvider debugDataProvider
      */
@@ -49,14 +54,6 @@ class AppVariableTest extends TestCase
         $this->assertEquals($session, $this->appVariable->getSession());
     }
 
-    protected function setRequestStack($request)
-    {
-        $requestStackMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestStack')->getMock();
-        $requestStackMock->method('getCurrentRequest')->willReturn($request);
-
-        $this->appVariable->setRequestStack($requestStackMock);
-    }
-
     public function testGetSessionWithNoRequest()
     {
         $this->setRequestStack(null);
@@ -76,17 +73,6 @@ class AppVariableTest extends TestCase
         $this->setTokenStorage($user = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserInterface')->getMock());
 
         $this->assertEquals($user, $this->appVariable->getUser());
-    }
-
-    protected function setTokenStorage($user)
-    {
-        $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
-        $this->appVariable->setTokenStorage($tokenStorage);
-
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
-        $tokenStorage->method('getToken')->willReturn($token);
-
-        $token->method('getUser')->willReturn($user);
     }
 
     public function testGetUserWithUsernameAsTokenUser()
@@ -144,8 +130,22 @@ class AppVariableTest extends TestCase
         $this->appVariable->getSession();
     }
 
-    protected function setUp()
+    protected function setRequestStack($request)
     {
-        $this->appVariable = new AppVariable();
+        $requestStackMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestStack')->getMock();
+        $requestStackMock->method('getCurrentRequest')->willReturn($request);
+
+        $this->appVariable->setRequestStack($requestStackMock);
+    }
+
+    protected function setTokenStorage($user)
+    {
+        $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
+        $this->appVariable->setTokenStorage($tokenStorage);
+
+        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $tokenStorage->method('getToken')->willReturn($token);
+
+        $token->method('getUser')->willReturn($user);
     }
 }

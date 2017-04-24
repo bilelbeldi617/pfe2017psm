@@ -18,6 +18,15 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class DisconnectedMetadataFactoryTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        if (!class_exists('Doctrine\\ORM\\Version')) {
+            $this->markTestSkipped('Doctrine ORM is not available.');
+        }
+    }
+
     public function testCannotFindNamespaceAndPathForMetadata()
     {
         $class = new ClassMetadataInfo(__CLASS__);
@@ -41,14 +50,5 @@ class DisconnectedMetadataFactoryTest extends TestCase
         $factory->findNamespaceAndPathForMetadata($collection, '/path/to/code');
 
         $this->assertEquals('\Vendor\Package', $collection->getNamespace());
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        if (!class_exists('Doctrine\\ORM\\Version')) {
-            $this->markTestSkipped('Doctrine ORM is not available.');
-        }
     }
 }

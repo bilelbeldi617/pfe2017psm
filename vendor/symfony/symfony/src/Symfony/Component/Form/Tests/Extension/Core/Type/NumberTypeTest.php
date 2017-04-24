@@ -17,6 +17,16 @@ class NumberTypeTest extends BaseTypeTest
 {
     const TESTED_TYPE = 'Symfony\Component\Form\Extension\Core\Type\NumberType';
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // we test against "de_DE", so we need the full implementation
+        IntlTestHelper::requireFullIntl($this, false);
+
+        \Locale::setDefault('de_DE');
+    }
+
     /**
      * @group legacy
      */
@@ -62,15 +72,5 @@ class NumberTypeTest extends BaseTypeTest
     public function testSubmitNull($expected = null, $norm = null, $view = null)
     {
         parent::testSubmitNull($expected, $norm, '');
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        // we test against "de_DE", so we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
-
-        \Locale::setDefault('de_DE');
     }
 }

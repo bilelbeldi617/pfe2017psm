@@ -34,15 +34,36 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $serverParams;
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
     private $dispatcher;
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $factory;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $serverParams;
+
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->serverParams = $this->getMockBuilder('Symfony\Component\Form\Extension\Validator\Util\ServerParams')->setMethods(array('getNormalizedIniPostMaxSize', 'getContentLength'))->getMock();
+
+        parent::setUp();
+    }
+
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new FormValidator($this->serverParams);
+    }
 
     public function testValidate()
     {
@@ -57,23 +78,6 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($form, new Form());
 
         $this->assertNoViolation();
-    }
-
-    /**
-     * @param string $name
-     * @param string $dataClass
-     * @param array $options
-     *
-     * @return FormBuilder
-     */
-    private function getBuilder($name = 'name', $dataClass = null, array $options = array())
-    {
-        $options = array_replace(array(
-            'constraints' => array(),
-            'invalid_message_parameters' => array(),
-        ), $options);
-
-        return new FormBuilder($name, $dataClass, $this->dispatcher, $this->factory, $options);
     }
 
     public function testValidateConstraints()
@@ -121,14 +125,6 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($form, new Form());
 
         $this->assertNoViolation();
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getDataMapper()
-    {
-        return $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
     }
 
     public function testValidateIfChildWithValidConstraint()
@@ -221,8 +217,8 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $object = $this->getMockBuilder('\stdClass')->getMock();
 
         $form = $this->getBuilder('name', '\stdClass', array(
-            'validation_groups' => array(),
-        ))
+                'validation_groups' => array(),
+            ))
             ->setData($object)
             ->getForm();
 
@@ -264,20 +260,16 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $object = $this->getMockBuilder('\stdClass')->getMock();
 
         $form = $this->getBuilder('name', '\stdClass', array(
-            'invalid_message' => 'invalid_message_key',
-            // Invalid message parameters must be supported, because the
-            // invalid message can be a translation key
-            // see https://github.com/symfony/symfony/issues/5144
-            'invalid_message_parameters' => array('{{ foo }}' => 'bar'),
-        ))
+                'invalid_message' => 'invalid_message_key',
+                // Invalid message parameters must be supported, because the
+                // invalid message can be a translation key
+                // see https://github.com/symfony/symfony/issues/5144
+                'invalid_message_parameters' => array('{{ foo }}' => 'bar'),
+            ))
             ->setData($object)
             ->addViewTransformer(new CallbackTransformer(
-                function ($data) {
-                    return $data;
-                },
-                function () {
-                    throw new TransformationFailedException();
-                }
+                function ($data) { return $data; },
+                function () { throw new TransformationFailedException(); }
             ))
             ->getForm();
 
@@ -302,22 +294,18 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $object = $this->getMockBuilder('\stdClass')->getMock();
 
         $form = $this->getBuilder('name', '\stdClass', array(
-            'invalid_message' => 'invalid_message_key',
-            // Invalid message parameters must be supported, because the
-            // invalid message can be a translation key
-            // see https://github.com/symfony/symfony/issues/5144
-            'invalid_message_parameters' => array('{{ foo }}' => 'bar'),
-            'validation_groups' => array(),
-        ))
+                'invalid_message' => 'invalid_message_key',
+                // Invalid message parameters must be supported, because the
+                // invalid message can be a translation key
+                // see https://github.com/symfony/symfony/issues/5144
+                'invalid_message_parameters' => array('{{ foo }}' => 'bar'),
+                'validation_groups' => array(),
+            ))
             ->setData($object)
             ->addViewTransformer(new CallbackTransformer(
-                function ($data) {
-                    return $data;
-                },
-                function () {
-                    throw new TransformationFailedException();
-                }
-            ))
+                    function ($data) { return $data; },
+                    function () { throw new TransformationFailedException(); }
+                ))
             ->getForm();
 
         // Launch transformer
@@ -350,12 +338,8 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $form = $this->getBuilder('name', '\stdClass', $options)
             ->setData($object)
             ->addViewTransformer(new CallbackTransformer(
-                function ($data) {
-                    return $data;
-                },
-                function () {
-                    throw new TransformationFailedException();
-                }
+                function ($data) { return $data; },
+                function () { throw new TransformationFailedException(); }
             ))
             ->getForm();
 
@@ -374,17 +358,14 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
             ->assertRaised();
     }
 
+    // https://github.com/symfony/symfony/issues/4359
     public function testDontMarkInvalidIfAnyChildIsNotSynchronized()
     {
         $object = $this->getMockBuilder('\stdClass')->getMock();
 
         $failingTransformer = new CallbackTransformer(
-            function ($data) {
-                return $data;
-            },
-            function () {
-                throw new TransformationFailedException();
-            }
+            function ($data) { return $data; },
+            function () { throw new TransformationFailedException(); }
         );
 
         $form = $this->getBuilder('name', '\stdClass')
@@ -407,8 +388,6 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
 
         $this->assertNoViolation();
     }
-
-    // https://github.com/symfony/symfony/issues/4359
 
     public function testHandleCallbackValidationGroups()
     {
@@ -497,18 +476,6 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($form, new Form());
 
         $this->assertNoViolation();
-    }
-
-    private function getForm($name = 'name', $dataClass = null, array $options = array())
-    {
-        return $this->getBuilder($name, $dataClass, $options)->getForm();
-    }
-
-    private function getSubmitButton($name = 'name', array $options = array())
-    {
-        $builder = new SubmitButtonBuilder($name, $options);
-
-        return $builder->getForm();
     }
 
     public function testDontUseValidationGroupOfUnclickedButton()
@@ -681,6 +648,16 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($form, new Form());
     }
 
+    /**
+     * Access has to be public, as this method is called via callback array
+     * in {@link testValidateFormDataCanHandleCallbackValidationGroups()}
+     * and {@link testValidateFormDataUsesInheritedCallbackValidationGroup()}.
+     */
+    public function getValidationGroups(FormInterface $form)
+    {
+        return array('group1', 'group2');
+    }
+
     private function getMockExecutionContext()
     {
         $context = $this->getMockBuilder('Symfony\Component\Validator\Context\ExecutionContextInterface')->getMock();
@@ -700,31 +677,39 @@ class FormValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * Access has to be public, as this method is called via callback array
-     * in {@link testValidateFormDataCanHandleCallbackValidationGroups()}
-     * and {@link testValidateFormDataUsesInheritedCallbackValidationGroup()}.
+     * @param string $name
+     * @param string $dataClass
+     * @param array  $options
+     *
+     * @return FormBuilder
      */
-    public function getValidationGroups(FormInterface $form)
+    private function getBuilder($name = 'name', $dataClass = null, array $options = array())
     {
-        return array('group1', 'group2');
+        $options = array_replace(array(
+            'constraints' => array(),
+            'invalid_message_parameters' => array(),
+        ), $options);
+
+        return new FormBuilder($name, $dataClass, $this->dispatcher, $this->factory, $options);
     }
 
-    protected function setUp()
+    private function getForm($name = 'name', $dataClass = null, array $options = array())
     {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->serverParams = $this->getMockBuilder('Symfony\Component\Form\Extension\Validator\Util\ServerParams')->setMethods(array('getNormalizedIniPostMaxSize', 'getContentLength'))->getMock();
-
-        parent::setUp();
+        return $this->getBuilder($name, $dataClass, $options)->getForm();
     }
 
-    protected function getApiVersion()
+    private function getSubmitButton($name = 'name', array $options = array())
     {
-        return Validation::API_VERSION_2_5;
+        $builder = new SubmitButtonBuilder($name, $options);
+
+        return $builder->getForm();
     }
 
-    protected function createValidator()
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getDataMapper()
     {
-        return new FormValidator($this->serverParams);
+        return $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
     }
 }

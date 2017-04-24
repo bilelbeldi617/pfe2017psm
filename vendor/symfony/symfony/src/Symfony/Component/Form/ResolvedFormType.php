@@ -71,12 +71,12 @@ class ResolvedFormType implements ResolvedFormTypeInterface
             // Anyone else should only override getBlockPrefix() if they actually
             // want to have a different block prefix than the default one
             if ($isOldOverwritten && !$isNewOverwritten) {
-                @trigger_error(get_class($innerType) . ': The FormTypeInterface::getName() method is deprecated since version 2.8 and will be removed in 3.0. Remove it from your classes. Use getBlockPrefix() if you want to customize the template block prefix. This method will be added to the FormTypeInterface with Symfony 3.0.', E_USER_DEPRECATED);
+                @trigger_error(get_class($innerType).': The FormTypeInterface::getName() method is deprecated since version 2.8 and will be removed in 3.0. Remove it from your classes. Use getBlockPrefix() if you want to customize the template block prefix. This method will be added to the FormTypeInterface with Symfony 3.0.', E_USER_DEPRECATED);
             }
 
             $blockPrefix = $innerType->getBlockPrefix();
         } else {
-            @trigger_error(get_class($innerType) . ': The FormTypeInterface::getBlockPrefix() method will be added in version 3.0. You should extend AbstractType or add it to your implementation.', E_USER_DEPRECATED);
+            @trigger_error(get_class($innerType).': The FormTypeInterface::getBlockPrefix() method will be added in version 3.0. You should extend AbstractType or add it to your implementation.', E_USER_DEPRECATED);
 
             // Deal with classes that don't extend AbstractType
             // Calculate block prefix from the FQCN by default
@@ -165,6 +165,78 @@ class ResolvedFormType implements ResolvedFormTypeInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function createView(FormInterface $form, FormView $parent = null)
+    {
+        return $this->newView($parent);
+    }
+
+    /**
+     * Configures a form builder for the type hierarchy.
+     *
+     * @param FormBuilderInterface $builder The builder to configure
+     * @param array                $options The options used for the configuration
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if (null !== $this->parent) {
+            $this->parent->buildForm($builder, $options);
+        }
+
+        $this->innerType->buildForm($builder, $options);
+
+        foreach ($this->typeExtensions as $extension) {
+            $extension->buildForm($builder, $options);
+        }
+    }
+
+    /**
+     * Configures a form view for the type hierarchy.
+     *
+     * This method is called before the children of the view are built.
+     *
+     * @param FormView      $view    The form view to configure
+     * @param FormInterface $form    The form corresponding to the view
+     * @param array         $options The options used for the configuration
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        if (null !== $this->parent) {
+            $this->parent->buildView($view, $form, $options);
+        }
+
+        $this->innerType->buildView($view, $form, $options);
+
+        foreach ($this->typeExtensions as $extension) {
+            $extension->buildView($view, $form, $options);
+        }
+    }
+
+    /**
+     * Finishes a form view for the type hierarchy.
+     *
+     * This method is called after the children of the view have been built.
+     *
+     * @param FormView      $view    The form view to configure
+     * @param FormInterface $form    The form corresponding to the view
+     * @param array         $options The options used for the configuration
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        if (null !== $this->parent) {
+            $this->parent->finishView($view, $form, $options);
+        }
+
+        $this->innerType->finishView($view, $form, $options);
+
+        foreach ($this->typeExtensions as $extension) {
+            /* @var FormTypeExtensionInterface $extension */
+            $extension->finishView($view, $form, $options);
+        }
+    }
+
+    /**
      * Returns the configured options resolver used for this type.
      *
      * @return \Symfony\Component\OptionsResolver\OptionsResolverInterface The options resolver
@@ -188,10 +260,10 @@ class ResolvedFormType implements ResolvedFormTypeInterface
                 $isNewOverwritten = $reflector->getDeclaringClass()->getName() !== 'Symfony\Component\Form\AbstractType';
 
                 if ($isOldOverwritten && !$isNewOverwritten) {
-                    @trigger_error(get_class($this->innerType) . ': The FormTypeInterface::setDefaultOptions() method is deprecated since version 2.7 and will be removed in 3.0. Use configureOptions() instead. This method will be added to the FormTypeInterface with Symfony 3.0.', E_USER_DEPRECATED);
+                    @trigger_error(get_class($this->innerType).': The FormTypeInterface::setDefaultOptions() method is deprecated since version 2.7 and will be removed in 3.0. Use configureOptions() instead. This method will be added to the FormTypeInterface with Symfony 3.0.', E_USER_DEPRECATED);
                 }
             } else {
-                @trigger_error(get_class($this->innerType) . ': The FormTypeInterface::configureOptions() method will be added in Symfony 3.0. You should extend AbstractType or implement it in your classes.', E_USER_DEPRECATED);
+                @trigger_error(get_class($this->innerType).': The FormTypeInterface::configureOptions() method will be added in Symfony 3.0. You should extend AbstractType or implement it in your classes.', E_USER_DEPRECATED);
             }
 
             foreach ($this->typeExtensions as $extension) {
@@ -205,10 +277,10 @@ class ResolvedFormType implements ResolvedFormTypeInterface
                     $isNewOverwritten = $reflector->getDeclaringClass()->getName() !== 'Symfony\Component\Form\AbstractTypeExtension';
 
                     if ($isOldOverwritten && !$isNewOverwritten) {
-                        @trigger_error(get_class($extension) . ': The FormTypeExtensionInterface::setDefaultOptions() method is deprecated since version 2.7 and will be removed in 3.0. Use configureOptions() instead. This method will be added to the FormTypeExtensionInterface with Symfony 3.0.', E_USER_DEPRECATED);
+                        @trigger_error(get_class($extension).': The FormTypeExtensionInterface::setDefaultOptions() method is deprecated since version 2.7 and will be removed in 3.0. Use configureOptions() instead. This method will be added to the FormTypeExtensionInterface with Symfony 3.0.', E_USER_DEPRECATED);
                     }
                 } else {
-                    @trigger_error(get_class($this->innerType) . ': The FormTypeExtensionInterface::configureOptions() method will be added in Symfony 3.0. You should extend AbstractTypeExtension or implement it in your classes.', E_USER_DEPRECATED);
+                    @trigger_error(get_class($this->innerType).': The FormTypeExtensionInterface::configureOptions() method will be added in Symfony 3.0. You should extend AbstractTypeExtension or implement it in your classes.', E_USER_DEPRECATED);
                 }
             }
         }
@@ -221,10 +293,10 @@ class ResolvedFormType implements ResolvedFormTypeInterface
      *
      * Override this method if you want to customize the builder class.
      *
-     * @param string $name The name of the builder
-     * @param string $dataClass The data class
-     * @param FormFactoryInterface $factory The current form factory
-     * @param array $options The builder options
+     * @param string               $name      The name of the builder
+     * @param string               $dataClass The data class
+     * @param FormFactoryInterface $factory   The current form factory
+     * @param array                $options   The builder options
      *
      * @return FormBuilderInterface The new builder instance
      */
@@ -242,14 +314,6 @@ class ResolvedFormType implements ResolvedFormTypeInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function createView(FormInterface $form, FormView $parent = null)
-    {
-        return $this->newView($parent);
-    }
-
-    /**
      * Creates a new view instance.
      *
      * Override this method if you want to customize the view class.
@@ -261,69 +325,5 @@ class ResolvedFormType implements ResolvedFormTypeInterface
     protected function newView(FormView $parent = null)
     {
         return new FormView($parent);
-    }
-
-    /**
-     * Configures a form builder for the type hierarchy.
-     *
-     * @param FormBuilderInterface $builder The builder to configure
-     * @param array $options The options used for the configuration
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        if (null !== $this->parent) {
-            $this->parent->buildForm($builder, $options);
-        }
-
-        $this->innerType->buildForm($builder, $options);
-
-        foreach ($this->typeExtensions as $extension) {
-            $extension->buildForm($builder, $options);
-        }
-    }
-
-    /**
-     * Configures a form view for the type hierarchy.
-     *
-     * This method is called before the children of the view are built.
-     *
-     * @param FormView $view The form view to configure
-     * @param FormInterface $form The form corresponding to the view
-     * @param array $options The options used for the configuration
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        if (null !== $this->parent) {
-            $this->parent->buildView($view, $form, $options);
-        }
-
-        $this->innerType->buildView($view, $form, $options);
-
-        foreach ($this->typeExtensions as $extension) {
-            $extension->buildView($view, $form, $options);
-        }
-    }
-
-    /**
-     * Finishes a form view for the type hierarchy.
-     *
-     * This method is called after the children of the view have been built.
-     *
-     * @param FormView $view The form view to configure
-     * @param FormInterface $form The form corresponding to the view
-     * @param array $options The options used for the configuration
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
-    {
-        if (null !== $this->parent) {
-            $this->parent->finishView($view, $form, $options);
-        }
-
-        $this->innerType->finishView($view, $form, $options);
-
-        foreach ($this->typeExtensions as $extension) {
-            /* @var FormTypeExtensionInterface $extension */
-            $extension->finishView($view, $form, $options);
-        }
     }
 }

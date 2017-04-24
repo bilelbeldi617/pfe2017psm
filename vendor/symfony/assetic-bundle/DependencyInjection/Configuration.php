@@ -52,37 +52,28 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->booleanNode('debug')->defaultValue('%kernel.debug%')->end()
-            ->arrayNode('use_controller')
-            ->addDefaultsIfNotSet()
-            ->treatTrueLike(array('enabled' => true))
-            ->treatFalseLike(array('enabled' => false))
-            ->children()
-            ->booleanNode('enabled')->defaultValue('%kernel.debug%')->end()
-            ->booleanNode('profiler')->defaultFalse()->end()
+                ->booleanNode('debug')->defaultValue('%kernel.debug%')->end()
+                ->arrayNode('use_controller')
+                    ->addDefaultsIfNotSet()
+                    ->treatTrueLike(array('enabled' => true))
+                    ->treatFalseLike(array('enabled' => false))
+                    ->children()
+                        ->booleanNode('enabled')->defaultValue('%kernel.debug%')->end()
+                        ->booleanNode('profiler')->defaultFalse()->end()
+                    ->end()
+                ->end()
+                ->scalarNode('read_from')->defaultValue('%kernel.root_dir%/../web')->end()
+                ->scalarNode('write_to')->defaultValue('%assetic.read_from%')->end()
+                ->scalarNode('java')->defaultValue(function () use ($finder) { return $finder->find('java', '/usr/bin/java'); })->end()
+                ->scalarNode('node')->defaultValue(function () use ($finder) { return $finder->find('node', '/usr/bin/node'); })->end()
+                ->arrayNode('node_paths')
+                    ->prototype('scalar')->end()
+                ->end()
+                ->scalarNode('ruby')->defaultValue(function () use ($finder) { return $finder->find('ruby', '/usr/bin/ruby'); })->end()
+                ->scalarNode('sass')->defaultValue(function () use ($finder) { return $finder->find('sass', '/usr/bin/sass'); })->end()
+                ->scalarNode('reactjsx')->defaultValue(function () use ($finder) { return $finder->find('reactjsx', '/usr/bin/jsx'); })->end()
             ->end()
-            ->end()
-            ->scalarNode('read_from')->defaultValue('%kernel.root_dir%/../web')->end()
-            ->scalarNode('write_to')->defaultValue('%assetic.read_from%')->end()
-            ->scalarNode('java')->defaultValue(function () use ($finder) {
-                return $finder->find('java', '/usr/bin/java');
-            })->end()
-            ->scalarNode('node')->defaultValue(function () use ($finder) {
-                return $finder->find('node', '/usr/bin/node');
-            })->end()
-            ->arrayNode('node_paths')
-            ->prototype('scalar')->end()
-            ->end()
-            ->scalarNode('ruby')->defaultValue(function () use ($finder) {
-                return $finder->find('ruby', '/usr/bin/ruby');
-            })->end()
-            ->scalarNode('sass')->defaultValue(function () use ($finder) {
-                return $finder->find('sass', '/usr/bin/sass');
-            })->end()
-            ->scalarNode('reactjsx')->defaultValue(function () use ($finder) {
-                return $finder->find('reactjsx', '/usr/bin/jsx');
-            })->end()
-            ->end();
+        ;
 
         $this->addVariablesSection($rootNode);
         $this->addBundlesSection($rootNode);
@@ -99,13 +90,14 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->fixXmlConfig('variable')
             ->children()
-            ->arrayNode('variables')
-            ->useAttributeAsKey('name')
-            ->prototype('array')
-            ->prototype('scalar')->end()
+                ->arrayNode('variables')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->prototype('scalar')->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end();
+        ;
     }
 
     private function addBundlesSection(ArrayNodeDefinition $rootNode)
@@ -113,17 +105,18 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->fixXmlConfig('bundle')
             ->children()
-            ->arrayNode('bundles')
-            ->defaultValue($this->bundles)
-            ->treatNullLike($this->bundles)
-            ->prototype('scalar')
-            ->validate()
-            ->ifNotInArray($this->bundles)
-            ->thenInvalid('%s is not a valid bundle.')
+                ->arrayNode('bundles')
+                    ->defaultValue($this->bundles)
+                    ->treatNullLike($this->bundles)
+                    ->prototype('scalar')
+                        ->validate()
+                            ->ifNotInArray($this->bundles)
+                            ->thenInvalid('%s is not a valid bundle.')
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end();
+        ;
     }
 
     private function addAssetsSection(ArrayNodeDefinition $rootNode)
@@ -131,58 +124,56 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->fixXmlConfig('asset')
             ->children()
-            ->arrayNode('assets')
-            ->requiresAtLeastOneElement()
-            ->useAttributeAsKey('name')
-            ->prototype('array')
-            ->beforeNormalization()
-            // a scalar is a simple formula of one input file
-            ->ifTrue(function ($v) {
-                return !is_array($v);
-            })
-            ->then(function ($v) {
-                return array('inputs' => array($v));
-            })
-            ->end()
-            ->beforeNormalization()
-            ->always()
-            ->then(function ($v) {
-                // cast scalars as array
-                foreach (array('input', 'inputs', 'filter', 'filters') as $key) {
-                    if (isset($v[$key]) && !is_array($v[$key])) {
-                        $v[$key] = array($v[$key]);
-                    }
-                }
+                ->arrayNode('assets')
+                    ->requiresAtLeastOneElement()
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->beforeNormalization()
+                            // a scalar is a simple formula of one input file
+                            ->ifTrue(function ($v) { return !is_array($v); })
+                            ->then(function ($v) { return array('inputs' => array($v)); })
+                        ->end()
+                        ->beforeNormalization()
+                            ->always()
+                            ->then(function ($v) {
+                                // cast scalars as array
+                                foreach (array('input', 'inputs', 'filter', 'filters') as $key) {
+                                    if (isset($v[$key]) && !is_array($v[$key])) {
+                                        $v[$key] = array($v[$key]);
+                                    }
+                                }
 
-                // organize arbitrary options
-                foreach ($v as $key => $value) {
-                    if (!in_array($key, array('input', 'inputs', 'filter', 'filters', 'option', 'options'))) {
-                        $v['options'][$key] = $value;
-                        unset($v[$key]);
-                    }
-                }
+                                // organize arbitrary options
+                                foreach ($v as $key => $value) {
+                                    if (!in_array($key, array('input', 'inputs', 'filter', 'filters', 'option', 'options'))) {
+                                        $v['options'][$key] = $value;
+                                        unset($v[$key]);
+                                    }
+                                }
 
-                return $v;
-            })
+                                return $v;
+                            })
+                        ->end()
+
+                        // the formula
+                        ->fixXmlConfig('input')
+                        ->fixXmlConfig('filter')
+                        ->children()
+                            ->arrayNode('inputs')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('filters')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('options')
+                                ->useAttributeAsKey('name')
+                                ->prototype('variable')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
-            // the formula
-            ->fixXmlConfig('input')
-            ->fixXmlConfig('filter')
-            ->children()
-            ->arrayNode('inputs')
-            ->prototype('scalar')->end()
-            ->end()
-            ->arrayNode('filters')
-            ->prototype('scalar')->end()
-            ->end()
-            ->arrayNode('options')
-            ->useAttributeAsKey('name')
-            ->prototype('variable')->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end();
+        ;
     }
 
     private function addFiltersSection(ArrayNodeDefinition $rootNode, ExecutableFinder $finder)
@@ -190,75 +181,74 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->fixXmlConfig('filter')
             ->children()
-            ->arrayNode('filters')
-            ->requiresAtLeastOneElement()
-            ->useAttributeAsKey('name')
-            ->prototype('variable')
-            ->treatNullLike(array())
-            ->validate()
-            ->ifTrue(function ($v) {
-                return !is_array($v);
-            })
-            ->thenInvalid('The assetic.filters config %s must be either null or an array.')
-            ->end()
-            ->end()
-            ->validate()
-            ->always(function ($v) use ($finder) {
-                if (isset($v['compass']) && !isset($v['compass']['bin'])) {
-                    $v['compass']['bin'] = $finder->find('compass', '/usr/bin/compass');
-                }
+                ->arrayNode('filters')
+                    ->requiresAtLeastOneElement()
+                    ->useAttributeAsKey('name')
+                    ->prototype('variable')
+                        ->treatNullLike(array())
+                        ->validate()
+                            ->ifTrue(function ($v) { return !is_array($v); })
+                            ->thenInvalid('The assetic.filters config %s must be either null or an array.')
+                        ->end()
+                    ->end()
+                    ->validate()
+                        ->always(function ($v) use ($finder) {
+                            if (isset($v['compass']) && !isset($v['compass']['bin'])) {
+                                $v['compass']['bin'] = $finder->find('compass', '/usr/bin/compass');
+                            }
 
-                return $v;
-            })
+                            return $v;
+                        })
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end();
+        ;
     }
 
     private function addWorkersSection(ArrayNodeDefinition $rootNode)
     {
         $rootNode
             ->children()
-            ->arrayNode('workers')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->arrayNode('cache_busting')
-            ->treatTrueLike(array('enabled' => true))
-            ->treatFalseLike(array('enabled' => false))
-            ->treatNullLike(array('enabled' => true))
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
+                ->arrayNode('workers')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('cache_busting')
+                            ->treatTrueLike(array('enabled' => true))
+                            ->treatFalseLike(array('enabled' => false))
+                            ->treatNullLike(array('enabled' => true))
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->booleanNode('enabled')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end();
+        ;
     }
 
     private function addTwigSection(ArrayNodeDefinition $rootNode)
     {
         $rootNode
             ->children()
-            ->arrayNode('twig')
-            ->addDefaultsIfNotSet()
-            ->fixXmlConfig('function')
-            ->children()
-            ->arrayNode('functions')
-            ->defaultValue(array())
-            ->useAttributeAsKey('name')
-            ->prototype('variable')
-            ->treatNullLike(array())
-            ->validate()
-            ->ifTrue(function ($v) {
-                return !is_array($v);
-            })
-            ->thenInvalid('The assetic.twig.functions config %s must be either null or an array.')
+                ->arrayNode('twig')
+                    ->addDefaultsIfNotSet()
+                    ->fixXmlConfig('function')
+                    ->children()
+                        ->arrayNode('functions')
+                            ->defaultValue(array())
+                            ->useAttributeAsKey('name')
+                            ->prototype('variable')
+                                ->treatNullLike(array())
+                                ->validate()
+                                    ->ifTrue(function ($v) { return !is_array($v); })
+                                    ->thenInvalid('The assetic.twig.functions config %s must be either null or an array.')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end();
+        ;
     }
 }

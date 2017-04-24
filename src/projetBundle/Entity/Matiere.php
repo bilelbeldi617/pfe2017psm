@@ -26,26 +26,20 @@ class Matiere
      * @ORM\ManyToOne(targetEntity="Enseignant")
      *
      */
-    private $enseignant;
+    private $enseignant ;
 
 
     /**
      * @ORM\ManyToOne(targetEntity="Groupe")
      *
      */
-    private $groupe;
+    private $groupe ;
 
     /**
      * @ORM\ManyToOne(targetEntity="AnneeScolaire")
      *
      */
-    private $anneeScolaire;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="libelle_matiere", type="string", length=50)
-     */
-    private $libelleMatiere;
+    private $anneeScolaire ;
 
     /**
      * @return mixed
@@ -80,23 +74,21 @@ class Matiere
     }
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="libelle_matiere", type="string", length=50)
+     */
+    private $libelleMatiere;
+
+
+    /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get libelleMatiere
-     *
-     * @return string
-     */
-    public function getLibelleMatiere()
-    {
-        return $this->libelleMatiere;
     }
 
     /**
@@ -110,5 +102,15 @@ class Matiere
         $this->libelleMatiere = $libelleMatiere;
 
         return $this;
+    }
+
+    /**
+     * Get libelleMatiere
+     *
+     * @return string 
+     */
+    public function getLibelleMatiere()
+    {
+        return $this->libelleMatiere;
     }
 }

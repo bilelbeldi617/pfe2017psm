@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Finder\Adapter;
 
-@trigger_error('The ' . __NAMESPACE__ . '\AbstractAdapter class is deprecated since version 2.8 and will be removed in 3.0. Use directly the Finder class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\AbstractAdapter class is deprecated since version 2.8 and will be removed in 3.0. Use directly the Finder class instead.', E_USER_DEPRECATED);
 
 /**
  * Interface for finder engine implementations.
@@ -22,7 +22,6 @@ namespace Symfony\Component\Finder\Adapter;
  */
 abstract class AbstractAdapter implements AdapterInterface
 {
-    private static $areSupported = array();
     protected $followLinks = false;
     protected $mode = 0;
     protected $minDepth = 0;
@@ -40,6 +39,8 @@ abstract class AbstractAdapter implements AdapterInterface
     protected $notPaths = array();
     protected $ignoreUnreadableDirs = false;
 
+    private static $areSupported = array();
+
     /**
      * {@inheritdoc}
      */
@@ -53,19 +54,6 @@ abstract class AbstractAdapter implements AdapterInterface
 
         return self::$areSupported[$name];
     }
-
-    /**
-     * Returns whether the adapter is supported in the current environment.
-     *
-     * This method should be implemented in all adapters. Do not implement
-     * isSupported in the adapters as the generic implementation provides a cache
-     * layer.
-     *
-     * @see isSupported()
-     *
-     * @return bool Whether the adapter is supported
-     */
-    abstract protected function canBeUsed();
 
     /**
      * {@inheritdoc}
@@ -232,8 +220,21 @@ abstract class AbstractAdapter implements AdapterInterface
      */
     public function ignoreUnreadableDirs($ignore = true)
     {
-        $this->ignoreUnreadableDirs = (bool)$ignore;
+        $this->ignoreUnreadableDirs = (bool) $ignore;
 
         return $this;
     }
+
+    /**
+     * Returns whether the adapter is supported in the current environment.
+     *
+     * This method should be implemented in all adapters. Do not implement
+     * isSupported in the adapters as the generic implementation provides a cache
+     * layer.
+     *
+     * @see isSupported()
+     *
+     * @return bool Whether the adapter is supported
+     */
+    abstract protected function canBeUsed();
 }

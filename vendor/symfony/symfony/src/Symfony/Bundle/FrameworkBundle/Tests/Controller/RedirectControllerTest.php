@@ -90,11 +90,6 @@ class RedirectControllerTest extends TestCase
         $this->assertEquals($expectedCode, $returnResponse->getStatusCode());
     }
 
-    public function assertRedirectUrl(Response $returnResponse, $expectedUrl)
-    {
-        $this->assertTrue($returnResponse->isRedirect($expectedUrl), "Expected: $expectedUrl\nGot:      " . $returnResponse->headers->get('Location'));
-    }
-
     public function provider()
     {
         return array(
@@ -153,6 +148,83 @@ class RedirectControllerTest extends TestCase
         $request = $this->createRequestObject('https', $host, $httpPort, $baseUrl);
         $controller = $this->createRedirectController($httpPort);
         $returnValue = $controller->urlRedirectAction($request, $path, false, 'http');
+        $this->assertRedirectUrl($returnValue, $expectedUrl);
+    }
+
+    public function urlRedirectProvider()
+    {
+        return array(
+            // Standard ports
+            array('http',  null, null,  'http',  80,   ''),
+            array('http',  80,   null,  'http',  80,   ''),
+            array('https', null, null,  'http',  80,   ''),
+            array('https', 80,   null,  'http',  80,   ''),
+
+            array('http',  null,  null, 'https', 443,  ''),
+            array('http',  null,  443,  'https', 443,  ''),
+            array('https', null,  null, 'https', 443,  ''),
+            array('https', null,  443,  'https', 443,  ''),
+
+            // Non-standard ports
+            array('http',  null,  null, 'http',  8080, ':8080'),
+            array('http',  4080,  null, 'http',  8080, ':4080'),
+            array('http',  80,    null, 'http',  8080, ''),
+            array('https', null,  null, 'http',  8080, ''),
+            array('https', null,  8443, 'http',  8080, ':8443'),
+            array('https', null,  443,  'http',  8080, ''),
+
+            array('https', null,  null, 'https', 8443, ':8443'),
+            array('https', null,  4443, 'https', 8443, ':4443'),
+            array('https', null,  443,  'https', 8443, ''),
+            array('http',  null,  null, 'https', 8443, ''),
+            array('http',  8080,  4443, 'https', 8443, ':8080'),
+            array('http',  80,    4443, 'https', 8443, ''),
+        );
+    }
+
+    /**
+     * @dataProvider urlRedirectProvider
+     */
+    public function testUrlRedirect($scheme, $httpPort, $httpsPort, $requestScheme, $requestPort, $expectedPort)
+    {
+        $host = 'www.example.com';
+        $baseUrl = '/base';
+        $path = '/redirect-path';
+        $expectedUrl = "$scheme://$host$expectedPort$baseUrl$path";
+
+        $request = $this->createRequestObject($requestScheme, $host, $requestPort, $baseUrl);
+        $controller = $this->createRedirectController();
+
+        $returnValue = $controller->urlRedirectAction($request, $path, false, $scheme, $httpPort, $httpsPort);
+        $this->assertRedirectUrl($returnValue, $expectedUrl);
+    }
+
+    public function pathQueryParamsProvider()
+    {
+        return array(
+            array('http://www.example.com/base/redirect-path', '/redirect-path',  ''),
+            array('http://www.example.com/base/redirect-path?foo=bar', '/redirect-path?foo=bar',  ''),
+            array('http://www.example.com/base/redirect-path?foo=bar', '/redirect-path', 'foo=bar'),
+            array('http://www.example.com/base/redirect-path?foo=bar&abc=example', '/redirect-path?foo=bar', 'abc=example'),
+            array('http://www.example.com/base/redirect-path?foo=bar&abc=example&baz=def', '/redirect-path?foo=bar', 'abc=example&baz=def'),
+        );
+    }
+
+    /**
+     * @dataProvider pathQueryParamsProvider
+     */
+    public function testPathQueryParams($expectedUrl, $path, $queryString)
+    {
+        $scheme = 'http';
+        $host = 'www.example.com';
+        $baseUrl = '/base';
+        $port = 80;
+
+        $request = $this->createRequestObject($scheme, $host, $port, $baseUrl, $queryString);
+
+        $controller = $this->createRedirectController();
+
+        $returnValue = $controller->urlRedirectAction($request, $path, false, $scheme, $port, null);
         $this->assertRedirectUrl($returnValue, $expectedUrl);
     }
 
@@ -218,80 +290,8 @@ class RedirectControllerTest extends TestCase
         return $controller;
     }
 
-    public function urlRedirectProvider()
+    public function assertRedirectUrl(Response $returnResponse, $expectedUrl)
     {
-        return array(
-            // Standard ports
-            array('http', null, null, 'http', 80, ''),
-            array('http', 80, null, 'http', 80, ''),
-            array('https', null, null, 'http', 80, ''),
-            array('https', 80, null, 'http', 80, ''),
-
-            array('http', null, null, 'https', 443, ''),
-            array('http', null, 443, 'https', 443, ''),
-            array('https', null, null, 'https', 443, ''),
-            array('https', null, 443, 'https', 443, ''),
-
-            // Non-standard ports
-            array('http', null, null, 'http', 8080, ':8080'),
-            array('http', 4080, null, 'http', 8080, ':4080'),
-            array('http', 80, null, 'http', 8080, ''),
-            array('https', null, null, 'http', 8080, ''),
-            array('https', null, 8443, 'http', 8080, ':8443'),
-            array('https', null, 443, 'http', 8080, ''),
-
-            array('https', null, null, 'https', 8443, ':8443'),
-            array('https', null, 4443, 'https', 8443, ':4443'),
-            array('https', null, 443, 'https', 8443, ''),
-            array('http', null, null, 'https', 8443, ''),
-            array('http', 8080, 4443, 'https', 8443, ':8080'),
-            array('http', 80, 4443, 'https', 8443, ''),
-        );
-    }
-
-    /**
-     * @dataProvider urlRedirectProvider
-     */
-    public function testUrlRedirect($scheme, $httpPort, $httpsPort, $requestScheme, $requestPort, $expectedPort)
-    {
-        $host = 'www.example.com';
-        $baseUrl = '/base';
-        $path = '/redirect-path';
-        $expectedUrl = "$scheme://$host$expectedPort$baseUrl$path";
-
-        $request = $this->createRequestObject($requestScheme, $host, $requestPort, $baseUrl);
-        $controller = $this->createRedirectController();
-
-        $returnValue = $controller->urlRedirectAction($request, $path, false, $scheme, $httpPort, $httpsPort);
-        $this->assertRedirectUrl($returnValue, $expectedUrl);
-    }
-
-    public function pathQueryParamsProvider()
-    {
-        return array(
-            array('http://www.example.com/base/redirect-path', '/redirect-path', ''),
-            array('http://www.example.com/base/redirect-path?foo=bar', '/redirect-path?foo=bar', ''),
-            array('http://www.example.com/base/redirect-path?foo=bar', '/redirect-path', 'foo=bar'),
-            array('http://www.example.com/base/redirect-path?foo=bar&abc=example', '/redirect-path?foo=bar', 'abc=example'),
-            array('http://www.example.com/base/redirect-path?foo=bar&abc=example&baz=def', '/redirect-path?foo=bar', 'abc=example&baz=def'),
-        );
-    }
-
-    /**
-     * @dataProvider pathQueryParamsProvider
-     */
-    public function testPathQueryParams($expectedUrl, $path, $queryString)
-    {
-        $scheme = 'http';
-        $host = 'www.example.com';
-        $baseUrl = '/base';
-        $port = 80;
-
-        $request = $this->createRequestObject($scheme, $host, $port, $baseUrl, $queryString);
-
-        $controller = $this->createRedirectController();
-
-        $returnValue = $controller->urlRedirectAction($request, $path, false, $scheme, $port, null);
-        $this->assertRedirectUrl($returnValue, $expectedUrl);
+        $this->assertTrue($returnResponse->isRedirect($expectedUrl), "Expected: $expectedUrl\nGot:      ".$returnResponse->headers->get('Location'));
     }
 }

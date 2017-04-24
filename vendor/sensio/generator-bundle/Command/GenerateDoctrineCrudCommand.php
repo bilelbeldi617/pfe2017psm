@@ -75,7 +75,8 @@ __project_root__/app/Resources/SensioGeneratorBundle/skeleton/form</info>
 You can check https://github.com/sensio/SensioGeneratorBundle/tree/master/Resources/skeleton
 in order to know the file structure of the skeleton
 EOT
-            );
+            )
+        ;
     }
 
     /**
@@ -105,7 +106,7 @@ EOT
         $questionHelper->writeSection($output, 'CRUD generation');
 
         try {
-            $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle) . '\\' . $entity;
+            $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle).'\\'.$entity;
             $metadata = $this->getEntityMetadata($entityClass);
         } catch (\Exception $e) {
             throw new \RuntimeException(sprintf('Entity "%s" does not exist in the "%s" bundle. Create it with the "doctrine:generate:entity" command and then execute this command again.', $entity, $bundle));
@@ -136,119 +137,6 @@ EOT
         }
 
         $questionHelper->writeGeneratorSummary($output, $errors);
-    }
-
-    protected function getRoutePrefix(InputInterface $input, $entity)
-    {
-        $prefix = $input->getOption('route-prefix') ?: strtolower(str_replace(array('\\', '/'), '_', $entity));
-
-        if ($prefix && '/' === $prefix[0]) {
-            $prefix = substr($prefix, 1);
-        }
-
-        return $prefix;
-    }
-
-    /**
-     * Tries to generate forms if they don't exist yet and if we need write operations on entities.
-     */
-    protected function generateForm($bundle, $entity, $metadata, $forceOverwrite = false)
-    {
-        $this->getFormGenerator($bundle)->generate($bundle, $entity, $metadata[0], $forceOverwrite);
-    }
-
-    protected function getFormGenerator($bundle = null)
-    {
-        if (null === $this->formGenerator) {
-            $this->formGenerator = new DoctrineFormGenerator($this->getContainer()->get('filesystem'));
-            $this->formGenerator->setSkeletonDirs($this->getSkeletonDirs($bundle));
-        }
-
-        return $this->formGenerator;
-    }
-
-    public function setFormGenerator(DoctrineFormGenerator $formGenerator)
-    {
-        $this->formGenerator = $formGenerator;
-    }
-
-    protected function updateRouting(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, BundleInterface $bundle, $format, $entity, $prefix)
-    {
-        $auto = true;
-        if ($input->isInteractive()) {
-            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of the Routing', 'yes', '?'), true);
-            $auto = $questionHelper->ask($input, $output, $question);
-        }
-
-        $output->write('Importing the CRUD routes: ');
-        $this->getContainer()->get('filesystem')->mkdir($bundle->getPath() . '/Resources/config/');
-
-        // first, import the routing file from the bundle's main routing.yml file
-        $routing = new RoutingManipulator($bundle->getPath() . '/Resources/config/routing.yml');
-        try {
-            $ret = $auto ? $routing->addResource($bundle->getName(), $format, '/' . $prefix, 'routing/' . strtolower(str_replace('\\', '_', $entity))) : false;
-        } catch (\RuntimeException $exc) {
-            $ret = false;
-        }
-
-        if (!$ret) {
-            $help = sprintf("        <comment>resource: \"@%s/Resources/config/routing/%s.%s\"</comment>\n", $bundle->getName(), strtolower(str_replace('\\', '_', $entity)), $format);
-            $help .= sprintf("        <comment>prefix:   /%s</comment>\n", $prefix);
-
-            return array(
-                '- Import the bundle\'s routing resource in the bundle routing file',
-                sprintf('  (%s).', $bundle->getPath() . '/Resources/config/routing.yml'),
-                '',
-                sprintf('    <comment>%s:</comment>', $routing->getImportedResourceYamlKey($bundle->getName(), $prefix)),
-                $help,
-                '',
-            );
-        }
-
-        // second, import the bundle's routing.yml file from the application's routing.yml file
-        $routing = new RoutingManipulator($this->getContainer()->getParameter('kernel.root_dir') . '/config/routing.yml');
-        try {
-            $ret = $auto ? $routing->addResource($bundle->getName(), 'yml') : false;
-        } catch (\RuntimeException $e) {
-            // the bundle is already imported form app's routing.yml file
-            $errorMessage = sprintf(
-                "\n\n[ERROR] The bundle's \"Resources/config/routing.yml\" file cannot be imported\n" .
-                "from \"app/config/routing.yml\" because the \"%s\" bundle is\n" .
-                "already imported. Make sure you are not using two different\n" .
-                "configuration/routing formats in the same bundle because it won't work.\n",
-                $bundle->getName()
-            );
-            $output->write($errorMessage);
-            $ret = true;
-        } catch (\Exception $e) {
-            $ret = false;
-        }
-
-        if (!$ret) {
-            return array(
-                '- Import the bundle\'s routing.yml file in the application routing.yml file',
-                sprintf('# app/config/routing.yml'),
-                sprintf('%s:', $bundle->getName()),
-                sprintf('    <comment>resource: "@%s/Resources/config/routing.yml"</comment>', $bundle->getName()),
-                '',
-                '# ...',
-                '',
-            );
-        }
-    }
-
-    protected function updateAnnotationRouting(BundleInterface $bundle, $entity, $prefix)
-    {
-        $rootDir = $this->getContainer()->getParameter('kernel.root_dir');
-
-        $routing = new RoutingManipulator($rootDir . '/config/routing.yml');
-
-        if (!$routing->hasResourceInAnnotation($bundle->getName())) {
-            $parts = explode('\\', $entity);
-            $controller = array_pop($parts);
-
-            $ret = $routing->addAnnotationController($bundle->getName(), $controller);
-        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -282,7 +170,7 @@ EOT
         list($bundle, $entity) = $this->parseShortcutNotation($entity);
 
         try {
-            $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle) . '\\' . $entity;
+            $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle).'\\'.$entity;
             $metadata = $this->getEntityMetadata($entityClass);
         } catch (\Exception $e) {
             throw new \RuntimeException(sprintf('Entity "%s" does not exist in the "%s" bundle. You may have mistyped the bundle name or maybe the entity doesn\'t exist yet (create it first with the "doctrine:generate:entity" command).', $entity, $bundle));
@@ -321,7 +209,7 @@ EOT
             'prefix: /prefix/, /prefix/new, ...).',
             '',
         ));
-        $prefix = $questionHelper->ask($input, $output, new Question($questionHelper->getQuestion('Routes prefix', '/' . $prefix), '/' . $prefix));
+        $prefix = $questionHelper->ask($input, $output, new Question($questionHelper->getQuestion('Routes prefix', '/'.$prefix), '/'.$prefix));
         $input->setOption('route-prefix', $prefix);
 
         // summary
@@ -335,11 +223,124 @@ EOT
         ));
     }
 
+    /**
+     * Tries to generate forms if they don't exist yet and if we need write operations on entities.
+     */
+    protected function generateForm($bundle, $entity, $metadata, $forceOverwrite = false)
+    {
+        $this->getFormGenerator($bundle)->generate($bundle, $entity, $metadata[0], $forceOverwrite);
+    }
+
+    protected function updateRouting(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, BundleInterface $bundle, $format, $entity, $prefix)
+    {
+        $auto = true;
+        if ($input->isInteractive()) {
+            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of the Routing', 'yes', '?'), true);
+            $auto = $questionHelper->ask($input, $output, $question);
+        }
+
+        $output->write('Importing the CRUD routes: ');
+        $this->getContainer()->get('filesystem')->mkdir($bundle->getPath().'/Resources/config/');
+
+        // first, import the routing file from the bundle's main routing.yml file
+        $routing = new RoutingManipulator($bundle->getPath().'/Resources/config/routing.yml');
+        try {
+            $ret = $auto ? $routing->addResource($bundle->getName(), $format, '/'.$prefix, 'routing/'.strtolower(str_replace('\\', '_', $entity))) : false;
+        } catch (\RuntimeException $exc) {
+            $ret = false;
+        }
+
+        if (!$ret) {
+            $help = sprintf("        <comment>resource: \"@%s/Resources/config/routing/%s.%s\"</comment>\n", $bundle->getName(), strtolower(str_replace('\\', '_', $entity)), $format);
+            $help .= sprintf("        <comment>prefix:   /%s</comment>\n", $prefix);
+
+            return array(
+                '- Import the bundle\'s routing resource in the bundle routing file',
+                sprintf('  (%s).', $bundle->getPath().'/Resources/config/routing.yml'),
+                '',
+                sprintf('    <comment>%s:</comment>', $routing->getImportedResourceYamlKey($bundle->getName(), $prefix)),
+                $help,
+                '',
+            );
+        }
+
+        // second, import the bundle's routing.yml file from the application's routing.yml file
+        $routing = new RoutingManipulator($this->getContainer()->getParameter('kernel.root_dir').'/config/routing.yml');
+        try {
+            $ret = $auto ? $routing->addResource($bundle->getName(), 'yml') : false;
+        } catch (\RuntimeException $e) {
+            // the bundle is already imported form app's routing.yml file
+            $errorMessage = sprintf(
+                "\n\n[ERROR] The bundle's \"Resources/config/routing.yml\" file cannot be imported\n".
+                "from \"app/config/routing.yml\" because the \"%s\" bundle is\n".
+                "already imported. Make sure you are not using two different\n".
+                "configuration/routing formats in the same bundle because it won't work.\n",
+                $bundle->getName()
+            );
+            $output->write($errorMessage);
+            $ret = true;
+        } catch (\Exception $e) {
+            $ret = false;
+        }
+
+        if (!$ret) {
+            return array(
+                '- Import the bundle\'s routing.yml file in the application routing.yml file',
+                sprintf('# app/config/routing.yml'),
+                sprintf('%s:', $bundle->getName()),
+                sprintf('    <comment>resource: "@%s/Resources/config/routing.yml"</comment>', $bundle->getName()),
+                '',
+                '# ...',
+                '',
+            );
+        }
+    }
+
+    protected function updateAnnotationRouting(BundleInterface $bundle, $entity, $prefix)
+    {
+        $rootDir = $this->getContainer()->getParameter('kernel.root_dir');
+
+        $routing = new RoutingManipulator($rootDir.'/config/routing.yml');
+
+        if (!$routing->hasResourceInAnnotation($bundle->getName())) {
+            $parts = explode('\\', $entity);
+            $controller = array_pop($parts);
+
+            $ret = $routing->addAnnotationController($bundle->getName(), $controller);
+        }
+    }
+
+    protected function getRoutePrefix(InputInterface $input, $entity)
+    {
+        $prefix = $input->getOption('route-prefix') ?: strtolower(str_replace(array('\\', '/'), '_', $entity));
+
+        if ($prefix && '/' === $prefix[0]) {
+            $prefix = substr($prefix, 1);
+        }
+
+        return $prefix;
+    }
+
     protected function createGenerator($bundle = null)
     {
         return new DoctrineCrudGenerator(
             $this->getContainer()->get('filesystem'),
             $this->getContainer()->getParameter('kernel.root_dir')
         );
+    }
+
+    protected function getFormGenerator($bundle = null)
+    {
+        if (null === $this->formGenerator) {
+            $this->formGenerator = new DoctrineFormGenerator($this->getContainer()->get('filesystem'));
+            $this->formGenerator->setSkeletonDirs($this->getSkeletonDirs($bundle));
+        }
+
+        return $this->formGenerator;
+    }
+
+    public function setFormGenerator(DoctrineFormGenerator $formGenerator)
+    {
+        $this->formGenerator = $formGenerator;
     }
 }

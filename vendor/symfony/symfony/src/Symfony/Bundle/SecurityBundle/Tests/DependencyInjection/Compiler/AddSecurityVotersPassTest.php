@@ -23,19 +23,24 @@ class AddSecurityVotersPassTest extends TestCase
         $container = new ContainerBuilder();
         $container
             ->register('security.access.decision_manager', 'Symfony\Component\Security\Core\Authorization\AccessDecisionManager')
-            ->addArgument(array());
+            ->addArgument(array())
+        ;
         $container
             ->register('no_prio_service')
-            ->addTag('security.voter');
+            ->addTag('security.voter')
+        ;
         $container
             ->register('lowest_prio_service')
-            ->addTag('security.voter', array('priority' => 100));
+            ->addTag('security.voter', array('priority' => 100))
+        ;
         $container
             ->register('highest_prio_service')
-            ->addTag('security.voter', array('priority' => 200));
+            ->addTag('security.voter', array('priority' => 200))
+        ;
         $container
             ->register('zero_prio_service')
-            ->addTag('security.voter', array('priority' => 0));
+            ->addTag('security.voter', array('priority' => 0))
+        ;
         $compilerPass = new AddSecurityVotersPass();
         $compilerPass->process($container);
 

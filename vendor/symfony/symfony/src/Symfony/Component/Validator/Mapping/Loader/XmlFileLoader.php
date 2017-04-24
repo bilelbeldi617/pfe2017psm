@@ -42,11 +42,11 @@ class XmlFileLoader extends FileLoader
             $this->classes = array();
 
             foreach ($xml->namespace as $namespace) {
-                $this->addNamespaceAlias((string)$namespace['prefix'], trim((string)$namespace));
+                $this->addNamespaceAlias((string) $namespace['prefix'], trim((string) $namespace));
             }
 
             foreach ($xml->class as $class) {
-                $this->classes[(string)$class['name']] = $class;
+                $this->classes[(string) $class['name']] = $class;
             }
         }
 
@@ -62,52 +62,37 @@ class XmlFileLoader extends FileLoader
     }
 
     /**
-     * Loads the XML class descriptions from the given file.
+     * Parses a collection of "constraint" XML nodes.
      *
-     * @param string $path The path of the XML file
+     * @param \SimpleXMLElement $nodes The XML nodes
      *
-     * @return \SimpleXMLElement The class descriptions
-     *
-     * @throws MappingException If the file could not be loaded
+     * @return array The Constraint instances
      */
-    protected function parseFile($path)
+    protected function parseConstraints(\SimpleXMLElement $nodes)
     {
-        try {
-            $dom = XmlUtils::loadFile($path, __DIR__ . '/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd');
-        } catch (\Exception $e) {
-            throw new MappingException($e->getMessage(), $e->getCode(), $e);
-        }
+        $constraints = array();
 
-        return simplexml_import_dom($dom);
-    }
-
-    private function loadClassMetadataFromXml(ClassMetadata $metadata, \SimpleXMLElement $classDescription)
-    {
-        if (count($classDescription->{'group-sequence-provider'}) > 0) {
-            $metadata->setGroupSequenceProvider(true);
-        }
-
-        foreach ($classDescription->{'group-sequence'} as $groupSequence) {
-            if (count($groupSequence->value) > 0) {
-                $metadata->setGroupSequence($this->parseValues($groupSequence[0]->value));
+        foreach ($nodes as $node) {
+            if (count($node) > 0) {
+                if (count($node->value) > 0) {
+                    $options = $this->parseValues($node->value);
+                } elseif (count($node->constraint) > 0) {
+                    $options = $this->parseConstraints($node->constraint);
+                } elseif (count($node->option) > 0) {
+                    $options = $this->parseOptions($node->option);
+                } else {
+                    $options = array();
+                }
+            } elseif (strlen((string) $node) > 0) {
+                $options = XmlUtils::phpize(trim($node));
+            } else {
+                $options = null;
             }
+
+            $constraints[] = $this->newConstraint((string) $node['name'], $options);
         }
 
-        foreach ($this->parseConstraints($classDescription->constraint) as $constraint) {
-            $metadata->addConstraint($constraint);
-        }
-
-        foreach ($classDescription->property as $property) {
-            foreach ($this->parseConstraints($property->constraint) as $constraint) {
-                $metadata->addPropertyConstraint((string)$property['name'], $constraint);
-            }
-        }
-
-        foreach ($classDescription->getter as $getter) {
-            foreach ($this->parseConstraints($getter->constraint) as $constraint) {
-                $metadata->addGetterConstraint((string)$getter['property'], $constraint);
-            }
-        }
+        return $constraints;
     }
 
     /**
@@ -135,47 +120,13 @@ class XmlFileLoader extends FileLoader
             }
 
             if (isset($node['key'])) {
-                $values[(string)$node['key']] = $value;
+                $values[(string) $node['key']] = $value;
             } else {
                 $values[] = $value;
             }
         }
 
         return $values;
-    }
-
-    /**
-     * Parses a collection of "constraint" XML nodes.
-     *
-     * @param \SimpleXMLElement $nodes The XML nodes
-     *
-     * @return array The Constraint instances
-     */
-    protected function parseConstraints(\SimpleXMLElement $nodes)
-    {
-        $constraints = array();
-
-        foreach ($nodes as $node) {
-            if (count($node) > 0) {
-                if (count($node->value) > 0) {
-                    $options = $this->parseValues($node->value);
-                } elseif (count($node->constraint) > 0) {
-                    $options = $this->parseConstraints($node->constraint);
-                } elseif (count($node->option) > 0) {
-                    $options = $this->parseOptions($node->option);
-                } else {
-                    $options = array();
-                }
-            } elseif (strlen((string)$node) > 0) {
-                $options = XmlUtils::phpize(trim($node));
-            } else {
-                $options = null;
-            }
-
-            $constraints[] = $this->newConstraint((string)$node['name'], $options);
-        }
-
-        return $constraints;
     }
 
     /**
@@ -205,9 +156,58 @@ class XmlFileLoader extends FileLoader
                 }
             }
 
-            $options[(string)$node['name']] = $value;
+            $options[(string) $node['name']] = $value;
         }
 
         return $options;
+    }
+
+    /**
+     * Loads the XML class descriptions from the given file.
+     *
+     * @param string $path The path of the XML file
+     *
+     * @return \SimpleXMLElement The class descriptions
+     *
+     * @throws MappingException If the file could not be loaded
+     */
+    protected function parseFile($path)
+    {
+        try {
+            $dom = XmlUtils::loadFile($path, __DIR__.'/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd');
+        } catch (\Exception $e) {
+            throw new MappingException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        return simplexml_import_dom($dom);
+    }
+
+    private function loadClassMetadataFromXml(ClassMetadata $metadata, \SimpleXMLElement $classDescription)
+    {
+        if (count($classDescription->{'group-sequence-provider'}) > 0) {
+            $metadata->setGroupSequenceProvider(true);
+        }
+
+        foreach ($classDescription->{'group-sequence'} as $groupSequence) {
+            if (count($groupSequence->value) > 0) {
+                $metadata->setGroupSequence($this->parseValues($groupSequence[0]->value));
+            }
+        }
+
+        foreach ($this->parseConstraints($classDescription->constraint) as $constraint) {
+            $metadata->addConstraint($constraint);
+        }
+
+        foreach ($classDescription->property as $property) {
+            foreach ($this->parseConstraints($property->constraint) as $constraint) {
+                $metadata->addPropertyConstraint((string) $property['name'], $constraint);
+            }
+        }
+
+        foreach ($classDescription->getter as $getter) {
+            foreach ($this->parseConstraints($getter->constraint) as $constraint) {
+                $metadata->addGetterConstraint((string) $getter['property'], $constraint);
+            }
+        }
     }
 }

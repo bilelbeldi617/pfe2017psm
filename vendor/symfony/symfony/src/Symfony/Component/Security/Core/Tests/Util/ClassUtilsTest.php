@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Security\Core\Tests\Util {
-
+namespace Symfony\Component\Security\Core\Tests\Util
+{
     use PHPUnit\Framework\TestCase;
     use Symfony\Component\Security\Core\Util\ClassUtils;
 
@@ -46,8 +46,8 @@ namespace Symfony\Component\Security\Core\Tests\Util {
     }
 }
 
-namespace Acme\DemoBundle\Proxy\__CG__\Symfony\Component\Security\Core\Tests\Util {
-
+namespace Acme\DemoBundle\Proxy\__CG__\Symfony\Component\Security\Core\Tests\Util
+{
     use Symfony\Component\Security\Core\Tests\Util\TestObject as BaseTestObject;
 
     class TestObject extends BaseTestObject

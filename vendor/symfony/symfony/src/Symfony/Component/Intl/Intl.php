@@ -99,10 +99,13 @@ final class Intl
     private static $entryReader;
 
     /**
-     * This class must not be instantiated.
+     * Returns whether the intl extension is installed.
+     *
+     * @return bool Returns true if the intl extension is installed, false otherwise
      */
-    private function __construct()
+    public static function isExtensionLoaded()
     {
+        return class_exists('\ResourceBundle');
     }
 
     /**
@@ -114,57 +117,13 @@ final class Intl
     {
         if (null === self::$currencyBundle) {
             self::$currencyBundle = new CurrencyBundle(
-                self::getDataDirectory() . '/' . self::CURRENCY_DIR,
+                self::getDataDirectory().'/'.self::CURRENCY_DIR,
                 self::getEntryReader(),
                 self::getLocaleBundle()
             );
         }
 
         return self::$currencyBundle;
-    }
-
-    /**
-     * Returns the absolute path to the data directory.
-     *
-     * @return string The absolute path to the data directory
-     */
-    public static function getDataDirectory()
-    {
-        return __DIR__ . '/Resources/data';
-    }
-
-    /**
-     * Returns the cached bundle entry reader.
-     *
-     * @return BundleEntryReaderInterface The bundle entry reader
-     */
-    private static function getEntryReader()
-    {
-        if (null === self::$entryReader) {
-            self::$entryReader = new BundleEntryReader(new BufferedBundleReader(
-                new JsonBundleReader(),
-                self::BUFFER_SIZE
-            ));
-        }
-
-        return self::$entryReader;
-    }
-
-    /**
-     * Returns the bundle containing locale information.
-     *
-     * @return LocaleBundleInterface The locale resource bundle
-     */
-    public static function getLocaleBundle()
-    {
-        if (null === self::$localeBundle) {
-            self::$localeBundle = new LocaleBundle(
-                self::getDataDirectory() . '/' . self::LOCALE_DIR,
-                self::getEntryReader()
-            );
-        }
-
-        return self::$localeBundle;
     }
 
     /**
@@ -176,17 +135,34 @@ final class Intl
     {
         if (null === self::$languageBundle) {
             self::$languageBundle = new LanguageBundle(
-                self::getDataDirectory() . '/' . self::LANGUAGE_DIR,
+                self::getDataDirectory().'/'.self::LANGUAGE_DIR,
                 self::getEntryReader(),
                 self::getLocaleBundle(),
                 new ScriptDataProvider(
-                    self::getDataDirectory() . '/' . self::SCRIPT_DIR,
+                    self::getDataDirectory().'/'.self::SCRIPT_DIR,
                     self::getEntryReader()
                 )
             );
         }
 
         return self::$languageBundle;
+    }
+
+    /**
+     * Returns the bundle containing locale information.
+     *
+     * @return LocaleBundleInterface The locale resource bundle
+     */
+    public static function getLocaleBundle()
+    {
+        if (null === self::$localeBundle) {
+            self::$localeBundle = new LocaleBundle(
+                self::getDataDirectory().'/'.self::LOCALE_DIR,
+                self::getEntryReader()
+            );
+        }
+
+        return self::$localeBundle;
     }
 
     /**
@@ -198,7 +174,7 @@ final class Intl
     {
         if (null === self::$regionBundle) {
             self::$regionBundle = new RegionBundle(
-                self::getDataDirectory() . '/' . self::REGION_DIR,
+                self::getDataDirectory().'/'.self::REGION_DIR,
                 self::getEntryReader(),
                 self::getLocaleBundle()
             );
@@ -238,13 +214,17 @@ final class Intl
     }
 
     /**
-     * Returns whether the intl extension is installed.
+     * Returns the version of the installed ICU data.
      *
-     * @return bool Returns true if the intl extension is installed, false otherwise
+     * @return string The version of the installed ICU data
      */
-    public static function isExtensionLoaded()
+    public static function getIcuDataVersion()
     {
-        return class_exists('\ResourceBundle');
+        if (false === self::$icuDataVersion) {
+            self::$icuDataVersion = trim(file_get_contents(self::getDataDirectory().'/version.txt'));
+        }
+
+        return self::$icuDataVersion;
     }
 
     /**
@@ -258,16 +238,36 @@ final class Intl
     }
 
     /**
-     * Returns the version of the installed ICU data.
+     * Returns the absolute path to the data directory.
      *
-     * @return string The version of the installed ICU data
+     * @return string The absolute path to the data directory
      */
-    public static function getIcuDataVersion()
+    public static function getDataDirectory()
     {
-        if (false === self::$icuDataVersion) {
-            self::$icuDataVersion = trim(file_get_contents(self::getDataDirectory() . '/version.txt'));
+        return __DIR__.'/Resources/data';
+    }
+
+    /**
+     * Returns the cached bundle entry reader.
+     *
+     * @return BundleEntryReaderInterface The bundle entry reader
+     */
+    private static function getEntryReader()
+    {
+        if (null === self::$entryReader) {
+            self::$entryReader = new BundleEntryReader(new BufferedBundleReader(
+                new JsonBundleReader(),
+                self::BUFFER_SIZE
+            ));
         }
 
-        return self::$icuDataVersion;
+        return self::$entryReader;
+    }
+
+    /**
+     * This class must not be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

@@ -34,7 +34,7 @@ class CurlCrawler extends BaseCrawler
             throw new RuntimeException('Unable to create a cURL handle.');
         }
 
-        $postFields = array('lock' => PHP_VERSION_ID >= 50500 ? new \CurlFile($lock) : '@' . $lock);
+        $postFields = array('lock' => PHP_VERSION_ID >= 50500 ? new \CurlFile($lock) : '@'.$lock);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, true);

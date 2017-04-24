@@ -13,16 +13,6 @@ namespace Symfony\Bundle\SecurityBundle\Tests\Functional;
 
 class SecurityRoutingIntegrationTest extends WebTestCase
 {
-    public static function setUpBeforeClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
     /**
      * @dataProvider getConfigs
      */
@@ -42,7 +32,7 @@ class SecurityRoutingIntegrationTest extends WebTestCase
         $client = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config));
         $client->request('GET', '/unprotected_resource');
 
-        $this->assertEquals(404, $client->getResponse()->getStatusCode(), (string)$client->getResponse());
+        $this->assertEquals(404, $client->getResponse()->getStatusCode(), (string) $client->getResponse());
     }
 
     /**
@@ -74,18 +64,6 @@ class SecurityRoutingIntegrationTest extends WebTestCase
         $this->assertRestricted($barredClient, '/secured-by-one-ip');
     }
 
-    private function assertAllowed($client, $path)
-    {
-        $client->request('GET', $path);
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
-
-    private function assertRestricted($client, $path)
-    {
-        $client->request('GET', $path);
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
-    }
-
     /**
      * @dataProvider getConfigs
      */
@@ -100,30 +78,52 @@ class SecurityRoutingIntegrationTest extends WebTestCase
         $this->assertRestricted($barredClient, '/secured-by-two-ips');
     }
 
-    /**
-     * @dataProvider getConfigs
-     */
-    public function testSecurityConfigurationForExpression($config)
+   /**
+    * @dataProvider getConfigs
+    */
+   public function testSecurityConfigurationForExpression($config)
+   {
+       $allowedClient = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config), array('HTTP_USER_AGENT' => 'Firefox 1.0'));
+       $this->assertAllowed($allowedClient, '/protected-via-expression');
+
+       $barredClient = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config), array());
+       $this->assertRestricted($barredClient, '/protected-via-expression');
+
+       $allowedClient = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config), array());
+
+       $allowedClient->request('GET', '/protected-via-expression');
+       $form = $allowedClient->followRedirect()->selectButton('login')->form();
+       $form['_username'] = 'johannes';
+       $form['_password'] = 'test';
+       $allowedClient->submit($form);
+       $this->assertRedirect($allowedClient->getResponse(), '/protected-via-expression');
+       $this->assertAllowed($allowedClient, '/protected-via-expression');
+   }
+
+    private function assertAllowed($client, $path)
     {
-        $allowedClient = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config), array('HTTP_USER_AGENT' => 'Firefox 1.0'));
-        $this->assertAllowed($allowedClient, '/protected-via-expression');
+        $client->request('GET', $path);
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    }
 
-        $barredClient = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config), array());
-        $this->assertRestricted($barredClient, '/protected-via-expression');
-
-        $allowedClient = $this->createClient(array('test_case' => 'StandardFormLogin', 'root_config' => $config), array());
-
-        $allowedClient->request('GET', '/protected-via-expression');
-        $form = $allowedClient->followRedirect()->selectButton('login')->form();
-        $form['_username'] = 'johannes';
-        $form['_password'] = 'test';
-        $allowedClient->submit($form);
-        $this->assertRedirect($allowedClient->getResponse(), '/protected-via-expression');
-        $this->assertAllowed($allowedClient, '/protected-via-expression');
+    private function assertRestricted($client, $path)
+    {
+        $client->request('GET', $path);
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
 
     public function getConfigs()
     {
         return array(array('config.yml'), array('routes_as_path.yml'));
+    }
+
+    public static function setUpBeforeClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
     }
 }

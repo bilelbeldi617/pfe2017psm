@@ -81,21 +81,11 @@ class PersonnelAdministratif
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get matriculePa
-     *
-     * @return string
-     */
-    public function getMatriculePa()
-    {
-        return $this->matriculePa;
     }
 
     /**
@@ -112,13 +102,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get nomPa
+     * Get matriculePa
      *
-     * @return string
+     * @return string 
      */
-    public function getNomPa()
+    public function getMatriculePa()
     {
-        return $this->nomPa;
+        return $this->matriculePa;
     }
 
     /**
@@ -135,13 +125,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get prenomPa
+     * Get nomPa
      *
-     * @return string
+     * @return string 
      */
-    public function getPrenomPa()
+    public function getNomPa()
     {
-        return $this->prenomPa;
+        return $this->nomPa;
     }
 
     /**
@@ -158,13 +148,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get numTelPa
+     * Get prenomPa
      *
-     * @return string
+     * @return string 
      */
-    public function getNumTelPa()
+    public function getPrenomPa()
     {
-        return $this->numTelPa;
+        return $this->prenomPa;
     }
 
     /**
@@ -181,13 +171,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get adressePa
+     * Get numTelPa
      *
-     * @return string
+     * @return string 
      */
-    public function getAdressePa()
+    public function getNumTelPa()
     {
-        return $this->adressePa;
+        return $this->numTelPa;
     }
 
     /**
@@ -204,13 +194,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get cinPa
+     * Get adressePa
      *
-     * @return integer
+     * @return string 
      */
-    public function getCinPa()
+    public function getAdressePa()
     {
-        return $this->cinPa;
+        return $this->adressePa;
     }
 
     /**
@@ -227,13 +217,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get loginPa
+     * Get cinPa
      *
-     * @return string
+     * @return integer 
      */
-    public function getLoginPa()
+    public function getCinPa()
     {
-        return $this->loginPa;
+        return $this->cinPa;
     }
 
     /**
@@ -250,13 +240,13 @@ class PersonnelAdministratif
     }
 
     /**
-     * Get passwordPa
+     * Get loginPa
      *
-     * @return string
+     * @return string 
      */
-    public function getPasswordPa()
+    public function getLoginPa()
     {
-        return $this->passwordPa;
+        return $this->loginPa;
     }
 
     /**
@@ -270,5 +260,15 @@ class PersonnelAdministratif
         $this->passwordPa = $passwordPa;
 
         return $this;
+    }
+
+    /**
+     * Get passwordPa
+     *
+     * @return string 
+     */
+    public function getPasswordPa()
+    {
+        return $this->passwordPa;
     }
 }

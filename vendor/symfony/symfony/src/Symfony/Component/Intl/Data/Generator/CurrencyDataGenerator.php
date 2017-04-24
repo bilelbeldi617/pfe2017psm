@@ -84,7 +84,7 @@ class CurrencyDataGenerator extends AbstractDataGenerator
      */
     protected function scanLocales(LocaleScanner $scanner, $sourceDir)
     {
-        return $scanner->scanLocales($sourceDir . '/curr');
+        return $scanner->scanLocales($sourceDir.'/curr');
     }
 
     /**
@@ -92,8 +92,8 @@ class CurrencyDataGenerator extends AbstractDataGenerator
      */
     protected function compileTemporaryBundles(GenrbCompiler $compiler, $sourceDir, $tempDir)
     {
-        $compiler->compile($sourceDir . '/curr', $tempDir);
-        $compiler->compile($sourceDir . '/misc/currencyNumericCodes.txt', $tempDir);
+        $compiler->compile($sourceDir.'/curr', $tempDir);
+        $compiler->compile($sourceDir.'/misc/currencyNumericCodes.txt', $tempDir);
     }
 
     /**
@@ -121,21 +121,6 @@ class CurrencyDataGenerator extends AbstractDataGenerator
 
             return $data;
         }
-    }
-
-    /**
-     * @param ArrayAccessibleResourceBundle $rootBundle
-     *
-     * @return array
-     */
-    private function generateSymbolNamePairs(ArrayAccessibleResourceBundle $rootBundle)
-    {
-        $symbolNamePairs = iterator_to_array($rootBundle['Currencies']);
-
-        // Remove unwanted currencies
-        $symbolNamePairs = array_diff_key($symbolNamePairs, self::$blacklist);
-
-        return $symbolNamePairs;
     }
 
     /**
@@ -176,6 +161,21 @@ class CurrencyDataGenerator extends AbstractDataGenerator
         return $data;
     }
 
+    /**
+     * @param ArrayAccessibleResourceBundle $rootBundle
+     *
+     * @return array
+     */
+    private function generateSymbolNamePairs(ArrayAccessibleResourceBundle $rootBundle)
+    {
+        $symbolNamePairs = iterator_to_array($rootBundle['Currencies']);
+
+        // Remove unwanted currencies
+        $symbolNamePairs = array_diff_key($symbolNamePairs, self::$blacklist);
+
+        return $symbolNamePairs;
+    }
+
     private function generateCurrencyMeta(ArrayAccessibleResourceBundle $supplementalDataBundle)
     {
         // The metadata is already de-duplicated. It contains one key "DEFAULT"
@@ -201,7 +201,7 @@ class CurrencyDataGenerator extends AbstractDataGenerator
 
         foreach ($alpha3ToNumericMapping as $alpha3 => $numeric) {
             // Make sure that the mapping is stored as table and not as array
-            $numeric = (string)$numeric;
+            $numeric = (string) $numeric;
 
             if (!isset($numericToAlpha3Mapping[$numeric])) {
                 $numericToAlpha3Mapping[$numeric] = array();

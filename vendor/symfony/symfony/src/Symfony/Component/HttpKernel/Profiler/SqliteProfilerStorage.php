@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\HttpKernel\Profiler;
 
-@trigger_error('The ' . __NAMESPACE__ . '\SqliteProfilerStorage class is deprecated since Symfony 2.8 and will be removed in 3.0. Use FileProfilerStorage instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\SqliteProfilerStorage class is deprecated since Symfony 2.8 and will be removed in 3.0. Use FileProfilerStorage instead.', E_USER_DEPRECATED);
 
 /**
  * SqliteProfilerStorage stores profiling information in a SQLite database.
@@ -109,12 +109,12 @@ class SqliteProfilerStorage extends PdoProfilerStorage
 
         if ($ip = preg_replace('/[^\d\.]/', '', $ip)) {
             $criteria[] = 'ip LIKE :ip';
-            $args[':ip'] = '%' . $ip . '%';
+            $args[':ip'] = '%'.$ip.'%';
         }
 
         if ($url) {
             $criteria[] = 'url LIKE :url ESCAPE "\"';
-            $args[':url'] = '%' . addcslashes($url, '%_\\') . '%';
+            $args[':url'] = '%'.addcslashes($url, '%_\\').'%';
         }
 
         if ($method) {

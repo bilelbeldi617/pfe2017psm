@@ -29,7 +29,8 @@ class LdapUserProviderTest extends TestCase
         $ldap
             ->expects($this->once())
             ->method('bind')
-            ->will($this->throwException(new ConnectionException()));
+            ->will($this->throwException(new ConnectionException()))
+        ;
 
         $provider = new LdapUserProvider($ldap, 'ou=MyBusiness,dc=symfony,dc=com');
         $provider->loadUserByUsername('foo');
@@ -44,7 +45,8 @@ class LdapUserProviderTest extends TestCase
         $ldap
             ->expects($this->once())
             ->method('escape')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         $provider = new LdapUserProvider($ldap, 'ou=MyBusiness,dc=symfony,dc=com');
         $provider->loadUserByUsername('foo');
@@ -59,7 +61,8 @@ class LdapUserProviderTest extends TestCase
         $ldap
             ->expects($this->once())
             ->method('escape')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
         $ldap
             ->expects($this->once())
             ->method('find')
@@ -67,7 +70,8 @@ class LdapUserProviderTest extends TestCase
                 array(),
                 array(),
                 'count' => 2,
-            )));
+            )))
+        ;
 
         $provider = new LdapUserProvider($ldap, 'ou=MyBusiness,dc=symfony,dc=com');
         $provider->loadUserByUsername('foo');
@@ -79,7 +83,8 @@ class LdapUserProviderTest extends TestCase
         $ldap
             ->expects($this->once())
             ->method('escape')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
         $ldap
             ->expects($this->once())
             ->method('find')
@@ -89,7 +94,8 @@ class LdapUserProviderTest extends TestCase
                     'userpassword' => 'bar',
                 ),
                 'count' => 1,
-            )));
+            )))
+        ;
 
         $provider = new LdapUserProvider($ldap, 'ou=MyBusiness,dc=symfony,dc=com');
         $this->assertInstanceOf(

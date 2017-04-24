@@ -30,63 +30,12 @@ class GenerateControllerCommandTest extends GenerateCommandTest
         $generator
             ->expects($this->once())
             ->method('generate')
-            ->with($this->getBundle(), $controller, $routeFormat, $templateFormat, $actions);
+            ->with($this->getBundle(), $controller, $routeFormat, $templateFormat, $actions)
+        ;
 
         $tester = new CommandTester($command = $this->getCommand($generator));
         $this->setInputs($tester, $command, $input);
         $tester->execute($options);
-    }
-
-    protected function getGenerator()
-    {
-        if (null == $this->generator) {
-            $this->setGenerator();
-        }
-
-        return $this->generator;
-    }
-
-    protected function setGenerator()
-    {
-        // get a noop generator
-        $this->generator = $this
-            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Generator\ControllerGenerator')
-            ->disableOriginalConstructor()
-            ->setMethods(array('generate'))
-            ->getMock();
-    }
-
-    protected function getBundle()
-    {
-        if (null == $this->bundle) {
-            $this->setBundle();
-        }
-
-        return $this->bundle;
-    }
-
-    protected function setBundle()
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle->expects($this->any())->method('getPath')->will($this->returnValue(''));
-        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
-        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
-
-        $this->bundle = $bundle;
-    }
-
-    protected function getCommand($generator)
-    {
-        $command = $this
-            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Command\GenerateControllerCommand')
-            ->setMethods(array('generateRouting'))
-            ->getMock();
-
-        $command->setContainer($this->getContainer());
-        $command->setHelperSet($this->getHelperSet());
-        $command->setGenerator($generator);
-
-        return $command;
     }
 
     public function getInteractiveCommandData()
@@ -134,7 +83,8 @@ class GenerateControllerCommandTest extends GenerateCommandTest
         $generator
             ->expects($this->once())
             ->method('generate')
-            ->with($this->getBundle(), $controller, $routeFormat, $templateFormat, $actions);
+            ->with($this->getBundle(), $controller, $routeFormat, $templateFormat, $actions)
+        ;
 
         $tester = new CommandTester($command = $this->getCommand($generator));
         $tester->execute($options, array('interactive' => false));
@@ -176,6 +126,21 @@ class GenerateControllerCommandTest extends GenerateCommandTest
         );
     }
 
+    protected function getCommand($generator)
+    {
+        $command = $this
+            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Command\GenerateControllerCommand')
+            ->setMethods(array('generateRouting'))
+            ->getMock()
+        ;
+
+        $command->setContainer($this->getContainer());
+        $command->setHelperSet($this->getHelperSet());
+        $command->setGenerator($generator);
+
+        return $command;
+    }
+
     protected function getApplication($input = '')
     {
         $application = new Application();
@@ -188,5 +153,44 @@ class GenerateControllerCommandTest extends GenerateCommandTest
         $application->add($command);
 
         return $application;
+    }
+
+    protected function getGenerator()
+    {
+        if (null == $this->generator) {
+            $this->setGenerator();
+        }
+
+        return $this->generator;
+    }
+
+    protected function setGenerator()
+    {
+        // get a noop generator
+        $this->generator = $this
+            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Generator\ControllerGenerator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('generate'))
+            ->getMock()
+        ;
+    }
+
+    protected function getBundle()
+    {
+        if (null == $this->bundle) {
+            $this->setBundle();
+        }
+
+        return $this->bundle;
+    }
+
+    protected function setBundle()
+    {
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle->expects($this->any())->method('getPath')->will($this->returnValue(''));
+        $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
+        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
+
+        $this->bundle = $bundle;
     }
 }

@@ -33,17 +33,6 @@ class ParamConverterListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelController($event);
     }
 
-    protected function getParamConverterManager(Request $request, $configurations)
-    {
-        $manager = $this->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterManager')->getMock();
-        $manager
-            ->expects($this->once())
-            ->method('apply')
-            ->with($this->equalTo($request), $this->equalTo($configurations));
-
-        return $manager;
-    }
-
     public function getControllerWithNoArgsFixtures()
     {
         return array(
@@ -123,6 +112,18 @@ class ParamConverterListenerTest extends \PHPUnit_Framework_TestCase
             array(array(new TestController(), 'dateAction')),
             array(new InvokableController()),
         );
+    }
+
+    protected function getParamConverterManager(Request $request, $configurations)
+    {
+        $manager = $this->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterManager')->getMock();
+        $manager
+            ->expects($this->once())
+            ->method('apply')
+            ->with($this->equalTo($request), $this->equalTo($configurations))
+        ;
+
+        return $manager;
     }
 }
 

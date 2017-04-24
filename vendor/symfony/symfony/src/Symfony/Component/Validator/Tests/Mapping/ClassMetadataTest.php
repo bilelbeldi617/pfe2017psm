@@ -27,6 +27,16 @@ class ClassMetadataTest extends TestCase
 
     protected $metadata;
 
+    protected function setUp()
+    {
+        $this->metadata = new ClassMetadata(self::CLASSNAME);
+    }
+
+    protected function tearDown()
+    {
+        $this->metadata = null;
+    }
+
     public function testAddConstraintDoesNotAcceptValid()
     {
         $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('Symfony\Component\Validator\Exception\ConstraintDefinitionException');
@@ -293,16 +303,6 @@ class ClassMetadataTest extends TestCase
     public function testGetPropertyMetadataReturnsEmptyArrayWithoutConfiguredMetadata()
     {
         $this->assertCount(0, $this->metadata->getPropertyMetadata('foo'), '->getPropertyMetadata() returns an empty collection if no metadata is configured for the given property');
-    }
-
-    protected function setUp()
-    {
-        $this->metadata = new ClassMetadata(self::CLASSNAME);
-    }
-
-    protected function tearDown()
-    {
-        $this->metadata = null;
     }
 }
 

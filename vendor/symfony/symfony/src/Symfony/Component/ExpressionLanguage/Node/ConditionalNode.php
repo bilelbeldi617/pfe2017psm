@@ -36,7 +36,8 @@ class ConditionalNode extends Node
             ->compile($this->nodes['expr2'])
             ->raw(') : (')
             ->compile($this->nodes['expr3'])
-            ->raw('))');
+            ->raw('))')
+        ;
     }
 
     public function evaluate($functions, $values)

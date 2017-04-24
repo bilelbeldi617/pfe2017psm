@@ -43,9 +43,9 @@ class CsrfExtension extends AbstractExtension
     /**
      * Constructor.
      *
-     * @param CsrfTokenManagerInterface $tokenManager The CSRF token manager
-     * @param TranslatorInterface $translator The translator for translating error messages
-     * @param null|string $translationDomain The translation domain for translating
+     * @param CsrfTokenManagerInterface $tokenManager      The CSRF token manager
+     * @param TranslatorInterface       $translator        The translator for translating error messages
+     * @param null|string               $translationDomain The translation domain for translating
      */
     public function __construct($tokenManager, TranslatorInterface $translator = null, $translationDomain = null)
     {

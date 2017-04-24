@@ -47,7 +47,7 @@ abstract class BaseValidatorExtension extends AbstractTypeExtension
                 return $groups;
             }
 
-            return (array)$groups;
+            return (array) $groups;
         };
 
         $resolver->setDefaults(array(

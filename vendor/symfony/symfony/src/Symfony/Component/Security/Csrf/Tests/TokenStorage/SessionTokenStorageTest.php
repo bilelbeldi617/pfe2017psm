@@ -31,6 +31,14 @@ class SessionTokenStorageTest extends TestCase
      */
     private $storage;
 
+    protected function setUp()
+    {
+        $this->session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->storage = new SessionTokenStorage($this->session, self::SESSION_NAMESPACE);
+    }
+
     public function testStoreTokenInClosedSession()
     {
         $this->session->expects($this->any())
@@ -42,7 +50,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('set')
-            ->with(self::SESSION_NAMESPACE . '/token_id', 'TOKEN');
+            ->with(self::SESSION_NAMESPACE.'/token_id', 'TOKEN');
 
         $this->storage->setToken('token_id', 'TOKEN');
     }
@@ -58,7 +66,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('set')
-            ->with(self::SESSION_NAMESPACE . '/token_id', 'TOKEN');
+            ->with(self::SESSION_NAMESPACE.'/token_id', 'TOKEN');
 
         $this->storage->setToken('token_id', 'TOKEN');
     }
@@ -74,7 +82,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('has')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue('RESULT'));
 
         $this->assertSame('RESULT', $this->storage->hasToken('token_id'));
@@ -91,7 +99,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('has')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue('RESULT'));
 
         $this->assertSame('RESULT', $this->storage->hasToken('token_id'));
@@ -108,12 +116,12 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('has')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue(true));
 
         $this->session->expects($this->once())
             ->method('get')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue('RESULT'));
 
         $this->assertSame('RESULT', $this->storage->getToken('token_id'));
@@ -130,12 +138,12 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('has')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue(true));
 
         $this->session->expects($this->once())
             ->method('get')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue('RESULT'));
 
         $this->assertSame('RESULT', $this->storage->getToken('token_id'));
@@ -155,7 +163,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('has')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue(false));
 
         $this->storage->getToken('token_id');
@@ -175,7 +183,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('has')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue(false));
 
         $this->storage->getToken('token_id');
@@ -192,7 +200,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('remove')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue(null));
 
         $this->assertNull($this->storage->removeToken('token_id'));
@@ -209,7 +217,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('remove')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue(null));
 
         $this->assertNull($this->storage->removeToken('token_id'));
@@ -226,7 +234,7 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('remove')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue('TOKEN'));
 
         $this->assertSame('TOKEN', $this->storage->removeToken('token_id'));
@@ -243,17 +251,9 @@ class SessionTokenStorageTest extends TestCase
 
         $this->session->expects($this->once())
             ->method('remove')
-            ->with(self::SESSION_NAMESPACE . '/token_id')
+            ->with(self::SESSION_NAMESPACE.'/token_id')
             ->will($this->returnValue('TOKEN'));
 
         $this->assertSame('TOKEN', $this->storage->removeToken('token_id'));
-    }
-
-    protected function setUp()
-    {
-        $this->session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->storage = new SessionTokenStorage($this->session, self::SESSION_NAMESPACE);
     }
 }

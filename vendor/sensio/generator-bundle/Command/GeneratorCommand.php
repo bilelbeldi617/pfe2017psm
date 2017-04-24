@@ -29,6 +29,12 @@ abstract class GeneratorCommand extends ContainerAwareCommand
     private $generator;
 
     // only useful for unit tests
+    public function setGenerator(Generator $generator)
+    {
+        $this->generator = $generator;
+    }
+
+    abstract protected function createGenerator();
 
     protected function getGenerator(BundleInterface $bundle = null)
     {
@@ -40,27 +46,20 @@ abstract class GeneratorCommand extends ContainerAwareCommand
         return $this->generator;
     }
 
-    public function setGenerator(Generator $generator)
-    {
-        $this->generator = $generator;
-    }
-
-    abstract protected function createGenerator();
-
     protected function getSkeletonDirs(BundleInterface $bundle = null)
     {
         $skeletonDirs = array();
 
-        if (isset($bundle) && is_dir($dir = $bundle->getPath() . '/Resources/SensioGeneratorBundle/skeleton')) {
+        if (isset($bundle) && is_dir($dir = $bundle->getPath().'/Resources/SensioGeneratorBundle/skeleton')) {
             $skeletonDirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->getContainer()->get('kernel')->getRootdir() . '/Resources/SensioGeneratorBundle/skeleton')) {
+        if (is_dir($dir = $this->getContainer()->get('kernel')->getRootdir().'/Resources/SensioGeneratorBundle/skeleton')) {
             $skeletonDirs[] = $dir;
         }
 
-        $skeletonDirs[] = __DIR__ . '/../Resources/skeleton';
-        $skeletonDirs[] = __DIR__ . '/../Resources';
+        $skeletonDirs[] = __DIR__.'/../Resources/skeleton';
+        $skeletonDirs[] = __DIR__.'/../Resources';
 
         return $skeletonDirs;
     }
@@ -86,6 +85,6 @@ abstract class GeneratorCommand extends ContainerAwareCommand
     {
         $projectRootDir = dirname($this->getContainer()->getParameter('kernel.root_dir'));
 
-        return str_replace($projectRootDir . '/', '', realpath($absolutePath) ?: $absolutePath);
+        return str_replace($projectRootDir.'/', '', realpath($absolutePath) ?: $absolutePath);
     }
 }

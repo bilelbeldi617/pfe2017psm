@@ -27,7 +27,8 @@ class ImportCommandTest extends TestCase
         $profiler = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profiler')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $profiler->expects($this->once())->method('import')->will($this->returnValue(new Profile('TOKEN')));
 
@@ -40,7 +41,7 @@ class ImportCommandTest extends TestCase
         $command->setHelperSet($helperSet);
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('filename' => __DIR__ . '/../Fixtures/profile.data'));
+        $commandTester->execute(array('filename' => __DIR__.'/../Fixtures/profile.data'));
         $this->assertRegExp('/Profile "TOKEN" has been successfully imported\./', $commandTester->getDisplay());
     }
 }

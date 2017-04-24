@@ -47,7 +47,7 @@ class SymfonyTestsListener extends \PHPUnit_Framework_BaseTestListener
             }
             if ('time-sensitive' === $type) {
                 foreach ($namespaces as $ns) {
-                    ClockMock::register($ns . '\DummyClass');
+                    ClockMock::register($ns.'\DummyClass');
                 }
             }
         }
@@ -64,7 +64,7 @@ class SymfonyTestsListener extends \PHPUnit_Framework_BaseTestListener
     public function __destruct()
     {
         if (0 < $this->state) {
-            file_put_contents($this->skippedFile, '<?php return ' . var_export($this->isSkipped, true) . ';');
+            file_put_contents($this->skippedFile, '<?php return '.var_export($this->isSkipped, true).';');
         }
     }
 
@@ -118,8 +118,7 @@ class SymfonyTestsListener extends \PHPUnit_Framework_BaseTestListener
             foreach ($suite->tests() as $test) {
                 if (!$test instanceof \PHPUnit_Framework_TestCase
                     || isset($this->wasSkipped[$suiteName]['*'])
-                    || isset($this->wasSkipped[$suiteName][$test->getName()])
-                ) {
+                    || isset($this->wasSkipped[$suiteName][$test->getName()])) {
                     $skipped[] = $test;
                 }
             }

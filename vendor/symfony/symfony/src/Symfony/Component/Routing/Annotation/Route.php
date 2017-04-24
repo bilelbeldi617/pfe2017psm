@@ -46,7 +46,7 @@ class Route
         }
 
         foreach ($data as $key => $value) {
-            $method = 'set' . str_replace('_', '', $key);
+            $method = 'set'.str_replace('_', '', $key);
             if (!method_exists($this, $method)) {
                 throw new \BadMethodCallException(sprintf('Unknown property "%s" on annotation "%s".', $key, get_class($this)));
             }
@@ -59,7 +59,7 @@ class Route
      */
     public function setPattern($pattern)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.2 and will be removed in 3.0. Use the setPath() method instead and use the "path" option instead of the "pattern" option in the route definition.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.2 and will be removed in 3.0. Use the setPath() method instead and use the "path" option instead of the "pattern" option in the route definition.', E_USER_DEPRECATED);
 
         $this->path = $pattern;
     }
@@ -69,13 +69,8 @@ class Route
      */
     public function getPattern()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.2 and will be removed in 3.0. Use the getPath() method instead and use the "path" option instead of the "pattern" option in the route definition.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.2 and will be removed in 3.0. Use the getPath() method instead and use the "path" option instead of the "pattern" option in the route definition.', E_USER_DEPRECATED);
 
-        return $this->path;
-    }
-
-    public function getPath()
-    {
         return $this->path;
     }
 
@@ -84,9 +79,9 @@ class Route
         $this->path = $path;
     }
 
-    public function getHost()
+    public function getPath()
     {
-        return $this->host;
+        return $this->path;
     }
 
     public function setHost($pattern)
@@ -94,9 +89,9 @@ class Route
         $this->host = $pattern;
     }
 
-    public function getName()
+    public function getHost()
     {
-        return $this->name;
+        return $this->host;
     }
 
     public function setName($name)
@@ -104,9 +99,9 @@ class Route
         $this->name = $name;
     }
 
-    public function getRequirements()
+    public function getName()
     {
-        return $this->requirements;
+        return $this->name;
     }
 
     public function setRequirements($requirements)
@@ -130,9 +125,9 @@ class Route
         $this->requirements = $requirements;
     }
 
-    public function getOptions()
+    public function getRequirements()
     {
-        return $this->options;
+        return $this->requirements;
     }
 
     public function setOptions($options)
@@ -140,9 +135,9 @@ class Route
         $this->options = $options;
     }
 
-    public function getDefaults()
+    public function getOptions()
     {
-        return $this->defaults;
+        return $this->options;
     }
 
     public function setDefaults($defaults)
@@ -150,9 +145,9 @@ class Route
         $this->defaults = $defaults;
     }
 
-    public function getSchemes()
+    public function getDefaults()
     {
-        return $this->schemes;
+        return $this->defaults;
     }
 
     public function setSchemes($schemes)
@@ -160,9 +155,9 @@ class Route
         $this->schemes = is_array($schemes) ? $schemes : array($schemes);
     }
 
-    public function getMethods()
+    public function getSchemes()
     {
-        return $this->methods;
+        return $this->schemes;
     }
 
     public function setMethods($methods)
@@ -170,13 +165,18 @@ class Route
         $this->methods = is_array($methods) ? $methods : array($methods);
     }
 
-    public function getCondition()
+    public function getMethods()
     {
-        return $this->condition;
+        return $this->methods;
     }
 
     public function setCondition($condition)
     {
         $this->condition = $condition;
+    }
+
+    public function getCondition()
+    {
+        return $this->condition;
     }
 }

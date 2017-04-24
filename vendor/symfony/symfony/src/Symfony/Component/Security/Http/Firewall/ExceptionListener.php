@@ -114,51 +114,6 @@ class ExceptionListener
         }
     }
 
-    /**
-     * @param Request $request
-     * @param AuthenticationException $authException
-     *
-     * @return Response
-     *
-     * @throws AuthenticationException
-     */
-    private function startAuthentication(Request $request, AuthenticationException $authException)
-    {
-        if (null === $this->authenticationEntryPoint) {
-            throw $authException;
-        }
-
-        if (null !== $this->logger) {
-            $this->logger->debug('Calling Authentication entry point.');
-        }
-
-        if (!$this->stateless) {
-            $this->setTargetPath($request);
-        }
-
-        if ($authException instanceof AccountStatusException) {
-            // remove the security token to prevent infinite redirect loops
-            $this->tokenStorage->setToken(null);
-
-            if (null !== $this->logger) {
-                $this->logger->info('The security token was removed due to an AccountStatusException.', array('exception' => $authException));
-            }
-        }
-
-        return $this->authenticationEntryPoint->start($request, $authException);
-    }
-
-    /**
-     * @param Request $request
-     */
-    protected function setTargetPath(Request $request)
-    {
-        // session isn't required when using HTTP basic authentication mechanism for example
-        if ($request->hasSession() && $request->isMethodSafe(false) && !$request->isXmlHttpRequest()) {
-            $request->getSession()->set('_security.' . $this->providerKey . '.target_path', $request->getUri());
-        }
-    }
-
     private function handleAccessDeniedException(GetResponseForExceptionEvent $event, AccessDeniedException $exception)
     {
         $event->setException(new AccessDeniedHttpException($exception->getMessage(), $exception));
@@ -211,6 +166,51 @@ class ExceptionListener
     {
         if (null !== $this->logger) {
             $this->logger->info('A LogoutException was thrown.', array('exception' => $exception));
+        }
+    }
+
+    /**
+     * @param Request                 $request
+     * @param AuthenticationException $authException
+     *
+     * @return Response
+     *
+     * @throws AuthenticationException
+     */
+    private function startAuthentication(Request $request, AuthenticationException $authException)
+    {
+        if (null === $this->authenticationEntryPoint) {
+            throw $authException;
+        }
+
+        if (null !== $this->logger) {
+            $this->logger->debug('Calling Authentication entry point.');
+        }
+
+        if (!$this->stateless) {
+            $this->setTargetPath($request);
+        }
+
+        if ($authException instanceof AccountStatusException) {
+            // remove the security token to prevent infinite redirect loops
+            $this->tokenStorage->setToken(null);
+
+            if (null !== $this->logger) {
+                $this->logger->info('The security token was removed due to an AccountStatusException.', array('exception' => $authException));
+            }
+        }
+
+        return $this->authenticationEntryPoint->start($request, $authException);
+    }
+
+    /**
+     * @param Request $request
+     */
+    protected function setTargetPath(Request $request)
+    {
+        // session isn't required when using HTTP basic authentication mechanism for example
+        if ($request->hasSession() && $request->isMethodSafe(false) && !$request->isXmlHttpRequest()) {
+            $request->getSession()->set('_security.'.$this->providerKey.'.target_path', $request->getUri());
         }
     }
 }

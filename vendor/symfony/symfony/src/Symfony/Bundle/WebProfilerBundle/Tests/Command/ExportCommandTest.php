@@ -30,7 +30,8 @@ class ExportCommandTest extends TestCase
         $profiler = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profiler')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $helperSet = new HelperSet();
         $helper = $this->getMockBuilder('Symfony\Component\Console\Helper\FormatterHelper')->getMock();
@@ -49,7 +50,8 @@ class ExportCommandTest extends TestCase
         $profiler = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profiler')
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $profile = new Profile('TOKEN');
         $profiler->expects($this->once())->method('loadProfile')->with('TOKEN')->will($this->returnValue($profile));

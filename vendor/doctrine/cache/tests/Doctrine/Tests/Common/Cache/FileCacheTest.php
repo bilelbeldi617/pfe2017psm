@@ -9,26 +9,34 @@ use Doctrine\Common\Cache\Cache;
  */
 class FileCacheTest extends \Doctrine\Tests\DoctrineTestCase
 {
-    const WIN_MAX_PATH_LEN = 258;
     /**
      * @var \Doctrine\Common\Cache\FileCache
      */
     private $driver;
 
+    protected function setUp()
+    {
+        $this->driver = $this->getMock(
+            'Doctrine\Common\Cache\FileCache',
+            array('doFetch', 'doContains', 'doSave'),
+            array(), '', false
+        );
+    }
+
     public function testFilenameShouldCreateThePathWithOneSubDirectory()
     {
-        $cache = $this->driver;
-        $method = new \ReflectionMethod($cache, 'getFilename');
-        $key = 'item-key';
-        $expectedDir = array(
+        $cache          = $this->driver;
+        $method         = new \ReflectionMethod($cache, 'getFilename');
+        $key            = 'item-key';
+        $expectedDir    = array(
             '84',
         );
-        $expectedDir = implode(DIRECTORY_SEPARATOR, $expectedDir);
+        $expectedDir    = implode(DIRECTORY_SEPARATOR, $expectedDir);
 
         $method->setAccessible(true);
 
-        $path = $method->invoke($cache, $key);
-        $dirname = pathinfo($path, PATHINFO_DIRNAME);
+        $path       = $method->invoke($cache, $key);
+        $dirname    = pathinfo($path, PATHINFO_DIRNAME);
 
         $this->assertEquals(DIRECTORY_SEPARATOR . $expectedDir, $dirname);
     }
@@ -122,68 +130,7 @@ class FileCacheTest extends \Doctrine\Tests\DoctrineTestCase
         $this->assertEquals($extension, $actualExtension);
     }
 
-    public function getPathLengthsToTest()
-    {
-        // Windows officially supports 260 bytes including null terminator
-        // 259 characters is too large due to PHP bug (https://bugs.php.net/bug.php?id=70943)
-        // 260 characters is too large - null terminator is included in allowable length
-        return array(
-            array(257, false),
-            array(258, false),
-            array(259, true),
-            array(260, true)
-        );
-    }
-
-    /**
-     * @runInSeparateProcess
-     * @dataProvider getPathLengthsToTest
-     *
-     * @covers       \Doctrine\Common\Cache\FileCache::getFilename
-     */
-    public function testWindowsPathLengthLimitationsAreCorrectlyRespected($length, $pathShouldBeHashed)
-    {
-        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
-            define('PHP_WINDOWS_VERSION_BUILD', 'Yes, this is the "usual suspect", with the usual limitations');
-        }
-
-        $basePath = $this->getBasePathForWindowsPathLengthTests($length);
-
-        $fileCache = $this->getMockForAbstractClass(
-            'Doctrine\Common\Cache\FileCache',
-            array($basePath, '.doctrine.cache')
-        );
-
-        list($key, $keyPath, $hashedKeyPath) = $this->getKeyAndPathFittingLength($length);
-
-        $getFileName = new \ReflectionMethod($fileCache, 'getFilename');
-
-        $getFileName->setAccessible(true);
-
-        $this->assertEquals(
-            $length,
-            strlen($keyPath),
-            sprintf('Path expected to be %d characters long is %d characters long', $length, strlen($keyPath))
-        );
-
-        if ($pathShouldBeHashed) {
-            $keyPath = $hashedKeyPath;
-        }
-
-        if ($pathShouldBeHashed) {
-            $this->assertSame(
-                $hashedKeyPath,
-                $getFileName->invoke($fileCache, $key),
-                'Keys should be hashed correctly if they are over the limit.'
-            );
-        } else {
-            $this->assertSame(
-                $keyPath,
-                $getFileName->invoke($fileCache, $key),
-                'Keys below limit of the allowed length are used directly, unhashed'
-            );
-        }
-    }
+    const WIN_MAX_PATH_LEN = 258;
 
     public static function getBasePathForWindowsPathLengthTests($pathLength)
     {
@@ -244,12 +191,66 @@ class FileCacheTest extends \Doctrine\Tests\DoctrineTestCase
         return array($key, $keyPath, $hashedKeyPath);
     }
 
-    protected function setUp()
+    public function getPathLengthsToTest()
     {
-        $this->driver = $this->getMock(
-            'Doctrine\Common\Cache\FileCache',
-            array('doFetch', 'doContains', 'doSave'),
-            array(), '', false
+        // Windows officially supports 260 bytes including null terminator
+        // 259 characters is too large due to PHP bug (https://bugs.php.net/bug.php?id=70943)
+        // 260 characters is too large - null terminator is included in allowable length
+        return array(
+            array(257, false),
+            array(258, false),
+            array(259, true),
+            array(260, true)
         );
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @dataProvider getPathLengthsToTest
+     *
+     * @covers \Doctrine\Common\Cache\FileCache::getFilename
+     */
+    public function testWindowsPathLengthLimitationsAreCorrectlyRespected($length, $pathShouldBeHashed)
+    {
+        if (! defined('PHP_WINDOWS_VERSION_BUILD')) {
+            define('PHP_WINDOWS_VERSION_BUILD', 'Yes, this is the "usual suspect", with the usual limitations');
+        }
+
+        $basePath = $this->getBasePathForWindowsPathLengthTests($length);
+
+        $fileCache = $this->getMockForAbstractClass(
+            'Doctrine\Common\Cache\FileCache',
+            array($basePath, '.doctrine.cache')
+        );
+
+        list($key, $keyPath, $hashedKeyPath) = $this->getKeyAndPathFittingLength($length);
+
+        $getFileName = new \ReflectionMethod($fileCache, 'getFilename');
+
+        $getFileName->setAccessible(true);
+
+        $this->assertEquals(
+            $length,
+            strlen($keyPath),
+            sprintf('Path expected to be %d characters long is %d characters long', $length, strlen($keyPath))
+        );
+
+        if ($pathShouldBeHashed) {
+            $keyPath = $hashedKeyPath;
+        }
+
+        if ($pathShouldBeHashed) {
+            $this->assertSame(
+                $hashedKeyPath,
+                $getFileName->invoke($fileCache, $key),
+                'Keys should be hashed correctly if they are over the limit.'
+            );
+        } else {
+            $this->assertSame(
+                $keyPath,
+                $getFileName->invoke($fileCache, $key),
+                'Keys below limit of the allowed length are used directly, unhashed'
+            );
+        }
     }
 }

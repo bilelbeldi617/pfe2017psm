@@ -19,13 +19,13 @@ class TemplateIteratorTest extends TestCase
     {
         $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
         $bundle->expects($this->any())->method('getName')->will($this->returnValue('BarBundle'));
-        $bundle->expects($this->any())->method('getPath')->will($this->returnValue(__DIR__ . '/Fixtures/templates/BarBundle'));
+        $bundle->expects($this->any())->method('getPath')->will($this->returnValue(__DIR__.'/Fixtures/templates/BarBundle'));
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\Kernel')->disableOriginalConstructor()->getMock();
         $kernel->expects($this->any())->method('getBundles')->will($this->returnValue(array(
             $bundle,
         )));
-        $iterator = new TemplateIterator($kernel, __DIR__ . '/Fixtures/templates', array(__DIR__ . '/Fixtures/templates/Foo' => 'Foo'));
+        $iterator = new TemplateIterator($kernel, __DIR__.'/Fixtures/templates', array(__DIR__.'/Fixtures/templates/Foo' => 'Foo'));
 
         $sorted = iterator_to_array($iterator);
         sort($sorted);

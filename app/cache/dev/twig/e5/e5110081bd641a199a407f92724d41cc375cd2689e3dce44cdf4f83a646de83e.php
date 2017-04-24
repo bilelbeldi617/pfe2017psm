@@ -1,7 +1,6 @@
 <?php
 
 /* WebProfilerBundle:Profiler:table.html.twig */
-
 class __TwigTemplate_ca955726071d8492a7eee2de0cf0de61641e74414a361d3c9ca9aab8c7dabfdd extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,52 +9,14 @@ class __TwigTemplate_ca955726071d8492a7eee2de0cf0de61641e74414a361d3c9ca9aab8c7d
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(60 => 15, 51 => 12, 47 => 11, 44 => 10, 40 => 9, 33 => 5, 29 => 4, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<table class=\"{{ class|default('') }}\">
-    <thead>
-        <tr>
-            <th scope=\"col\" class=\"key\">{{ labels is defined ? labels[0] : 'Key' }}</th>
-            <th scope=\"col\">{{ labels is defined ? labels[1] : 'Value' }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for key in data|keys|sort %}
-            <tr>
-                <th scope=\"row\">{{ key }}</th>
-                <td>{{ profiler_dump(data[key]) }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-", "WebProfilerBundle:Profiler:table.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Profiler/table.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_8941fe6c92242b1a9c57fdf67cb1f83a58b5a3122ff087b88b02cc09ee8ca648 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_8941fe6c92242b1a9c57fdf67cb1f83a58b5a3122ff087b88b02cc09ee8ca648->enter($__internal_8941fe6c92242b1a9c57fdf67cb1f83a58b5a3122ff087b88b02cc09ee8ca648_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Profiler:table.html.twig"));
+        $__internal_b0aa39a3c23466461b800e657f6713cf97fa442efc7e92f8ffe24cf6d2bc9e90 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_b0aa39a3c23466461b800e657f6713cf97fa442efc7e92f8ffe24cf6d2bc9e90->enter($__internal_b0aa39a3c23466461b800e657f6713cf97fa442efc7e92f8ffe24cf6d2bc9e90_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Profiler:table.html.twig"));
 
         // line 1
         echo "<table class=\"";
@@ -99,13 +60,52 @@ class __TwigTemplate_ca955726071d8492a7eee2de0cf0de61641e74414a361d3c9ca9aab8c7d
         echo "    </tbody>
 </table>
 ";
-
-        $__internal_8941fe6c92242b1a9c57fdf67cb1f83a58b5a3122ff087b88b02cc09ee8ca648->leave($__internal_8941fe6c92242b1a9c57fdf67cb1f83a58b5a3122ff087b88b02cc09ee8ca648_prof);
+        
+        $__internal_b0aa39a3c23466461b800e657f6713cf97fa442efc7e92f8ffe24cf6d2bc9e90->leave($__internal_b0aa39a3c23466461b800e657f6713cf97fa442efc7e92f8ffe24cf6d2bc9e90_prof);
 
     }
 
     public function getTemplateName()
     {
         return "WebProfilerBundle:Profiler:table.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  60 => 15,  51 => 12,  47 => 11,  44 => 10,  40 => 9,  33 => 5,  29 => 4,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<table class=\"{{ class|default('') }}\">
+    <thead>
+        <tr>
+            <th scope=\"col\" class=\"key\">{{ labels is defined ? labels[0] : 'Key' }}</th>
+            <th scope=\"col\">{{ labels is defined ? labels[1] : 'Value' }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key in data|keys|sort %}
+            <tr>
+                <th scope=\"row\">{{ key }}</th>
+                <td>{{ profiler_dump(data[key]) }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+", "WebProfilerBundle:Profiler:table.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Profiler/table.html.twig");
     }
 }

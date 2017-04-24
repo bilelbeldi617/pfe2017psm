@@ -2,7 +2,7 @@ Reference
 =========
 
 .. toctree ::
-:glob:
-:maxdepth: 1
+    :glob:
+    :maxdepth: 1
 
     reference/*

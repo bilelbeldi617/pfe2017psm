@@ -13,12 +13,20 @@ namespace Symfony\Component\PropertyAccess\Tests\Fixtures;
 
 class TestClassMagicGet
 {
-    public $publicProperty;
     private $magicProperty;
+
+    public $publicProperty;
 
     public function __construct($value)
     {
         $this->magicProperty = $value;
+    }
+
+    public function __set($property, $value)
+    {
+        if ('magicProperty' === $property) {
+            $this->magicProperty = $value;
+        }
     }
 
     public function __get($property)
@@ -29,13 +37,6 @@ class TestClassMagicGet
 
         if ('constantMagicProperty' === $property) {
             return 'constant value';
-        }
-    }
-
-    public function __set($property, $value)
-    {
-        if ('magicProperty' === $property) {
-            $this->magicProperty = $value;
         }
     }
 }

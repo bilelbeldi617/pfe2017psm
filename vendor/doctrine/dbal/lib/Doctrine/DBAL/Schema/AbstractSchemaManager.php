@@ -55,12 +55,12 @@ abstract class AbstractSchemaManager
     /**
      * Constructor. Accepts the Connection instance to manage the schema for.
      *
-     * @param \Doctrine\DBAL\Connection $conn
+     * @param \Doctrine\DBAL\Connection                      $conn
      * @param \Doctrine\DBAL\Platforms\AbstractPlatform|null $platform
      */
     public function __construct(\Doctrine\DBAL\Connection $conn, AbstractPlatform $platform = null)
     {
-        $this->_conn = $conn;
+        $this->_conn     = $conn;
         $this->_platform = $platform ?: $this->_conn->getDatabasePlatform();
     }
 
@@ -73,303 +73,6 @@ abstract class AbstractSchemaManager
     {
         return $this->_platform;
     }
-
-    /**
-     * Lists the available databases for this connection.
-     *
-     * @return array
-     */
-    public function listDatabases()
-    {
-        $sql = $this->_platform->getListDatabasesSQL();
-
-        $databases = $this->_conn->fetchAll($sql);
-
-        return $this->_getPortableDatabasesList($databases);
-    }
-
-    /**
-     * @param array $databases
-     *
-     * @return array
-     */
-    protected function _getPortableDatabasesList($databases)
-    {
-        $list = array();
-        foreach ($databases as $value) {
-            if ($value = $this->_getPortableDatabaseDefinition($value)) {
-                $list[] = $value;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $database
-     *
-     * @return mixed
-     */
-    protected function _getPortableDatabaseDefinition($database)
-    {
-        return $database;
-    }
-
-    /**
-     * Returns true if all the given tables exist.
-     *
-     * @param array $tableNames
-     *
-     * @return boolean
-     */
-    public function tablesExist($tableNames)
-    {
-        $tableNames = array_map('strtolower', (array)$tableNames);
-
-        return count($tableNames) == count(\array_intersect($tableNames, array_map('strtolower', $this->listTableNames())));
-    }
-
-    /**
-     * Returns a list of all tables in the current database.
-     *
-     * @return array
-     */
-    public function listTableNames()
-    {
-        $sql = $this->_platform->getListTablesSQL();
-
-        $tables = $this->_conn->fetchAll($sql);
-        $tableNames = $this->_getPortableTablesList($tables);
-
-        return $this->filterAssetNames($tableNames);
-    }
-
-    /**
-     * @param array $tables
-     *
-     * @return array
-     */
-    protected function _getPortableTablesList($tables)
-    {
-        $list = array();
-        foreach ($tables as $value) {
-            if ($value = $this->_getPortableTableDefinition($value)) {
-                $list[] = $value;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $table
-     *
-     * @return array
-     */
-    protected function _getPortableTableDefinition($table)
-    {
-        return $table;
-    }
-
-    /**
-     * Filters asset names if they are configured to return only a subset of all
-     * the found elements.
-     *
-     * @param array $assetNames
-     *
-     * @return array
-     */
-    protected function filterAssetNames($assetNames)
-    {
-        $filterExpr = $this->getFilterSchemaAssetsExpression();
-        if (!$filterExpr) {
-            return $assetNames;
-        }
-
-        return array_values(
-            array_filter($assetNames, function ($assetName) use ($filterExpr) {
-                $assetName = ($assetName instanceof AbstractAsset) ? $assetName->getName() : $assetName;
-
-                return preg_match($filterExpr, $assetName);
-            })
-        );
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getFilterSchemaAssetsExpression()
-    {
-        return $this->_conn->getConfiguration()->getFilterSchemaAssetsExpression();
-    }
-
-    /**
-     * Lists the views this connection has.
-     *
-     * @return \Doctrine\DBAL\Schema\View[]
-     */
-    public function listViews()
-    {
-        $database = $this->_conn->getDatabase();
-        $sql = $this->_platform->getListViewsSQL($database);
-        $views = $this->_conn->fetchAll($sql);
-
-        return $this->_getPortableViewsList($views);
-    }
-
-    /**
-     * @param array $views
-     *
-     * @return array
-     */
-    protected function _getPortableViewsList($views)
-    {
-        $list = array();
-        foreach ($views as $value) {
-            if ($view = $this->_getPortableViewDefinition($value)) {
-                $viewName = strtolower($view->getQuotedName($this->_platform));
-                $list[$viewName] = $view;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $view
-     *
-     * @return mixed
-     */
-    protected function _getPortableViewDefinition($view)
-    {
-        return false;
-    }
-
-    /**
-     * Drops a database.
-     *
-     * NOTE: You can not drop the database this SchemaManager is currently connected to.
-     *
-     * @param string $database The name of the database to drop.
-     *
-     * @return void
-     */
-    public function dropDatabase($database)
-    {
-        $this->_execSql($this->_platform->getDropDatabaseSQL($database));
-    }
-
-    /**
-     * @param array|string $sql
-     *
-     * @return void
-     */
-    protected function _execSql($sql)
-    {
-        foreach ((array)$sql as $query) {
-            $this->_conn->executeUpdate($query);
-        }
-    }
-
-    /* drop*() Methods */
-
-    /**
-     * Drops the given table.
-     *
-     * @param string $tableName The name of the table to drop.
-     *
-     * @return void
-     */
-    public function dropTable($tableName)
-    {
-        $this->_execSql($this->_platform->getDropTableSQL($tableName));
-    }
-
-    /**
-     * Drops the index from the given table.
-     *
-     * @param \Doctrine\DBAL\Schema\Index|string $index The name of the index.
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table.
-     *
-     * @return void
-     */
-    public function dropIndex($index, $table)
-    {
-        if ($index instanceof Index) {
-            $index = $index->getQuotedName($this->_platform);
-        }
-
-        $this->_execSql($this->_platform->getDropIndexSQL($index, $table));
-    }
-
-    /**
-     * Drops the constraint from the given table.
-     *
-     * @param \Doctrine\DBAL\Schema\Constraint $constraint
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table.
-     *
-     * @return void
-     */
-    public function dropConstraint(Constraint $constraint, $table)
-    {
-        $this->_execSql($this->_platform->getDropConstraintSQL($constraint, $table));
-    }
-
-    /**
-     * Drops a foreign key from a table.
-     *
-     * @param \Doctrine\DBAL\Schema\ForeignKeyConstraint|string $foreignKey The name of the foreign key.
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table with the foreign key.
-     *
-     * @return void
-     */
-    public function dropForeignKey($foreignKey, $table)
-    {
-        $this->_execSql($this->_platform->getDropForeignKeySQL($foreignKey, $table));
-    }
-
-    /**
-     * Drops a sequence with a given name.
-     *
-     * @param string $name The name of the sequence to drop.
-     *
-     * @return void
-     */
-    public function dropSequence($name)
-    {
-        $this->_execSql($this->_platform->getDropSequenceSQL($name));
-    }
-
-    /**
-     * Drops a view.
-     *
-     * @param string $name The name of the view.
-     *
-     * @return void
-     */
-    public function dropView($name)
-    {
-        $this->_execSql($this->_platform->getDropViewSQL($name));
-    }
-
-    /**
-     * Drops and creates a constraint.
-     *
-     * @see dropConstraint()
-     * @see createConstraint()
-     *
-     * @param \Doctrine\DBAL\Schema\Constraint $constraint
-     * @param \Doctrine\DBAL\Schema\Table|string $table
-     *
-     * @return void
-     */
-    public function dropAndCreateConstraint(Constraint $constraint, $table)
-    {
-        $this->tryMethod('dropConstraint', $constraint, $table);
-        $this->createConstraint($constraint, $table);
-    }
-
-    /* create*() Methods */
 
     /**
      * Tries any method on the schema manager. Normally a method throws an
@@ -398,240 +101,17 @@ abstract class AbstractSchemaManager
     }
 
     /**
-     * Creates a constraint on a table.
+     * Lists the available databases for this connection.
      *
-     * @param \Doctrine\DBAL\Schema\Constraint $constraint
-     * @param \Doctrine\DBAL\Schema\Table|string $table
-     *
-     * @return void
+     * @return array
      */
-    public function createConstraint(Constraint $constraint, $table)
+    public function listDatabases()
     {
-        $this->_execSql($this->_platform->getCreateConstraintSQL($constraint, $table));
-    }
+        $sql = $this->_platform->getListDatabasesSQL();
 
-    /**
-     * Drops and creates a new index on a table.
-     *
-     * @param \Doctrine\DBAL\Schema\Index $index
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table on which the index is to be created.
-     *
-     * @return void
-     */
-    public function dropAndCreateIndex(Index $index, $table)
-    {
-        $this->tryMethod('dropIndex', $index->getQuotedName($this->_platform), $table);
-        $this->createIndex($index, $table);
-    }
+        $databases = $this->_conn->fetchAll($sql);
 
-    /**
-     * Creates a new index on a table.
-     *
-     * @param \Doctrine\DBAL\Schema\Index $index
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table on which the index is to be created.
-     *
-     * @return void
-     */
-    public function createIndex(Index $index, $table)
-    {
-        $this->_execSql($this->_platform->getCreateIndexSQL($index, $table));
-    }
-
-    /**
-     * Drops and creates a new foreign key.
-     *
-     * @param \Doctrine\DBAL\Schema\ForeignKeyConstraint $foreignKey An associative array that defines properties of the foreign key to be created.
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table on which the foreign key is to be created.
-     *
-     * @return void
-     */
-    public function dropAndCreateForeignKey(ForeignKeyConstraint $foreignKey, $table)
-    {
-        $this->tryMethod('dropForeignKey', $foreignKey, $table);
-        $this->createForeignKey($foreignKey, $table);
-    }
-
-    /**
-     * Creates a new foreign key.
-     *
-     * @param \Doctrine\DBAL\Schema\ForeignKeyConstraint $foreignKey The ForeignKey instance.
-     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table on which the foreign key is to be created.
-     *
-     * @return void
-     */
-    public function createForeignKey(ForeignKeyConstraint $foreignKey, $table)
-    {
-        $this->_execSql($this->_platform->getCreateForeignKeySQL($foreignKey, $table));
-    }
-
-    /**
-     * Drops and create a new sequence.
-     *
-     * @param \Doctrine\DBAL\Schema\Sequence $sequence
-     *
-     * @return void
-     *
-     * @throws \Doctrine\DBAL\ConnectionException If something fails at database level.
-     */
-    public function dropAndCreateSequence(Sequence $sequence)
-    {
-        $this->tryMethod('dropSequence', $sequence->getQuotedName($this->_platform));
-        $this->createSequence($sequence);
-    }
-
-    /* dropAndCreate*() Methods */
-
-    /**
-     * Creates a new sequence.
-     *
-     * @param \Doctrine\DBAL\Schema\Sequence $sequence
-     *
-     * @return void
-     *
-     * @throws \Doctrine\DBAL\ConnectionException If something fails at database level.
-     */
-    public function createSequence($sequence)
-    {
-        $this->_execSql($this->_platform->getCreateSequenceSQL($sequence));
-    }
-
-    /**
-     * Drops and creates a new table.
-     *
-     * @param \Doctrine\DBAL\Schema\Table $table
-     *
-     * @return void
-     */
-    public function dropAndCreateTable(Table $table)
-    {
-        $this->tryMethod('dropTable', $table->getQuotedName($this->_platform));
-        $this->createTable($table);
-    }
-
-    /**
-     * Creates a new table.
-     *
-     * @param \Doctrine\DBAL\Schema\Table $table
-     *
-     * @return void
-     */
-    public function createTable(Table $table)
-    {
-        $createFlags = AbstractPlatform::CREATE_INDEXES | AbstractPlatform::CREATE_FOREIGNKEYS;
-        $this->_execSql($this->_platform->getCreateTableSQL($table, $createFlags));
-    }
-
-    /**
-     * Drops and creates a new database.
-     *
-     * @param string $database The name of the database to create.
-     *
-     * @return void
-     */
-    public function dropAndCreateDatabase($database)
-    {
-        $this->tryMethod('dropDatabase', $database);
-        $this->createDatabase($database);
-    }
-
-    /**
-     * Creates a new database.
-     *
-     * @param string $database The name of the database to create.
-     *
-     * @return void
-     */
-    public function createDatabase($database)
-    {
-        $this->_execSql($this->_platform->getCreateDatabaseSQL($database));
-    }
-
-    /**
-     * Drops and creates a new view.
-     *
-     * @param \Doctrine\DBAL\Schema\View $view
-     *
-     * @return void
-     */
-    public function dropAndCreateView(View $view)
-    {
-        $this->tryMethod('dropView', $view->getQuotedName($this->_platform));
-        $this->createView($view);
-    }
-
-    /**
-     * Creates a new view.
-     *
-     * @param \Doctrine\DBAL\Schema\View $view
-     *
-     * @return void
-     */
-    public function createView(View $view)
-    {
-        $this->_execSql($this->_platform->getCreateViewSQL($view->getQuotedName($this->_platform), $view->getSql()));
-    }
-
-    /* alterTable() Methods */
-
-    /**
-     * Renames a given table to another name.
-     *
-     * @param string $name The current name of the table.
-     * @param string $newName The new name of the table.
-     *
-     * @return void
-     */
-    public function renameTable($name, $newName)
-    {
-        $tableDiff = new TableDiff($name);
-        $tableDiff->newName = $newName;
-        $this->alterTable($tableDiff);
-    }
-
-    /**
-     * Alters an existing tables schema.
-     *
-     * @param \Doctrine\DBAL\Schema\TableDiff $tableDiff
-     *
-     * @return void
-     */
-    public function alterTable(TableDiff $tableDiff)
-    {
-        $queries = $this->_platform->getAlterTableSQL($tableDiff);
-        if (is_array($queries) && count($queries)) {
-            foreach ($queries as $ddlQuery) {
-                $this->_execSql($ddlQuery);
-            }
-        }
-    }
-
-    /**
-     * Methods for filtering return values of list*() methods to convert
-     * the native DBMS data definition to a portable Doctrine definition
-     */
-
-    /**
-     * Creates a schema instance for the current database.
-     *
-     * @return \Doctrine\DBAL\Schema\Schema
-     */
-    public function createSchema()
-    {
-        $namespaces = array();
-
-        if ($this->_platform->supportsSchemas()) {
-            $namespaces = $this->listNamespaceNames();
-        }
-
-        $sequences = array();
-
-        if ($this->_platform->supportsSequences()) {
-            $sequences = $this->listSequences();
-        }
-
-        $tables = $this->listTables();
-
-        return new Schema($tables, $sequences, $this->createSchemaConfig(), $namespaces);
+        return $this->_getPortableDatabasesList($databases);
     }
 
     /**
@@ -646,36 +126,6 @@ abstract class AbstractSchemaManager
         $namespaces = $this->_conn->fetchAll($sql);
 
         return $this->getPortableNamespacesList($namespaces);
-    }
-
-    /**
-     * Converts a list of namespace names from the native DBMS data definition to a portable Doctrine definition.
-     *
-     * @param array $namespaces The list of namespace names in the native DBMS data definition.
-     *
-     * @return array
-     */
-    protected function getPortableNamespacesList(array $namespaces)
-    {
-        $namespacesList = array();
-
-        foreach ($namespaces as $namespace) {
-            $namespacesList[] = $this->getPortableNamespaceDefinition($namespace);
-        }
-
-        return $namespacesList;
-    }
-
-    /**
-     * Converts a namespace definition from the native DBMS data definition to a portable Doctrine definition.
-     *
-     * @param array $namespace The native DBMS namespace definition.
-     *
-     * @return mixed
-     */
-    protected function getPortableNamespaceDefinition(array $namespace)
-    {
-        return $namespace;
     }
 
     /**
@@ -698,32 +148,110 @@ abstract class AbstractSchemaManager
     }
 
     /**
-     * @param array $sequences
+     * Lists the columns for a given table.
      *
-     * @return array
+     * In contrast to other libraries and to the old version of Doctrine,
+     * this column definition does try to contain the 'primary' field for
+     * the reason that it is not portable accross different RDBMS. Use
+     * {@see listTableIndexes($tableName)} to retrieve the primary key
+     * of a table. We're a RDBMS specifies more details these are held
+     * in the platformDetails array.
+     *
+     * @param string      $table    The name of the table.
+     * @param string|null $database
+     *
+     * @return \Doctrine\DBAL\Schema\Column[]
      */
-    protected function _getPortableSequencesList($sequences)
+    public function listTableColumns($table, $database = null)
     {
-        $list = array();
-        foreach ($sequences as $value) {
-            if ($value = $this->_getPortableSequenceDefinition($value)) {
-                $list[] = $value;
-            }
+        if ( ! $database) {
+            $database = $this->_conn->getDatabase();
         }
 
-        return $list;
+        $sql = $this->_platform->getListTableColumnsSQL($table, $database);
+
+        $tableColumns = $this->_conn->fetchAll($sql);
+
+        return $this->_getPortableTableColumnList($table, $database, $tableColumns);
     }
 
     /**
-     * @param array $sequence
+     * Lists the indexes for a given table returning an array of Index instances.
      *
-     * @return \Doctrine\DBAL\Schema\Sequence
+     * Keys of the portable indexes list are all lower-cased.
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @param string $table The name of the table.
+     *
+     * @return \Doctrine\DBAL\Schema\Index[]
      */
-    protected function _getPortableSequenceDefinition($sequence)
+    public function listTableIndexes($table)
     {
-        throw DBALException::notSupported('Sequences');
+        $sql = $this->_platform->getListTableIndexesSQL($table, $this->_conn->getDatabase());
+
+        $tableIndexes = $this->_conn->fetchAll($sql);
+
+        return $this->_getPortableTableIndexesList($tableIndexes, $table);
+    }
+
+    /**
+     * Returns true if all the given tables exist.
+     *
+     * @param array $tableNames
+     *
+     * @return boolean
+     */
+    public function tablesExist($tableNames)
+    {
+        $tableNames = array_map('strtolower', (array) $tableNames);
+
+        return count($tableNames) == count(\array_intersect($tableNames, array_map('strtolower', $this->listTableNames())));
+    }
+
+    /**
+     * Returns a list of all tables in the current database.
+     *
+     * @return array
+     */
+    public function listTableNames()
+    {
+        $sql = $this->_platform->getListTablesSQL();
+
+        $tables = $this->_conn->fetchAll($sql);
+        $tableNames = $this->_getPortableTablesList($tables);
+
+        return $this->filterAssetNames($tableNames);
+    }
+
+    /**
+     * Filters asset names if they are configured to return only a subset of all
+     * the found elements.
+     *
+     * @param array $assetNames
+     *
+     * @return array
+     */
+    protected function filterAssetNames($assetNames)
+    {
+        $filterExpr = $this->getFilterSchemaAssetsExpression();
+        if ( ! $filterExpr) {
+            return $assetNames;
+        }
+
+        return array_values(
+            array_filter($assetNames, function ($assetName) use ($filterExpr) {
+                $assetName = ($assetName instanceof AbstractAsset) ? $assetName->getName() : $assetName;
+
+                return preg_match($filterExpr, $assetName);
+            })
+        );
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getFilterSchemaAssetsExpression()
+    {
+        return $this->_conn->getConfiguration()->getFilterSchemaAssetsExpression();
     }
 
     /**
@@ -761,31 +289,503 @@ abstract class AbstractSchemaManager
     }
 
     /**
-     * Lists the columns for a given table.
+     * Lists the views this connection has.
      *
-     * In contrast to other libraries and to the old version of Doctrine,
-     * this column definition does try to contain the 'primary' field for
-     * the reason that it is not portable accross different RDBMS. Use
-     * {@see listTableIndexes($tableName)} to retrieve the primary key
-     * of a table. We're a RDBMS specifies more details these are held
-     * in the platformDetails array.
+     * @return \Doctrine\DBAL\Schema\View[]
+     */
+    public function listViews()
+    {
+        $database = $this->_conn->getDatabase();
+        $sql = $this->_platform->getListViewsSQL($database);
+        $views = $this->_conn->fetchAll($sql);
+
+        return $this->_getPortableViewsList($views);
+    }
+
+    /**
+     * Lists the foreign keys for the given table.
      *
-     * @param string $table The name of the table.
+     * @param string      $table    The name of the table.
      * @param string|null $database
      *
-     * @return \Doctrine\DBAL\Schema\Column[]
+     * @return \Doctrine\DBAL\Schema\ForeignKeyConstraint[]
      */
-    public function listTableColumns($table, $database = null)
+    public function listTableForeignKeys($table, $database = null)
     {
-        if (!$database) {
+        if (is_null($database)) {
             $database = $this->_conn->getDatabase();
         }
+        $sql = $this->_platform->getListTableForeignKeysSQL($table, $database);
+        $tableForeignKeys = $this->_conn->fetchAll($sql);
 
-        $sql = $this->_platform->getListTableColumnsSQL($table, $database);
+        return $this->_getPortableTableForeignKeysList($tableForeignKeys);
+    }
 
-        $tableColumns = $this->_conn->fetchAll($sql);
+    /* drop*() Methods */
 
-        return $this->_getPortableTableColumnList($table, $database, $tableColumns);
+    /**
+     * Drops a database.
+     *
+     * NOTE: You can not drop the database this SchemaManager is currently connected to.
+     *
+     * @param string $database The name of the database to drop.
+     *
+     * @return void
+     */
+    public function dropDatabase($database)
+    {
+        $this->_execSql($this->_platform->getDropDatabaseSQL($database));
+    }
+
+    /**
+     * Drops the given table.
+     *
+     * @param string $tableName The name of the table to drop.
+     *
+     * @return void
+     */
+    public function dropTable($tableName)
+    {
+        $this->_execSql($this->_platform->getDropTableSQL($tableName));
+    }
+
+    /**
+     * Drops the index from the given table.
+     *
+     * @param \Doctrine\DBAL\Schema\Index|string $index The name of the index.
+     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table.
+     *
+     * @return void
+     */
+    public function dropIndex($index, $table)
+    {
+        if ($index instanceof Index) {
+            $index = $index->getQuotedName($this->_platform);
+        }
+
+        $this->_execSql($this->_platform->getDropIndexSQL($index, $table));
+    }
+
+    /**
+     * Drops the constraint from the given table.
+     *
+     * @param \Doctrine\DBAL\Schema\Constraint   $constraint
+     * @param \Doctrine\DBAL\Schema\Table|string $table      The name of the table.
+     *
+     * @return void
+     */
+    public function dropConstraint(Constraint $constraint, $table)
+    {
+        $this->_execSql($this->_platform->getDropConstraintSQL($constraint, $table));
+    }
+
+    /**
+     * Drops a foreign key from a table.
+     *
+     * @param \Doctrine\DBAL\Schema\ForeignKeyConstraint|string $foreignKey The name of the foreign key.
+     * @param \Doctrine\DBAL\Schema\Table|string                $table      The name of the table with the foreign key.
+     *
+     * @return void
+     */
+    public function dropForeignKey($foreignKey, $table)
+    {
+        $this->_execSql($this->_platform->getDropForeignKeySQL($foreignKey, $table));
+    }
+
+    /**
+     * Drops a sequence with a given name.
+     *
+     * @param string $name The name of the sequence to drop.
+     *
+     * @return void
+     */
+    public function dropSequence($name)
+    {
+        $this->_execSql($this->_platform->getDropSequenceSQL($name));
+    }
+
+    /**
+     * Drops a view.
+     *
+     * @param string $name The name of the view.
+     *
+     * @return void
+     */
+    public function dropView($name)
+    {
+        $this->_execSql($this->_platform->getDropViewSQL($name));
+    }
+
+    /* create*() Methods */
+
+    /**
+     * Creates a new database.
+     *
+     * @param string $database The name of the database to create.
+     *
+     * @return void
+     */
+    public function createDatabase($database)
+    {
+        $this->_execSql($this->_platform->getCreateDatabaseSQL($database));
+    }
+
+    /**
+     * Creates a new table.
+     *
+     * @param \Doctrine\DBAL\Schema\Table $table
+     *
+     * @return void
+     */
+    public function createTable(Table $table)
+    {
+        $createFlags = AbstractPlatform::CREATE_INDEXES|AbstractPlatform::CREATE_FOREIGNKEYS;
+        $this->_execSql($this->_platform->getCreateTableSQL($table, $createFlags));
+    }
+
+    /**
+     * Creates a new sequence.
+     *
+     * @param \Doctrine\DBAL\Schema\Sequence $sequence
+     *
+     * @return void
+     *
+     * @throws \Doctrine\DBAL\ConnectionException If something fails at database level.
+     */
+    public function createSequence($sequence)
+    {
+        $this->_execSql($this->_platform->getCreateSequenceSQL($sequence));
+    }
+
+    /**
+     * Creates a constraint on a table.
+     *
+     * @param \Doctrine\DBAL\Schema\Constraint   $constraint
+     * @param \Doctrine\DBAL\Schema\Table|string $table
+     *
+     * @return void
+     */
+    public function createConstraint(Constraint $constraint, $table)
+    {
+        $this->_execSql($this->_platform->getCreateConstraintSQL($constraint, $table));
+    }
+
+    /**
+     * Creates a new index on a table.
+     *
+     * @param \Doctrine\DBAL\Schema\Index        $index
+     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table on which the index is to be created.
+     *
+     * @return void
+     */
+    public function createIndex(Index $index, $table)
+    {
+        $this->_execSql($this->_platform->getCreateIndexSQL($index, $table));
+    }
+
+    /**
+     * Creates a new foreign key.
+     *
+     * @param \Doctrine\DBAL\Schema\ForeignKeyConstraint $foreignKey The ForeignKey instance.
+     * @param \Doctrine\DBAL\Schema\Table|string         $table      The name of the table on which the foreign key is to be created.
+     *
+     * @return void
+     */
+    public function createForeignKey(ForeignKeyConstraint $foreignKey, $table)
+    {
+        $this->_execSql($this->_platform->getCreateForeignKeySQL($foreignKey, $table));
+    }
+
+    /**
+     * Creates a new view.
+     *
+     * @param \Doctrine\DBAL\Schema\View $view
+     *
+     * @return void
+     */
+    public function createView(View $view)
+    {
+        $this->_execSql($this->_platform->getCreateViewSQL($view->getQuotedName($this->_platform), $view->getSql()));
+    }
+
+    /* dropAndCreate*() Methods */
+
+    /**
+     * Drops and creates a constraint.
+     *
+     * @see dropConstraint()
+     * @see createConstraint()
+     *
+     * @param \Doctrine\DBAL\Schema\Constraint   $constraint
+     * @param \Doctrine\DBAL\Schema\Table|string $table
+     *
+     * @return void
+     */
+    public function dropAndCreateConstraint(Constraint $constraint, $table)
+    {
+        $this->tryMethod('dropConstraint', $constraint, $table);
+        $this->createConstraint($constraint, $table);
+    }
+
+    /**
+     * Drops and creates a new index on a table.
+     *
+     * @param \Doctrine\DBAL\Schema\Index        $index
+     * @param \Doctrine\DBAL\Schema\Table|string $table The name of the table on which the index is to be created.
+     *
+     * @return void
+     */
+    public function dropAndCreateIndex(Index $index, $table)
+    {
+        $this->tryMethod('dropIndex', $index->getQuotedName($this->_platform), $table);
+        $this->createIndex($index, $table);
+    }
+
+    /**
+     * Drops and creates a new foreign key.
+     *
+     * @param \Doctrine\DBAL\Schema\ForeignKeyConstraint $foreignKey An associative array that defines properties of the foreign key to be created.
+     * @param \Doctrine\DBAL\Schema\Table|string         $table      The name of the table on which the foreign key is to be created.
+     *
+     * @return void
+     */
+    public function dropAndCreateForeignKey(ForeignKeyConstraint $foreignKey, $table)
+    {
+        $this->tryMethod('dropForeignKey', $foreignKey, $table);
+        $this->createForeignKey($foreignKey, $table);
+    }
+
+    /**
+     * Drops and create a new sequence.
+     *
+     * @param \Doctrine\DBAL\Schema\Sequence $sequence
+     *
+     * @return void
+     *
+     * @throws \Doctrine\DBAL\ConnectionException If something fails at database level.
+     */
+    public function dropAndCreateSequence(Sequence $sequence)
+    {
+        $this->tryMethod('dropSequence', $sequence->getQuotedName($this->_platform));
+        $this->createSequence($sequence);
+    }
+
+    /**
+     * Drops and creates a new table.
+     *
+     * @param \Doctrine\DBAL\Schema\Table $table
+     *
+     * @return void
+     */
+    public function dropAndCreateTable(Table $table)
+    {
+        $this->tryMethod('dropTable', $table->getQuotedName($this->_platform));
+        $this->createTable($table);
+    }
+
+    /**
+     * Drops and creates a new database.
+     *
+     * @param string $database The name of the database to create.
+     *
+     * @return void
+     */
+    public function dropAndCreateDatabase($database)
+    {
+        $this->tryMethod('dropDatabase', $database);
+        $this->createDatabase($database);
+    }
+
+    /**
+     * Drops and creates a new view.
+     *
+     * @param \Doctrine\DBAL\Schema\View $view
+     *
+     * @return void
+     */
+    public function dropAndCreateView(View $view)
+    {
+        $this->tryMethod('dropView', $view->getQuotedName($this->_platform));
+        $this->createView($view);
+    }
+
+    /* alterTable() Methods */
+
+    /**
+     * Alters an existing tables schema.
+     *
+     * @param \Doctrine\DBAL\Schema\TableDiff $tableDiff
+     *
+     * @return void
+     */
+    public function alterTable(TableDiff $tableDiff)
+    {
+        $queries = $this->_platform->getAlterTableSQL($tableDiff);
+        if (is_array($queries) && count($queries)) {
+            foreach ($queries as $ddlQuery) {
+                $this->_execSql($ddlQuery);
+            }
+        }
+    }
+
+    /**
+     * Renames a given table to another name.
+     *
+     * @param string $name    The current name of the table.
+     * @param string $newName The new name of the table.
+     *
+     * @return void
+     */
+    public function renameTable($name, $newName)
+    {
+        $tableDiff = new TableDiff($name);
+        $tableDiff->newName = $newName;
+        $this->alterTable($tableDiff);
+    }
+
+    /**
+     * Methods for filtering return values of list*() methods to convert
+     * the native DBMS data definition to a portable Doctrine definition
+     */
+
+    /**
+     * @param array $databases
+     *
+     * @return array
+     */
+    protected function _getPortableDatabasesList($databases)
+    {
+        $list = array();
+        foreach ($databases as $value) {
+            if ($value = $this->_getPortableDatabaseDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * Converts a list of namespace names from the native DBMS data definition to a portable Doctrine definition.
+     *
+     * @param array $namespaces The list of namespace names in the native DBMS data definition.
+     *
+     * @return array
+     */
+    protected function getPortableNamespacesList(array $namespaces)
+    {
+        $namespacesList = array();
+
+        foreach ($namespaces as $namespace) {
+            $namespacesList[] = $this->getPortableNamespaceDefinition($namespace);
+        }
+
+        return $namespacesList;
+    }
+
+    /**
+     * @param array $database
+     *
+     * @return mixed
+     */
+    protected function _getPortableDatabaseDefinition($database)
+    {
+        return $database;
+    }
+
+    /**
+     * Converts a namespace definition from the native DBMS data definition to a portable Doctrine definition.
+     *
+     * @param array $namespace The native DBMS namespace definition.
+     *
+     * @return mixed
+     */
+    protected function getPortableNamespaceDefinition(array $namespace)
+    {
+        return $namespace;
+    }
+
+    /**
+     * @param array $functions
+     *
+     * @return array
+     */
+    protected function _getPortableFunctionsList($functions)
+    {
+        $list = array();
+        foreach ($functions as $value) {
+            if ($value = $this->_getPortableFunctionDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $function
+     *
+     * @return mixed
+     */
+    protected function _getPortableFunctionDefinition($function)
+    {
+        return $function;
+    }
+
+    /**
+     * @param array $triggers
+     *
+     * @return array
+     */
+    protected function _getPortableTriggersList($triggers)
+    {
+        $list = array();
+        foreach ($triggers as $value) {
+            if ($value = $this->_getPortableTriggerDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $trigger
+     *
+     * @return mixed
+     */
+    protected function _getPortableTriggerDefinition($trigger)
+    {
+        return $trigger;
+    }
+
+    /**
+     * @param array $sequences
+     *
+     * @return array
+     */
+    protected function _getPortableSequencesList($sequences)
+    {
+        $list = array();
+        foreach ($sequences as $value) {
+            if ($value = $this->_getPortableSequenceDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $sequence
+     *
+     * @return \Doctrine\DBAL\Schema\Sequence
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function _getPortableSequenceDefinition($sequence)
+    {
+        throw DBALException::notSupported('Sequences');
     }
 
     /**
@@ -793,9 +793,9 @@ abstract class AbstractSchemaManager
      *
      * The name of the created column instance however is kept in its case.
      *
-     * @param string $table The name of the table.
+     * @param string $table        The name of the table.
      * @param string $database
-     * @param array $tableColumns
+     * @param array  $tableColumns
      *
      * @return array
      */
@@ -816,7 +816,7 @@ abstract class AbstractSchemaManager
                 $column = $eventArgs->getColumn();
             }
 
-            if (!$defaultPrevented) {
+            if ( ! $defaultPrevented) {
                 $column = $this->_getPortableTableColumnDefinition($tableColumn);
             }
 
@@ -839,78 +839,14 @@ abstract class AbstractSchemaManager
     abstract protected function _getPortableTableColumnDefinition($tableColumn);
 
     /**
-     * Lists the foreign keys for the given table.
-     *
-     * @param string $table The name of the table.
-     * @param string|null $database
-     *
-     * @return \Doctrine\DBAL\Schema\ForeignKeyConstraint[]
-     */
-    public function listTableForeignKeys($table, $database = null)
-    {
-        if (is_null($database)) {
-            $database = $this->_conn->getDatabase();
-        }
-        $sql = $this->_platform->getListTableForeignKeysSQL($table, $database);
-        $tableForeignKeys = $this->_conn->fetchAll($sql);
-
-        return $this->_getPortableTableForeignKeysList($tableForeignKeys);
-    }
-
-    /**
-     * @param array $tableForeignKeys
-     *
-     * @return array
-     */
-    protected function _getPortableTableForeignKeysList($tableForeignKeys)
-    {
-        $list = array();
-        foreach ($tableForeignKeys as $value) {
-            if ($value = $this->_getPortableTableForeignKeyDefinition($value)) {
-                $list[] = $value;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $tableForeignKey
-     *
-     * @return mixed
-     */
-    protected function _getPortableTableForeignKeyDefinition($tableForeignKey)
-    {
-        return $tableForeignKey;
-    }
-
-    /**
-     * Lists the indexes for a given table returning an array of Index instances.
-     *
-     * Keys of the portable indexes list are all lower-cased.
-     *
-     * @param string $table The name of the table.
-     *
-     * @return \Doctrine\DBAL\Schema\Index[]
-     */
-    public function listTableIndexes($table)
-    {
-        $sql = $this->_platform->getListTableIndexesSQL($table, $this->_conn->getDatabase());
-
-        $tableIndexes = $this->_conn->fetchAll($sql);
-
-        return $this->_getPortableTableIndexesList($tableIndexes, $table);
-    }
-
-    /**
      * Aggregates and groups the index results according to the required data result.
      *
-     * @param array $tableIndexRows
+     * @param array       $tableIndexRows
      * @param string|null $tableName
      *
      * @return array
      */
-    protected function _getPortableTableIndexesList($tableIndexRows, $tableName = null)
+    protected function _getPortableTableIndexesList($tableIndexRows, $tableName=null)
     {
         $result = array();
         foreach ($tableIndexRows as $tableIndex) {
@@ -949,7 +885,7 @@ abstract class AbstractSchemaManager
                 $index = $eventArgs->getIndex();
             }
 
-            if (!$defaultPrevented) {
+            if ( ! $defaultPrevented) {
                 $index = new Index($data['name'], $data['columns'], $data['unique'], $data['primary'], $data['flags'], $data['options']);
             }
 
@@ -959,6 +895,151 @@ abstract class AbstractSchemaManager
         }
 
         return $indexes;
+    }
+
+    /**
+     * @param array $tables
+     *
+     * @return array
+     */
+    protected function _getPortableTablesList($tables)
+    {
+        $list = array();
+        foreach ($tables as $value) {
+            if ($value = $this->_getPortableTableDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $table
+     *
+     * @return array
+     */
+    protected function _getPortableTableDefinition($table)
+    {
+        return $table;
+    }
+
+    /**
+     * @param array $users
+     *
+     * @return array
+     */
+    protected function _getPortableUsersList($users)
+    {
+        $list = array();
+        foreach ($users as $value) {
+            if ($value = $this->_getPortableUserDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $user
+     *
+     * @return mixed
+     */
+    protected function _getPortableUserDefinition($user)
+    {
+        return $user;
+    }
+
+    /**
+     * @param array $views
+     *
+     * @return array
+     */
+    protected function _getPortableViewsList($views)
+    {
+        $list = array();
+        foreach ($views as $value) {
+            if ($view = $this->_getPortableViewDefinition($value)) {
+                $viewName = strtolower($view->getQuotedName($this->_platform));
+                $list[$viewName] = $view;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $view
+     *
+     * @return mixed
+     */
+    protected function _getPortableViewDefinition($view)
+    {
+        return false;
+    }
+
+    /**
+     * @param array $tableForeignKeys
+     *
+     * @return array
+     */
+    protected function _getPortableTableForeignKeysList($tableForeignKeys)
+    {
+        $list = array();
+        foreach ($tableForeignKeys as $value) {
+            if ($value = $this->_getPortableTableForeignKeyDefinition($value)) {
+                $list[] = $value;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $tableForeignKey
+     *
+     * @return mixed
+     */
+    protected function _getPortableTableForeignKeyDefinition($tableForeignKey)
+    {
+        return $tableForeignKey;
+    }
+
+    /**
+     * @param array|string $sql
+     *
+     * @return void
+     */
+    protected function _execSql($sql)
+    {
+        foreach ((array) $sql as $query) {
+            $this->_conn->executeUpdate($query);
+        }
+    }
+
+    /**
+     * Creates a schema instance for the current database.
+     *
+     * @return \Doctrine\DBAL\Schema\Schema
+     */
+    public function createSchema()
+    {
+        $namespaces = array();
+
+        if ($this->_platform->supportsSchemas()) {
+            $namespaces = $this->listNamespaceNames();
+        }
+
+        $sequences = array();
+
+        if ($this->_platform->supportsSequences()) {
+            $sequences = $this->listSequences();
+        }
+
+        $tables = $this->listTables();
+
+        return new Schema($tables, $sequences, $this->createSchemaConfig(), $namespaces);
     }
 
     /**
@@ -1027,87 +1108,6 @@ abstract class AbstractSchemaManager
      */
     public function removeDoctrineTypeFromComment($comment, $type)
     {
-        return str_replace('(DC2Type:' . $type . ')', '', $comment);
-    }
-
-    /**
-     * @param array $functions
-     *
-     * @return array
-     */
-    protected function _getPortableFunctionsList($functions)
-    {
-        $list = array();
-        foreach ($functions as $value) {
-            if ($value = $this->_getPortableFunctionDefinition($value)) {
-                $list[] = $value;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $function
-     *
-     * @return mixed
-     */
-    protected function _getPortableFunctionDefinition($function)
-    {
-        return $function;
-    }
-
-    /**
-     * @param array $triggers
-     *
-     * @return array
-     */
-    protected function _getPortableTriggersList($triggers)
-    {
-        $list = array();
-        foreach ($triggers as $value) {
-            if ($value = $this->_getPortableTriggerDefinition($value)) {
-                $list[] = $value;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $trigger
-     *
-     * @return mixed
-     */
-    protected function _getPortableTriggerDefinition($trigger)
-    {
-        return $trigger;
-    }
-
-    /**
-     * @param array $users
-     *
-     * @return array
-     */
-    protected function _getPortableUsersList($users)
-    {
-        $list = array();
-        foreach ($users as $value) {
-            if ($value = $this->_getPortableUserDefinition($value)) {
-                $list[] = $value;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $user
-     *
-     * @return mixed
-     */
-    protected function _getPortableUserDefinition($user)
-    {
-        return $user;
+        return str_replace('(DC2Type:'.$type.')', '', $comment);
     }
 }

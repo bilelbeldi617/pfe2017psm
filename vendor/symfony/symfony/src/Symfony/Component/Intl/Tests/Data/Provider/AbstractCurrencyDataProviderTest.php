@@ -560,6 +560,18 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
      */
     protected $dataProvider;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->dataProvider = new CurrencyDataProvider(
+            $this->getDataDirectory().'/'.Intl::CURRENCY_DIR,
+            $this->createEntryReader()
+        );
+    }
+
+    abstract protected function getDataDirectory();
+
     public function testGetCurrencies()
     {
         $this->assertSame(static::$currencies, $this->dataProvider->getCurrencies());
@@ -654,9 +666,7 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
     public function provideCurrencies()
     {
         return array_map(
-            function ($currency) {
-                return array($currency);
-            },
+            function ($currency) { return array($currency); },
             static::$currencies
         );
     }
@@ -680,9 +690,7 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
     public function provideCurrenciesWithNumericEquivalent()
     {
         return array_map(
-            function ($value) {
-                return array($value);
-            },
+            function ($value) { return array($value); },
             array_keys(static::$alpha3ToNumeric)
         );
     }
@@ -698,9 +706,7 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
     public function provideCurrenciesWithoutNumericEquivalent()
     {
         return array_map(
-            function ($value) {
-                return array($value);
-            },
+            function ($value) { return array($value); },
             array_diff(static::$currencies, array_keys(static::$alpha3ToNumeric))
         );
     }
@@ -719,27 +725,10 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
         $numericToAlpha3 = $this->getNumericToAlpha3Mapping();
 
         return array_map(
-            function ($numeric, $alpha3) {
-                return array($numeric, $alpha3);
-            },
+            function ($numeric, $alpha3) { return array($numeric, $alpha3); },
             array_keys($numericToAlpha3),
             $numericToAlpha3
         );
-    }
-
-    private function getNumericToAlpha3Mapping()
-    {
-        $numericToAlpha3 = array();
-
-        foreach (static::$alpha3ToNumeric as $alpha3 => $numeric) {
-            if (!isset($numericToAlpha3[$numeric])) {
-                $numericToAlpha3[$numeric] = array();
-            }
-
-            $numericToAlpha3[$numeric][] = $alpha3;
-        }
-
-        return $numericToAlpha3;
     }
 
     /**
@@ -762,9 +751,7 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
         $invalidNumericCodes = array_diff(range(0, 1000), $validNumericCodes);
 
         return array_map(
-            function ($value) {
-                return array($value);
-            },
+            function ($value) { return array($value); },
             $invalidNumericCodes
         );
     }
@@ -778,15 +765,18 @@ abstract class AbstractCurrencyDataProviderTest extends AbstractDataProviderTest
         $this->dataProvider->forNumericCode($currency);
     }
 
-    protected function setUp()
+    private function getNumericToAlpha3Mapping()
     {
-        parent::setUp();
+        $numericToAlpha3 = array();
 
-        $this->dataProvider = new CurrencyDataProvider(
-            $this->getDataDirectory() . '/' . Intl::CURRENCY_DIR,
-            $this->createEntryReader()
-        );
+        foreach (static::$alpha3ToNumeric as $alpha3 => $numeric) {
+            if (!isset($numericToAlpha3[$numeric])) {
+                $numericToAlpha3[$numeric] = array();
+            }
+
+            $numericToAlpha3[$numeric][] = $alpha3;
+        }
+
+        return $numericToAlpha3;
     }
-
-    abstract protected function getDataDirectory();
 }

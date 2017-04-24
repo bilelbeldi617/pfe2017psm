@@ -113,7 +113,7 @@ class MaskBuilder extends AbstractMaskBuilder
                 continue;
             }
 
-            if (!defined($cName = 'static::CODE_' . substr($name, 5))) {
+            if (!defined($cName = 'static::CODE_'.substr($name, 5))) {
                 throw new \RuntimeException('There was no code defined for this mask.');
             }
 

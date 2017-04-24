@@ -1,9 +1,9 @@
 {
-  "Version": "2.1.27.78",
-  "Names": {
-    "BA": "Bosnia ja Hercegovina",
-    "KH": "Kamboža",
-    "SD": "Sudan",
-    "TD": "Chad"
-  }
+    "Version": "2.1.27.78",
+    "Names": {
+        "BA": "Bosnia ja Hercegovina",
+        "KH": "Kamboža",
+        "SD": "Sudan",
+        "TD": "Chad"
+    }
 }

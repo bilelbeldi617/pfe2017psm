@@ -22,6 +22,28 @@ class ArrayKeyChoiceListTest extends AbstractChoiceListTest
 {
     private $object;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->object = new \stdClass();
+    }
+
+    protected function createChoiceList()
+    {
+        return new ArrayKeyChoiceList(array_flip($this->getChoices()));
+    }
+
+    protected function getChoices()
+    {
+        return array(0, 1, 'a', 'b', '');
+    }
+
+    protected function getValues()
+    {
+        return array('0', '1', 'a', 'b', '');
+    }
+
     public function testUseChoicesAsValuesByDefault()
     {
         $list = new ArrayKeyChoiceList(array('' => 'Empty', 0 => 'Zero', 1 => 'One', '1.23' => 'Float'));
@@ -147,7 +169,7 @@ class ArrayKeyChoiceListTest extends AbstractChoiceListTest
     public function testCreateChoiceListWithValueCallback()
     {
         $callback = function ($choice) {
-            return ':' . $choice;
+            return ':'.$choice;
         };
 
         $choiceList = new ArrayKeyChoiceList(array('foo' => 'Foo', 'bar' => 'Bar', 'baz' => 'Baz'), $callback);
@@ -157,27 +179,5 @@ class ArrayKeyChoiceListTest extends AbstractChoiceListTest
         $this->assertSame(array(':foo' => 'Foo', ':bar' => 'Bar', ':baz' => 'Baz'), $choiceList->getOriginalKeys());
         $this->assertSame(array(1 => 'foo', 2 => 'baz'), $choiceList->getChoicesForValues(array(1 => ':foo', 2 => ':baz')));
         $this->assertSame(array(1 => ':foo', 2 => ':baz'), $choiceList->getValuesForChoices(array(1 => 'foo', 2 => 'baz')));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->object = new \stdClass();
-    }
-
-    protected function createChoiceList()
-    {
-        return new ArrayKeyChoiceList(array_flip($this->getChoices()));
-    }
-
-    protected function getChoices()
-    {
-        return array(0, 1, 'a', 'b', '');
-    }
-
-    protected function getValues()
-    {
-        return array('0', '1', 'a', 'b', '');
     }
 }

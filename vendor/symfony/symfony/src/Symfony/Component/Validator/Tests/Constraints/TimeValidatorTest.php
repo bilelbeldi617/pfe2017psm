@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class TimeValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new TimeValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Time());
@@ -77,7 +87,7 @@ class TimeValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($time, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $time . '"')
+            ->setParameter('{{ value }}', '"'.$time.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -93,15 +103,5 @@ class TimeValidatorTest extends AbstractConstraintValidatorTest
             array('00:60:00', Time::INVALID_TIME_ERROR),
             array('00:00:60', Time::INVALID_TIME_ERROR),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new TimeValidator();
     }
 }

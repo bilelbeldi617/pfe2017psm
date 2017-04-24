@@ -17,6 +17,13 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class PercentToLocalizedStringTransformerTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        \Locale::setDefault('en');
+    }
+
     public function testTransform()
     {
         $transformer = new PercentToLocalizedStringTransformer();
@@ -111,12 +118,5 @@ class PercentToLocalizedStringTransformerTest extends TestCase
         $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('Symfony\Component\Form\Exception\TransformationFailedException');
 
         $transformer->reverseTransform(1);
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        \Locale::setDefault('en');
     }
 }

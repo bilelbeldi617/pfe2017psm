@@ -8,30 +8,30 @@
         $("document").ready(function () {
 
 
-            $("#listParent").change(function () {
+            $("#listParent").change(function(){
                 $("#messageContainer").html("");
                 $("#formContainer").fadeOut();
                 $("#formParentContainer").fadeOut();
-                if ($("#listParent").val() == "null") {
-                    var message = "<div class='alert alert-danger'>Svp choisir</div>";
-                    $("#messageContainer").html(message);
-                } else {
-                    if ($("#listParent").val() != "nouveauParent") {
-                        $("#formContainer").slideDown();
-                        $("#idParent").val($("#listParent").val());
+               if($("#listParent").val() == "null"){
+                   var message = "<div class='alert alert-danger'>Svp choisir</div>";
+                   $("#messageContainer").html(message);
+               }else{
+                   if($("#listParent").val() != "nouveauParent"){
+                       $("#formContainer").slideDown();
+                       $("#idParent").val($("#listParent").val());
 
-                    } else {
+                   }else{
                         $("#formParentContainer").slideDown();
-                    }
-                }
+                   }
+               }
             });
 
-            $("#formAjouterParent").submit(function () {
+            $("#formAjouterParent").submit(function(){
                 $.ajax({
-                    url: "{{ path('ajouterParent') }}",
+                   url: "{{ path('ajouterParent') }}",
                     method: "GET",
                     data: $("#formAjouterParent").serialize(),
-                    success: function (response) {
+                    success: function(response){
                         response = JSON.parse(response);
                         console.log(response);
                         var message = "<div class='alert alert-success'>Parent ajouté avec succés! vous pouvez ajouter un eleve!</div>";
@@ -47,25 +47,25 @@
                 });
             });
 
-            var matriculeRandom = Math.floor(Math.random() * 99999999);
-            $("#matriculeEleve").val(matriculeRandom);
+            var matriculeRandom = Math.floor(Math.random()*99999999) ;
+            $("#matriculeEleve").val(matriculeRandom) ;
 
             $("#formAjouterEleve").submit(function () {
                 console.log($("#formAjouterEleve").serialize());
                 $.ajax({
-                    url: "{{ path('ajouterEleveAJAX') }}",
-                    method: "GET",
-                    data: $("#formAjouterEleve").serialize(),
-                    success: function (response) {
+                    url:"{{ path('ajouterEleveAJAX') }}",
+                    method:"GET",
+                    data:$("#formAjouterEleve").serialize(),
+                    success:function (response) {
                         console.log(response);
                         response = JSON.parse(response);
-                        if (response.status == "inserted") {
-                            var message = "<div class='alert alert-success' >Ajout avec succès !</div>";
-                        } else {
+                        if (response.status=="inserted"){
+                        var message = "<div class='alert alert-success' >Ajout avec succès !</div>" ;
+                        }else{
                             var message = "<div class='alert alert-danger' >Problème d'ajout</div>";
                         }
                         $("#formContainer").fadeOut("fast");
-                        $("#messageContainer").html(message);
+                        $("#messageContainer").html(message) ;
 
                         setTimeout(function () {
 
@@ -73,25 +73,31 @@
                         }, 3000);
 
 
+
                     },
-                    error: function (erreur) {
-                        console.log(erreur);
+                    error:function (erreur) {
+                        console.log(erreur) ;
                     }
 
 
                 });
 
 
+
             });
 
 
-        });
 
 
+
+
+        }); 
+        
+        
     </script>
-
-
-
+    
+    
+    
 {% endblock %}
 
 
@@ -121,7 +127,7 @@
                 <form name="ajouterParent" id="formAjouterParent" onsubmit="return false" action="#">
                     <table border="1" align="center" class="table table-bordered">
                         <tr>
-                            <td>Nom parent :</td>
+                            <td>Nom parent : </td>
                             <td><input type="text" name="nomParent"></td>
                         </tr>
                         <tr>
@@ -162,57 +168,30 @@
                 <hr class="hr-4">
                 <form name="ajouterEleve" id="formAjouterEleve" onsubmit="return false" action="#">
                     <input type="text" id="idParent" name="idParent" style="display: none">
-                    <table border="1" align="center" class="table table-bordered">
+                <table border="1" align="center" class="table table-bordered">
 
-                        <tr>
-                            <td>Matricule</td>
-                            <td><input type="text" name="matriculeEleve" id="matriculeEleve" readonly></td>
-                        </tr>
-                        <tr>
-                            <td>Sexe</td>
-                            <td><input type="radio" name="sexeEleve" value="Garçon">Garçon<br><input type="radio"
-                                                                                                     name="sexeEleve"
-                                                                                                     value="Fille">Fille
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nom :</td>
-                            <td><input type="text" name="nomEleve"></td>
-                        </tr>
-                        <tr>
-                            <td>Prénom :</td>
-                            <td><input type="text" name="prenomEleve"></td>
-                        </tr>
-                        <tr>
-                            <td>Date de naissance</td>
-                            <td><input type="date" name="dateNaissanceEleve"></td>
-                        </tr>
-                        <tr>
-                            <td>Niveau</td>
-                            <td><select name="niveauEleve">
-                                    <option value="1">Premiere Annee</option>
-                                    <option value="2">Deuxieme Annee</option>
-                                    <option value="3">Troisieme Annee</option>
-                                    <option value="4">Quatrieme Annee</option>
-                                    <option value="5">Cinquieme Annee</option>
-                                    <option value="6">Sixieme Annee</option>
-                                </select></td>
-                        </tr>
-                        <tr>
-                            <td>Frais</td>
-                            <td>
-                                {% for f in frais %}
-                                    <input type="checkbox" value="{{ f.id }}" name="fraisEleve[]">{{ f.typeFrais }}<br>
-                                {% endfor %}
-                            </td>
-                        </tr>
+                    <tr><td>Matricule</td><td><input type="text" name="matriculeEleve" id="matriculeEleve" readonly></td></tr>
+                    <tr><td>Sexe</td><td><input type="radio" name="sexeEleve" value="Garçon">Garçon<br><input type="radio" name="sexeEleve" value="Fille">Fille</td></tr>
+                    <tr><td>Nom : </td><td><input type="text" name="nomEleve"></td></tr>
+                    <tr><td>Prénom : </td><td><input type="text" name="prenomEleve"></td></tr>
+                    <tr><td>Date de naissance</td><td><input type="date" name="dateNaissanceEleve" ></td></tr>
+                    <tr><td>Niveau</td><td><select name="niveauEleve">
+                            <option value="1">Premiere Annee</option>
+                            <option value="2">Deuxieme Annee</option>
+                            <option value="3">Troisieme Annee</option>
+                            <option value="4">Quatrieme Annee</option>
+                            <option value="5">Cinquieme Annee</option>
+                            <option value="6">Sixieme Annee</option>
+                    </select></td></tr>
+                    <tr><td>Frais</td><td>
+                            {% for f in frais %}
+                                <input type="checkbox" value="{{ f.id }}" name="fraisEleve[]">{{ f.typeFrais }}<br>
+                            {% endfor %}
+                    </td></tr>
 
-                        <tr align="center">
-                            <td><input type="submit" class="btn btn-primary" value="Ajouter"></td>
-                            <td><input type="reset" value="Réinitialiser" class="btn btn-danger"></td>
-                        </tr>
+                    <tr align="center"><td><input type="submit" class="btn btn-primary" value="Ajouter"></td><td><input type="reset" value="Réinitialiser" class="btn btn-danger"> </td></tr>
 
-                    </table>
+                </table>
                 </form>
 
 

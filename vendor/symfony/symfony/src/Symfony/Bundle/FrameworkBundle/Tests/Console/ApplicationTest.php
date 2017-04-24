@@ -30,46 +30,6 @@ class ApplicationTest extends TestCase
         $application->doRun(new ArrayInput(array('list')), new NullOutput());
     }
 
-    private function getKernel(array $bundles, $useDispatcher = false)
-    {
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
-
-        if ($useDispatcher) {
-            $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-            $dispatcher
-                ->expects($this->atLeastOnce())
-                ->method('dispatch');
-            $container
-                ->expects($this->atLeastOnce())
-                ->method('get')
-                ->with($this->equalTo('event_dispatcher'))
-                ->will($this->returnValue($dispatcher));
-        }
-
-        $container
-            ->expects($this->once())
-            ->method('hasParameter')
-            ->with($this->equalTo('console.command.ids'))
-            ->will($this->returnValue(true));
-        $container
-            ->expects($this->once())
-            ->method('getParameter')
-            ->with($this->equalTo('console.command.ids'))
-            ->will($this->returnValue(array()));
-
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
-        $kernel
-            ->expects($this->any())
-            ->method('getBundles')
-            ->will($this->returnValue($bundles));
-        $kernel
-            ->expects($this->any())
-            ->method('getContainer')
-            ->will($this->returnValue($container));
-
-        return $kernel;
-    }
-
     public function testBundleCommandsAreRegistered()
     {
         $bundle = $this->createBundleMock(array());
@@ -81,19 +41,6 @@ class ApplicationTest extends TestCase
 
         // Calling twice: registration should only be done once.
         $application->doRun(new ArrayInput(array('list')), new NullOutput());
-    }
-
-    private function createBundleMock(array $commands)
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\Bundle')->getMock();
-        $bundle
-            ->expects($this->once())
-            ->method('registerCommands')
-            ->will($this->returnCallback(function (Application $application) use ($commands) {
-                $application->addCommands($commands);
-            }));
-
-        return $bundle;
     }
 
     public function testBundleCommandsAreRetrievable()
@@ -152,8 +99,7 @@ class ApplicationTest extends TestCase
     public function testBundleCommandsHaveRightContainer()
     {
         $command = $this->getMockForAbstractClass('Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand', array('foo'), '', true, true, true, array('setContainer'));
-        $command->setCode(function () {
-        });
+        $command->setCode(function () {});
         $command->expects($this->exactly(2))->method('setContainer');
 
         $application = new Application($this->getKernel(array(), true));
@@ -167,5 +113,64 @@ class ApplicationTest extends TestCase
 
         // as the container might have change between two runs, setContainer must called again
         $tester->run(array('command' => 'foo'));
+    }
+
+    private function getKernel(array $bundles, $useDispatcher = false)
+    {
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
+
+        if ($useDispatcher) {
+            $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+            $dispatcher
+                ->expects($this->atLeastOnce())
+                ->method('dispatch')
+            ;
+            $container
+                ->expects($this->atLeastOnce())
+                ->method('get')
+                ->with($this->equalTo('event_dispatcher'))
+                ->will($this->returnValue($dispatcher));
+        }
+
+        $container
+            ->expects($this->once())
+            ->method('hasParameter')
+            ->with($this->equalTo('console.command.ids'))
+            ->will($this->returnValue(true))
+        ;
+        $container
+            ->expects($this->once())
+            ->method('getParameter')
+            ->with($this->equalTo('console.command.ids'))
+            ->will($this->returnValue(array()))
+        ;
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
+        $kernel
+            ->expects($this->any())
+            ->method('getBundles')
+            ->will($this->returnValue($bundles))
+        ;
+        $kernel
+            ->expects($this->any())
+            ->method('getContainer')
+            ->will($this->returnValue($container))
+        ;
+
+        return $kernel;
+    }
+
+    private function createBundleMock(array $commands)
+    {
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\Bundle')->getMock();
+        $bundle
+            ->expects($this->once())
+            ->method('registerCommands')
+            ->will($this->returnCallback(function (Application $application) use ($commands) {
+                $application->addCommands($commands);
+            }))
+        ;
+
+        return $bundle;
     }
 }

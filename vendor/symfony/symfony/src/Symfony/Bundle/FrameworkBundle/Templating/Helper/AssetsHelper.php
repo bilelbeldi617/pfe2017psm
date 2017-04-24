@@ -35,7 +35,7 @@ class AssetsHelper extends Helper
      * If the package used to generate the path is an instance of
      * UrlPackage, you will always get a URL and not a path.
      *
-     * @param string $path A public path
+     * @param string $path        A public path
      * @param string $packageName The name of the asset package to use
      *
      * @return string The public path of the asset
@@ -54,37 +54,10 @@ class AssetsHelper extends Helper
         return $this->packages->getUrl($path, $packageName);
     }
 
-    private function getLegacyAssetUrl($path, $packageName = null, $version = null)
-    {
-        if ($version) {
-            $package = $this->packages->getPackage($packageName);
-
-            $v = new \ReflectionProperty('Symfony\Component\Asset\Package', 'versionStrategy');
-            $v->setAccessible(true);
-
-            $currentVersionStrategy = $v->getValue($package);
-
-            $f = new \ReflectionProperty($currentVersionStrategy, 'format');
-            $f->setAccessible(true);
-
-            $format = $f->getValue($currentVersionStrategy);
-
-            $v->setValue($package, new StaticVersionStrategy($version, $format));
-        }
-
-        $url = $this->packages->getUrl($path, $packageName);
-
-        if ($version) {
-            $v->setValue($package, $currentVersionStrategy);
-        }
-
-        return $url;
-    }
-
     /**
      * Returns the version of an asset.
      *
-     * @param string $path A public path
+     * @param string $path        A public path
      * @param string $packageName The name of the asset package to use
      *
      * @return string The asset version
@@ -115,6 +88,33 @@ class AssetsHelper extends Helper
         @trigger_error('The getVersion() method requires a path as a first argument since 2.7 and will be enforced as of 3.0.', E_USER_DEPRECATED);
 
         return $this->packages->getVersion('/', $path);
+    }
+
+    private function getLegacyAssetUrl($path, $packageName = null, $version = null)
+    {
+        if ($version) {
+            $package = $this->packages->getPackage($packageName);
+
+            $v = new \ReflectionProperty('Symfony\Component\Asset\Package', 'versionStrategy');
+            $v->setAccessible(true);
+
+            $currentVersionStrategy = $v->getValue($package);
+
+            $f = new \ReflectionProperty($currentVersionStrategy, 'format');
+            $f->setAccessible(true);
+
+            $format = $f->getValue($currentVersionStrategy);
+
+            $v->setValue($package, new StaticVersionStrategy($version, $format));
+        }
+
+        $url = $this->packages->getUrl($path, $packageName);
+
+        if ($version) {
+            $v->setValue($package, $currentVersionStrategy);
+        }
+
+        return $url;
     }
 
     /**

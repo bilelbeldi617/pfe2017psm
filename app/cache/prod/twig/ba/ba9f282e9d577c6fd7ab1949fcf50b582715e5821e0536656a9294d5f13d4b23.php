@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:error.json.twig */
-
 class __TwigTemplate_d89cb104882ff460baf11d1caaeb15875f2699730f68819e467367f6c41974d2 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,7 +9,16 @@ class __TwigTemplate_d89cb104882ff460baf11d1caaeb15875f2699730f68819e467367f6c41
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        // line 1
+        echo twig_jsonencode_filter(array("error" => array("code" => (isset($context["status_code"]) ? $context["status_code"] : null), "message" => (isset($context["status_text"]) ? $context["status_text"] : null))));
+        echo "
+";
     }
 
     public function getTemplateName()
@@ -25,13 +33,13 @@ class __TwigTemplate_d89cb104882ff460baf11d1caaeb15875f2699730f68819e467367f6c41
 
     public function getDebugInfo()
     {
-        return array(19 => 1,);
+        return array (  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -39,13 +47,5 @@ class __TwigTemplate_d89cb104882ff460baf11d1caaeb15875f2699730f68819e467367f6c41
     public function getSourceContext()
     {
         return new Twig_Source("", "TwigBundle:Exception:error.json.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/error.json.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        // line 1
-        echo twig_jsonencode_filter(array("error" => array("code" => (isset($context["status_code"]) ? $context["status_code"] : null), "message" => (isset($context["status_text"]) ? $context["status_text"] : null))));
-        echo "
-";
     }
 }

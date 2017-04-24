@@ -29,49 +29,43 @@ class Seance
     private $horaireSeance;
 
 
+
     /**
      * @ORM\ManyToOne(targetEntity="Salle")
      *
      */
-    private $salle;
+    private $salle ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Enseignant")
      *
      */
-    private $enseignant;
+    private $enseignant ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Matiere")
      *
      */
-    private $matiere;
+    private $matiere ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Jour")
      *
      */
-    private $jour;
+    private $jour ;
+
+
+
 
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get horaireSeance
-     *
-     * @return \DateTime
-     */
-    public function getHoraireSeance()
-    {
-        return $this->horaireSeance;
     }
 
     /**
@@ -85,5 +79,15 @@ class Seance
         $this->horaireSeance = $horaireSeance;
 
         return $this;
+    }
+
+    /**
+     * Get horaireSeance
+     *
+     * @return \DateTime 
+     */
+    public function getHoraireSeance()
+    {
+        return $this->horaireSeance;
     }
 }

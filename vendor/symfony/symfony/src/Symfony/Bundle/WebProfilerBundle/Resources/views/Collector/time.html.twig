@@ -4,13 +4,13 @@
 
 {% if colors is not defined %}
     {% set colors = {
-    'default':                '#999',
-    'section':                '#444',
-    'event_listener':         '#00B8F5',
-    'event_listener_loading': '#00B8F5',
-    'template':               '#66CC00',
-    'doctrine':               '#FF6633',
-    'propel':                 '#FF6633',
+        'default':                '#999',
+        'section':                '#444',
+        'event_listener':         '#00B8F5',
+        'event_listener_loading': '#00B8F5',
+        'template':               '#66CC00',
+        'doctrine':               '#FF6633',
+        'propel':                 '#FF6633',
     } %}
 {% endif %}
 
@@ -62,8 +62,7 @@
 
         {% if profile.collectors.memory %}
             <div class="metric">
-                <span class="value">{{ '%.2f'|format(profile.collectors.memory.memory / 1024 / 1024) }} <span
-                            class="unit">MB</span></span>
+                <span class="value">{{ '%.2f'|format(profile.collectors.memory.memory / 1024 / 1024) }} <span class="unit">MB</span></span>
                 <span class="label">Peak memory usage</span>
             </div>
         {% endif %}
@@ -112,14 +111,12 @@
             Sub-Request {{ profile.getcollector('request').requestattributes.get('_controller') }}
             <small>
                 {{ collector.events.__section__.duration }} ms
-                <a class="newline" href="{{ path('_profiler', { token: profile.parent.token, panel: 'time' }) }}">Return
-                    to parent request</a>
+                <a class="newline" href="{{ path('_profiler', { token: profile.parent.token, panel: 'time' }) }}">Return to parent request</a>
             </small>
         </h3>
     {% elseif profile.children|length > 0 %}
         <h3>
-            Main Request
-            <small>{{ collector.events.__section__.duration }} ms</small>
+            Main Request <small>{{ collector.events.__section__.duration }} ms</small>
         </h3>
     {% endif %}
 
@@ -128,9 +125,7 @@
     {% if profile.children|length %}
         <p class="help">Note: sections with a striped background correspond to sub-requests.</p>
 
-        <h3>Sub-requests
-            <small>({{ profile.children|length }})</small>
-        </h3>
+        <h3>Sub-requests <small>({{ profile.children|length }})</small></h3>
 
         {% for child in profile.children %}
             {% set events = child.getcollector('time').events %}
@@ -147,17 +142,17 @@
         /**
          * In-memory key-value cache manager
          */
-        var cache = new function () {
+        var cache = new function() {
             "use strict";
             var dict = {};
 
-            this.get = function (key) {
+            this.get = function(key) {
                 return dict.hasOwnProperty(key)
                     ? dict[key]
                     : null;
-            };
+                };
 
-            this.set = function (key, value) {
+            this.set = function(key, value) {
                 dict[key] = value;
 
                 return value;
@@ -171,7 +166,8 @@
          *
          * @return DOMElement|null
          */
-        function query(selector) {
+        function query(selector)
+        {
             "use strict";
             var key = 'SELECTOR: ' + selector;
 
@@ -195,7 +191,8 @@
              *
              * @return true if it is
              */
-            function isChildEvent(event) {
+            function isChildEvent(event)
+            {
                 return '__section__.child' === event.name;
             }
 
@@ -204,14 +201,16 @@
              *
              * @return true if it is
              */
-            function isSectionEvent(event) {
+            function isSectionEvent(event)
+            {
                 return 'section' === event.category;
             }
 
             /**
              * Get the width of the container.
              */
-            function getContainerWidth() {
+            function getContainerWidth()
+            {
                 return query('#collector-content h2').clientWidth;
             }
 
@@ -223,7 +222,8 @@
              * @param threshold the threshold (lower bound) of the length of the timeline (in milliseconds)
              * @param width     the width of the canvas
              */
-            this.drawOne = function (request, max, threshold, width) {
+            this.drawOne = function(request, max, threshold, width)
+            {
                 "use strict";
                 var text,
                     ms,
@@ -244,7 +244,7 @@
                     devicePixelRatio;
 
                 // Filter events whose total time is below the threshold.
-                drawableEvents = request.events.filter(function (event) {
+                drawableEvents = request.events.filter(function(event) {
                     return event.duration >= threshold;
                 });
 
@@ -268,8 +268,8 @@
                 // For each event, draw a line.
                 ctx.strokeStyle = "#CCC";
 
-                drawableEvents.forEach(function (event) {
-                    event.periods.forEach(function (period) {
+                drawableEvents.forEach(function(event) {
+                    event.periods.forEach(function(period) {
                         var timelineHeadPosition = x + period.start * ratio;
 
                         if (isChildEvent(event)) {
@@ -296,17 +296,17 @@
                 });
 
                 // Filter for main events.
-                mainEvents = drawableEvents.filter(function (event) {
+                mainEvents = drawableEvents.filter(function(event) {
                     return !isChildEvent(event)
                 });
 
                 // For each main event, draw the visual presentation of timelines.
-                mainEvents.forEach(function (event) {
+                mainEvents.forEach(function(event) {
 
                     h += 8;
 
                     // For each sub event, ...
-                    event.periods.forEach(function (period) {
+                    event.periods.forEach(function(period) {
                         // Set the drawing style.
                         ctx.fillStyle = colors['default'];
                         ctx.strokeStyle = colors['default'];
@@ -371,7 +371,7 @@
                 h = space;
 
                 // For each event, draw the label.
-                mainEvents.forEach(function (event) {
+                mainEvents.forEach(function(event) {
 
                     ctx.fillStyle = "#444";
                     ctx.font = "12px sans-serif";
@@ -405,7 +405,8 @@
                 });
             };
 
-            this.drawAll = function (width, threshold) {
+            this.drawAll = function(width, threshold)
+            {
                 "use strict";
 
                 width = width || getContainerWidth();
@@ -413,12 +414,12 @@
 
                 var self = this;
 
-                _requests.forEach(function (request) {
+                _requests.forEach(function(request) {
                     self.drawOne(request, _maxRequestTime, threshold, width);
                 });
             };
 
-            this.getThreshold = function () {
+            this.getThreshold = function() {
                 var threshold = Sfjs.getPreference(_storagePrefix + 'threshold');
 
                 if (null === threshold) {
@@ -430,7 +431,8 @@
                 return _threshold;
             };
 
-            this.setThreshold = function (threshold) {
+            this.setThreshold = function(threshold)
+            {
                 _threshold = threshold;
 
                 Sfjs.setPreference(_storagePrefix + 'threshold', threshold);
@@ -453,14 +455,14 @@
         var requests_data = {
             "max": {{ "%F"|format(collector.events.__section__.endtime) }},
             "requests": [
-                {{ helper.dump_request_data(token, profile, collector.events, collector.events.__section__.origin) }}
+{{ helper.dump_request_data(token, profile, collector.events, collector.events.__section__.origin) }}
 
-                {% if profile.children|length %}
+{% if profile.children|length %}
                 ,
-                {% for child in profile.children %}
-                {{ helper.dump_request_data(child.token, child, child.getcollector('time').events, collector.events.__section__.origin) }}{{ loop.last ? '' : ',' }}
-                {% endfor %}
-                {% endif %}
+{% for child in profile.children %}
+{{ helper.dump_request_data(child.token, child, child.getcollector('time').events, collector.events.__section__.origin) }}{{ loop.last ? '' : ',' }}
+{% endfor %}
+{% endif %}
             ]
         };
 
@@ -489,47 +491,47 @@
         elementThresholdControl.onchange = canvasAutoUpdateOnThresholdChange;
         elementThresholdControl.onkeyup = canvasAutoUpdateOnThresholdChange;
 
-        window.setTimeout(function () {
+        window.setTimeout(function() {
             canvasAutoUpdateOnThresholdChange(null);
         }, 50);
 
-        //]]>{% endautoescape %}</script>
+    //]]>{% endautoescape %}</script>
 {% endblock %}
 
 {% macro dump_request_data(token, profile, events, origin) %}
-    {% autoescape 'js' %}
-        {% from _self import dump_events %}
-        {
-        "id": "{{ token }}",
-        "left": {{ "%F"|format(events.__section__.origin - origin) }},
-        "events": [
-        {{ dump_events(events) }}
-        ]
-        }
-    {% endautoescape %}
+{% autoescape 'js' %}
+{% from _self import dump_events %}
+                {
+                    "id": "{{ token }}",
+                    "left": {{ "%F"|format(events.__section__.origin - origin) }},
+                    "events": [
+{{ dump_events(events) }}
+                    ]
+                }
+{% endautoescape %}
 {% endmacro %}
 
 {% macro dump_events(events) %}
-    {% autoescape 'js' %}
-        {% for name, event in events %}
-            {% if '__section__' != name %}
-                {
-                "name": "{{ name }}",
-                "category": "{{ event.category }}",
-                "origin": {{ "%F"|format(event.origin) }},
-                "starttime": {{ "%F"|format(event.starttime) }},
-                "endtime": {{ "%F"|format(event.endtime) }},
-                "duration": {{ "%F"|format(event.duration) }},
-                "memory": {{ "%.1F"|format(event.memory / 1024 / 1024) }},
-                "periods": [
-                {%- for period in event.periods -%}
-                    {"start": {{ "%F"|format(period.starttime) }}, "end": {{ "%F"|format(period.endtime) }}}{{ loop.last ? '' : ', ' }}
-                {%- endfor -%}
-                ]
-                }{{ loop.last ? '' : ',' }}
-            {% endif %}
-        {% endfor %}
-    {% endautoescape %}
+{% autoescape 'js' %}
+{% for name, event in events %}
+{% if '__section__' != name %}
+                        {
+                            "name": "{{ name }}",
+                            "category": "{{ event.category }}",
+                            "origin": {{ "%F"|format(event.origin) }},
+                            "starttime": {{ "%F"|format(event.starttime) }},
+                            "endtime": {{ "%F"|format(event.endtime) }},
+                            "duration": {{ "%F"|format(event.duration) }},
+                            "memory": {{ "%.1F"|format(event.memory / 1024 / 1024) }},
+                            "periods": [
+                                {%- for period in event.periods -%}
+                                    {"start": {{ "%F"|format(period.starttime) }}, "end": {{ "%F"|format(period.endtime) }}}{{ loop.last ? '' : ', ' }}
+                                {%- endfor -%}
+                            ]
+                        }{{ loop.last ? '' : ',' }}
+{% endif %}
+{% endfor %}
+{% endautoescape %}
 {% endmacro %}
 
 {% macro display_timeline(id, events, colors) %}

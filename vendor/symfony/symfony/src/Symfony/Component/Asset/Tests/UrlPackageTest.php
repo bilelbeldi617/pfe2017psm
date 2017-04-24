@@ -61,14 +61,6 @@ class UrlPackageTest extends TestCase
         $this->assertEquals($expected, $package->getUrl($path));
     }
 
-    private function getContext($secure)
-    {
-        $context = $this->getMockBuilder('Symfony\Component\Asset\Context\ContextInterface')->getMock();
-        $context->expects($this->any())->method('isSecure')->will($this->returnValue($secure));
-
-        return $context;
-    }
-
     public function getContextConfigs()
     {
         return array(
@@ -99,5 +91,13 @@ class UrlPackageTest extends TestCase
     public function testWrongBaseUrl()
     {
         new UrlPackage(array('not-a-url'), new EmptyVersionStrategy());
+    }
+
+    private function getContext($secure)
+    {
+        $context = $this->getMockBuilder('Symfony\Component\Asset\Context\ContextInterface')->getMock();
+        $context->expects($this->any())->method('isSecure')->will($this->returnValue($secure));
+
+        return $context;
     }
 }

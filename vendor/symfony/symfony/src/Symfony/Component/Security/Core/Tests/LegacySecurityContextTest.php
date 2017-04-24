@@ -25,6 +25,13 @@ class LegacySecurityContextTest extends TestCase
     private $authorizationChecker;
     private $securityContext;
 
+    protected function setUp()
+    {
+        $this->tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
+        $this->authorizationChecker = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface')->getMock();
+        $this->securityContext = new SecurityContext($this->tokenStorage, $this->authorizationChecker);
+    }
+
     public function testGetTokenDelegation()
     {
         $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
@@ -122,12 +129,5 @@ class LegacySecurityContextTest extends TestCase
         $this->assertSame(Security::ACCESS_DENIED_ERROR, SecurityContextInterface::ACCESS_DENIED_ERROR);
         $this->assertSame(Security::AUTHENTICATION_ERROR, SecurityContextInterface::AUTHENTICATION_ERROR);
         $this->assertSame(Security::LAST_USERNAME, SecurityContextInterface::LAST_USERNAME);
-    }
-
-    protected function setUp()
-    {
-        $this->tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
-        $this->authorizationChecker = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface')->getMock();
-        $this->securityContext = new SecurityContext($this->tokenStorage, $this->authorizationChecker);
     }
 }

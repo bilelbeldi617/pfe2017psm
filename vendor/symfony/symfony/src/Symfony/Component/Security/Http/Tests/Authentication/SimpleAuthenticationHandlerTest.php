@@ -19,14 +19,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\SimpleAuthenticationHandler;
 
-interface TestSuccessHandlerInterface extends AuthenticationSuccessHandlerInterface, SimpleAuthenticatorInterface
-{
-}
-
-interface TestFailureHandlerInterface extends AuthenticationFailureHandlerInterface, SimpleAuthenticatorInterface
-{
-}
-
 class SimpleAuthenticationHandlerTest extends TestCase
 {
     private $successHandler;
@@ -40,6 +32,19 @@ class SimpleAuthenticationHandlerTest extends TestCase
     private $authenticationException;
 
     private $response;
+
+    protected function setUp()
+    {
+        $this->successHandler = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface')->getMock();
+        $this->failureHandler = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface')->getMock();
+
+        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
+        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        // No methods are invoked on the exception; we just assert on its class
+        $this->authenticationException = new AuthenticationException();
+
+        $this->response = new Response();
+    }
 
     public function testOnAuthenticationSuccessFallsBackToDefaultHandlerIfSimpleIsNotASuccessHandler()
     {
@@ -180,17 +185,12 @@ class SimpleAuthenticationHandlerTest extends TestCase
 
         $this->assertSame($this->response, $result);
     }
+}
 
-    protected function setUp()
-    {
-        $this->successHandler = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface')->getMock();
-        $this->failureHandler = $this->getMockBuilder('Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface')->getMock();
+interface TestSuccessHandlerInterface extends AuthenticationSuccessHandlerInterface, SimpleAuthenticatorInterface
+{
+}
 
-        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
-        // No methods are invoked on the exception; we just assert on its class
-        $this->authenticationException = new AuthenticationException();
-
-        $this->response = new Response();
-    }
+interface TestFailureHandlerInterface extends AuthenticationFailureHandlerInterface, SimpleAuthenticatorInterface
+{
 }

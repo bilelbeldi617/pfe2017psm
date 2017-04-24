@@ -52,11 +52,6 @@ class Package implements PackageInterface
         return $this->versionStrategy->applyVersion($path);
     }
 
-    protected function isAbsoluteUrl($url)
-    {
-        return false !== strpos($url, '://') || '//' === substr($url, 0, 2);
-    }
-
     /**
      * @return ContextInterface
      */
@@ -71,5 +66,10 @@ class Package implements PackageInterface
     protected function getVersionStrategy()
     {
         return $this->versionStrategy;
+    }
+
+    protected function isAbsoluteUrl($url)
+    {
+        return false !== strpos($url, '://') || '//' === substr($url, 0, 2);
     }
 }

@@ -41,49 +41,6 @@ class JsonDescriptor extends Descriptor
     }
 
     /**
-     * @param Route $route
-     *
-     * @return array
-     */
-    protected function getRouteData(Route $route)
-    {
-        $requirements = $route->getRequirements();
-        unset($requirements['_scheme'], $requirements['_method']);
-
-        return array(
-            'path' => $route->getPath(),
-            'pathRegex' => $route->compile()->getRegex(),
-            'host' => '' !== $route->getHost() ? $route->getHost() : 'ANY',
-            'hostRegex' => '' !== $route->getHost() ? $route->compile()->getHostRegex() : '',
-            'scheme' => $route->getSchemes() ? implode('|', $route->getSchemes()) : 'ANY',
-            'method' => $route->getMethods() ? implode('|', $route->getMethods()) : 'ANY',
-            'class' => get_class($route),
-            'defaults' => $route->getDefaults(),
-            'requirements' => $requirements ?: 'NO CUSTOM',
-            'options' => $route->getOptions(),
-        );
-    }
-
-    /**
-     * Writes data as json.
-     *
-     * @param array $data
-     * @param array $options
-     *
-     * @return array|string
-     */
-    private function writeData(array $data, array $options)
-    {
-        $flags = isset($options['json_encoding']) ? $options['json_encoding'] : 0;
-
-        if (defined('JSON_PRETTY_PRINT')) {
-            $flags |= JSON_PRETTY_PRINT;
-        }
-
-        $this->write(json_encode($data, $flags) . "\n");
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function describeRoute(Route $route, array $options = array())
@@ -118,71 +75,6 @@ class JsonDescriptor extends Descriptor
     }
 
     /**
-     * @param Definition $definition
-     * @param bool $omitTags
-     *
-     * @return array
-     */
-    private function getContainerDefinitionData(Definition $definition, $omitTags = false)
-    {
-        $data = array(
-            'class' => (string)$definition->getClass(),
-            'scope' => $definition->getScope(false),
-            'public' => $definition->isPublic(),
-            'synthetic' => $definition->isSynthetic(),
-            'lazy' => $definition->isLazy(),
-            'shared' => $definition->isShared(),
-            'synchronized' => $definition->isSynchronized(false),
-            'abstract' => $definition->isAbstract(),
-            'autowire' => $definition->isAutowired(),
-            'autowiring_types' => array(),
-            'file' => $definition->getFile(),
-        );
-
-        foreach ($definition->getAutowiringTypes() as $autowiringType) {
-            $data['autowiring_types'][] = $autowiringType;
-        }
-
-        if ($definition->getFactoryClass(false)) {
-            $data['factory_class'] = $definition->getFactoryClass(false);
-        }
-
-        if ($definition->getFactoryService(false)) {
-            $data['factory_service'] = $definition->getFactoryService(false);
-        }
-
-        if ($definition->getFactoryMethod(false)) {
-            $data['factory_method'] = $definition->getFactoryMethod(false);
-        }
-
-        if ($factory = $definition->getFactory()) {
-            if (is_array($factory)) {
-                if ($factory[0] instanceof Reference) {
-                    $data['factory_service'] = (string)$factory[0];
-                } elseif ($factory[0] instanceof Definition) {
-                    throw new \InvalidArgumentException('Factory is not describable.');
-                } else {
-                    $data['factory_class'] = $factory[0];
-                }
-                $data['factory_method'] = $factory[1];
-            } else {
-                $data['factory_function'] = $factory;
-            }
-        }
-
-        if (!$omitTags) {
-            $data['tags'] = array();
-            foreach ($definition->getTags() as $tagName => $tagData) {
-                foreach ($tagData as $parameters) {
-                    $data['tags'][] = array('name' => $tagName, 'parameters' => $parameters);
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function describeContainerService($service, array $options = array())
@@ -198,19 +90,6 @@ class JsonDescriptor extends Descriptor
         } else {
             $this->writeData(get_class($service), $options);
         }
-    }
-
-    /**
-     * @param Alias $alias
-     *
-     * @return array
-     */
-    private function getContainerAliasData(Alias $alias)
-    {
-        return array(
-            'service' => (string)$alias,
-            'public' => $alias->isPublic(),
-        );
     }
 
     /**
@@ -264,8 +143,147 @@ class JsonDescriptor extends Descriptor
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function describeCallable($callable, array $options = array())
+    {
+        $this->writeData($this->getCallableData($callable, $options), $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function describeContainerParameter($parameter, array $options = array())
+    {
+        $key = isset($options['parameter']) ? $options['parameter'] : '';
+
+        $this->writeData(array($key => $parameter), $options);
+    }
+
+    /**
+     * Writes data as json.
+     *
+     * @param array $data
+     * @param array $options
+     *
+     * @return array|string
+     */
+    private function writeData(array $data, array $options)
+    {
+        $flags = isset($options['json_encoding']) ? $options['json_encoding'] : 0;
+
+        if (defined('JSON_PRETTY_PRINT')) {
+            $flags |= JSON_PRETTY_PRINT;
+        }
+
+        $this->write(json_encode($data, $flags)."\n");
+    }
+
+    /**
+     * @param Route $route
+     *
+     * @return array
+     */
+    protected function getRouteData(Route $route)
+    {
+        $requirements = $route->getRequirements();
+        unset($requirements['_scheme'], $requirements['_method']);
+
+        return array(
+            'path' => $route->getPath(),
+            'pathRegex' => $route->compile()->getRegex(),
+            'host' => '' !== $route->getHost() ? $route->getHost() : 'ANY',
+            'hostRegex' => '' !== $route->getHost() ? $route->compile()->getHostRegex() : '',
+            'scheme' => $route->getSchemes() ? implode('|', $route->getSchemes()) : 'ANY',
+            'method' => $route->getMethods() ? implode('|', $route->getMethods()) : 'ANY',
+            'class' => get_class($route),
+            'defaults' => $route->getDefaults(),
+            'requirements' => $requirements ?: 'NO CUSTOM',
+            'options' => $route->getOptions(),
+        );
+    }
+
+    /**
+     * @param Definition $definition
+     * @param bool       $omitTags
+     *
+     * @return array
+     */
+    private function getContainerDefinitionData(Definition $definition, $omitTags = false)
+    {
+        $data = array(
+            'class' => (string) $definition->getClass(),
+            'scope' => $definition->getScope(false),
+            'public' => $definition->isPublic(),
+            'synthetic' => $definition->isSynthetic(),
+            'lazy' => $definition->isLazy(),
+            'shared' => $definition->isShared(),
+            'synchronized' => $definition->isSynchronized(false),
+            'abstract' => $definition->isAbstract(),
+            'autowire' => $definition->isAutowired(),
+            'autowiring_types' => array(),
+            'file' => $definition->getFile(),
+        );
+
+        foreach ($definition->getAutowiringTypes() as $autowiringType) {
+            $data['autowiring_types'][] = $autowiringType;
+        }
+
+        if ($definition->getFactoryClass(false)) {
+            $data['factory_class'] = $definition->getFactoryClass(false);
+        }
+
+        if ($definition->getFactoryService(false)) {
+            $data['factory_service'] = $definition->getFactoryService(false);
+        }
+
+        if ($definition->getFactoryMethod(false)) {
+            $data['factory_method'] = $definition->getFactoryMethod(false);
+        }
+
+        if ($factory = $definition->getFactory()) {
+            if (is_array($factory)) {
+                if ($factory[0] instanceof Reference) {
+                    $data['factory_service'] = (string) $factory[0];
+                } elseif ($factory[0] instanceof Definition) {
+                    throw new \InvalidArgumentException('Factory is not describable.');
+                } else {
+                    $data['factory_class'] = $factory[0];
+                }
+                $data['factory_method'] = $factory[1];
+            } else {
+                $data['factory_function'] = $factory;
+            }
+        }
+
+        if (!$omitTags) {
+            $data['tags'] = array();
+            foreach ($definition->getTags() as $tagName => $tagData) {
+                foreach ($tagData as $parameters) {
+                    $data['tags'][] = array('name' => $tagName, 'parameters' => $parameters);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param Alias $alias
+     *
+     * @return array
+     */
+    private function getContainerAliasData(Alias $alias)
+    {
+        return array(
+            'service' => (string) $alias,
+            'public' => $alias->isPublic(),
+        );
+    }
+
+    /**
      * @param EventDispatcherInterface $eventDispatcher
-     * @param string|null $event
+     * @param string|null              $event
      *
      * @return array
      */
@@ -297,7 +315,7 @@ class JsonDescriptor extends Descriptor
 
     /**
      * @param callable $callable
-     * @param array $options
+     * @param array    $options
      *
      * @return array
      */
@@ -357,23 +375,5 @@ class JsonDescriptor extends Descriptor
         }
 
         throw new \InvalidArgumentException('Callable is not describable.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function describeCallable($callable, array $options = array())
-    {
-        $this->writeData($this->getCallableData($callable, $options), $options);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function describeContainerParameter($parameter, array $options = array())
-    {
-        $key = isset($options['parameter']) ? $options['parameter'] : '';
-
-        $this->writeData(array($key => $parameter), $options);
     }
 }

@@ -27,7 +27,7 @@ class LengthValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Length) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Length');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Length');
         }
 
         if (null === $value || '' === $value) {
@@ -38,7 +38,7 @@ class LengthValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $stringValue = (string)$value;
+        $stringValue = (string) $value;
 
         if (!$invalidCharset = !@mb_check_encoding($stringValue, $constraint->charset)) {
             $length = mb_strlen($stringValue, $constraint->charset);
@@ -70,7 +70,7 @@ class LengthValidator extends ConstraintValidator
                     ->setParameter('{{ value }}', $this->formatValue($stringValue))
                     ->setParameter('{{ limit }}', $constraint->max)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->max)
+                    ->setPlural((int) $constraint->max)
                     ->setCode(Length::TOO_LONG_ERROR)
                     ->addViolation();
             } else {
@@ -78,7 +78,7 @@ class LengthValidator extends ConstraintValidator
                     ->setParameter('{{ value }}', $this->formatValue($stringValue))
                     ->setParameter('{{ limit }}', $constraint->max)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->max)
+                    ->setPlural((int) $constraint->max)
                     ->setCode(Length::TOO_LONG_ERROR)
                     ->addViolation();
             }
@@ -92,7 +92,7 @@ class LengthValidator extends ConstraintValidator
                     ->setParameter('{{ value }}', $this->formatValue($stringValue))
                     ->setParameter('{{ limit }}', $constraint->min)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->min)
+                    ->setPlural((int) $constraint->min)
                     ->setCode(Length::TOO_SHORT_ERROR)
                     ->addViolation();
             } else {
@@ -100,7 +100,7 @@ class LengthValidator extends ConstraintValidator
                     ->setParameter('{{ value }}', $this->formatValue($stringValue))
                     ->setParameter('{{ limit }}', $constraint->min)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->min)
+                    ->setPlural((int) $constraint->min)
                     ->setCode(Length::TOO_SHORT_ERROR)
                     ->addViolation();
             }

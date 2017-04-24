@@ -39,19 +39,6 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * Gets the default parameters.
-     *
-     * @return array An array of the default parameters
-     */
-    protected function getDefaultParameters()
-    {
-        return array(
-            'empty_value' => '',
-            'some_string' => '-',
-        );
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function compile()
@@ -65,6 +52,19 @@ class ProjectServiceContainer extends Container
     public function isFrozen()
     {
         return true;
+    }
+
+    /**
+     * Gets the 'test' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \stdClass A stdClass instance
+     */
+    protected function getTestService()
+    {
+        return $this->services['test'] = new \stdClass(array('only dot' => '.', 'concatenation as value' => '.\'\'.', 'concatenation from the start value' => '\'\'.', '.' => 'dot as a key', '.\'\'.' => 'concatenation as a key', '\'\'.' => 'concatenation from the start key', 'optimize concatenation' => 'string1-string2', 'optimize concatenation with empty string' => 'string1string2', 'optimize concatenation from the start' => 'start', 'optimize concatenation at the end' => 'end'));
     }
 
     /**
@@ -112,15 +112,15 @@ class ProjectServiceContainer extends Container
     }
 
     /**
-     * Gets the 'test' service.
+     * Gets the default parameters.
      *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return \stdClass A stdClass instance
+     * @return array An array of the default parameters
      */
-    protected function getTestService()
+    protected function getDefaultParameters()
     {
-        return $this->services['test'] = new \stdClass(array('only dot' => '.', 'concatenation as value' => '.\'\'.', 'concatenation from the start value' => '\'\'.', '.' => 'dot as a key', '.\'\'.' => 'concatenation as a key', '\'\'.' => 'concatenation from the start key', 'optimize concatenation' => 'string1-string2', 'optimize concatenation with empty string' => 'string1string2', 'optimize concatenation from the start' => 'start', 'optimize concatenation at the end' => 'end'));
+        return array(
+            'empty_value' => '',
+            'some_string' => '-',
+        );
     }
 }

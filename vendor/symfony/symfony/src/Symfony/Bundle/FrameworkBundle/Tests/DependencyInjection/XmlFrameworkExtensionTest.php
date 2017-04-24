@@ -19,7 +19,7 @@ class XmlFrameworkExtensionTest extends FrameworkExtensionTest
 {
     protected function loadFromFile(ContainerBuilder $container, $file)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/xml'));
-        $loader->load($file . '.xml');
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/xml'));
+        $loader->load($file.'.xml');
     }
 }

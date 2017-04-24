@@ -73,7 +73,7 @@ abstract class FileCache extends CacheProvider
     public function __construct($directory, $extension = '', $umask = 0002)
     {
         // YES, this needs to be *before* createPathIfNeeded()
-        if (!is_int($umask)) {
+        if ( ! is_int($umask)) {
             throw new \InvalidArgumentException(sprintf(
                 'The umask parameter is required to be integer, was: %s',
                 gettype($umask)
@@ -81,14 +81,14 @@ abstract class FileCache extends CacheProvider
         }
         $this->umask = $umask;
 
-        if (!$this->createPathIfNeeded($directory)) {
+        if ( ! $this->createPathIfNeeded($directory)) {
             throw new \InvalidArgumentException(sprintf(
                 'The directory "%s" does not exist and could not be created.',
                 $directory
             ));
         }
 
-        if (!is_writable($directory)) {
+        if ( ! is_writable($directory)) {
             throw new \InvalidArgumentException(sprintf(
                 'The directory "%s" is not writable.',
                 $directory
@@ -97,28 +97,11 @@ abstract class FileCache extends CacheProvider
 
         // YES, this needs to be *after* createPathIfNeeded()
         $this->directory = realpath($directory);
-        $this->extension = (string)$extension;
+        $this->extension = (string) $extension;
 
         $this->directoryStringLength = strlen($this->directory);
         $this->extensionStringLength = strlen($this->extension);
-        $this->isRunningOnWindows = defined('PHP_WINDOWS_VERSION_BUILD');
-    }
-
-    /**
-     * Create path if needed.
-     *
-     * @param string $path
-     * @return bool TRUE on success or if path already exists, FALSE if path cannot be created.
-     */
-    private function createPathIfNeeded($path)
-    {
-        if (!is_dir($path)) {
-            if (false === @mkdir($path, 0777 & (~$this->umask), true) && !is_dir($path)) {
-                return false;
-            }
-        }
-
-        return true;
+        $this->isRunningOnWindows    = defined('PHP_WINDOWS_VERSION_BUILD');
     }
 
     /**
@@ -139,16 +122,6 @@ abstract class FileCache extends CacheProvider
     public function getExtension()
     {
         return $this->extension;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function doDelete($id)
-    {
-        $filename = $this->getFilename($id);
-
-        return @unlink($filename) || !file_exists($filename);
     }
 
     /**
@@ -187,6 +160,16 @@ abstract class FileCache extends CacheProvider
     /**
      * {@inheritdoc}
      */
+    protected function doDelete($id)
+    {
+        $filename = $this->getFilename($id);
+
+        return @unlink($filename) || ! file_exists($filename);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function doFlush()
     {
         foreach ($this->getIterator() as $name => $file) {
@@ -203,6 +186,80 @@ abstract class FileCache extends CacheProvider
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doGetStats()
+    {
+        $usage = 0;
+        foreach ($this->getIterator() as $name => $file) {
+            if (! $file->isDir() && $this->isFilenameEndingWithExtension($name)) {
+                $usage += $file->getSize();
+            }
+        }
+
+        $free = disk_free_space($this->directory);
+
+        return array(
+            Cache::STATS_HITS               => null,
+            Cache::STATS_MISSES             => null,
+            Cache::STATS_UPTIME             => null,
+            Cache::STATS_MEMORY_USAGE       => $usage,
+            Cache::STATS_MEMORY_AVAILABLE   => $free,
+        );
+    }
+
+    /**
+     * Create path if needed.
+     *
+     * @param string $path
+     * @return bool TRUE on success or if path already exists, FALSE if path cannot be created.
+     */
+    private function createPathIfNeeded($path)
+    {
+        if ( ! is_dir($path)) {
+            if (false === @mkdir($path, 0777 & (~$this->umask), true) && !is_dir($path)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Writes a string content to file in an atomic way.
+     *
+     * @param string $filename Path to the file where to write the data.
+     * @param string $content  The content to write
+     *
+     * @return bool TRUE on success, FALSE if path cannot be created, if path is not writable or an any other error.
+     */
+    protected function writeFile($filename, $content)
+    {
+        $filepath = pathinfo($filename, PATHINFO_DIRNAME);
+
+        if ( ! $this->createPathIfNeeded($filepath)) {
+            return false;
+        }
+
+        if ( ! is_writable($filepath)) {
+            return false;
+        }
+
+        $tmpFile = tempnam($filepath, 'swap');
+        @chmod($tmpFile, 0666 & (~$this->umask));
+
+        if (file_put_contents($tmpFile, $content) !== false) {
+            if (@rename($tmpFile, $filename)) {
+                return true;
+            }
+
+            @unlink($tmpFile);
+        }
+
+        return false;
     }
 
     /**
@@ -225,62 +282,5 @@ abstract class FileCache extends CacheProvider
     {
         return '' === $this->extension
             || strrpos($name, $this->extension) === (strlen($name) - $this->extensionStringLength);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function doGetStats()
-    {
-        $usage = 0;
-        foreach ($this->getIterator() as $name => $file) {
-            if (!$file->isDir() && $this->isFilenameEndingWithExtension($name)) {
-                $usage += $file->getSize();
-            }
-        }
-
-        $free = disk_free_space($this->directory);
-
-        return array(
-            Cache::STATS_HITS => null,
-            Cache::STATS_MISSES => null,
-            Cache::STATS_UPTIME => null,
-            Cache::STATS_MEMORY_USAGE => $usage,
-            Cache::STATS_MEMORY_AVAILABLE => $free,
-        );
-    }
-
-    /**
-     * Writes a string content to file in an atomic way.
-     *
-     * @param string $filename Path to the file where to write the data.
-     * @param string $content The content to write
-     *
-     * @return bool TRUE on success, FALSE if path cannot be created, if path is not writable or an any other error.
-     */
-    protected function writeFile($filename, $content)
-    {
-        $filepath = pathinfo($filename, PATHINFO_DIRNAME);
-
-        if (!$this->createPathIfNeeded($filepath)) {
-            return false;
-        }
-
-        if (!is_writable($filepath)) {
-            return false;
-        }
-
-        $tmpFile = tempnam($filepath, 'swap');
-        @chmod($tmpFile, 0666 & (~$this->umask));
-
-        if (file_put_contents($tmpFile, $content) !== false) {
-            if (@rename($tmpFile, $filename)) {
-                return true;
-            }
-
-            @unlink($tmpFile);
-        }
-
-        return false;
     }
 }

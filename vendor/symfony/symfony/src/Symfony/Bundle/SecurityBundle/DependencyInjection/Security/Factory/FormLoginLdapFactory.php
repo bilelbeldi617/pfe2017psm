@@ -24,33 +24,35 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class FormLoginLdapFactory extends FormLoginFactory
 {
+    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
+    {
+        $provider = 'security.authentication.provider.ldap_bind.'.$id;
+        $container
+            ->setDefinition($provider, new DefinitionDecorator('security.authentication.provider.ldap_bind'))
+            ->replaceArgument(0, new Reference($userProviderId))
+            ->replaceArgument(1, new Reference('security.user_checker.'.$id))
+            ->replaceArgument(2, $id)
+            ->replaceArgument(3, new Reference($config['service']))
+            ->replaceArgument(4, $config['dn_string'])
+        ;
+
+        return $provider;
+    }
+
     public function addConfiguration(NodeDefinition $node)
     {
         parent::addConfiguration($node);
 
         $node
             ->children()
-            ->scalarNode('service')->end()
-            ->scalarNode('dn_string')->defaultValue('{username}')->end()
-            ->end();
+                ->scalarNode('service')->end()
+                ->scalarNode('dn_string')->defaultValue('{username}')->end()
+            ->end()
+        ;
     }
 
     public function getKey()
     {
         return 'form-login-ldap';
-    }
-
-    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
-    {
-        $provider = 'security.authentication.provider.ldap_bind.' . $id;
-        $container
-            ->setDefinition($provider, new DefinitionDecorator('security.authentication.provider.ldap_bind'))
-            ->replaceArgument(0, new Reference($userProviderId))
-            ->replaceArgument(1, new Reference('security.user_checker.' . $id))
-            ->replaceArgument(2, $id)
-            ->replaceArgument(3, new Reference($config['service']))
-            ->replaceArgument(4, $config['dn_string']);
-
-        return $provider;
     }
 }

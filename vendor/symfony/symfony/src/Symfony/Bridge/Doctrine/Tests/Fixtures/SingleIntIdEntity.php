@@ -18,10 +18,11 @@ use Doctrine\ORM\Mapping\Entity;
 /** @Entity */
 class SingleIntIdEntity
 {
-    /** @Column(type="string", nullable=true) */
-    public $name;
     /** @Id @Column(type="integer") */
     protected $id;
+
+    /** @Column(type="string", nullable=true) */
+    public $name;
 
     public function __construct($id, $name)
     {
@@ -31,6 +32,6 @@ class SingleIntIdEntity
 
     public function __toString()
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 }

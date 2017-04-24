@@ -38,6 +38,70 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
     private $existingSchemaPaths;
 
     /**
+     * Gets all the existing schema names.
+     *
+     * @return array
+     */
+    public function getSchemaNames()
+    {
+        $rows = $this->_conn->fetchAll("SELECT nspname as schema_name FROM pg_namespace WHERE nspname !~ '^pg_.*' and nspname != 'information_schema'");
+
+        return array_map(function ($v) { return $v['schema_name']; }, $rows);
+    }
+
+    /**
+     * Returns an array of schema search paths.
+     *
+     * This is a PostgreSQL only function.
+     *
+     * @return array
+     */
+    public function getSchemaSearchPaths()
+    {
+        $params = $this->_conn->getParams();
+        $schema = explode(",", $this->_conn->fetchColumn('SHOW search_path'));
+
+        if (isset($params['user'])) {
+            $schema = str_replace('"$user"', $params['user'], $schema);
+        }
+
+        return array_map('trim', $schema);
+    }
+
+    /**
+     * Gets names of all existing schemas in the current users search path.
+     *
+     * This is a PostgreSQL only function.
+     *
+     * @return array
+     */
+    public function getExistingSchemaSearchPaths()
+    {
+        if ($this->existingSchemaPaths === null) {
+            $this->determineExistingSchemaSearchPaths();
+        }
+
+        return $this->existingSchemaPaths;
+    }
+
+    /**
+     * Sets or resets the order of the existing schemas in the current search path of the user.
+     *
+     * This is a PostgreSQL only function.
+     *
+     * @return void
+     */
+    public function determineExistingSchemaSearchPaths()
+    {
+        $names = $this->getSchemaNames();
+        $paths = $this->getSchemaSearchPaths();
+
+        $this->existingSchemaPaths = array_filter($paths, function ($v) use ($names) {
+            return in_array($v, $names);
+        });
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function dropDatabase($database)
@@ -106,7 +170,7 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
      */
     protected function _getPortableViewDefinition($view)
     {
-        return new View($view['schemaname'] . '.' . $view['viewname'], $view['definition']);
+        return new View($view['schemaname'].'.'.$view['viewname'], $view['definition']);
     }
 
     /**
@@ -136,78 +200,12 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
     }
 
     /**
-     * Gets names of all existing schemas in the current users search path.
-     *
-     * This is a PostgreSQL only function.
-     *
-     * @return array
-     */
-    public function getExistingSchemaSearchPaths()
-    {
-        if ($this->existingSchemaPaths === null) {
-            $this->determineExistingSchemaSearchPaths();
-        }
-
-        return $this->existingSchemaPaths;
-    }
-
-    /**
-     * Sets or resets the order of the existing schemas in the current search path of the user.
-     *
-     * This is a PostgreSQL only function.
-     *
-     * @return void
-     */
-    public function determineExistingSchemaSearchPaths()
-    {
-        $names = $this->getSchemaNames();
-        $paths = $this->getSchemaSearchPaths();
-
-        $this->existingSchemaPaths = array_filter($paths, function ($v) use ($names) {
-            return in_array($v, $names);
-        });
-    }
-
-    /**
-     * Gets all the existing schema names.
-     *
-     * @return array
-     */
-    public function getSchemaNames()
-    {
-        $rows = $this->_conn->fetchAll("SELECT nspname as schema_name FROM pg_namespace WHERE nspname !~ '^pg_.*' and nspname != 'information_schema'");
-
-        return array_map(function ($v) {
-            return $v['schema_name'];
-        }, $rows);
-    }
-
-    /**
-     * Returns an array of schema search paths.
-     *
-     * This is a PostgreSQL only function.
-     *
-     * @return array
-     */
-    public function getSchemaSearchPaths()
-    {
-        $params = $this->_conn->getParams();
-        $schema = explode(",", $this->_conn->fetchColumn('SHOW search_path'));
-
-        if (isset($params['user'])) {
-            $schema = str_replace('"$user"', $params['user'], $schema);
-        }
-
-        return array_map('trim', $schema);
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @license New BSD License
      * @link http://ezcomponents.org/docs/api/trunk/DatabaseSchema/ezcDbSchemaPgsqlReader.html
      */
-    protected function _getPortableTableIndexesList($tableIndexes, $tableName = null)
+    protected function _getPortableTableIndexesList($tableIndexes, $tableName=null)
     {
         $buffer = array();
         foreach ($tableIndexes as $row) {
@@ -275,6 +273,14 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritdoc}
      */
+    protected function getPortableNamespaceDefinition(array $namespace)
+    {
+        return $namespace['nspname'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function _getPortableSequenceDefinition($sequence)
     {
         if ($sequence['schemaname'] != 'public') {
@@ -286,14 +292,6 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
         $data = $this->_conn->fetchAll('SELECT min_value, increment_by FROM ' . $this->_platform->quoteIdentifier($sequenceName));
 
         return new Sequence($sequenceName, $data[0]['increment_by'], $data[0]['min_value']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPortableNamespaceDefinition(array $namespace)
-    {
-        return $namespace['nspname'];
     }
 
     /**
@@ -330,7 +328,7 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
         if ($length == '-1' && isset($tableColumn['atttypmod'])) {
             $length = $tableColumn['atttypmod'] - 4;
         }
-        if ((int)$length <= 0) {
+        if ((int) $length <= 0) {
             $length = null;
         }
         $fixed = null;
@@ -415,16 +413,16 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
         }
 
         $options = array(
-            'length' => $length,
-            'notnull' => (bool)$tableColumn['isnotnull'],
-            'default' => $tableColumn['default'],
-            'primary' => (bool)($tableColumn['pri'] == 't'),
-            'precision' => $precision,
-            'scale' => $scale,
-            'fixed' => $fixed,
-            'unsigned' => false,
+            'length'        => $length,
+            'notnull'       => (bool) $tableColumn['isnotnull'],
+            'default'       => $tableColumn['default'],
+            'primary'       => (bool) ($tableColumn['pri'] == 't'),
+            'precision'     => $precision,
+            'scale'         => $scale,
+            'fixed'         => $fixed,
+            'unsigned'      => false,
             'autoincrement' => $autoincrement,
-            'comment' => isset($tableColumn['comment']) && $tableColumn['comment'] !== ''
+            'comment'       => isset($tableColumn['comment']) && $tableColumn['comment'] !== ''
                 ? $tableColumn['comment']
                 : null,
         );

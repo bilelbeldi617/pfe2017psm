@@ -33,7 +33,8 @@ class FragmentRendererPassTest extends TestCase
         $renderer
             ->expects($this->once())
             ->method('addMethodCall')
-            ->with('addRenderer', array(new Reference('my_content_renderer')));
+            ->with('addRenderer', array(new Reference('my_content_renderer')))
+        ;
 
         $definition = $this->getMockBuilder('Symfony\Component\DependencyInjection\Definition')->getMock();
         $definition->expects($this->atLeastOnce())
@@ -42,7 +43,8 @@ class FragmentRendererPassTest extends TestCase
         $definition
             ->expects($this->once())
             ->method('isPublic')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $builder = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('hasDefinition', 'findTaggedServiceIds', 'getDefinition'))->getMock();
         $builder->expects($this->any())
@@ -105,7 +107,8 @@ class FragmentRendererPassTest extends TestCase
         $renderer
             ->expects($this->once())
             ->method('addMethodCall')
-            ->with('addRendererService', array('foo', 'my_content_renderer'));
+            ->with('addRendererService', array('foo', 'my_content_renderer'))
+        ;
 
         $definition = $this->getMockBuilder('Symfony\Component\DependencyInjection\Definition')->getMock();
         $definition->expects($this->atLeastOnce())
@@ -114,7 +117,8 @@ class FragmentRendererPassTest extends TestCase
         $definition
             ->expects($this->once())
             ->method('isPublic')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $builder = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->setMethods(array('hasDefinition', 'findTaggedServiceIds', 'getDefinition'))->getMock();
         $builder->expects($this->any())

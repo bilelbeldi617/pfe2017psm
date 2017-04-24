@@ -40,12 +40,6 @@ class AbstractLexerTest extends \PHPUnit_Framework_TestCase
         $this->assertValue(3, $this->lexer->token);
     }
 
-    private function assertValue($expected, $actualToken)
-    {
-        $this->assertNotNull($actualToken);
-        $this->assertSame($expected, $actualToken[0]);
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -94,28 +88,34 @@ class AbstractLexerTest extends \PHPUnit_Framework_TestCase
         $this->assertValue(2, $this->lexer->next);
     }
 
+    private function assertValue($expected, $actualToken)
+    {
+        $this->assertNotNull($actualToken);
+        $this->assertSame($expected, $actualToken[0]);
+    }
+
     protected function setUp()
     {
         $this->lexer = $this->getMockForAbstractClass('JMS\Parser\AbstractLexer');
         $this->lexer->expects($this->any())
-            ->method('getRegex')
-            ->will($this->returnValue('/("(?:[^"]*|(?<=\\)"))*")|([0-9]+)|\s+|(.)/i'));
+                ->method('getRegex')
+                ->will($this->returnValue('/("(?:[^"]*|(?<=\\)"))*")|([0-9]+)|\s+|(.)/i'));
         $this->lexer->expects($this->any())
-            ->method('determineTypeAndValue')
-            ->will($this->returnCallback(function ($value) {
-                if (',' === $value) {
-                    return array(AbstractLexerTest::T_COMMA, $value);
-                }
+                ->method('determineTypeAndValue')
+                ->will($this->returnCallback(function($value) {
+                    if (',' === $value) {
+                        return array(AbstractLexerTest::T_COMMA, $value);
+                    }
 
-                if ('"' === $value[0]) {
-                    return array(AbstractLexerTest::T_STRING, substr($value, 1, -1));
-                }
+                    if ('"' === $value[0]) {
+                        return array(AbstractLexerTest::T_STRING, substr($value, 1, -1));
+                    }
 
-                if (preg_match('/^[0-9]+$/', $value)) {
-                    return array(AbstractLexerTest::T_INTEGER, (integer)$value);
-                }
+                    if (preg_match('/^[0-9]+$/', $value)) {
+                        return array(AbstractLexerTest::T_INTEGER, (integer) $value);
+                    }
 
-                return array(AbstractLexerTest::T_UNKNOWN, $value);
-            }));
+                    return array(AbstractLexerTest::T_UNKNOWN, $value);
+                }));
     }
 }

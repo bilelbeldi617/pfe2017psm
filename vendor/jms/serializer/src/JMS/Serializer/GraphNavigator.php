@@ -47,14 +47,6 @@ final class GraphNavigator
     private $handlerRegistry;
     private $objectConstructor;
 
-    public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null)
-    {
-        $this->dispatcher = $dispatcher;
-        $this->metadataFactory = $metadataFactory;
-        $this->handlerRegistry = $handlerRegistry;
-        $this->objectConstructor = $objectConstructor;
-    }
-
     /**
      * Parses a direction string to one of the direction constants.
      *
@@ -74,6 +66,14 @@ final class GraphNavigator
             default:
                 throw new InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
         }
+    }
+
+    public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null)
+    {
+        $this->dispatcher = $dispatcher;
+        $this->metadataFactory = $metadataFactory;
+        $this->handlerRegistry = $handlerRegistry;
+        $this->objectConstructor = $objectConstructor;
     }
 
     /**
@@ -131,7 +131,7 @@ final class GraphNavigator
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
                 if ($context instanceof SerializationContext && null !== $path = $context->getPath()) {
-                    $msg .= ' Path: ' . $path;
+                    $msg .= ' Path: '.$path;
                 }
 
                 throw new RuntimeException($msg);
@@ -179,7 +179,7 @@ final class GraphNavigator
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($context instanceof DeserializationContext && !empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
+                if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
                     $metadata = $this->resolveMetadata($context, $data, $metadata);
                 }
 
@@ -241,24 +241,15 @@ final class GraphNavigator
         }
     }
 
-    private function leaveScope(Context $context, $data)
-    {
-        if ($context instanceof SerializationContext) {
-            $context->stopVisiting($data);
-        } elseif ($context instanceof DeserializationContext) {
-            $context->decreaseDepth();
-        }
-    }
-
     private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)
     {
         switch (true) {
             case is_array($data) && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string)$data[$metadata->discriminatorFieldName];
+                $typeValue = (string) $data[$metadata->discriminatorFieldName];
                 break;
 
             case is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
-                $typeValue = (string)$data->{$metadata->discriminatorFieldName};
+                $typeValue = (string) $data->{$metadata->discriminatorFieldName};
                 break;
 
             default:
@@ -269,7 +260,7 @@ final class GraphNavigator
                 ));
         }
 
-        if (!isset($metadata->discriminatorMap[$typeValue])) {
+        if ( ! isset($metadata->discriminatorMap[$typeValue])) {
             throw new \LogicException(sprintf(
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
@@ -279,6 +270,15 @@ final class GraphNavigator
         }
 
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
+    }
+
+    private function leaveScope(Context $context, $data)
+    {
+        if ($context instanceof SerializationContext) {
+            $context->stopVisiting($data);
+        } elseif ($context instanceof DeserializationContext) {
+            $context->decreaseDepth();
+        }
     }
 
     private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)

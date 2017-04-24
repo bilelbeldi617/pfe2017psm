@@ -15,21 +15,39 @@ class __TwigTemplate_e880e1681b934af1deafa6c5f3a27d91a8b3bdde6213cdd3b27323b92de
         );
     }
 
-    public function block_title($context, array $blocks = array())
+    protected function doGetParent(array $context)
     {
-        $__internal_379575a74a5ae267b46fbb4fad119de9ffcedd36705a20291d9ca14ba9ab7dab = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_379575a74a5ae267b46fbb4fad119de9ffcedd36705a20291d9ca14ba9ab7dab->enter($__internal_379575a74a5ae267b46fbb4fad119de9ffcedd36705a20291d9ca14ba9ab7dab_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        return "SensioDistributionBundle::Configurator/layout.html.twig";
+    }
 
-        echo "Symfony - Configure global Secret";
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_d6136b41a2e8eec62ace1d2d15acd82b173f80d15bb8700e66e7413db8dde2b3 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_d6136b41a2e8eec62ace1d2d15acd82b173f80d15bb8700e66e7413db8dde2b3->enter($__internal_d6136b41a2e8eec62ace1d2d15acd82b173f80d15bb8700e66e7413db8dde2b3_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@SensioDistribution/Configurator/Step/secret.html.twig"));
 
-        $__internal_379575a74a5ae267b46fbb4fad119de9ffcedd36705a20291d9ca14ba9ab7dab->leave($__internal_379575a74a5ae267b46fbb4fad119de9ffcedd36705a20291d9ca14ba9ab7dab_prof);
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_d6136b41a2e8eec62ace1d2d15acd82b173f80d15bb8700e66e7413db8dde2b3->leave($__internal_d6136b41a2e8eec62ace1d2d15acd82b173f80d15bb8700e66e7413db8dde2b3_prof);
 
     }
 
+    // line 3
+    public function block_title($context, array $blocks = array())
+    {
+        $__internal_32a059bb33d49f35afc2ff733994963aced0d3bc0fc6921d0350971e3011e049 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_32a059bb33d49f35afc2ff733994963aced0d3bc0fc6921d0350971e3011e049->enter($__internal_32a059bb33d49f35afc2ff733994963aced0d3bc0fc6921d0350971e3011e049_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+
+        echo "Symfony - Configure global Secret";
+        
+        $__internal_32a059bb33d49f35afc2ff733994963aced0d3bc0fc6921d0350971e3011e049->leave($__internal_32a059bb33d49f35afc2ff733994963aced0d3bc0fc6921d0350971e3011e049_prof);
+
+    }
+
+    // line 5
     public function block_content($context, array $blocks = array())
     {
-        $__internal_12559cf9d78f7c075ca4d2752a143d01123f883b5b3ae787784b0dd70f320da0 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_12559cf9d78f7c075ca4d2752a143d01123f883b5b3ae787784b0dd70f320da0->enter($__internal_12559cf9d78f7c075ca4d2752a143d01123f883b5b3ae787784b0dd70f320da0_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "content"));
+        $__internal_74512631c26b686f3f8991ce71163b4cb575feb0ca8c4b9722f99e2a88b8a5d5 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_74512631c26b686f3f8991ce71163b4cb575feb0ca8c4b9722f99e2a88b8a5d5->enter($__internal_74512631c26b686f3f8991ce71163b4cb575feb0ca8c4b9722f99e2a88b8a5d5_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "content"));
 
         // line 6
         echo "    ";
@@ -113,29 +131,30 @@ class __TwigTemplate_e880e1681b934af1deafa6c5f3a27d91a8b3bdde6213cdd3b27323b92de
         </script>
     </div>
 ";
-
-        $__internal_12559cf9d78f7c075ca4d2752a143d01123f883b5b3ae787784b0dd70f320da0->leave($__internal_12559cf9d78f7c075ca4d2752a143d01123f883b5b3ae787784b0dd70f320da0_prof);
+        
+        $__internal_74512631c26b686f3f8991ce71163b4cb575feb0ca8c4b9722f99e2a88b8a5d5->leave($__internal_74512631c26b686f3f8991ce71163b4cb575feb0ca8c4b9722f99e2a88b8a5d5_prof);
 
     }
 
-    // line 3
+    public function getTemplateName()
+    {
+        return "@SensioDistribution/Configurator/Step/secret.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 5
-
     public function getDebugInfo()
     {
-        return array(104 => 35, 96 => 30, 84 => 21, 79 => 19, 74 => 17, 69 => 15, 62 => 10, 60 => 9, 56 => 7, 53 => 6, 47 => 5, 35 => 3, 11 => 1,);
+        return array (  104 => 35,  96 => 30,  84 => 21,  79 => 19,  74 => 17,  69 => 15,  62 => 10,  60 => 9,  56 => 7,  53 => 6,  47 => 5,  35 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -206,26 +225,5 @@ class __TwigTemplate_e880e1681b934af1deafa6c5f3a27d91a8b3bdde6213cdd3b27323b92de
     </div>
 {% endblock %}
 ", "@SensioDistribution/Configurator/Step/secret.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\sensio\\distribution-bundle\\Sensio\\Bundle\\DistributionBundle\\Resources\\views\\Configurator\\Step\\secret.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "SensioDistributionBundle::Configurator/layout.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_3a70eca8320a3ee790a49082a2817d94c808b357a944af69707667e46bac24c7 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_3a70eca8320a3ee790a49082a2817d94c808b357a944af69707667e46bac24c7->enter($__internal_3a70eca8320a3ee790a49082a2817d94c808b357a944af69707667e46bac24c7_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@SensioDistribution/Configurator/Step/secret.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_3a70eca8320a3ee790a49082a2817d94c808b357a944af69707667e46bac24c7->leave($__internal_3a70eca8320a3ee790a49082a2817d94c808b357a944af69707667e46bac24c7_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@SensioDistribution/Configurator/Step/secret.html.twig";
     }
 }

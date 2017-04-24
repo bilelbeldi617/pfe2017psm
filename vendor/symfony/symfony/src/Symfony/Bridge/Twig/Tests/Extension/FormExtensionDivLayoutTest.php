@@ -32,25 +32,46 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
         'choice_attr',
     );
 
-    public static function themeBlockInheritanceProvider()
+    protected function setUp()
     {
-        return array(
-            array(array('theme.html.twig')),
-        );
+        parent::setUp();
+
+        $rendererEngine = new TwigRendererEngine(array(
+            'form_div_layout.html.twig',
+            'custom_widgets.html.twig',
+        ));
+        $renderer = new TwigRenderer($rendererEngine, $this->getMockBuilder('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface')->getMock());
+
+        $this->extension = new FormExtension($renderer);
+
+        $loader = new StubFilesystemLoader(array(
+            __DIR__.'/../../Resources/views/Form',
+            __DIR__.'/Fixtures/templates/form',
+        ));
+
+        $environment = new \Twig_Environment($loader, array('strict_variables' => true));
+        $environment->addExtension(new TranslationExtension(new StubTranslator()));
+        $environment->addGlobal('global', '');
+        // the value can be any template that exists
+        $environment->addGlobal('dynamic_template_name', 'child_label');
+        $environment->addExtension($this->extension);
+
+        $this->extension->initRuntime($environment);
     }
 
-    public static function themeInheritanceProvider()
+    protected function tearDown()
     {
-        return array(
-            array(array('parent_label.html.twig'), array('child_label.html.twig')),
-        );
+        parent::tearDown();
+
+        $this->extension = null;
     }
 
     public function testThemeBlockInheritanceUsingUse()
     {
         $view = $this->factory
             ->createNamed('name', 'Symfony\Component\Form\Extension\Core\Type\EmailType')
-            ->createView();
+            ->createView()
+        ;
 
         $this->setTheme($view, array('theme_use.html.twig'));
 
@@ -60,21 +81,12 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
         );
     }
 
-    protected function setTheme(FormView $view, array $themes)
-    {
-        $this->extension->renderer->setTheme($view, $themes);
-    }
-
-    protected function renderWidget(FormView $view, array $vars = array())
-    {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'widget', $vars);
-    }
-
     public function testThemeBlockInheritanceUsingExtend()
     {
         $view = $this->factory
             ->createNamed('name', 'Symfony\Component\Form\Extension\Core\Type\EmailType')
-            ->createView();
+            ->createView()
+        ;
 
         $this->setTheme($view, array('theme_extends.html.twig'));
 
@@ -88,7 +100,8 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
     {
         $view = $this->factory
             ->createNamed('name', 'Symfony\Component\Form\Extension\Core\Type\EmailType')
-            ->createView();
+            ->createView()
+        ;
 
         $renderer = $this->extension->renderer;
         $renderer->setTheme($view, array('page_dynamic_extends.html.twig'));
@@ -123,7 +136,7 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
      */
     public function testIsChoiceSelected($expected, $choice, $value)
     {
-        $choice = new ChoiceView($choice, $choice, $choice . ' label');
+        $choice = new ChoiceView($choice, $choice, $choice.' label');
 
         $this->assertSame($expected, $this->extension->isSelectedChoice($choice, $value));
     }
@@ -140,11 +153,6 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
         $this->assertSame('<form name="form" method="get">', $html);
     }
 
-    protected function renderStart(FormView $view, array $vars = array())
-    {
-        return (string)$this->extension->renderer->renderBlock($view, 'form_start', $vars);
-    }
-
     public function testStartTagHasActionAttributeWhenActionIsZero()
     {
         $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
@@ -157,48 +165,14 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
         $this->assertSame('<form name="form" method="get" action="0">', $html);
     }
 
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $rendererEngine = new TwigRendererEngine(array(
-            'form_div_layout.html.twig',
-            'custom_widgets.html.twig',
-        ));
-        $renderer = new TwigRenderer($rendererEngine, $this->getMockBuilder('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface')->getMock());
-
-        $this->extension = new FormExtension($renderer);
-
-        $loader = new StubFilesystemLoader(array(
-            __DIR__ . '/../../Resources/views/Form',
-            __DIR__ . '/Fixtures/templates/form',
-        ));
-
-        $environment = new \Twig_Environment($loader, array('strict_variables' => true));
-        $environment->addExtension(new TranslationExtension(new StubTranslator()));
-        $environment->addGlobal('global', '');
-        // the value can be any template that exists
-        $environment->addGlobal('dynamic_template_name', 'child_label');
-        $environment->addExtension($this->extension);
-
-        $this->extension->initRuntime($environment);
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->extension = null;
-    }
-
     protected function renderForm(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form', $vars);
     }
 
     protected function renderEnctype(FormView $view)
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'enctype');
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'enctype');
     }
 
     protected function renderLabel(FormView $view, $label = null, array $vars = array())
@@ -207,26 +181,55 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
             $vars += array('label' => $label);
         }
 
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'label', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'label', $vars);
     }
 
     protected function renderErrors(FormView $view)
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'errors');
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'errors');
+    }
+
+    protected function renderWidget(FormView $view, array $vars = array())
+    {
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'widget', $vars);
     }
 
     protected function renderRow(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'row', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'row', $vars);
     }
 
     protected function renderRest(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'rest', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'rest', $vars);
+    }
+
+    protected function renderStart(FormView $view, array $vars = array())
+    {
+        return (string) $this->extension->renderer->renderBlock($view, 'form_start', $vars);
     }
 
     protected function renderEnd(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form_end', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form_end', $vars);
+    }
+
+    protected function setTheme(FormView $view, array $themes)
+    {
+        $this->extension->renderer->setTheme($view, $themes);
+    }
+
+    public static function themeBlockInheritanceProvider()
+    {
+        return array(
+            array(array('theme.html.twig')),
+        );
+    }
+
+    public static function themeInheritanceProvider()
+    {
+        return array(
+            array(array('parent_label.html.twig'), array('child_label.html.twig')),
+        );
     }
 }

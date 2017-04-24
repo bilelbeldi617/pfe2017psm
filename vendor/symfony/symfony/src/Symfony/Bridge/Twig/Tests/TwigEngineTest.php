@@ -24,17 +24,6 @@ class TwigEngineTest extends TestCase
         $this->assertTrue($engine->exists($this->getMockForAbstractClass('Twig_Template', array(), '', false)));
     }
 
-    protected function getTwig()
-    {
-        $twig = new \Twig_Environment(new \Twig_Loader_Array(array(
-            'index' => 'foo',
-            'error' => '{{ foo }',
-        )));
-        $parser = $this->getMockBuilder('Symfony\Component\Templating\TemplateNameParserInterface')->getMock();
-
-        return new TwigEngine($twig, $parser);
-    }
-
     public function testExistsWithNonExistentTemplates()
     {
         $engine = $this->getTwig();
@@ -75,5 +64,16 @@ class TwigEngineTest extends TestCase
         $engine = $this->getTwig();
 
         $engine->render(new TemplateReference('error'));
+    }
+
+    protected function getTwig()
+    {
+        $twig = new \Twig_Environment(new \Twig_Loader_Array(array(
+            'index' => 'foo',
+            'error' => '{{ foo }',
+        )));
+        $parser = $this->getMockBuilder('Symfony\Component\Templating\TemplateNameParserInterface')->getMock();
+
+        return new TwigEngine($twig, $parser);
     }
 }

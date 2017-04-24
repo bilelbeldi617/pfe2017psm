@@ -49,36 +49,6 @@ class FormFieldRegistry
     }
 
     /**
-     * Splits a field name into segments as a web browser would do.
-     *
-     * <code>
-     *     getSegments('base[foo][3][]') = array('base', 'foo, '3', '');
-     * </code>
-     *
-     * @param string $name The name of the field
-     *
-     * @return string[] The list of segments
-     */
-    private function getSegments($name)
-    {
-        if (preg_match('/^(?P<base>[^[]+)(?P<extra>(\[.*)|$)/', $name, $m)) {
-            $segments = array($m['base']);
-            while (!empty($m['extra'])) {
-                $extra = $m['extra'];
-                if (preg_match('/^\[(?P<segment>.*?)\](?P<extra>.*)$/', $extra, $m)) {
-                    $segments[] = $m['segment'];
-                } else {
-                    $segments[] = $extra;
-                }
-            }
-
-            return $segments;
-        }
-
-        return array($name);
-    }
-
-    /**
      * Removes a field and its children from the registry.
      *
      * @param string $name The fully qualified name of the base field
@@ -95,24 +65,6 @@ class FormFieldRegistry
             $target = &$target[$path];
         }
         unset($target[array_shift($segments)]);
-    }
-
-    /**
-     * Tests whether the form has the given field.
-     *
-     * @param string $name The fully qualified name of the field
-     *
-     * @return bool Whether the form has the given field
-     */
-    public function has($name)
-    {
-        try {
-            $this->get($name);
-
-            return true;
-        } catch (\InvalidArgumentException $e) {
-            return false;
-        }
     }
 
     /**
@@ -140,10 +92,28 @@ class FormFieldRegistry
     }
 
     /**
-     * Set the value of a field and its children.
+     * Tests whether the form has the given field.
      *
      * @param string $name The fully qualified name of the field
-     * @param mixed $value The value
+     *
+     * @return bool Whether the form has the given field
+     */
+    public function has($name)
+    {
+        try {
+            $this->get($name);
+
+            return true;
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Set the value of a field and its children.
+     *
+     * @param string $name  The fully qualified name of the field
+     * @param mixed  $value The value
      *
      * @throws \InvalidArgumentException if the field does not exist
      */
@@ -163,13 +133,23 @@ class FormFieldRegistry
     }
 
     /**
+     * Returns the list of field with their value.
+     *
+     * @return FormField[] The list of fields as array((string) Fully qualified name => (mixed) value)
+     */
+    public function all()
+    {
+        return $this->walk($this->fields, $this->base);
+    }
+
+    /**
      * Creates an instance of the class.
      *
      * This function is made private because it allows overriding the $base and
      * the $values properties without any type checking.
      *
-     * @param string $base The fully qualified name of the base field
-     * @param array $values The values of the fields
+     * @param string $base   The fully qualified name of the base field
+     * @param array  $values The values of the fields
      *
      * @return static
      */
@@ -183,21 +163,11 @@ class FormFieldRegistry
     }
 
     /**
-     * Returns the list of field with their value.
-     *
-     * @return FormField[] The list of fields as array((string) Fully qualified name => (mixed) value)
-     */
-    public function all()
-    {
-        return $this->walk($this->fields, $this->base);
-    }
-
-    /**
      * Transforms a PHP array in a list of fully qualified name / value.
      *
-     * @param array $array The PHP array
-     * @param string $base The name of the base field
-     * @param array $output The initial values
+     * @param array  $array  The PHP array
+     * @param string $base   The name of the base field
+     * @param array  $output The initial values
      *
      * @return array The list of fields as array((string) Fully qualified name => (mixed) value)
      */
@@ -213,5 +183,35 @@ class FormFieldRegistry
         }
 
         return $output;
+    }
+
+    /**
+     * Splits a field name into segments as a web browser would do.
+     *
+     * <code>
+     *     getSegments('base[foo][3][]') = array('base', 'foo, '3', '');
+     * </code>
+     *
+     * @param string $name The name of the field
+     *
+     * @return string[] The list of segments
+     */
+    private function getSegments($name)
+    {
+        if (preg_match('/^(?P<base>[^[]+)(?P<extra>(\[.*)|$)/', $name, $m)) {
+            $segments = array($m['base']);
+            while (!empty($m['extra'])) {
+                $extra = $m['extra'];
+                if (preg_match('/^\[(?P<segment>.*?)\](?P<extra>.*)$/', $extra, $m)) {
+                    $segments[] = $m['segment'];
+                } else {
+                    $segments[] = $extra;
+                }
+            }
+
+            return $segments;
+        }
+
+        return array($name);
     }
 }

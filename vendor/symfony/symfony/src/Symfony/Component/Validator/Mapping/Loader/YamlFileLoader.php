@@ -69,6 +69,38 @@ class YamlFileLoader extends FileLoader
     }
 
     /**
+     * Parses a collection of YAML nodes.
+     *
+     * @param array $nodes The YAML nodes
+     *
+     * @return array An array of values or Constraint instances
+     */
+    protected function parseNodes(array $nodes)
+    {
+        $values = array();
+
+        foreach ($nodes as $name => $childNodes) {
+            if (is_numeric($name) && is_array($childNodes) && 1 === count($childNodes)) {
+                $options = current($childNodes);
+
+                if (is_array($options)) {
+                    $options = $this->parseNodes($options);
+                }
+
+                $values[] = $this->newConstraint(key($childNodes), $options);
+            } else {
+                if (is_array($childNodes)) {
+                    $childNodes = $this->parseNodes($childNodes);
+                }
+
+                $values[$name] = $childNodes;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
      * Loads the YAML class descriptions from the given file.
      *
      * @param string $path The path of the YAML file
@@ -102,14 +134,14 @@ class YamlFileLoader extends FileLoader
     /**
      * Loads the validation metadata from the given YAML class description.
      *
-     * @param ClassMetadata $metadata The metadata to load
-     * @param array $classDescription The YAML class description
+     * @param ClassMetadata $metadata         The metadata to load
+     * @param array         $classDescription The YAML class description
      */
     private function loadClassMetadataFromYaml(ClassMetadata $metadata, array $classDescription)
     {
         if (isset($classDescription['group_sequence_provider'])) {
             $metadata->setGroupSequenceProvider(
-                (bool)$classDescription['group_sequence_provider']
+                (bool) $classDescription['group_sequence_provider']
             );
         }
 
@@ -142,37 +174,5 @@ class YamlFileLoader extends FileLoader
                 }
             }
         }
-    }
-
-    /**
-     * Parses a collection of YAML nodes.
-     *
-     * @param array $nodes The YAML nodes
-     *
-     * @return array An array of values or Constraint instances
-     */
-    protected function parseNodes(array $nodes)
-    {
-        $values = array();
-
-        foreach ($nodes as $name => $childNodes) {
-            if (is_numeric($name) && is_array($childNodes) && 1 === count($childNodes)) {
-                $options = current($childNodes);
-
-                if (is_array($options)) {
-                    $options = $this->parseNodes($options);
-                }
-
-                $values[] = $this->newConstraint(key($childNodes), $options);
-            } else {
-                if (is_array($childNodes)) {
-                    $childNodes = $this->parseNodes($childNodes);
-                }
-
-                $values[$name] = $childNodes;
-            }
-        }
-
-        return $values;
     }
 }

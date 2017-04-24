@@ -34,9 +34,9 @@ class DoctrineAclCache implements AclCacheInterface
     /**
      * Constructor.
      *
-     * @param Cache $cache
+     * @param Cache                               $cache
      * @param PermissionGrantingStrategyInterface $permissionGrantingStrategy
-     * @param string $prefix
+     * @param string                              $prefix
      *
      * @throws \InvalidArgumentException
      */
@@ -80,18 +80,6 @@ class DoctrineAclCache implements AclCacheInterface
     }
 
     /**
-     * Returns the alias key for the object identity key.
-     *
-     * @param string $aclId
-     *
-     * @return string
-     */
-    private function getAliasKeyForIdentity($aclId)
-    {
-        return $this->prefix . $aclId;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function evictFromCacheByIdentity(ObjectIdentityInterface $oid)
@@ -102,19 +90,6 @@ class DoctrineAclCache implements AclCacheInterface
         }
 
         $this->cache->delete($key);
-    }
-
-    /**
-     * Returns the key for the object identity.
-     *
-     * @param ObjectIdentityInterface $oid
-     *
-     * @return string
-     */
-    private function getDataKeyByIdentity(ObjectIdentityInterface $oid)
-    {
-        return $this->prefix . md5($oid->getType()) . sha1($oid->getType())
-            . '_' . md5($oid->getIdentifier()) . sha1($oid->getIdentifier());
     }
 
     /**
@@ -135,6 +110,37 @@ class DoctrineAclCache implements AclCacheInterface
         }
 
         return $this->unserializeAcl($this->cache->fetch($key));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFromCacheByIdentity(ObjectIdentityInterface $oid)
+    {
+        $key = $this->getDataKeyByIdentity($oid);
+        if (!$this->cache->contains($key)) {
+            return;
+        }
+
+        return $this->unserializeAcl($this->cache->fetch($key));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function putInCache(AclInterface $acl)
+    {
+        if (null === $acl->getId()) {
+            throw new \InvalidArgumentException('Transient ACLs cannot be cached.');
+        }
+
+        if (null !== $parentAcl = $acl->getParentAcl()) {
+            $this->putInCache($parentAcl);
+        }
+
+        $key = $this->getDataKeyByIdentity($acl->getObjectIdentity());
+        $this->cache->save($key, serialize($acl));
+        $this->cache->save($this->getAliasKeyForIdentity($acl->getId()), $key);
     }
 
     /**
@@ -197,33 +203,27 @@ class DoctrineAclCache implements AclCacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the key for the object identity.
+     *
+     * @param ObjectIdentityInterface $oid
+     *
+     * @return string
      */
-    public function getFromCacheByIdentity(ObjectIdentityInterface $oid)
+    private function getDataKeyByIdentity(ObjectIdentityInterface $oid)
     {
-        $key = $this->getDataKeyByIdentity($oid);
-        if (!$this->cache->contains($key)) {
-            return;
-        }
-
-        return $this->unserializeAcl($this->cache->fetch($key));
+        return $this->prefix.md5($oid->getType()).sha1($oid->getType())
+               .'_'.md5($oid->getIdentifier()).sha1($oid->getIdentifier());
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the alias key for the object identity key.
+     *
+     * @param string $aclId
+     *
+     * @return string
      */
-    public function putInCache(AclInterface $acl)
+    private function getAliasKeyForIdentity($aclId)
     {
-        if (null === $acl->getId()) {
-            throw new \InvalidArgumentException('Transient ACLs cannot be cached.');
-        }
-
-        if (null !== $parentAcl = $acl->getParentAcl()) {
-            $this->putInCache($parentAcl);
-        }
-
-        $key = $this->getDataKeyByIdentity($acl->getObjectIdentity());
-        $this->cache->save($key, serialize($acl));
-        $this->cache->save($this->getAliasKeyForIdentity($acl->getId()), $key);
+        return $this->prefix.$aclId;
     }
 }

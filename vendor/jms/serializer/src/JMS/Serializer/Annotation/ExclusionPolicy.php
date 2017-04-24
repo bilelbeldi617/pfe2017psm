@@ -27,7 +27,7 @@ use JMS\Serializer\Exception\RuntimeException;
 final class ExclusionPolicy
 {
     const NONE = 'NONE';
-    const ALL = 'ALL';
+    const ALL  = 'ALL';
 
     public $policy;
 

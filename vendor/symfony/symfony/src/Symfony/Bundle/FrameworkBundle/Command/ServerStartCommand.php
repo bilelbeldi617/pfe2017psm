@@ -65,7 +65,8 @@ Specifying a router script is required when the used environment is not <comment
 See also: http://www.php.net/manual/en/features.commandline.webserver.php
 
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -93,7 +94,7 @@ EOF
         $documentRoot = $input->getOption('docroot');
 
         if (null === $documentRoot) {
-            $documentRoot = $this->getContainer()->getParameter('kernel.root_dir') . '/../web';
+            $documentRoot = $this->getContainer()->getParameter('kernel.root_dir').'/../web';
         }
 
         if (!is_dir($documentRoot)) {
@@ -111,7 +112,7 @@ EOF
         $address = $input->getArgument('address');
 
         if (false === strpos($address, ':')) {
-            $address = $address . ':' . $input->getOption('port');
+            $address = $address.':'.$input->getOption('port');
         }
 
         if (!$input->getOption('force') && $this->isOtherServerProcessRunning($address)) {
@@ -177,9 +178,9 @@ EOF
      * Determine the absolute file path for the router script, using the environment to choose a standard script
      * if no custom router script is specified.
      *
-     * @param string|null $router File path of the custom router script, if set by the user; otherwise null
-     * @param string $env The application environment
-     * @param SymfonyStyle $io An SymfonyStyle instance
+     * @param string|null  $router File path of the custom router script, if set by the user; otherwise null
+     * @param string       $env    The application environment
+     * @param SymfonyStyle $io     An SymfonyStyle instance
      *
      * @return string|bool The absolute file path of the router script, or false on failure
      */
@@ -189,7 +190,8 @@ EOF
             $router = $this
                 ->getContainer()
                 ->get('kernel')
-                ->locateResource(sprintf('@FrameworkBundle/Resources/config/router_%s.php', $env));
+                ->locateResource(sprintf('@FrameworkBundle/Resources/config/router_%s.php', $env))
+            ;
         }
 
         if (false === $path = realpath($router)) {
@@ -204,10 +206,10 @@ EOF
     /**
      * Creates a process to start PHP's built-in web server.
      *
-     * @param SymfonyStyle $io A SymfonyStyle instance
-     * @param string $address IP address and port to listen to
-     * @param string $documentRoot The application's document root
-     * @param string $router The router filename
+     * @param SymfonyStyle $io           A SymfonyStyle instance
+     * @param string       $address      IP address and port to listen to
+     * @param string       $documentRoot The application's document root
+     * @param string       $router       The router filename
      *
      * @return Process The process
      */
@@ -227,6 +229,6 @@ EOF
             $router,
         )));
 
-        return new Process('exec ' . $script, $documentRoot, null, null, null);
+        return new Process('exec '.$script, $documentRoot, null, null, null);
     }
 }

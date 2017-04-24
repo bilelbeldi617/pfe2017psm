@@ -32,6 +32,25 @@ abstract class AbstractLexer
     private $peek;
     private $tokens;
 
+    /**
+     * Returns the name of the given token.
+     *
+     * @param integer $type
+     *
+     * @return string
+     */
+    public function getName($type)
+    {
+        $ref = new \ReflectionClass($this);
+        foreach ($ref->getConstants() as $name => $value) {
+            if ($value === $type) {
+                return $name;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('There is no token with value %s.', json_encode($type)));
+    }
+
     public function setInput($str)
     {
         $tokens = preg_split($this->getRegex(), $str, null, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
@@ -44,23 +63,6 @@ abstract class AbstractLexer
 
         $this->reset();
     }
-
-    /**
-     * @return string
-     */
-    abstract protected function getRegex();
-
-    /**
-     * Determines the type of the given value.
-     *
-     * This method may also modify the passed value for example to cast them to
-     * a different PHP type where necessary.
-     *
-     * @param string $value
-     *
-     * @return array a tupel of type and normalized value
-     */
-    abstract protected function determineTypeAndValue($value);
 
     public function reset()
     {
@@ -93,9 +95,9 @@ abstract class AbstractLexer
      */
     public function skipUntil($type)
     {
-        while (!$this->isNext($type) && $this->moveNext()) ;
+        while ( ! $this->isNext($type) && $this->moveNext());
 
-        if (!$this->isNext($type)) {
+        if ( ! $this->isNext($type)) {
             throw new \RuntimeException(sprintf('Could not find the token %s.', $this->getName($type)));
         }
     }
@@ -111,26 +113,7 @@ abstract class AbstractLexer
     }
 
     /**
-     * Returns the name of the given token.
-     *
-     * @param integer $type
-     *
-     * @return string
-     */
-    public function getName($type)
-    {
-        $ref = new \ReflectionClass($this);
-        foreach ($ref->getConstants() as $name => $value) {
-            if ($value === $type) {
-                return $name;
-            }
-        }
-
-        throw new \InvalidArgumentException(sprintf('There is no token with value %s.', json_encode($type)));
-    }
-
-    /**
-     * @param array <integer> $types
+     * @param array<integer> $types
      *
      * @return boolean
      */
@@ -154,10 +137,27 @@ abstract class AbstractLexer
      */
     public function peek()
     {
-        if (!isset($this->tokens[$this->i + (++$this->peek)])) {
+        if ( ! isset($this->tokens[$this->i + (++$this->peek)])) {
             return \PhpOption\None::create();
         }
 
         return new \PhpOption\Some($this->tokens[$this->i + $this->peek]);
     }
+
+    /**
+     * @return string
+     */
+    abstract protected function getRegex();
+
+    /**
+     * Determines the type of the given value.
+     *
+     * This method may also modify the passed value for example to cast them to
+     * a different PHP type where necessary.
+     *
+     * @param string $value
+     *
+     * @return array a tupel of type and normalized value
+     */
+    abstract protected function determineTypeAndValue($value);
 }

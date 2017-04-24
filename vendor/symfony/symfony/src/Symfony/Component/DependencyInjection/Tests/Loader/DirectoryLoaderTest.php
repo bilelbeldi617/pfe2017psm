@@ -29,7 +29,21 @@ class DirectoryLoaderTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = realpath(__DIR__ . '/../Fixtures/');
+        self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
+    }
+
+    protected function setUp()
+    {
+        $locator = new FileLocator(self::$fixturesPath);
+        $this->container = new ContainerBuilder();
+        $this->loader = new DirectoryLoader($this->container, $locator);
+        $resolver = new LoaderResolver(array(
+            new PhpFileLoader($this->container, $locator),
+            new IniFileLoader($this->container, $locator),
+            new YamlFileLoader($this->container, $locator),
+            $this->loader,
+        ));
+        $this->loader->setResolver($resolver);
     }
 
     public function testDirectoryCanBeLoadedRecursively()
@@ -62,19 +76,5 @@ class DirectoryLoaderTest extends TestCase
         $this->assertFalse($loader->supports('directory'), '->supports("directory") returns false');
         $this->assertTrue($loader->supports('directory', 'directory'), '->supports("directory", "directory") returns true');
         $this->assertFalse($loader->supports('directory', 'foo'), '->supports("directory", "foo") returns false');
-    }
-
-    protected function setUp()
-    {
-        $locator = new FileLocator(self::$fixturesPath);
-        $this->container = new ContainerBuilder();
-        $this->loader = new DirectoryLoader($this->container, $locator);
-        $resolver = new LoaderResolver(array(
-            new PhpFileLoader($this->container, $locator),
-            new IniFileLoader($this->container, $locator),
-            new YamlFileLoader($this->container, $locator),
-            $this->loader,
-        ));
-        $this->loader->setResolver($resolver);
     }
 }

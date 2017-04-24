@@ -49,7 +49,7 @@ class Profiler
      * Constructor.
      *
      * @param ProfilerStorageInterface $storage A ProfilerStorageInterface instance
-     * @param LoggerInterface $logger A LoggerInterface instance
+     * @param LoggerInterface          $logger  A LoggerInterface instance
      */
     public function __construct(ProfilerStorageInterface $storage, LoggerInterface $logger = null)
     {
@@ -102,54 +102,6 @@ class Profiler
     }
 
     /**
-     * Purges all data from the storage.
-     */
-    public function purge()
-    {
-        $this->storage->purge();
-    }
-
-    /**
-     * Exports the current profiler data.
-     *
-     * @param Profile $profile A Profile instance
-     *
-     * @return string The exported data
-     *
-     * @deprecated since Symfony 2.8, to be removed in 3.0.
-     */
-    public function export(Profile $profile)
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
-        return base64_encode(serialize($profile));
-    }
-
-    /**
-     * Imports data into the profiler storage.
-     *
-     * @param string $data A data string as exported by the export() method
-     *
-     * @return Profile|false A Profile instance
-     *
-     * @deprecated since Symfony 2.8, to be removed in 3.0.
-     */
-    public function import($data)
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
-
-        $profile = unserialize(base64_decode($data));
-
-        if ($this->storage->read($profile->getToken())) {
-            return false;
-        }
-
-        $this->saveProfile($profile);
-
-        return $profile;
-    }
-
-    /**
      * Saves a Profile.
      *
      * @param Profile $profile A Profile instance
@@ -173,14 +125,62 @@ class Profiler
     }
 
     /**
+     * Purges all data from the storage.
+     */
+    public function purge()
+    {
+        $this->storage->purge();
+    }
+
+    /**
+     * Exports the current profiler data.
+     *
+     * @param Profile $profile A Profile instance
+     *
+     * @return string The exported data
+     *
+     * @deprecated since Symfony 2.8, to be removed in 3.0.
+     */
+    public function export(Profile $profile)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+
+        return base64_encode(serialize($profile));
+    }
+
+    /**
+     * Imports data into the profiler storage.
+     *
+     * @param string $data A data string as exported by the export() method
+     *
+     * @return Profile|false A Profile instance
+     *
+     * @deprecated since Symfony 2.8, to be removed in 3.0.
+     */
+    public function import($data)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+
+        $profile = unserialize(base64_decode($data));
+
+        if ($this->storage->read($profile->getToken())) {
+            return false;
+        }
+
+        $this->saveProfile($profile);
+
+        return $profile;
+    }
+
+    /**
      * Finds profiler tokens for the given criteria.
      *
-     * @param string $ip The IP
-     * @param string $url The URL
-     * @param string $limit The maximum number of tokens to return
+     * @param string $ip     The IP
+     * @param string $url    The URL
+     * @param string $limit  The maximum number of tokens to return
      * @param string $method The request method
-     * @param string $start The start date to search from
-     * @param string $end The end date to search to
+     * @param string $start  The start date to search from
+     * @param string $end    The end date to search to
      *
      * @return array An array of tokens
      *
@@ -191,26 +191,11 @@ class Profiler
         return $this->storage->find($ip, $url, $limit, $method, $this->getTimestamp($start), $this->getTimestamp($end));
     }
 
-    private function getTimestamp($value)
-    {
-        if (null === $value || '' == $value) {
-            return;
-        }
-
-        try {
-            $value = new \DateTime(is_numeric($value) ? '@' . $value : $value);
-        } catch (\Exception $e) {
-            return;
-        }
-
-        return $value->getTimestamp();
-    }
-
     /**
      * Collects data for the given Response.
      *
-     * @param Request $request A Request instance
-     * @param Response $response A Response instance
+     * @param Request    $request   A Request instance
+     * @param Response   $response  A Response instance
      * @param \Exception $exception An exception instance if the request threw one
      *
      * @return Profile|null A Profile instance or null if the profiler is disabled
@@ -305,5 +290,20 @@ class Profiler
         }
 
         return $this->collectors[$name];
+    }
+
+    private function getTimestamp($value)
+    {
+        if (null === $value || '' == $value) {
+            return;
+        }
+
+        try {
+            $value = new \DateTime(is_numeric($value) ? '@'.$value : $value);
+        } catch (\Exception $e) {
+            return;
+        }
+
+        return $value->getTimestamp();
     }
 }

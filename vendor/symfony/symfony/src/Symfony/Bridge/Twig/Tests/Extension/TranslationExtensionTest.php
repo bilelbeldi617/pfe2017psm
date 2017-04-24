@@ -26,35 +26,18 @@ class TranslationExtensionTest extends TestCase
         $this->assertEquals('Percent: 12% (approx.)', $output);
     }
 
-    protected function getTemplate($template, $translator = null)
-    {
-        if (null === $translator) {
-            $translator = new Translator('en', new MessageSelector());
-        }
-
-        if (is_array($template)) {
-            $loader = new \Twig_Loader_Array($template);
-        } else {
-            $loader = new \Twig_Loader_Array(array('index' => $template));
-        }
-        $twig = new \Twig_Environment($loader, array('debug' => true, 'cache' => false));
-        $twig->addExtension(new TranslationExtension($translator));
-
-        return $twig->loadTemplate('index');
-    }
-
     /**
      * @dataProvider getTransTests
      */
     public function testTrans($template, $expected, array $variables = array())
     {
         if ($expected != $this->getTemplate($template)->render($variables)) {
-            echo $template . "\n";
+            echo $template."\n";
             $loader = new \Twig_Loader_Array(array('index' => $template));
             $twig = new \Twig_Environment($loader, array('debug' => true, 'cache' => false));
             $twig->addExtension(new TranslationExtension(new Translator('en', new MessageSelector())));
 
-            echo $twig->compile($twig->parse($twig->tokenize($twig->getLoader()->getSourceContext('index')))) . "\n\n";
+            echo $twig->compile($twig->parse($twig->tokenize($twig->getLoader()->getSourceContext('index'))))."\n\n";
             $this->assertEquals($expected, $this->getTemplate($template)->render($variables));
         }
 
@@ -197,5 +180,22 @@ class TranslationExtensionTest extends TestCase
         $template = $this->getTemplate($templates, $translator);
 
         $this->assertEquals('foo (custom)foo (foo)foo (custom)foo (custom)foo (fr)foo (custom)foo (fr)', trim($template->render(array())));
+    }
+
+    protected function getTemplate($template, $translator = null)
+    {
+        if (null === $translator) {
+            $translator = new Translator('en', new MessageSelector());
+        }
+
+        if (is_array($template)) {
+            $loader = new \Twig_Loader_Array($template);
+        } else {
+            $loader = new \Twig_Loader_Array(array('index' => $template));
+        }
+        $twig = new \Twig_Environment($loader, array('debug' => true, 'cache' => false));
+        $twig->addExtension(new TranslationExtension($translator));
+
+        return $twig->loadTemplate('index');
     }
 }

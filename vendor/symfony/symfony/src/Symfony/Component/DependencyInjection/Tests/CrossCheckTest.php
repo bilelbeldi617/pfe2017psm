@@ -21,10 +21,10 @@ class CrossCheckTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = __DIR__ . '/Fixtures/';
+        self::$fixturesPath = __DIR__.'/Fixtures/';
 
-        require_once self::$fixturesPath . '/includes/classes.php';
-        require_once self::$fixturesPath . '/includes/foo.php';
+        require_once self::$fixturesPath.'/includes/classes.php';
+        require_once self::$fixturesPath.'/includes/foo.php';
     }
 
     /**
@@ -32,12 +32,12 @@ class CrossCheckTest extends TestCase
      */
     public function testCrossCheck($fixture, $type)
     {
-        $loaderClass = 'Symfony\\Component\\DependencyInjection\\Loader\\' . ucfirst($type) . 'FileLoader';
-        $dumperClass = 'Symfony\\Component\\DependencyInjection\\Dumper\\' . ucfirst($type) . 'Dumper';
+        $loaderClass = 'Symfony\\Component\\DependencyInjection\\Loader\\'.ucfirst($type).'FileLoader';
+        $dumperClass = 'Symfony\\Component\\DependencyInjection\\Dumper\\'.ucfirst($type).'Dumper';
 
         $tmp = tempnam(sys_get_temp_dir(), 'sf');
 
-        copy(self::$fixturesPath . '/' . $type . '/' . $fixture, $tmp);
+        copy(self::$fixturesPath.'/'.$type.'/'.$fixture, $tmp);
 
         $container1 = new ContainerBuilder();
         $loader1 = new $loaderClass($container1, new FileLocator());

@@ -33,9 +33,7 @@ class DumpExtensionTest extends TestCase
 
         $dumped = null;
         $exception = null;
-        $prevDumper = VarDumper::setHandler(function ($var) use (&$dumped) {
-            $dumped = $var;
-        });
+        $prevDumper = VarDumper::setHandler(function ($var) use (&$dumped) { $dumped = $var; });
 
         try {
             $this->assertEquals($expectedOutput, $twig->render('template'));
@@ -94,15 +92,15 @@ class DumpExtensionTest extends TestCase
                 array(),
                 array(123, 456),
                 "<pre class=sf-dump id=sf-dump data-indent-pad=\"  \"><span class=sf-dump-num>123</span>\n</pre><script>Sfdump(\"sf-dump\")</script>\n"
-                . "<pre class=sf-dump id=sf-dump data-indent-pad=\"  \"><span class=sf-dump-num>456</span>\n</pre><script>Sfdump(\"sf-dump\")</script>\n",
+                ."<pre class=sf-dump id=sf-dump data-indent-pad=\"  \"><span class=sf-dump-num>456</span>\n</pre><script>Sfdump(\"sf-dump\")</script>\n",
             ),
             array(
                 array('foo' => 'bar'),
                 array(),
                 "<pre class=sf-dump id=sf-dump data-indent-pad=\"  \"><span class=sf-dump-note>array:1</span> [<samp>\n"
-                . "  \"<span class=sf-dump-key>foo</span>\" => \"<span class=sf-dump-str title=\"3 characters\">bar</span>\"\n"
-                . "</samp>]\n"
-                . "</pre><script>Sfdump(\"sf-dump\")</script>\n",
+                ."  \"<span class=sf-dump-key>foo</span>\" => \"<span class=sf-dump-str title=\"3 characters\">bar</span>\"\n"
+                ."</samp>]\n"
+                ."</pre><script>Sfdump(\"sf-dump\")</script>\n",
             ),
         );
     }

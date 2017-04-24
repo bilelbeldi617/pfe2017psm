@@ -67,7 +67,8 @@ or
   <info>php %command.full_name% /foo --method POST --scheme https --host symfony.com --verbose</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

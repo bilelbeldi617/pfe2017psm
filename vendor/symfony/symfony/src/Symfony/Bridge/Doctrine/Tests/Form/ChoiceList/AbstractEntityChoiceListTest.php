@@ -66,20 +66,20 @@ abstract class AbstractEntityChoiceListTest extends AbstractChoiceListTest
         parent::setUp();
     }
 
-    protected function getClassesMetadata()
+    protected function tearDown()
     {
-        return array($this->em->getClassMetadata($this->getEntityClass()));
+        parent::tearDown();
+
+        $this->em = null;
     }
 
     abstract protected function getEntityClass();
 
     abstract protected function createObjects();
 
-    protected function tearDown()
+    protected function getClassesMetadata()
     {
-        parent::tearDown();
-
-        $this->em = null;
+        return array($this->em->getClassMetadata($this->getEntityClass()));
     }
 
     /**

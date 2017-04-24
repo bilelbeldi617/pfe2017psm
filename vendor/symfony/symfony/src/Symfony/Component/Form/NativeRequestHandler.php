@@ -22,18 +22,6 @@ use Symfony\Component\Form\Util\ServerParams;
 class NativeRequestHandler implements RequestHandlerInterface
 {
     /**
-     * The allowed keys of the $_FILES array.
-     *
-     * @var array
-     */
-    private static $fileKeys = array(
-        'error',
-        'name',
-        'size',
-        'tmp_name',
-        'type',
-    );
-    /**
      * @var ServerParams
      */
     private $serverParams;
@@ -45,6 +33,19 @@ class NativeRequestHandler implements RequestHandlerInterface
     {
         $this->serverParams = $params ?: new ServerParams();
     }
+
+    /**
+     * The allowed keys of the $_FILES array.
+     *
+     * @var array
+     */
+    private static $fileKeys = array(
+        'error',
+        'name',
+        'size',
+        'tmp_name',
+        'type',
+    );
 
     /**
      * {@inheritdoc}
@@ -144,37 +145,6 @@ class NativeRequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * Sets empty uploaded files to NULL in the given uploaded files array.
-     *
-     * @param mixed $data The file upload data
-     *
-     * @return array|null Returns the stripped upload data
-     */
-    private static function stripEmptyFiles($data)
-    {
-        if (!is_array($data)) {
-            return $data;
-        }
-
-        $keys = array_keys($data);
-        sort($keys);
-
-        if (self::$fileKeys === $keys) {
-            if (UPLOAD_ERR_NO_FILE === $data['error']) {
-                return;
-            }
-
-            return $data;
-        }
-
-        foreach ($data as $key => $value) {
-            $data[$key] = self::stripEmptyFiles($value);
-        }
-
-        return $data;
-    }
-
-    /**
      * Fixes a malformed PHP $_FILES array.
      *
      * PHP has a bug that the format of the $_FILES array differs, depending on
@@ -222,5 +192,36 @@ class NativeRequestHandler implements RequestHandlerInterface
         }
 
         return $files;
+    }
+
+    /**
+     * Sets empty uploaded files to NULL in the given uploaded files array.
+     *
+     * @param mixed $data The file upload data
+     *
+     * @return array|null Returns the stripped upload data
+     */
+    private static function stripEmptyFiles($data)
+    {
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        $keys = array_keys($data);
+        sort($keys);
+
+        if (self::$fileKeys === $keys) {
+            if (UPLOAD_ERR_NO_FILE === $data['error']) {
+                return;
+            }
+
+            return $data;
+        }
+
+        foreach ($data as $key => $value) {
+            $data[$key] = self::stripEmptyFiles($value);
+        }
+
+        return $data;
     }
 }

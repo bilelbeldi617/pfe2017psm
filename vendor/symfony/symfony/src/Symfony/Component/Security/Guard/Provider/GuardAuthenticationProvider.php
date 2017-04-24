@@ -42,9 +42,9 @@ class GuardAuthenticationProvider implements AuthenticationProviderInterface
 
     /**
      * @param GuardAuthenticatorInterface[] $guardAuthenticators The authenticators, with keys that match what's passed to GuardAuthenticationListener
-     * @param UserProviderInterface $userProvider The user provider
-     * @param string $providerKey The provider (i.e. firewall) key
-     * @param UserCheckerInterface $userChecker
+     * @param UserProviderInterface         $userProvider        The user provider
+     * @param string                        $providerKey         The provider (i.e. firewall) key
+     * @param UserCheckerInterface          $userChecker
      */
     public function __construct(array $guardAuthenticators, UserProviderInterface $userProvider, $providerKey, UserCheckerInterface $userChecker)
     {
@@ -91,7 +91,7 @@ class GuardAuthenticationProvider implements AuthenticationProviderInterface
         foreach ($this->guardAuthenticators as $key => $guardAuthenticator) {
             // get a key that's unique to *this* guard authenticator
             // this MUST be the same as GuardAuthenticationListener
-            $uniqueGuardKey = $this->providerKey . '_' . $key;
+            $uniqueGuardKey = $this->providerKey.'_'.$key;
 
             if ($uniqueGuardKey == $token->getGuardProviderKey()) {
                 return $this->authenticateViaGuard($guardAuthenticator, $token);
@@ -100,11 +100,6 @@ class GuardAuthenticationProvider implements AuthenticationProviderInterface
 
         // no matching authenticator found - but there will be multiple GuardAuthenticationProvider
         // instances that will be checked if you have multiple firewalls.
-    }
-
-    public function supports(TokenInterface $token)
-    {
-        return $token instanceof GuardTokenInterface;
     }
 
     private function authenticateViaGuard(GuardAuthenticatorInterface $guardAuthenticator, PreAuthenticationGuardToken $token)
@@ -144,5 +139,10 @@ class GuardAuthenticationProvider implements AuthenticationProviderInterface
         }
 
         return $authenticatedToken;
+    }
+
+    public function supports(TokenInterface $token)
+    {
+        return $token instanceof GuardTokenInterface;
     }
 }

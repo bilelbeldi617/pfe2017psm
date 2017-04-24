@@ -52,26 +52,6 @@ class AuthenticationProviderManagerTest extends TestCase
         }
     }
 
-    protected function getAuthenticationProvider($supports, $token = null, $exception = null)
-    {
-        $provider = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface')->getMock();
-        $provider->expects($this->once())
-            ->method('supports')
-            ->will($this->returnValue($supports));
-
-        if (null !== $token) {
-            $provider->expects($this->once())
-                ->method('authenticate')
-                ->will($this->returnValue($token));
-        } elseif (null !== $exception) {
-            $provider->expects($this->once())
-                ->method('authenticate')
-                ->will($this->throwException($this->getMockBuilder($exception)->setMethods(null)->getMock()));
-        }
-
-        return $provider;
-    }
-
     public function testAuthenticateWhenProviderReturnsAccountStatusException()
     {
         $manager = new AuthenticationProviderManager(array(
@@ -116,7 +96,8 @@ class AuthenticationProviderManagerTest extends TestCase
         $second = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface')->getMock();
         $second
             ->expects($this->never())
-            ->method('supports');
+            ->method('supports')
+        ;
         $manager = new AuthenticationProviderManager(array(
             $this->getAuthenticationProvider(true, $expected = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock()),
             $second,
@@ -141,5 +122,28 @@ class AuthenticationProviderManagerTest extends TestCase
 
         $token = $manager->authenticate($this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock());
         $this->assertEquals('bar', $token->getCredentials());
+    }
+
+    protected function getAuthenticationProvider($supports, $token = null, $exception = null)
+    {
+        $provider = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface')->getMock();
+        $provider->expects($this->once())
+                 ->method('supports')
+                 ->will($this->returnValue($supports))
+        ;
+
+        if (null !== $token) {
+            $provider->expects($this->once())
+                     ->method('authenticate')
+                     ->will($this->returnValue($token))
+            ;
+        } elseif (null !== $exception) {
+            $provider->expects($this->once())
+                     ->method('authenticate')
+                     ->will($this->throwException($this->getMockBuilder($exception)->setMethods(null)->getMock()))
+            ;
+        }
+
+        return $provider;
     }
 }

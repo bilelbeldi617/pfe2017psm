@@ -294,9 +294,9 @@ class TimeTypeTest extends BaseTypeTest
         $outputTime->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         $displayedData = array(
-            'hour' => (int)$outputTime->format('H'),
-            'minute' => (int)$outputTime->format('i'),
-            'second' => (int)$outputTime->format('s'),
+            'hour' => (int) $outputTime->format('H'),
+            'minute' => (int) $outputTime->format('i'),
+            'second' => (int) $outputTime->format('s'),
         );
 
         $this->assertEquals($displayedData, $form->getViewData());
@@ -320,9 +320,9 @@ class TimeTypeTest extends BaseTypeTest
         $outputTime->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         $displayedData = array(
-            'hour' => (int)$outputTime->format('H'),
-            'minute' => (int)$outputTime->format('i'),
-            'second' => (int)$outputTime->format('s'),
+            'hour' => (int) $outputTime->format('H'),
+            'minute' => (int) $outputTime->format('i'),
+            'second' => (int) $outputTime->format('s'),
         );
 
         $this->assertDateTimeEquals($dateTime, $form->getData());

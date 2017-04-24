@@ -19,6 +19,23 @@ class ControllerNameParserTest extends TestCase
 {
     protected $loader;
 
+    protected function setUp()
+    {
+        $this->loader = new ClassLoader();
+        $this->loader->addPrefixes(array(
+            'TestBundle' => __DIR__.'/../Fixtures',
+            'TestApplication' => __DIR__.'/../Fixtures',
+        ));
+        $this->loader->register();
+    }
+
+    protected function tearDown()
+    {
+        spl_autoload_unregister(array($this->loader, 'loadClass'));
+
+        $this->loader = null;
+    }
+
     public function testParse()
     {
         $parser = $this->createParser();
@@ -36,51 +53,6 @@ class ControllerNameParserTest extends TestCase
         } catch (\Exception $e) {
             $this->assertInstanceOf('\InvalidArgumentException', $e, '->parse() throws an \InvalidArgumentException if the controller is not an a:b:c string');
         }
-    }
-
-    private function createParser()
-    {
-        $bundles = array(
-            'SensioFooBundle' => array($this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'), $this->getBundle('TestBundle\Sensio\FooBundle', 'SensioFooBundle')),
-            'SensioCmsFooBundle' => array($this->getBundle('TestBundle\Sensio\Cms\FooBundle', 'SensioCmsFooBundle')),
-            'FooBundle' => array($this->getBundle('TestBundle\FooBundle', 'FooBundle')),
-            'FabpotFooBundle' => array($this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'), $this->getBundle('TestBundle\Sensio\FooBundle', 'SensioFooBundle')),
-        );
-
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
-        $kernel
-            ->expects($this->any())
-            ->method('getBundle')
-            ->will($this->returnCallback(function ($bundle) use ($bundles) {
-                if (!isset($bundles[$bundle])) {
-                    throw new \InvalidArgumentException(sprintf('Invalid bundle name "%s"', $bundle));
-                }
-
-                return $bundles[$bundle];
-            }));
-
-        $bundles = array(
-            'SensioFooBundle' => $this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'),
-            'SensioCmsFooBundle' => $this->getBundle('TestBundle\Sensio\Cms\FooBundle', 'SensioCmsFooBundle'),
-            'FoooooBundle' => $this->getBundle('TestBundle\FooBundle', 'FoooooBundle'),
-            'FooBundle' => $this->getBundle('TestBundle\FooBundle', 'FooBundle'),
-            'FabpotFooBundle' => $this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'),
-        );
-        $kernel
-            ->expects($this->any())
-            ->method('getBundles')
-            ->will($this->returnValue($bundles));
-
-        return new ControllerNameParser($kernel);
-    }
-
-    private function getBundle($namespace, $name)
-    {
-        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
-        $bundle->expects($this->any())->method('getName')->will($this->returnValue($name));
-        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue($namespace));
-
-        return $bundle;
     }
 
     public function testBuild()
@@ -166,20 +138,50 @@ class ControllerNameParserTest extends TestCase
         );
     }
 
-    protected function setUp()
+    private function createParser()
     {
-        $this->loader = new ClassLoader();
-        $this->loader->addPrefixes(array(
-            'TestBundle' => __DIR__ . '/../Fixtures',
-            'TestApplication' => __DIR__ . '/../Fixtures',
-        ));
-        $this->loader->register();
+        $bundles = array(
+            'SensioFooBundle' => array($this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'), $this->getBundle('TestBundle\Sensio\FooBundle', 'SensioFooBundle')),
+            'SensioCmsFooBundle' => array($this->getBundle('TestBundle\Sensio\Cms\FooBundle', 'SensioCmsFooBundle')),
+            'FooBundle' => array($this->getBundle('TestBundle\FooBundle', 'FooBundle')),
+            'FabpotFooBundle' => array($this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'), $this->getBundle('TestBundle\Sensio\FooBundle', 'SensioFooBundle')),
+        );
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
+        $kernel
+            ->expects($this->any())
+            ->method('getBundle')
+            ->will($this->returnCallback(function ($bundle) use ($bundles) {
+                if (!isset($bundles[$bundle])) {
+                    throw new \InvalidArgumentException(sprintf('Invalid bundle name "%s"', $bundle));
+                }
+
+                return $bundles[$bundle];
+            }))
+        ;
+
+        $bundles = array(
+            'SensioFooBundle' => $this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'),
+            'SensioCmsFooBundle' => $this->getBundle('TestBundle\Sensio\Cms\FooBundle', 'SensioCmsFooBundle'),
+            'FoooooBundle' => $this->getBundle('TestBundle\FooBundle', 'FoooooBundle'),
+            'FooBundle' => $this->getBundle('TestBundle\FooBundle', 'FooBundle'),
+            'FabpotFooBundle' => $this->getBundle('TestBundle\Fabpot\FooBundle', 'FabpotFooBundle'),
+        );
+        $kernel
+            ->expects($this->any())
+            ->method('getBundles')
+            ->will($this->returnValue($bundles))
+        ;
+
+        return new ControllerNameParser($kernel);
     }
 
-    protected function tearDown()
+    private function getBundle($namespace, $name)
     {
-        spl_autoload_unregister(array($this->loader, 'loadClass'));
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')->getMock();
+        $bundle->expects($this->any())->method('getName')->will($this->returnValue($name));
+        $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue($namespace));
 
-        $this->loader = null;
+        return $bundle;
     }
 }

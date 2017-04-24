@@ -23,6 +23,46 @@ class ResizeFormListenerTest extends TestCase
     private $factory;
     private $form;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->form = $this->getBuilder()
+            ->setCompound(true)
+            ->setDataMapper($this->getDataMapper())
+            ->getForm();
+    }
+
+    protected function tearDown()
+    {
+        $this->dispatcher = null;
+        $this->factory = null;
+        $this->form = null;
+    }
+
+    protected function getBuilder($name = 'name')
+    {
+        return new FormBuilder($name, null, $this->dispatcher, $this->factory);
+    }
+
+    protected function getForm($name = 'name')
+    {
+        return $this->getBuilder($name)->getForm();
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getDataMapper()
+    {
+        return $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
+    }
+
+    protected function getMockForm()
+    {
+        return $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
+    }
+
     public function testPreSetDataResizesForm()
     {
         $this->form->add($this->getForm('0'));
@@ -45,11 +85,6 @@ class ResizeFormListenerTest extends TestCase
         $this->assertFalse($this->form->has('0'));
         $this->assertTrue($this->form->has('1'));
         $this->assertTrue($this->form->has('2'));
-    }
-
-    protected function getForm($name = 'name')
-    {
-        return $this->getBuilder($name)->getForm();
     }
 
     /**
@@ -105,6 +140,7 @@ class ResizeFormListenerTest extends TestCase
         $this->assertFalse($this->form->has('1'));
     }
 
+    // fix for https://github.com/symfony/symfony/pull/493
     public function testPreSubmitRemovesZeroKeys()
     {
         $this->form->add($this->getForm('0'));
@@ -154,6 +190,7 @@ class ResizeFormListenerTest extends TestCase
         $this->assertFalse($this->form->has('1'));
     }
 
+    // fixes https://github.com/symfony/symfony/pull/40
     public function testPreSubmitDealsWithEmptyData()
     {
         $this->form->add($this->getForm('1'));
@@ -165,8 +202,6 @@ class ResizeFormListenerTest extends TestCase
 
         $this->assertFalse($this->form->has('1'));
     }
-
-    // fix for https://github.com/symfony/symfony/pull/493
 
     public function testOnSubmitNormDataRemovesEntriesMissingInTheFormIfAllowDelete()
     {
@@ -215,8 +250,6 @@ class ResizeFormListenerTest extends TestCase
         $this->assertEquals(array(), $event->getData());
     }
 
-    // fixes https://github.com/symfony/symfony/pull/40
-
     public function testOnSubmitDealsWithObjectBackedIteratorAggregate()
     {
         $this->form->add($this->getForm('1'));
@@ -241,40 +274,5 @@ class ResizeFormListenerTest extends TestCase
 
         $this->assertArrayNotHasKey(0, $event->getData());
         $this->assertArrayNotHasKey(2, $event->getData());
-    }
-
-    protected function setUp()
-    {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->form = $this->getBuilder()
-            ->setCompound(true)
-            ->setDataMapper($this->getDataMapper())
-            ->getForm();
-    }
-
-    protected function getBuilder($name = 'name')
-    {
-        return new FormBuilder($name, null, $this->dispatcher, $this->factory);
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getDataMapper()
-    {
-        return $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
-    }
-
-    protected function tearDown()
-    {
-        $this->dispatcher = null;
-        $this->factory = null;
-        $this->form = null;
-    }
-
-    protected function getMockForm()
-    {
-        return $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
     }
 }

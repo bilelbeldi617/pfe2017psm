@@ -40,19 +40,19 @@ class RetryAuthenticationEntryPoint implements AuthenticationEntryPointInterface
     {
         $scheme = $request->isSecure() ? 'http' : 'https';
         if ('http' === $scheme && 80 != $this->httpPort) {
-            $port = ':' . $this->httpPort;
+            $port = ':'.$this->httpPort;
         } elseif ('https' === $scheme && 443 != $this->httpsPort) {
-            $port = ':' . $this->httpsPort;
+            $port = ':'.$this->httpsPort;
         } else {
             $port = '';
         }
 
         $qs = $request->getQueryString();
         if (null !== $qs) {
-            $qs = '?' . $qs;
+            $qs = '?'.$qs;
         }
 
-        $url = $scheme . '://' . $request->getHost() . $port . $request->getBaseUrl() . $request->getPathInfo() . $qs;
+        $url = $scheme.'://'.$request->getHost().$port.$request->getBaseUrl().$request->getPathInfo().$qs;
 
         return new RedirectResponse($url, 301);
     }

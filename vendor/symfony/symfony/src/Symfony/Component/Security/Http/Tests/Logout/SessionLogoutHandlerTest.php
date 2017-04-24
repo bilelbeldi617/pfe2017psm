@@ -28,11 +28,13 @@ class SessionLogoutHandlerTest extends TestCase
         $request
             ->expects($this->once())
             ->method('getSession')
-            ->will($this->returnValue($session));
+            ->will($this->returnValue($session))
+        ;
 
         $session
             ->expects($this->once())
-            ->method('invalidate');
+            ->method('invalidate')
+        ;
 
         $handler->logout($request, $response, $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock());
     }

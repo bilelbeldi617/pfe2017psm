@@ -32,9 +32,16 @@ use Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\DoctrineCacheExtensi
  */
 abstract class AbstractDoctrineCacheExtensionTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+    }
+
+    abstract protected function loadFromFile(ContainerBuilder $container, $file);
+
     public function testParameters()
     {
-        $container = $this->createContainer();
+        $container      = $this->createContainer();
         $cacheExtension = new DoctrineCacheExtension();
 
         $cacheExtension->load(array(), $container);
@@ -59,21 +66,21 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
     public function testBasicCache()
     {
         $container = $this->compileContainer('basic');
-        $drivers = array(
-            'basic_apc_provider' => '%doctrine_cache.apc.class%',
-            'basic_array_provider' => '%doctrine_cache.array.class%',
-            'basic_void_provider' => '%doctrine_cache.void.class%',
-            'basic_xcache_provider' => '%doctrine_cache.xcache.class%',
-            'basic_wincache_provider' => '%doctrine_cache.wincache.class%',
-            'basic_zenddata_provider' => '%doctrine_cache.zenddata.class%',
+        $drivers   = array(
+            'basic_apc_provider'         => '%doctrine_cache.apc.class%',
+            'basic_array_provider'       => '%doctrine_cache.array.class%',
+            'basic_void_provider'        => '%doctrine_cache.void.class%',
+            'basic_xcache_provider'      => '%doctrine_cache.xcache.class%',
+            'basic_wincache_provider'    => '%doctrine_cache.wincache.class%',
+            'basic_zenddata_provider'    => '%doctrine_cache.zenddata.class%',
             'basic_ns_zenddata_provider' => '%doctrine_cache.zenddata.class%',
 
-            'basic_apc_provider2' => '%doctrine_cache.apc.class%',
-            'basic_array_provider2' => '%doctrine_cache.array.class%',
-            'basic_void_provider2' => '%doctrine_cache.void.class%',
-            'basic_xcache_provider2' => '%doctrine_cache.xcache.class%',
-            'basic_wincache_provider2' => '%doctrine_cache.wincache.class%',
-            'basic_zenddata_provider2' => '%doctrine_cache.zenddata.class%',
+            'basic_apc_provider2'         => '%doctrine_cache.apc.class%',
+            'basic_array_provider2'       => '%doctrine_cache.array.class%',
+            'basic_void_provider2'        => '%doctrine_cache.void.class%',
+            'basic_xcache_provider2'      => '%doctrine_cache.xcache.class%',
+            'basic_wincache_provider2'    => '%doctrine_cache.wincache.class%',
+            'basic_zenddata_provider2'    => '%doctrine_cache.zenddata.class%',
         );
 
         foreach ($drivers as $key => $value) {
@@ -81,71 +88,10 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
         }
     }
 
-    /**
-     * @param string $file
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     *
-     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
-     */
-    protected function compileContainer($file, ContainerBuilder $container = null)
-    {
-        $container = $container ?: $this->createContainer();
-        $cacheExtension = new DoctrineCacheExtension();
-
-        $container->registerExtension($cacheExtension);
-
-        $compilerPassConfig = $container->getCompilerPassConfig();
-
-        $compilerPassConfig->setOptimizationPasses(array(new ResolveDefinitionTemplatesPass()));
-        $compilerPassConfig->setRemovingPasses(array());
-
-        $this->loadFromFile($container, $file);
-
-        $container->compile();
-
-        return $container;
-    }
-
-    abstract protected function loadFromFile(ContainerBuilder $container, $file);
-
-    public function assertCacheProvider(ContainerBuilder $container, $name, $class, array $expectedCalls = array())
-    {
-        $service = "doctrine_cache.providers." . $name;
-
-        $this->assertTrue($container->hasDefinition($service));
-
-        $definition = $container->getDefinition($service);
-
-        $this->assertTrue($definition->isPublic());
-        $this->assertEquals($class, $definition->getClass());
-
-        foreach (array_unique($expectedCalls) as $methodName => $params) {
-            $this->assertMethodCall($definition, $methodName, $params);
-        }
-    }
-
-    private function assertMethodCall(Definition $definition, $methodName, array $parameters = array())
-    {
-        $methodCalls = $definition->getMethodCalls();
-        $actualCalls = array();
-
-        foreach ($methodCalls as $call) {
-            $actualCalls[$call[0]][] = $call[1];
-        }
-
-        $this->assertArrayHasKey($methodName, $actualCalls);
-        $this->assertCount(count($parameters), $actualCalls[$methodName]);
-
-        foreach ($parameters as $index => $param) {
-            $this->assertArrayHasKey($index, $actualCalls[$methodName]);
-            $this->assertEquals($param, $actualCalls[$methodName][$index]);
-        }
-    }
-
     public function testBasicConfigurableCache()
     {
         $container = $this->compileContainer('configurable');
-        $drivers = array(
+        $drivers   = array(
             'configurable_chain_provider' => array(
                 '%doctrine_cache.chain.class%'
             ),
@@ -186,7 +132,7 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
     public function testBasicConfigurableDefaultCache()
     {
         $container = $this->compileContainer('configurable_defaults');
-        $drivers = array(
+        $drivers   = array(
             'configurable_memcached_provider' => array(
                 '%doctrine_cache.memcached.class%', array('setMemcached' => array())
             ),
@@ -245,15 +191,15 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
     public function testBasicNamespaceCache()
     {
         $container = $this->compileContainer('namespaced');
-        $drivers = array(
+        $drivers   = array(
             'doctrine_cache.providers.foo_namespace_provider' => 'foo_namespace',
-            'doctrine_cache.providers.barNamespaceProvider' => 'barNamespace',
+            'doctrine_cache.providers.barNamespaceProvider'   => 'barNamespace',
         );
 
         foreach ($drivers as $key => $value) {
             $this->assertTrue($container->hasDefinition($key));
 
-            $def = $container->getDefinition($key);
+            $def   = $container->getDefinition($key);
             $calls = $def->getMethodCalls();
 
             $this->assertEquals('setNamespace', $calls[0][0]);
@@ -266,14 +212,14 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
         $container = $this->compileContainer('aliased');
         $providers = array(
             'doctrine_cache.providers.foo_namespace_provider' => array('fooNamespaceProvider', 'foo'),
-            'doctrine_cache.providers.barNamespaceProvider' => array('bar_namespace_provider', 'bar'),
+            'doctrine_cache.providers.barNamespaceProvider'   => array('bar_namespace_provider', 'bar'),
         );
 
         foreach ($providers as $key => $aliases) {
             $this->assertTrue($container->hasDefinition($key));
 
             foreach ($aliases as $alias) {
-                $this->assertEquals(strtolower($key), (string)$container->getAlias($alias));
+                $this->assertEquals(strtolower($key), (string) $container->getAlias($alias));
             }
         }
     }
@@ -335,7 +281,7 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
         }
     }
 
-    /**
+     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage "unrecognized_type" is an unrecognized Doctrine cache driver.
      */
@@ -354,9 +300,25 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
 
         $this->assertEquals('Doctrine\Bundle\DoctrineCacheBundle\Acl\Model\AclCache', $definition->getClass());
         $this->assertCount(2, $definition->getArguments());
-        $this->assertEquals('doctrine_cache.providers.acl_apc_provider', (string)$definition->getArgument(0));
-        $this->assertEquals('security.acl.permission_granting_strategy', (string)$definition->getArgument(1));
+        $this->assertEquals('doctrine_cache.providers.acl_apc_provider', (string) $definition->getArgument(0));
+        $this->assertEquals('security.acl.permission_granting_strategy', (string) $definition->getArgument(1));
         $this->assertFalse($definition->isPublic());
+    }
+
+    public function assertCacheProvider(ContainerBuilder $container, $name, $class, array $expectedCalls = array())
+    {
+        $service = "doctrine_cache.providers." . $name;
+
+        $this->assertTrue($container->hasDefinition($service));
+
+        $definition = $container->getDefinition($service);
+
+        $this->assertTrue($definition->isPublic());
+        $this->assertEquals($class, $definition->getClass());
+
+        foreach (array_unique($expectedCalls) as $methodName => $params) {
+            $this->assertMethodCall($definition, $methodName, $params);
+        }
     }
 
     public function assertCacheResource(ContainerBuilder $container, $name, $class, array $expectedCalls = array())
@@ -375,8 +337,46 @@ abstract class AbstractDoctrineCacheExtensionTest extends TestCase
         }
     }
 
-    protected function setUp()
+    private function assertMethodCall(Definition $definition, $methodName, array $parameters = array())
     {
-        parent::setUp();
+        $methodCalls  = $definition->getMethodCalls();
+        $actualCalls  = array();
+
+        foreach ($methodCalls as $call) {
+            $actualCalls[$call[0]][] = $call[1];
+        }
+
+        $this->assertArrayHasKey($methodName, $actualCalls);
+        $this->assertCount(count($parameters), $actualCalls[$methodName]);
+
+        foreach ($parameters as $index => $param) {
+            $this->assertArrayHasKey($index, $actualCalls[$methodName]);
+            $this->assertEquals($param, $actualCalls[$methodName][$index]);
+        }
+    }
+
+    /**
+     * @param string $file
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     *
+     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
+     */
+    protected function compileContainer($file, ContainerBuilder $container = null)
+    {
+        $container      = $container ?: $this->createContainer();
+        $cacheExtension = new DoctrineCacheExtension();
+
+        $container->registerExtension($cacheExtension);
+
+        $compilerPassConfig = $container->getCompilerPassConfig();
+
+        $compilerPassConfig->setOptimizationPasses(array(new ResolveDefinitionTemplatesPass()));
+        $compilerPassConfig->setRemovingPasses(array());
+
+        $this->loadFromFile($container, $file);
+
+        $container->compile();
+
+        return $container;
     }
 }

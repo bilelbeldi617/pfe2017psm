@@ -37,7 +37,7 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
      * Creates a new CSRF provider using PHP's native session storage.
      *
      * @param TokenGeneratorInterface|null $generator The token generator
-     * @param TokenStorageInterface|null $storage The storage for storing
+     * @param TokenStorageInterface|null   $storage   The storage for storing
      *                                                generated CSRF tokens
      */
     public function __construct(TokenGeneratorInterface $generator = null, TokenStorageInterface $storage = null)

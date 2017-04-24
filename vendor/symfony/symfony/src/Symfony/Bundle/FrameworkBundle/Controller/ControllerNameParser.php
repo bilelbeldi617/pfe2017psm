@@ -74,9 +74,9 @@ class ControllerNameParser
         }
 
         foreach ($allBundles as $b) {
-            $try = $b->getNamespace() . '\\Controller\\' . $controller . 'Controller';
+            $try = $b->getNamespace().'\\Controller\\'.$controller.'Controller';
             if (class_exists($try)) {
-                return $try . '::' . $action . 'Action';
+                return $try.'::'.$action.'Action';
             }
 
             $bundles[] = $b->getName();
@@ -88,6 +88,35 @@ class ControllerNameParser
         }
 
         throw new \InvalidArgumentException($msg);
+    }
+
+    /**
+     * Converts a class::method notation to a short one (a:b:c).
+     *
+     * @param string $controller A string in the class::method notation
+     *
+     * @return string A short notation controller (a:b:c)
+     *
+     * @throws \InvalidArgumentException when the controller is not valid or cannot be found in any bundle
+     */
+    public function build($controller)
+    {
+        if (0 === preg_match('#^(.*?\\\\Controller\\\\(.+)Controller)::(.+)Action$#', $controller, $match)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" controller is not a valid "class::method" string.', $controller));
+        }
+
+        $className = $match[1];
+        $controllerName = $match[2];
+        $actionName = $match[3];
+        foreach ($this->kernel->getBundles() as $name => $bundle) {
+            if (0 !== strpos($className, $bundle->getNamespace())) {
+                continue;
+            }
+
+            return sprintf('%s:%s:%s', $name, $controllerName, $actionName);
+        }
+
+        throw new \InvalidArgumentException(sprintf('Unable to find a bundle that defines controller "%s".', $controller));
     }
 
     /**
@@ -119,34 +148,5 @@ class ControllerNameParser
         }
 
         return $alternative;
-    }
-
-    /**
-     * Converts a class::method notation to a short one (a:b:c).
-     *
-     * @param string $controller A string in the class::method notation
-     *
-     * @return string A short notation controller (a:b:c)
-     *
-     * @throws \InvalidArgumentException when the controller is not valid or cannot be found in any bundle
-     */
-    public function build($controller)
-    {
-        if (0 === preg_match('#^(.*?\\\\Controller\\\\(.+)Controller)::(.+)Action$#', $controller, $match)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" controller is not a valid "class::method" string.', $controller));
-        }
-
-        $className = $match[1];
-        $controllerName = $match[2];
-        $actionName = $match[3];
-        foreach ($this->kernel->getBundles() as $name => $bundle) {
-            if (0 !== strpos($className, $bundle->getNamespace())) {
-                continue;
-            }
-
-            return sprintf('%s:%s:%s', $name, $controllerName, $actionName);
-        }
-
-        throw new \InvalidArgumentException(sprintf('Unable to find a bundle that defines controller "%s".', $controller));
     }
 }

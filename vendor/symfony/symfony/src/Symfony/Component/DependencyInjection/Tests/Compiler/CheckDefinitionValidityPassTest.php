@@ -29,12 +29,6 @@ class CheckDefinitionValidityPassTest extends TestCase
         $this->process($container);
     }
 
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new CheckDefinitionValidityPass();
-        $pass->process($container);
-    }
-
     /**
      * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
      * @group legacy
@@ -113,5 +107,11 @@ class CheckDefinitionValidityPassTest extends TestCase
         $container->register('a', 'class')->addTag('foo', array('bar' => array('baz' => 'baz')));
 
         $this->process($container);
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new CheckDefinitionValidityPass();
+        $pass->process($container);
     }
 }

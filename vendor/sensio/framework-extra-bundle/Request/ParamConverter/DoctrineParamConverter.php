@@ -71,16 +71,6 @@ class DoctrineParamConverter implements ParamConverterInterface
         return true;
     }
 
-    protected function getOptions(ParamConverter $configuration)
-    {
-        return array_replace(array(
-            'entity_manager' => null,
-            'exclude' => array(),
-            'mapping' => array(),
-            'strip_null' => false,
-        ), $configuration->getOptions());
-    }
-
     protected function find($class, Request $request, $options, $name)
     {
         if ($options['mapping'] || $options['exclude']) {
@@ -132,15 +122,6 @@ class DoctrineParamConverter implements ParamConverterInterface
         return false;
     }
 
-    private function getManager($name, $class)
-    {
-        if (null === $name) {
-            return $this->registry->getManagerForClass($class);
-        }
-
-        return $this->registry->getManager($name);
-    }
-
     protected function findOneBy($class, Request $request, $options)
     {
         if (!$options['mapping']) {
@@ -173,16 +154,13 @@ class DoctrineParamConverter implements ParamConverterInterface
         foreach ($options['mapping'] as $attribute => $field) {
             if ($metadata->hasField($field)
                 || ($metadata->hasAssociation($field) && $metadata->isSingleValuedAssociation($field))
-                || $mapMethodSignature
-            ) {
+                || $mapMethodSignature) {
                 $criteria[$field] = $request->attributes->get($attribute);
             }
         }
 
         if ($options['strip_null']) {
-            $criteria = array_filter($criteria, function ($value) {
-                return !is_null($value);
-            });
+            $criteria = array_filter($criteria, function ($value) { return !is_null($value); });
         }
 
         if (!$criteria) {
@@ -247,5 +225,24 @@ class DoctrineParamConverter implements ParamConverterInterface
         }
 
         return !$em->getMetadataFactory()->isTransient($configuration->getClass());
+    }
+
+    protected function getOptions(ParamConverter $configuration)
+    {
+        return array_replace(array(
+            'entity_manager' => null,
+            'exclude' => array(),
+            'mapping' => array(),
+            'strip_null' => false,
+        ), $configuration->getOptions());
+    }
+
+    private function getManager($name, $class)
+    {
+        if (null === $name) {
+            return $this->registry->getManagerForClass($class);
+        }
+
+        return $this->registry->getManager($name);
     }
 }

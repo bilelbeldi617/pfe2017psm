@@ -99,48 +99,6 @@ class SwitchUserListener implements ListenerInterface
     }
 
     /**
-     * Attempts to exit from an already switched user.
-     *
-     * @param Request $request A Request instance
-     *
-     * @return TokenInterface The original TokenInterface instance
-     *
-     * @throws AuthenticationCredentialsNotFoundException
-     */
-    private function attemptExitUser(Request $request)
-    {
-        if (false === $original = $this->getOriginalToken($this->tokenStorage->getToken())) {
-            throw new AuthenticationCredentialsNotFoundException('Could not find original Token object.');
-        }
-
-        if (null !== $this->dispatcher && $original->getUser() instanceof UserInterface) {
-            $user = $this->provider->refreshUser($original->getUser());
-            $switchEvent = new SwitchUserEvent($request, $user);
-            $this->dispatcher->dispatch(SecurityEvents::SWITCH_USER, $switchEvent);
-        }
-
-        return $original;
-    }
-
-    /**
-     * Gets the original Token from a switched one.
-     *
-     * @param TokenInterface $token A switched TokenInterface instance
-     *
-     * @return TokenInterface|false The original TokenInterface instance, false if the current TokenInterface is not switched
-     */
-    private function getOriginalToken(TokenInterface $token)
-    {
-        foreach ($token->getRoles() as $role) {
-            if ($role instanceof SwitchUserRole) {
-                return $role->getSource();
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Attempts to switch to another user.
      *
      * @param Request $request A Request instance
@@ -187,5 +145,47 @@ class SwitchUserListener implements ListenerInterface
         }
 
         return $token;
+    }
+
+    /**
+     * Attempts to exit from an already switched user.
+     *
+     * @param Request $request A Request instance
+     *
+     * @return TokenInterface The original TokenInterface instance
+     *
+     * @throws AuthenticationCredentialsNotFoundException
+     */
+    private function attemptExitUser(Request $request)
+    {
+        if (false === $original = $this->getOriginalToken($this->tokenStorage->getToken())) {
+            throw new AuthenticationCredentialsNotFoundException('Could not find original Token object.');
+        }
+
+        if (null !== $this->dispatcher && $original->getUser() instanceof UserInterface) {
+            $user = $this->provider->refreshUser($original->getUser());
+            $switchEvent = new SwitchUserEvent($request, $user);
+            $this->dispatcher->dispatch(SecurityEvents::SWITCH_USER, $switchEvent);
+        }
+
+        return $original;
+    }
+
+    /**
+     * Gets the original Token from a switched one.
+     *
+     * @param TokenInterface $token A switched TokenInterface instance
+     *
+     * @return TokenInterface|false The original TokenInterface instance, false if the current TokenInterface is not switched
+     */
+    private function getOriginalToken(TokenInterface $token)
+    {
+        foreach ($token->getRoles() as $role) {
+            if ($role instanceof SwitchUserRole) {
+                return $role->getSource();
+            }
+        }
+
+        return false;
     }
 }

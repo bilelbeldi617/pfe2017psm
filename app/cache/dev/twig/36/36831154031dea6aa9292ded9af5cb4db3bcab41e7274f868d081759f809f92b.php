@@ -15,23 +15,41 @@ class __TwigTemplate_60f216a7d01332a1c2d781d51f794d1f7dc8ddadb333737ed0257ce76a7
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "baseForParent.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_9fded55715af6b767566dead33bd20d658947df98b0d57c449e442e7825d1516 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_9fded55715af6b767566dead33bd20d658947df98b0d57c449e442e7825d1516->enter($__internal_9fded55715af6b767566dead33bd20d658947df98b0d57c449e442e7825d1516_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Parent/voirToutNotif.html.twig"));
+
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_9fded55715af6b767566dead33bd20d658947df98b0d57c449e442e7825d1516->leave($__internal_9fded55715af6b767566dead33bd20d658947df98b0d57c449e442e7825d1516_prof);
+
+    }
+
+    // line 3
     public function block_title($context, array $blocks = array())
     {
-        $__internal_33388cf8c5ffa1fd4f8eb6b5f6e20eb20d458398f1a6043e63f4b78016aec9cd = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_33388cf8c5ffa1fd4f8eb6b5f6e20eb20d458398f1a6043e63f4b78016aec9cd->enter($__internal_33388cf8c5ffa1fd4f8eb6b5f6e20eb20d458398f1a6043e63f4b78016aec9cd_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_c1091f439d4300394e6308d25b2ee664a160857e3280cb222346b4b56db0bd93 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_c1091f439d4300394e6308d25b2ee664a160857e3280cb222346b4b56db0bd93->enter($__internal_c1091f439d4300394e6308d25b2ee664a160857e3280cb222346b4b56db0bd93_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
         // line 4
         echo "    Vos notifs
 ";
-
-        $__internal_33388cf8c5ffa1fd4f8eb6b5f6e20eb20d458398f1a6043e63f4b78016aec9cd->leave($__internal_33388cf8c5ffa1fd4f8eb6b5f6e20eb20d458398f1a6043e63f4b78016aec9cd_prof);
+        
+        $__internal_c1091f439d4300394e6308d25b2ee664a160857e3280cb222346b4b56db0bd93->leave($__internal_c1091f439d4300394e6308d25b2ee664a160857e3280cb222346b4b56db0bd93_prof);
 
     }
 
+    // line 7
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_c8a2087b4ec16cccf1c85004e1858b7d02ccb737bc2ed76e0a8387ba1d6f2916 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_c8a2087b4ec16cccf1c85004e1858b7d02ccb737bc2ed76e0a8387ba1d6f2916->enter($__internal_c8a2087b4ec16cccf1c85004e1858b7d02ccb737bc2ed76e0a8387ba1d6f2916_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_bdd56829504c1a4429528ebe1d2ffa4d0a16c1952e6eaf443f9bfb6da00ab903 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_bdd56829504c1a4429528ebe1d2ffa4d0a16c1952e6eaf443f9bfb6da00ab903->enter($__internal_bdd56829504c1a4429528ebe1d2ffa4d0a16c1952e6eaf443f9bfb6da00ab903_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 8
         echo "    <hr class=\"hr-4\">
@@ -82,29 +100,30 @@ class __TwigTemplate_60f216a7d01332a1c2d781d51f794d1f7dc8ddadb333737ed0257ce76a7
     </div>
     </div>
 ";
-
-        $__internal_c8a2087b4ec16cccf1c85004e1858b7d02ccb737bc2ed76e0a8387ba1d6f2916->leave($__internal_c8a2087b4ec16cccf1c85004e1858b7d02ccb737bc2ed76e0a8387ba1d6f2916_prof);
+        
+        $__internal_bdd56829504c1a4429528ebe1d2ffa4d0a16c1952e6eaf443f9bfb6da00ab903->leave($__internal_bdd56829504c1a4429528ebe1d2ffa4d0a16c1952e6eaf443f9bfb6da00ab903_prof);
 
     }
 
-    // line 3
+    public function getTemplateName()
+    {
+        return "@projet/Default/Parent/voirToutNotif.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 7
-
     public function getDebugInfo()
     {
-        return array(99 => 36, 84 => 27, 72 => 18, 68 => 16, 64 => 15, 55 => 8, 49 => 7, 41 => 4, 35 => 3, 11 => 1,);
+        return array (  99 => 36,  84 => 27,  72 => 18,  68 => 16,  64 => 15,  55 => 8,  49 => 7,  41 => 4,  35 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -150,26 +169,5 @@ class __TwigTemplate_60f216a7d01332a1c2d781d51f794d1f7dc8ddadb333737ed0257ce76a7
     </div>
     </div>
 {% endblock %}", "@projet/Default/Parent/voirToutNotif.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Parent\\voirToutNotif.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "baseForParent.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_f481cba11b062035ea9a9a46d38aed50761556c034423ac06836dd5e93cbb121 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_f481cba11b062035ea9a9a46d38aed50761556c034423ac06836dd5e93cbb121->enter($__internal_f481cba11b062035ea9a9a46d38aed50761556c034423ac06836dd5e93cbb121_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Parent/voirToutNotif.html.twig"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_f481cba11b062035ea9a9a46d38aed50761556c034423ac06836dd5e93cbb121->leave($__internal_f481cba11b062035ea9a9a46d38aed50761556c034423ac06836dd5e93cbb121_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@projet/Default/Parent/voirToutNotif.html.twig";
     }
 }

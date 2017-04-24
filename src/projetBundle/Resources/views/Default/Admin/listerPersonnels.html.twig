@@ -5,39 +5,39 @@
 
     {% block script %}
         <script language="JavaScript">
-            $("document").ready(function () {
-                $("#btnLister").click(function () {
+            $("document").ready(function(){
+               $("#btnLister").click(function(){
                     console.log("click");
-                    var idPoste = $("#postesList").val();
-                    var tableau = "<table border='1' class='table table-bordered' id='personnelTable'><tr><th>Matricule</th><th>Nom</th><th>Prenom</th><th>CIN</th><th>Adresse</th><th>E-mail</th><th>NumTel</th></tr></table>";
-                    $("#mySpinner").fadeIn("slow");
-                    $("#tableContainer").slideUp("fast");
-                    $("#alertVide").slideUp("fast");
+                   var idPoste = $("#postesList").val();
+                   var tableau = "<table border='1' class='table table-bordered' id='personnelTable'><tr><th>Matricule</th><th>Nom</th><th>Prenom</th><th>CIN</th><th>Adresse</th><th>E-mail</th><th>NumTel</th></tr></table>";
+                   $("#mySpinner").fadeIn("slow");
+                   $("#tableContainer").slideUp("fast");
+                   $("#alertVide").slideUp("fast");
 
-                    $.ajax({
+                   $.ajax({
                         url: "{{ path('ListerPersonnelAJAX') }}",
-                        method: "GET",
-                        data: {"idPoste": idPoste},
-                        success: function (response) {
-                            var lines = "";
-                            console.log(response);
-                            response = JSON.parse(response);
-                            if (response.listPersonnels.length == 0) {
-                                $("#alertVide").slideDown("fast");
-                                $("#tableContainer").slideUp("fast");
-                            } else {
-                                $.each(response.listPersonnels, function (i, item) {
-                                    lines += "<tr><td>" + item.matricule_personnel + "</td><td>" + item.nom_personnel + "</td><td>" + item.prenom_personnel + "</td><td>" + item.cin_personnel + "</td><td>" + item.adresse_personnel + "</td><td>" + item.email_personnel + "</td><td>" + item.num_tel_personnel + "</td></tr>";
-                                });
-                                $("#tableBody").html(lines);
-                                $("#tablePersonnel").dataTable();
-                                $("#alertVide").slideUp("fast");
-                                $("#tableContainer").slideDown("fast");
-                            }
-                        }
-                    });
-                    $("#mySpinner").fadeOut("slow");
-                });
+                       method: "GET",
+                       data: {"idPoste" : idPoste},
+                       success: function(response){
+                           var lines = "";
+                           console.log(response);
+                           response = JSON.parse(response);
+                           if(response.listPersonnels.length == 0){
+                               $("#alertVide").slideDown("fast");
+                               $("#tableContainer").slideUp("fast");
+                           }else{
+                               $.each(response.listPersonnels, function(i, item){
+                                   lines+="<tr><td>"+item.matricule_personnel+"</td><td>"+item.nom_personnel+"</td><td>"+item.prenom_personnel+"</td><td>"+item.cin_personnel+"</td><td>"+item.adresse_personnel+"</td><td>"+item.email_personnel+"</td><td>"+item.num_tel_personnel+"</td></tr>";
+                               });
+                               $("#tableBody").html(lines);
+                               $("#tablePersonnel").dataTable();
+                               $("#alertVide").slideUp("fast");
+                               $("#tableContainer").slideDown("fast");
+                           }
+                       }
+                   });
+                   $("#mySpinner").fadeOut("slow");
+               }) ;
             });
         </script>
     {% endblock %}
@@ -55,11 +55,8 @@
             </div>
             <hr class="hr-2">
             <div class="row">
-                <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner"
-                           style="display: none"></i></center>
-                <div class="alert alert-warning" id="alertVide" style="display: none">Aucun personnel n'appartient a
-                    cette poste!
-                </div>
+                <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner" style="display: none"></i></center>
+                <div class="alert alert-warning" id="alertVide" style="display: none">Aucun personnel n'appartient a cette poste!</div>
                 <div id="tableContainer" style="display: none">
                     <table id="tablePersonnel" class="display" cellspacing="0" width="80%">
                         <thead>

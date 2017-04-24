@@ -39,7 +39,7 @@ class Application extends BaseApplication
     {
         $this->kernel = $kernel;
 
-        parent::__construct('Symfony', Kernel::VERSION . ' - ' . $kernel->getName() . '/' . $kernel->getEnvironment() . ($kernel->isDebug() ? '/debug' : ''));
+        parent::__construct('Symfony', Kernel::VERSION.' - '.$kernel->getName().'/'.$kernel->getEnvironment().($kernel->isDebug() ? '/debug' : ''));
 
         $this->getDefinition()->addOption(new InputOption('--shell', '-s', InputOption::VALUE_NONE, 'Launch the shell.'));
         $this->getDefinition()->addOption(new InputOption('--process-isolation', null, InputOption::VALUE_NONE, 'Launch commands from shell as a separate process.'));
@@ -60,7 +60,7 @@ class Application extends BaseApplication
     /**
      * Runs the current application.
      *
-     * @param InputInterface $input An Input instance
+     * @param InputInterface  $input  An Input instance
      * @param OutputInterface $output An Output instance
      *
      * @return int 0 if everything went fine, or an error code
@@ -90,6 +90,26 @@ class Application extends BaseApplication
         }
 
         return parent::doRun($input, $output);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function find($name)
+    {
+        $this->registerCommands();
+
+        return parent::find($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($name)
+    {
+        $this->registerCommands();
+
+        return parent::get($name);
     }
 
     /**
@@ -125,25 +145,5 @@ class Application extends BaseApplication
                 $this->add($container->get($id));
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function find($name)
-    {
-        $this->registerCommands();
-
-        return parent::find($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get($name)
-    {
-        $this->registerCommands();
-
-        return parent::get($name);
     }
 }

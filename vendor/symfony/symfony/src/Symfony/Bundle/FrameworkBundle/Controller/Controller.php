@@ -37,11 +37,27 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 class Controller extends ContainerAware
 {
     /**
+     * Generates a URL from the given parameters.
+     *
+     * @param string $route         The name of the route
+     * @param mixed  $parameters    An array of parameters
+     * @param int    $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
+     *
+     * @return string The generated URL
+     *
+     * @see UrlGeneratorInterface
+     */
+    public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        return $this->container->get('router')->generate($route, $parameters, $referenceType);
+    }
+
+    /**
      * Forwards the request to another controller.
      *
      * @param string $controller The controller name (a string like BlogBundle:Post:index)
-     * @param array $path An array of path parameters
-     * @param array $query An array of query parameters
+     * @param array  $path       An array of path parameters
+     * @param array  $query      An array of query parameters
      *
      * @return Response A Response instance
      */
@@ -54,10 +70,90 @@ class Controller extends ContainerAware
     }
 
     /**
+     * Returns a RedirectResponse to the given URL.
+     *
+     * @param string $url    The URL to redirect to
+     * @param int    $status The status code to use for the Response
+     *
+     * @return RedirectResponse
+     */
+    public function redirect($url, $status = 302)
+    {
+        return new RedirectResponse($url, $status);
+    }
+
+    /**
+     * Returns a RedirectResponse to the given route with the given parameters.
+     *
+     * @param string $route      The name of the route
+     * @param array  $parameters An array of parameters
+     * @param int    $status     The status code to use for the Response
+     *
+     * @return RedirectResponse
+     */
+    protected function redirectToRoute($route, array $parameters = array(), $status = 302)
+    {
+        return $this->redirect($this->generateUrl($route, $parameters), $status);
+    }
+
+    /**
+     * Adds a flash message to the current session for type.
+     *
+     * @param string $type    The type
+     * @param string $message The message
+     *
+     * @throws \LogicException
+     */
+    protected function addFlash($type, $message)
+    {
+        if (!$this->container->has('session')) {
+            throw new \LogicException('You can not use the addFlash method if sessions are disabled.');
+        }
+
+        $this->container->get('session')->getFlashBag()->add($type, $message);
+    }
+
+    /**
+     * Checks if the attributes are granted against the current authentication token and optionally supplied object.
+     *
+     * @param mixed $attributes The attributes
+     * @param mixed $object     The object
+     *
+     * @return bool
+     *
+     * @throws \LogicException
+     */
+    protected function isGranted($attributes, $object = null)
+    {
+        if (!$this->container->has('security.authorization_checker')) {
+            throw new \LogicException('The SecurityBundle is not registered in your application.');
+        }
+
+        return $this->container->get('security.authorization_checker')->isGranted($attributes, $object);
+    }
+
+    /**
+     * Throws an exception unless the attributes are granted against the current authentication token and optionally
+     * supplied object.
+     *
+     * @param mixed  $attributes The attributes
+     * @param mixed  $object     The object
+     * @param string $message    The message passed to the exception
+     *
+     * @throws AccessDeniedException
+     */
+    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    {
+        if (!$this->isGranted($attributes, $object)) {
+            throw $this->createAccessDeniedException($message);
+        }
+    }
+
+    /**
      * Returns a rendered view.
      *
-     * @param string $view The view name
-     * @param array $parameters An array of parameters to pass to the view
+     * @param string $view       The view name
+     * @param array  $parameters An array of parameters to pass to the view
      *
      * @return string The rendered view
      */
@@ -77,9 +173,9 @@ class Controller extends ContainerAware
     /**
      * Renders a view.
      *
-     * @param string $view The view name
-     * @param array $parameters An array of parameters to pass to the view
-     * @param Response $response A response instance
+     * @param string   $view       The view name
+     * @param array    $parameters An array of parameters to pass to the view
+     * @param Response $response   A response instance
      *
      * @return Response A Response instance
      */
@@ -105,9 +201,9 @@ class Controller extends ContainerAware
     /**
      * Streams a view.
      *
-     * @param string $view The view name
-     * @param array $parameters An array of parameters to pass to the view
-     * @param StreamedResponse $response A response instance
+     * @param string           $view       The view name
+     * @param array            $parameters An array of parameters to pass to the view
+     * @param StreamedResponse $response   A response instance
      *
      * @return StreamedResponse A StreamedResponse instance
      */
@@ -145,7 +241,7 @@ class Controller extends ContainerAware
      *
      *     throw $this->createNotFoundException('Page not found!');
      *
-     * @param string $message A message
+     * @param string          $message  A message
      * @param \Exception|null $previous The previous exception
      *
      * @return NotFoundHttpException
@@ -156,11 +252,28 @@ class Controller extends ContainerAware
     }
 
     /**
+     * Returns an AccessDeniedException.
+     *
+     * This will result in a 403 response code. Usage example:
+     *
+     *     throw $this->createAccessDeniedException('Unable to access this page!');
+     *
+     * @param string          $message  A message
+     * @param \Exception|null $previous The previous exception
+     *
+     * @return AccessDeniedException
+     */
+    public function createAccessDeniedException($message = 'Access Denied.', \Exception $previous = null)
+    {
+        return new AccessDeniedException($message, $previous);
+    }
+
+    /**
      * Creates and returns a Form instance from the type of the form.
      *
-     * @param string|FormTypeInterface $type The built type of the form
-     * @param mixed $data The initial data for the form
-     * @param array $options Options for the form
+     * @param string|FormTypeInterface $type    The built type of the form
+     * @param mixed                    $data    The initial data for the form
+     * @param array                    $options Options for the form
      *
      * @return Form
      */
@@ -172,7 +285,7 @@ class Controller extends ContainerAware
     /**
      * Creates and returns a form builder instance.
      *
-     * @param mixed $data The initial data for the form
+     * @param mixed $data    The initial data for the form
      * @param array $options Options for the form
      *
      * @return FormBuilder
@@ -202,7 +315,7 @@ class Controller extends ContainerAware
      */
     public function getRequest()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.4 and will be removed in 3.0. The only reliable way to get the "Request" object is to inject it in the action method.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.4 and will be removed in 3.0. The only reliable way to get the "Request" object is to inject it in the action method.', E_USER_DEPRECATED);
 
         return $this->container->get('request_stack')->getCurrentRequest();
     }
@@ -279,119 +392,6 @@ class Controller extends ContainerAware
     }
 
     /**
-     * Returns a RedirectResponse to the given route with the given parameters.
-     *
-     * @param string $route The name of the route
-     * @param array $parameters An array of parameters
-     * @param int $status The status code to use for the Response
-     *
-     * @return RedirectResponse
-     */
-    protected function redirectToRoute($route, array $parameters = array(), $status = 302)
-    {
-        return $this->redirect($this->generateUrl($route, $parameters), $status);
-    }
-
-    /**
-     * Returns a RedirectResponse to the given URL.
-     *
-     * @param string $url The URL to redirect to
-     * @param int $status The status code to use for the Response
-     *
-     * @return RedirectResponse
-     */
-    public function redirect($url, $status = 302)
-    {
-        return new RedirectResponse($url, $status);
-    }
-
-    /**
-     * Generates a URL from the given parameters.
-     *
-     * @param string $route The name of the route
-     * @param mixed $parameters An array of parameters
-     * @param int $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
-     *
-     * @return string The generated URL
-     *
-     * @see UrlGeneratorInterface
-     */
-    public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
-    {
-        return $this->container->get('router')->generate($route, $parameters, $referenceType);
-    }
-
-    /**
-     * Adds a flash message to the current session for type.
-     *
-     * @param string $type The type
-     * @param string $message The message
-     *
-     * @throws \LogicException
-     */
-    protected function addFlash($type, $message)
-    {
-        if (!$this->container->has('session')) {
-            throw new \LogicException('You can not use the addFlash method if sessions are disabled.');
-        }
-
-        $this->container->get('session')->getFlashBag()->add($type, $message);
-    }
-
-    /**
-     * Throws an exception unless the attributes are granted against the current authentication token and optionally
-     * supplied object.
-     *
-     * @param mixed $attributes The attributes
-     * @param mixed $object The object
-     * @param string $message The message passed to the exception
-     *
-     * @throws AccessDeniedException
-     */
-    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
-    {
-        if (!$this->isGranted($attributes, $object)) {
-            throw $this->createAccessDeniedException($message);
-        }
-    }
-
-    /**
-     * Checks if the attributes are granted against the current authentication token and optionally supplied object.
-     *
-     * @param mixed $attributes The attributes
-     * @param mixed $object The object
-     *
-     * @return bool
-     *
-     * @throws \LogicException
-     */
-    protected function isGranted($attributes, $object = null)
-    {
-        if (!$this->container->has('security.authorization_checker')) {
-            throw new \LogicException('The SecurityBundle is not registered in your application.');
-        }
-
-        return $this->container->get('security.authorization_checker')->isGranted($attributes, $object);
-    }
-
-    /**
-     * Returns an AccessDeniedException.
-     *
-     * This will result in a 403 response code. Usage example:
-     *
-     *     throw $this->createAccessDeniedException('Unable to access this page!');
-     *
-     * @param string $message A message
-     * @param \Exception|null $previous The previous exception
-     *
-     * @return AccessDeniedException
-     */
-    public function createAccessDeniedException($message = 'Access Denied.', \Exception $previous = null)
-    {
-        return new AccessDeniedException($message, $previous);
-    }
-
-    /**
      * Gets a container configuration parameter by its name.
      *
      * @param string $name The parameter name
@@ -406,7 +406,7 @@ class Controller extends ContainerAware
     /**
      * Checks the validity of a CSRF token.
      *
-     * @param string $id The id used when generating the token
+     * @param string $id    The id used when generating the token
      * @param string $token The actual token sent with the request that should be validated
      *
      * @return bool

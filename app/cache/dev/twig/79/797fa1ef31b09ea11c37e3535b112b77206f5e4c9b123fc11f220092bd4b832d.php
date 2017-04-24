@@ -1,7 +1,6 @@
 <?php
 
 /* DoctrineBundle:Collector:explain.html.twig */
-
 class __TwigTemplate_61a3025ce00197adfa8d801103886bfa20fda313921f1a007625b0a6d1a0c047 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,64 +9,14 @@ class __TwigTemplate_61a3025ce00197adfa8d801103886bfa20fda313921f1a007625b0a6d1a
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(97 => 27, 89 => 25, 85 => 24, 83 => 23, 81 => 22, 76 => 19, 69 => 17, 60 => 15, 56 => 14, 53 => 13, 49 => 12, 44 => 9, 35 => 7, 31 => 6, 26 => 3, 24 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("{% if data[0]|length > 1 %}
-    {# The platform returns a table for the explanation (e.g. MySQL), display all columns #}
-    <table style=\"margin: 5px 0;\">
-        <thead>
-            <tr>
-                {% for label in data[0]|keys %}
-                    <th>{{ label }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                {% for key, item in row %}
-                    <td>{{ item|replace({',': ', '}) }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    {# The Platform returns a single column for a textual explanation (e.g. PostgreSQL), display all lines #}
-    <pre style=\"margin: 5px 0;\">
-        {%- for row in data -%}
-            {{ row|first }}{{ \"\\n\" }}
-        {%- endfor -%}
-    </pre>
-{% endif %}
-", "DoctrineBundle:Collector:explain.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\doctrine\\doctrine-bundle/Resources/views/Collector/explain.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_44e45338bc9bef979b0394d34e092e5dc0422268d83a9d04f6f467dd4039a808 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_44e45338bc9bef979b0394d34e092e5dc0422268d83a9d04f6f467dd4039a808->enter($__internal_44e45338bc9bef979b0394d34e092e5dc0422268d83a9d04f6f467dd4039a808_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "DoctrineBundle:Collector:explain.html.twig"));
+        $__internal_f445485b8ba5be8fec9aa1d15db7de1bdc6d0c78692b23606edfa47679d0bced = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_f445485b8ba5be8fec9aa1d15db7de1bdc6d0c78692b23606edfa47679d0bced->enter($__internal_f445485b8ba5be8fec9aa1d15db7de1bdc6d0c78692b23606edfa47679d0bced_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "DoctrineBundle:Collector:explain.html.twig"));
 
         // line 1
         if ((twig_length_filter($this->env, $this->getAttribute((isset($context["data"]) ? $context["data"] : $this->getContext($context, "data")), 0, array(), "array")) > 1)) {
@@ -148,13 +97,64 @@ class __TwigTemplate_61a3025ce00197adfa8d801103886bfa20fda313921f1a007625b0a6d1a
             echo "</pre>
 ";
         }
-
-        $__internal_44e45338bc9bef979b0394d34e092e5dc0422268d83a9d04f6f467dd4039a808->leave($__internal_44e45338bc9bef979b0394d34e092e5dc0422268d83a9d04f6f467dd4039a808_prof);
+        
+        $__internal_f445485b8ba5be8fec9aa1d15db7de1bdc6d0c78692b23606edfa47679d0bced->leave($__internal_f445485b8ba5be8fec9aa1d15db7de1bdc6d0c78692b23606edfa47679d0bced_prof);
 
     }
 
     public function getTemplateName()
     {
         return "DoctrineBundle:Collector:explain.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  97 => 27,  89 => 25,  85 => 24,  83 => 23,  81 => 22,  76 => 19,  69 => 17,  60 => 15,  56 => 14,  53 => 13,  49 => 12,  44 => 9,  35 => 7,  31 => 6,  26 => 3,  24 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("{% if data[0]|length > 1 %}
+    {# The platform returns a table for the explanation (e.g. MySQL), display all columns #}
+    <table style=\"margin: 5px 0;\">
+        <thead>
+            <tr>
+                {% for label in data[0]|keys %}
+                    <th>{{ label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for key, item in row %}
+                    <td>{{ item|replace({',': ', '}) }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {# The Platform returns a single column for a textual explanation (e.g. PostgreSQL), display all lines #}
+    <pre style=\"margin: 5px 0;\">
+        {%- for row in data -%}
+            {{ row|first }}{{ \"\\n\" }}
+        {%- endfor -%}
+    </pre>
+{% endif %}
+", "DoctrineBundle:Collector:explain.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\doctrine\\doctrine-bundle/Resources/views/Collector/explain.html.twig");
     }
 }

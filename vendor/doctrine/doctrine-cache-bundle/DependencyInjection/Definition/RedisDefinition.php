@@ -28,15 +28,15 @@ class RedisDefinition extends CacheDefinition
     public function configure($name, array $config, Definition $service, ContainerBuilder $container)
     {
         $redisConf = $config['redis'];
-        $connRef = $this->getConnectionReference($name, $redisConf, $container);
+        $connRef   = $this->getConnectionReference($name, $redisConf, $container);
 
         $service->addMethodCall('setRedis', array($connRef));
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return \Symfony\Component\DependencyInjection\Reference
      */
@@ -46,11 +46,11 @@ class RedisDefinition extends CacheDefinition
             return new Reference($config['connection_id']);
         }
 
-        $host = $config['host'];
-        $port = $config['port'];
-        $connClass = '%doctrine_cache.redis.connection.class%';
-        $connId = sprintf('doctrine_cache.services.%s_redis.connection', $name);
-        $connDef = new Definition($connClass);
+        $host       = $config['host'];
+        $port       = $config['port'];
+        $connClass  = '%doctrine_cache.redis.connection.class%';
+        $connId     = sprintf('doctrine_cache.services.%s_redis.connection', $name);
+        $connDef    = new Definition($connClass);
         $connParams = array($host, $port);
 
         if (isset($config['timeout'])) {
@@ -64,9 +64,9 @@ class RedisDefinition extends CacheDefinition
             $password = $config['password'];
             $connDef->addMethodCall('auth', array($password));
         }
-
+        
         if (isset($config['database'])) {
-            $database = (int)$config['database'];
+            $database = (int) $config['database'];
             $connDef->addMethodCall('select', array($database));
         }
 

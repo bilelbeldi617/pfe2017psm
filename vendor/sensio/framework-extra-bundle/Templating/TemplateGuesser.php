@@ -37,8 +37,8 @@ class TemplateGuesser
     /**
      * Constructor.
      *
-     * @param KernelInterface $kernel A KernelInterface instance
-     * @param string[] $controllerPatterns Regexps extracting the controller name from its FQN.
+     * @param KernelInterface $kernel             A KernelInterface instance
+     * @param string[]        $controllerPatterns Regexps extracting the controller name from its FQN.
      */
     public function __construct(KernelInterface $kernel, array $controllerPatterns = array())
     {
@@ -53,8 +53,8 @@ class TemplateGuesser
      * and action names.
      *
      * @param callable $controller An array storing the controller object and action method
-     * @param Request $request A Request instance
-     * @param string $engine
+     * @param Request  $request    A Request instance
+     * @param string   $engine
      *
      * @return TemplateReference template reference
      *

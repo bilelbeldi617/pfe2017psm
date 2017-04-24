@@ -19,14 +19,15 @@ use Doctrine\ORM\Mapping\Id;
 /** @Entity */
 class SingleStringCastableIdEntity
 {
-    /** @Column(type="string", nullable=true) */
-    public $name;
     /**
      * @Id
      * @Column(type="string")
      * @GeneratedValue(strategy="NONE")
      */
     protected $id;
+
+    /** @Column(type="string", nullable=true) */
+    public $name;
 
     public function __construct($id, $name)
     {
@@ -36,7 +37,7 @@ class SingleStringCastableIdEntity
 
     public function __toString()
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 }
 
@@ -51,6 +52,6 @@ class StringCastableObjectIdentity
 
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 }

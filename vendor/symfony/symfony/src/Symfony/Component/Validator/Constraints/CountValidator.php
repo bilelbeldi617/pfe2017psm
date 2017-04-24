@@ -42,7 +42,7 @@ class CountValidator extends ConstraintValidator
                     ->setParameter('{{ count }}', $count)
                     ->setParameter('{{ limit }}', $constraint->max)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->max)
+                    ->setPlural((int) $constraint->max)
                     ->setCode(Count::TOO_MANY_ERROR)
                     ->addViolation();
             } else {
@@ -50,7 +50,7 @@ class CountValidator extends ConstraintValidator
                     ->setParameter('{{ count }}', $count)
                     ->setParameter('{{ limit }}', $constraint->max)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->max)
+                    ->setPlural((int) $constraint->max)
                     ->setCode(Count::TOO_MANY_ERROR)
                     ->addViolation();
             }
@@ -64,7 +64,7 @@ class CountValidator extends ConstraintValidator
                     ->setParameter('{{ count }}', $count)
                     ->setParameter('{{ limit }}', $constraint->min)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->min)
+                    ->setPlural((int) $constraint->min)
                     ->setCode(Count::TOO_FEW_ERROR)
                     ->addViolation();
             } else {
@@ -72,7 +72,7 @@ class CountValidator extends ConstraintValidator
                     ->setParameter('{{ count }}', $count)
                     ->setParameter('{{ limit }}', $constraint->min)
                     ->setInvalidValue($value)
-                    ->setPlural((int)$constraint->min)
+                    ->setPlural((int) $constraint->min)
                     ->setCode(Count::TOO_FEW_ERROR)
                     ->addViolation();
             }

@@ -32,11 +32,6 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
         $this->enabledBundles = $enabledBundles;
     }
 
-    public function getPriority()
-    {
-        return 0;
-    }
-
     protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
@@ -70,7 +65,7 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
             new \Twig_Node_Expression_Function(
                 'path',
                 new \Twig_Node(array(
-                    new \Twig_Node_Expression_Constant('_assetic_' . $options['name'], $line),
+                    new \Twig_Node_Expression_Constant('_assetic_'.$options['name'], $line),
                 )),
                 $line
             ),
@@ -95,13 +90,13 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
             if ($env->getFunction($name) instanceof AsseticFilterFunction) {
                 $arguments = array();
                 foreach ($node->getNode('arguments') as $argument) {
-                    $arguments[] = eval('return ' . $env->compile($argument) . ';');
+                    $arguments[] = eval('return '.$env->compile($argument).';');
                 }
 
                 $invoker = $env->getExtension('assetic')->getFilterInvoker($name);
                 $factory = $invoker->getFactory();
 
-                $inputs = isset($arguments[0]) ? (array)$arguments[0] : array();
+                $inputs = isset($arguments[0]) ? (array) $arguments[0] : array();
                 $filters = $invoker->getFilters();
                 $options = array_replace($invoker->getOptions(), isset($arguments[1]) ? $arguments[1] : array());
 
@@ -112,5 +107,10 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
                 return array($inputs, $filters, $options);
             }
         }
+    }
+
+    public function getPriority()
+    {
+        return 0;
     }
 }

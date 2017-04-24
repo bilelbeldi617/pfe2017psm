@@ -30,9 +30,9 @@ class TwigEngine extends BaseEngine implements EngineInterface
     /**
      * Constructor.
      *
-     * @param \Twig_Environment $environment A \Twig_Environment instance
-     * @param TemplateNameParserInterface $parser A TemplateNameParserInterface instance
-     * @param FileLocatorInterface $locator A FileLocatorInterface instance
+     * @param \Twig_Environment           $environment A \Twig_Environment instance
+     * @param TemplateNameParserInterface $parser      A TemplateNameParserInterface instance
+     * @param FileLocatorInterface        $locator     A FileLocatorInterface instance
      */
     public function __construct(\Twig_Environment $environment, TemplateNameParserInterface $parser, FileLocatorInterface $locator)
     {
@@ -47,7 +47,7 @@ class TwigEngine extends BaseEngine implements EngineInterface
      */
     public function setDefaultEscapingStrategy($strategy)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.7 and will be removed in 3.0. Inject the escaping strategy in the Twig_Environment object instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.7 and will be removed in 3.0. Inject the escaping strategy in the Twig_Environment object instead.', E_USER_DEPRECATED);
 
         $this->environment->getExtension('Twig_Extension_Escaper')->setDefaultStrategy($strategy);
     }
@@ -58,9 +58,31 @@ class TwigEngine extends BaseEngine implements EngineInterface
      */
     public function guessDefaultEscapingStrategy($name)
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.7 and will be removed in 3.0. Use the Twig_FileExtensionEscapingStrategy::guess method instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.7 and will be removed in 3.0. Use the Twig_FileExtensionEscapingStrategy::guess method instead.', E_USER_DEPRECATED);
 
         return \Twig_FileExtensionEscapingStrategy::guess($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function render($name, array $parameters = array())
+    {
+        try {
+            return parent::render($name, $parameters);
+        } catch (\Twig_Error $e) {
+            if ($name instanceof TemplateReference && !method_exists($e, 'setSourceContext')) {
+                try {
+                    // try to get the real name of the template where the error occurred
+                    $name = $e->getTemplateName();
+                    $path = (string) $this->locator->locate($this->parser->parse($name));
+                    $e->setTemplateName($path);
+                } catch (\Exception $e2) {
+                }
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -77,27 +99,5 @@ class TwigEngine extends BaseEngine implements EngineInterface
         $response->setContent($this->render($view, $parameters));
 
         return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function render($name, array $parameters = array())
-    {
-        try {
-            return parent::render($name, $parameters);
-        } catch (\Twig_Error $e) {
-            if ($name instanceof TemplateReference && !method_exists($e, 'setSourceContext')) {
-                try {
-                    // try to get the real name of the template where the error occurred
-                    $name = $e->getTemplateName();
-                    $path = (string)$this->locator->locate($this->parser->parse($name));
-                    $e->setTemplateName($path);
-                } catch (\Exception $e2) {
-                }
-            }
-
-            throw $e;
-        }
     }
 }

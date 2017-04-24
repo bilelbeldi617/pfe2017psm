@@ -20,6 +20,11 @@ class VoterTest extends TestCase
 {
     protected $token;
 
+    protected function setUp()
+    {
+        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+    }
+
     public function getTests()
     {
         return array(
@@ -49,11 +54,6 @@ class VoterTest extends TestCase
         $voter = new VoterTest_Voter();
 
         $this->assertEquals($expectedVote, $voter->vote($this->token, $object, $attributes), $message);
-    }
-
-    protected function setUp()
-    {
-        $this->token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
     }
 }
 

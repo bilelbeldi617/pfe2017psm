@@ -122,7 +122,8 @@ class DateType extends AbstractType
                 ->addViewTransformer(new DateTimeToArrayTransformer(
                     $options['model_timezone'], $options['view_timezone'], array('year', 'month', 'day')
                 ))
-                ->setAttribute('formatter', $formatter);
+                ->setAttribute('formatter', $formatter)
+            ;
         }
 
         if ('string' === $options['input']) {
@@ -138,74 +139,6 @@ class DateType extends AbstractType
                 new DateTimeToArrayTransformer($options['model_timezone'], $options['model_timezone'], array('year', 'month', 'day'))
             ));
         }
-    }
-
-    private function formatTimestamps(\IntlDateFormatter $formatter, $regex, array $timestamps)
-    {
-        $pattern = $formatter->getPattern();
-        $timezone = $formatter->getTimezoneId();
-        $formattedTimestamps = array();
-
-        if ($setTimeZone = PHP_VERSION_ID >= 50500 || method_exists($formatter, 'setTimeZone')) {
-            $formatter->setTimeZone('UTC');
-        } else {
-            $formatter->setTimeZoneId('UTC');
-        }
-
-        if (preg_match($regex, $pattern, $matches)) {
-            $formatter->setPattern($matches[0]);
-
-            foreach ($timestamps as $timestamp => $choice) {
-                $formattedTimestamps[$formatter->format($timestamp)] = $choice;
-            }
-
-            // I'd like to clone the formatter above, but then we get a
-            // segmentation fault, so let's restore the old state instead
-            $formatter->setPattern($pattern);
-        }
-
-        if ($setTimeZone) {
-            $formatter->setTimeZone($timezone);
-        } else {
-            $formatter->setTimeZoneId($timezone);
-        }
-
-        return $formattedTimestamps;
-    }
-
-    private function listYears(array $years)
-    {
-        $result = array();
-
-        foreach ($years as $year) {
-            if (false !== $y = gmmktime(0, 0, 0, 6, 15, $year)) {
-                $result[$y] = $year;
-            }
-        }
-
-        return $result;
-    }
-
-    private function listMonths(array $months)
-    {
-        $result = array();
-
-        foreach ($months as $month) {
-            $result[gmmktime(0, 0, 0, $month, 15)] = $month;
-        }
-
-        return $result;
-    }
-
-    private function listDays(array $days)
-    {
-        $result = array();
-
-        foreach ($days as $day) {
-            $result[gmmktime(0, 0, 0, 5, $day)] = $day;
-        }
-
-        return $result;
     }
 
     /**
@@ -365,5 +298,73 @@ class DateType extends AbstractType
     public function getBlockPrefix()
     {
         return 'date';
+    }
+
+    private function formatTimestamps(\IntlDateFormatter $formatter, $regex, array $timestamps)
+    {
+        $pattern = $formatter->getPattern();
+        $timezone = $formatter->getTimezoneId();
+        $formattedTimestamps = array();
+
+        if ($setTimeZone = PHP_VERSION_ID >= 50500 || method_exists($formatter, 'setTimeZone')) {
+            $formatter->setTimeZone('UTC');
+        } else {
+            $formatter->setTimeZoneId('UTC');
+        }
+
+        if (preg_match($regex, $pattern, $matches)) {
+            $formatter->setPattern($matches[0]);
+
+            foreach ($timestamps as $timestamp => $choice) {
+                $formattedTimestamps[$formatter->format($timestamp)] = $choice;
+            }
+
+            // I'd like to clone the formatter above, but then we get a
+            // segmentation fault, so let's restore the old state instead
+            $formatter->setPattern($pattern);
+        }
+
+        if ($setTimeZone) {
+            $formatter->setTimeZone($timezone);
+        } else {
+            $formatter->setTimeZoneId($timezone);
+        }
+
+        return $formattedTimestamps;
+    }
+
+    private function listYears(array $years)
+    {
+        $result = array();
+
+        foreach ($years as $year) {
+            if (false !== $y = gmmktime(0, 0, 0, 6, 15, $year)) {
+                $result[$y] = $year;
+            }
+        }
+
+        return $result;
+    }
+
+    private function listMonths(array $months)
+    {
+        $result = array();
+
+        foreach ($months as $month) {
+            $result[gmmktime(0, 0, 0, $month, 15)] = $month;
+        }
+
+        return $result;
+    }
+
+    private function listDays(array $days)
+    {
+        $result = array();
+
+        foreach ($days as $day) {
+            $result[gmmktime(0, 0, 0, 5, $day)] = $day;
+        }
+
+        return $result;
     }
 }

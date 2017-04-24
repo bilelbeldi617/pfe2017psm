@@ -27,21 +27,6 @@ class WebProfilerExtensionTest extends TestCase
      */
     private $container;
 
-    /**
-     * @dataProvider getDebugModes
-     */
-    public function testDefaultConfig($debug)
-    {
-        $this->container->setParameter('kernel.debug', $debug);
-
-        $extension = new WebProfilerExtension();
-        $extension->load(array(array()), $this->container);
-
-        $this->assertFalse($this->container->has('web_profiler.debug_toolbar'));
-
-        $this->assertSaneContainer($this->getDumpedContainer());
-    }
-
     public static function assertSaneContainer(Container $container, $message = '')
     {
         $errors = array();
@@ -54,49 +39,6 @@ class WebProfilerExtensionTest extends TestCase
         }
 
         self::assertEquals(array(), $errors, $message);
-    }
-
-    private function getDumpedContainer()
-    {
-        static $i = 0;
-        $class = 'WebProfilerExtensionTestContainer' . $i++;
-
-        $this->container->compile();
-
-        $dumper = new PhpDumper($this->container);
-        eval('?>' . $dumper->dump(array('class' => $class)));
-
-        $container = new $class();
-        $container->set('kernel', $this->kernel);
-
-        return $container;
-    }
-
-    /**
-     * @dataProvider getDebugModes
-     */
-    public function testToolbarConfig($toolbarEnabled, $interceptRedirects, $listenerInjected, $listenerEnabled)
-    {
-        $extension = new WebProfilerExtension();
-        $extension->load(array(array('toolbar' => $toolbarEnabled, 'intercept_redirects' => $interceptRedirects)), $this->container);
-
-        $this->assertSame($listenerInjected, $this->container->has('web_profiler.debug_toolbar'));
-
-        if ($listenerInjected) {
-            $this->assertSame($listenerEnabled, $this->container->get('web_profiler.debug_toolbar')->isEnabled());
-        }
-
-        $this->assertSaneContainer($this->getDumpedContainer());
-    }
-
-    public function getDebugModes()
-    {
-        return array(
-            array(false, false, false, false),
-            array(true, false, true, true),
-            array(false, true, true, false),
-            array(true, true, true, true),
-        );
     }
 
     protected function setUp()
@@ -127,5 +69,63 @@ class WebProfilerExtensionTest extends TestCase
 
         $this->container = null;
         $this->kernel = null;
+    }
+
+    /**
+     * @dataProvider getDebugModes
+     */
+    public function testDefaultConfig($debug)
+    {
+        $this->container->setParameter('kernel.debug', $debug);
+
+        $extension = new WebProfilerExtension();
+        $extension->load(array(array()), $this->container);
+
+        $this->assertFalse($this->container->has('web_profiler.debug_toolbar'));
+
+        $this->assertSaneContainer($this->getDumpedContainer());
+    }
+
+    /**
+     * @dataProvider getDebugModes
+     */
+    public function testToolbarConfig($toolbarEnabled, $interceptRedirects, $listenerInjected, $listenerEnabled)
+    {
+        $extension = new WebProfilerExtension();
+        $extension->load(array(array('toolbar' => $toolbarEnabled, 'intercept_redirects' => $interceptRedirects)), $this->container);
+
+        $this->assertSame($listenerInjected, $this->container->has('web_profiler.debug_toolbar'));
+
+        if ($listenerInjected) {
+            $this->assertSame($listenerEnabled, $this->container->get('web_profiler.debug_toolbar')->isEnabled());
+        }
+
+        $this->assertSaneContainer($this->getDumpedContainer());
+    }
+
+    public function getDebugModes()
+    {
+        return array(
+            array(false, false, false, false),
+            array(true,  false, true,  true),
+            array(false, true,  true,  false),
+            array(true,  true,  true,  true),
+        );
+    }
+
+    private function getDumpedContainer()
+    {
+        static $i = 0;
+        $class = 'WebProfilerExtensionTestContainer'.$i++;
+
+        $this->container->compile();
+
+        $dumper = new PhpDumper($this->container);
+        eval('?>'.$dumper->dump(array('class' => $class)));
+
+        $container = new $class();
+        $container->set('kernel', $this->kernel);
+
+        return $container;
     }
 }

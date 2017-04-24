@@ -39,7 +39,7 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
      * @var array
      */
     protected $identifier = array(
-        'publicIdentifierField' => true,
+        'publicIdentifierField'    => true,
         'protectedIdentifierField' => true,
     );
 
@@ -47,9 +47,9 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
      * @var array
      */
     protected $fields = array(
-        'publicIdentifierField' => true,
+        'publicIdentifierField'    => true,
         'protectedIdentifierField' => true,
-        'publicPersistentField' => true,
+        'publicPersistentField'    => true,
         'protectedPersistentField' => true,
     );
 
@@ -57,8 +57,8 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
      * @var array
      */
     protected $associations = array(
-        'publicAssociation' => true,
-        'protectedAssociation' => true,
+        'publicAssociation'        => true,
+        'protectedAssociation'     => true,
     );
 
     /**
@@ -67,6 +67,14 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
     public function getName()
     {
         return $this->getReflectionClass()->getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIdentifier()
+    {
+        return array_keys($this->identifier);
     }
 
     /**
@@ -135,14 +143,6 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
     public function getIdentifierFieldNames()
     {
         return $this->getIdentifier();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getIdentifier()
-    {
-        return array_keys($this->identifier);
     }
 
     /**

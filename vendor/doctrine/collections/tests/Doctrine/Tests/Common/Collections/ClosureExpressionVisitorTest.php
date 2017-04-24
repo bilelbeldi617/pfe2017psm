@@ -37,6 +37,12 @@ class ClosureExpressionVisitorTest extends \PHPUnit_Framework_TestCase
      */
     private $builder;
 
+    protected function setUp()
+    {
+        $this->visitor = new ClosureExpressionVisitor();
+        $this->builder = new ExpressionBuilder();
+    }
+
     public function testGetObjectFieldValueIsAccessor()
     {
         $object = new TestObject(1, 2, true);
@@ -201,12 +207,6 @@ class ClosureExpressionVisitorTest extends \PHPUnit_Framework_TestCase
         $closure = $this->visitor->walkComparison($this->builder->eq("foo", 42));
 
         $this->assertTrue($closure(array('foo' => 42)));
-    }
-
-    protected function setUp()
-    {
-        $this->visitor = new ClosureExpressionVisitor();
-        $this->builder = new ExpressionBuilder();
     }
 }
 

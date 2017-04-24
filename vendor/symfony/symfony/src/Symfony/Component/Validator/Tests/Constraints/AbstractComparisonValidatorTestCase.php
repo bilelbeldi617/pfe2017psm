@@ -25,7 +25,7 @@ class ComparisonTest_Class
 
     public function __toString()
     {
-        return (string)$this->value;
+        return (string) $this->value;
     }
 }
 
@@ -34,54 +34,6 @@ class ComparisonTest_Class
  */
 abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintValidatorTest
 {
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
-    public function testThrowsConstraintExceptionIfNoValueOrProperty()
-    {
-        $comparison = $this->createConstraint(array());
-
-        $this->validator->validate('some value', $comparison);
-    }
-
-    /**
-     * @param array $options Options for the constraint
-     *
-     * @return Constraint
-     */
-    abstract protected function createConstraint(array $options);
-
-    /**
-     * @dataProvider provideAllValidComparisons
-     *
-     * @param mixed $dirtyValue
-     * @param mixed $comparisonValue
-     */
-    public function testValidComparisonToValue($dirtyValue, $comparisonValue)
-    {
-        $constraint = $this->createConstraint(array('value' => $comparisonValue));
-
-        $this->validator->validate($dirtyValue, $constraint);
-
-        $this->assertNoViolation();
-    }
-
-    /**
-     * @return array
-     */
-    public function provideAllValidComparisons()
-    {
-        // The provider runs before setUp(), so we need to manually fix
-        // the default timezone
-        $this->setDefaultTimezone('UTC');
-
-        $comparisons = self::addPhp5Dot5Comparisons($this->provideValidComparisons());
-
-        $this->restoreDefaultTimezone();
-
-        return $comparisons;
-    }
-
     protected static function addPhp5Dot5Comparisons(array $comparisons)
     {
         if (PHP_VERSION_ID < 50500) {
@@ -117,6 +69,47 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
     }
 
     /**
+     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    public function testThrowsConstraintExceptionIfNoValueOrProperty()
+    {
+        $comparison = $this->createConstraint(array());
+
+        $this->validator->validate('some value', $comparison);
+    }
+
+    /**
+     * @dataProvider provideAllValidComparisons
+     *
+     * @param mixed $dirtyValue
+     * @param mixed $comparisonValue
+     */
+    public function testValidComparisonToValue($dirtyValue, $comparisonValue)
+    {
+        $constraint = $this->createConstraint(array('value' => $comparisonValue));
+
+        $this->validator->validate($dirtyValue, $constraint);
+
+        $this->assertNoViolation();
+    }
+
+    /**
+     * @return array
+     */
+    public function provideAllValidComparisons()
+    {
+        // The provider runs before setUp(), so we need to manually fix
+        // the default timezone
+        $this->setDefaultTimezone('UTC');
+
+        $comparisons = self::addPhp5Dot5Comparisons($this->provideValidComparisons());
+
+        $this->restoreDefaultTimezone();
+
+        return $comparisons;
+    }
+
+    /**
      * @return array
      */
     abstract public function provideValidComparisons();
@@ -124,10 +117,10 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
     /**
      * @dataProvider provideAllInvalidComparisons
      *
-     * @param mixed $dirtyValue
-     * @param mixed $dirtyValueAsString
-     * @param mixed $comparedValue
-     * @param mixed $comparedValueString
+     * @param mixed  $dirtyValue
+     * @param mixed  $dirtyValueAsString
+     * @param mixed  $comparedValue
+     * @param mixed  $comparedValueString
      * @param string $comparedValueType
      */
     public function testInvalidComparisonToValue($dirtyValue, $dirtyValueAsString, $comparedValue, $comparedValueString, $comparedValueType)
@@ -156,13 +149,6 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
     }
 
     /**
-     * @return string|null
-     */
-    protected function getErrorCode()
-    {
-    }
-
-    /**
      * @return array
      */
     public function provideAllInvalidComparisons()
@@ -182,4 +168,18 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
      * @return array
      */
     abstract public function provideInvalidComparisons();
+
+    /**
+     * @param array $options Options for the constraint
+     *
+     * @return Constraint
+     */
+    abstract protected function createConstraint(array $options);
+
+    /**
+     * @return string|null
+     */
+    protected function getErrorCode()
+    {
+    }
 }

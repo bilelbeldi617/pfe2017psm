@@ -31,11 +31,11 @@ class CommandGenerator extends Generator
     public function generate(BundleInterface $bundle, $name)
     {
         $bundleDir = $bundle->getPath();
-        $commandDir = $bundleDir . '/Command';
+        $commandDir = $bundleDir.'/Command';
         self::mkdir($commandDir);
 
-        $commandClassName = $this->classify($name) . 'Command';
-        $commandFile = $commandDir . '/' . $commandClassName . '.php';
+        $commandClassName = $this->classify($name).'Command';
+        $commandFile = $commandDir.'/'.$commandClassName.'.php';
         if ($this->filesystem->exists($commandFile)) {
             throw new \RuntimeException(sprintf('Command "%s" already exists', $name));
         }

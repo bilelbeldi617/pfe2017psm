@@ -1,9 +1,9 @@
 {% block extends %}
-    {{ "{% extends 'base.html.twig' %}" }}
+{{ "{% extends 'base.html.twig' %}" }}
 {% endblock extends %}
 
 {% block body %}
-    {{ "{% block body %}" }}
+{{ "{% block body %}" }}
     <h1>{{ entity_singularized|capitalize }}</h1>
 
     <table>
@@ -13,31 +13,31 @@
             <tr>
                 <th>{{ field|capitalize }}</th>
 
-                {%- if metadata.type in ['datetime'] %}
+            {%- if metadata.type in ['datetime'] %}
 
-                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}{% endif %}' }}</td>
+                <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}{% endif %}' }}</td>
 
-                {%- elseif metadata.type in ['date'] %}
+            {%- elseif metadata.type in ['date'] %}
 
-                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d\') }}{% endif %}' }}</td>
+                <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d\') }}{% endif %}' }}</td>
 
-                {%- elseif metadata.type in ['time'] %}
+            {%- elseif metadata.type in ['time'] %}
 
-                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'H:i:s\') }}{% endif %}' }}</td>
+                <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'H:i:s\') }}{% endif %}' }}</td>
 
-                {%- elseif metadata.type in ['array'] %}
+            {%- elseif metadata.type in ['array'] %}
 
-                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|join(\', \') }}{% endif %}' }}</td>
+                <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|join(\', \') }}{% endif %}' }}</td>
 
-                {%- elseif metadata.type in ['boolean'] %}
+            {%- elseif metadata.type in ['boolean'] %}
 
-                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}Yes{% else %}No{% endif %}' }}</td>
+                <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}Yes{% else %}No{% endif %}' }}</td>
 
-                {%- else %}
+            {%- else %}
 
-                    <td>{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
+                <td>{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
 
-                {%- endif %}
+            {%- endif %}
 
             </tr>
 
@@ -46,7 +46,7 @@
         </tbody>
     </table>
 
-    {% set hide_edit, hide_delete = false, false %}
-    {{ include('crud/views/others/record_actions.html.twig.twig') -}}
-    {{ "{% endblock %}" }}
+{% set hide_edit, hide_delete = false, false %}
+{{ include('crud/views/others/record_actions.html.twig.twig') -}}
+{{ "{% endblock %}" }}
 {% endblock body %}

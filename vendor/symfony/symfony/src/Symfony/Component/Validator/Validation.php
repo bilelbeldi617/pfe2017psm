@@ -37,13 +37,6 @@ final class Validation
     const API_VERSION_2_5_BC = 3;
 
     /**
-     * This class cannot be instantiated.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Creates a new validator.
      *
      * If you want to configure the validator, use
@@ -64,5 +57,12 @@ final class Validation
     public static function createValidatorBuilder()
     {
         return new ValidatorBuilder();
+    }
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

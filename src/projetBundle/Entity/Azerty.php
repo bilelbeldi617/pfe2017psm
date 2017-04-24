@@ -9,11 +9,10 @@
 namespace projetBundle\Entity;
 
 
-class Azerty
-{
-    private $testVar;
-    private $chaouki;
-    private $bilel;
+class Azerty {
+ private $testVar ;
+    private $chaouki ;
+    private $bilel ;
 
     /**
      * @return mixed

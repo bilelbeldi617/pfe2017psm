@@ -43,12 +43,12 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
     /**
      * Creates a Connection to an Oracle Database using oci8 extension.
      *
-     * @param string $username
-     * @param string $password
-     * @param string $db
+     * @param string      $username
+     * @param string      $password
+     * @param string      $db
      * @param string|null $charset
-     * @param integer $sessionMode
-     * @param boolean $persistent
+     * @param integer     $sessionMode
+     * @param boolean     $persistent
      *
      * @throws OCI8Exception
      */
@@ -62,7 +62,7 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
             ? @oci_pconnect($username, $password, $db, $charset, $sessionMode)
             : @oci_connect($username, $password, $db, $charset, $sessionMode);
 
-        if (!$this->dbh) {
+        if ( ! $this->dbh) {
             throw OCI8Exception::fromErrorInfo(oci_error());
         }
     }
@@ -75,7 +75,7 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
      */
     public function getServerVersion()
     {
-        if (!preg_match('/\s+(\d+\.\d+\.\d+\.\d+\.\d+)\s+/', oci_server_version($this->dbh), $version)) {
+        if ( ! preg_match('/\s+(\d+\.\d+\.\d+\.\d+\.\d+)\s+/', oci_server_version($this->dbh), $version)) {
             throw new \UnexpectedValueException(
                 sprintf(
                     'Unexpected database version string "%s". Cannot parse an appropriate version number from it. ' .
@@ -99,7 +99,29 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
     /**
      * {@inheritdoc}
      */
-    public function quote($value, $type = \PDO::PARAM_STR)
+    public function prepare($prepareString)
+    {
+        return new OCI8Statement($this->dbh, $prepareString, $this);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query()
+    {
+        $args = func_get_args();
+        $sql = $args[0];
+        //$fetchMode = $args[1];
+        $stmt = $this->prepare($sql);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function quote($value, $type=\PDO::PARAM_STR)
     {
         if (is_int($value) || is_float($value)) {
             return $value;
@@ -123,14 +145,6 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
     /**
      * {@inheritdoc}
      */
-    public function prepare($prepareString)
-    {
-        return new OCI8Statement($this->dbh, $prepareString, $this);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function lastInsertId($name = null)
     {
         if ($name === null) {
@@ -139,29 +153,15 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
 
         OraclePlatform::assertValidIdentifier($name);
 
-        $sql = 'SELECT ' . $name . '.CURRVAL FROM DUAL';
-        $stmt = $this->query($sql);
+        $sql    = 'SELECT ' . $name . '.CURRVAL FROM DUAL';
+        $stmt   = $this->query($sql);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($result === false || !isset($result['CURRVAL'])) {
             throw new OCI8Exception("lastInsertId failed: Query was executed but no result was returned.");
         }
 
-        return (int)$result['CURRVAL'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function query()
-    {
-        $args = func_get_args();
-        $sql = $args[0];
-        //$fetchMode = $args[1];
-        $stmt = $this->prepare($sql);
-        $stmt->execute();
-
-        return $stmt;
+        return (int) $result['CURRVAL'];
     }
 
     /**
@@ -200,14 +200,6 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
     /**
      * {@inheritdoc}
      */
-    public function errorInfo()
-    {
-        return oci_error($this->dbh);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function rollBack()
     {
         if (!oci_rollback($this->dbh)) {
@@ -229,5 +221,13 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
         }
 
         return $error;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function errorInfo()
+    {
+        return oci_error($this->dbh);
     }
 }

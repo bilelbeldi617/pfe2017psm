@@ -31,7 +31,7 @@ class NotFoundActivationStrategy extends ErrorLevelActivationStrategy
         parent::__construct($actionLevel);
 
         $this->requestStack = $requestStack;
-        $this->blacklist = '{(' . implode('|', $excludedUrls) . ')}i';
+        $this->blacklist = '{('.implode('|', $excludedUrls).')}i';
     }
 
     public function isHandlerActivated(array $record)

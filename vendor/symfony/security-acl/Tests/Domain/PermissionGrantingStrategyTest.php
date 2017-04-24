@@ -31,13 +31,6 @@ class PermissionGrantingStrategyTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($strategy->isGranted($acl, array(1), array($sid)));
     }
 
-    protected function getAcl($strategy)
-    {
-        static $id = 1;
-
-        return new Acl($id++, new ObjectIdentity(1, 'Foo'), $strategy, array(), true);
-    }
-
     public function testIsGrantedFallsBackToClassAcesIfNoApplicableObjectAceWasFound()
     {
         $strategy = new PermissionGrantingStrategy();
@@ -117,7 +110,8 @@ class PermissionGrantingStrategyTest extends \PHPUnit_Framework_TestCase
         $logger = $this->getMock('Symfony\Component\Security\Acl\Model\AuditLoggerInterface');
         $logger
             ->expects($this->once())
-            ->method('logIfNeeded');
+            ->method('logIfNeeded')
+        ;
         $strategy->setAuditLogger($logger);
 
         $acl->insertObjectAce($sid, 1);
@@ -135,7 +129,8 @@ class PermissionGrantingStrategyTest extends \PHPUnit_Framework_TestCase
         $logger = $this->getMock('Symfony\Component\Security\Acl\Model\AuditLoggerInterface');
         $logger
             ->expects($this->once())
-            ->method('logIfNeeded');
+            ->method('logIfNeeded')
+        ;
         $strategy->setAuditLogger($logger);
 
         $acl->insertObjectAce($sid, 1, 0, false);
@@ -180,5 +175,12 @@ class PermissionGrantingStrategyTest extends \PHPUnit_Framework_TestCase
             array('equal', 1 << 0 | 1 << 1, 1 << 1, false),
             array('equal', 1 << 0 | 1 << 1, 1 << 0 | 1 << 1, true),
         );
+    }
+
+    protected function getAcl($strategy)
+    {
+        static $id = 1;
+
+        return new Acl($id++, new ObjectIdentity(1, 'Foo'), $strategy, array(), true);
     }
 }

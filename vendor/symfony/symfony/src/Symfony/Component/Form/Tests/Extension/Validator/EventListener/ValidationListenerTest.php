@@ -53,6 +53,45 @@ class ValidationListenerTest extends TestCase
 
     private $params;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->validator = $this->getMockBuilder('Symfony\Component\Validator\Validator\ValidatorInterface')->getMock();
+        $this->violationMapper = $this->getMockBuilder('Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface')->getMock();
+        $this->listener = new ValidationListener($this->validator, $this->violationMapper);
+        $this->message = 'Message';
+        $this->messageTemplate = 'Message template';
+        $this->params = array('foo' => 'bar');
+    }
+
+    private function getConstraintViolation($code = null, $constraint = null)
+    {
+        return new ConstraintViolation($this->message, $this->messageTemplate, $this->params, null, 'prop.path', null, null, $code, $constraint);
+    }
+
+    private function getBuilder($name = 'name', $propertyPath = null, $dataClass = null)
+    {
+        $builder = new FormBuilder($name, $dataClass, $this->dispatcher, $this->factory);
+        $builder->setPropertyPath(new PropertyPath($propertyPath ?: $name));
+        $builder->setAttribute('error_mapping', array());
+        $builder->setErrorBubbling(false);
+        $builder->setMapped(true);
+
+        return $builder;
+    }
+
+    private function getForm($name = 'name', $propertyPath = null, $dataClass = null)
+    {
+        return $this->getBuilder($name, $propertyPath, $dataClass)->getForm();
+    }
+
+    private function getMockForm()
+    {
+        return $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
+    }
+
+    // More specific mapping tests can be found in ViolationMapperTest
     public function testMapViolation()
     {
         $violation = $this->getConstraintViolation(null, new Form());
@@ -67,27 +106,6 @@ class ValidationListenerTest extends TestCase
             ->with($violation, $form, false);
 
         $this->listener->validateForm(new FormEvent($form, null));
-    }
-
-    private function getConstraintViolation($code = null, $constraint = null)
-    {
-        return new ConstraintViolation($this->message, $this->messageTemplate, $this->params, null, 'prop.path', null, null, $code, $constraint);
-    }
-
-    private function getForm($name = 'name', $propertyPath = null, $dataClass = null)
-    {
-        return $this->getBuilder($name, $propertyPath, $dataClass)->getForm();
-    }
-
-    private function getBuilder($name = 'name', $propertyPath = null, $dataClass = null)
-    {
-        $builder = new FormBuilder($name, $dataClass, $this->dispatcher, $this->factory);
-        $builder->setPropertyPath(new PropertyPath($propertyPath ?: $name));
-        $builder->setAttribute('error_mapping', array());
-        $builder->setErrorBubbling(false);
-        $builder->setMapped(true);
-
-        return $builder;
     }
 
     public function testMapViolationAllowsNonSyncIfInvalid()
@@ -106,8 +124,6 @@ class ValidationListenerTest extends TestCase
 
         $this->listener->validateForm(new FormEvent($form, null));
     }
-
-    // More specific mapping tests can be found in ViolationMapperTest
 
     public function testMapViolationAllowsNonSyncIfInvalidWithoutConstraintReference()
     {
@@ -144,11 +160,6 @@ class ValidationListenerTest extends TestCase
             ->method('mapViolation');
 
         $this->listener->validateForm(new FormEvent($form, null));
-    }
-
-    private function getMockForm()
-    {
-        return $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
     }
 
     public function testValidateWithEmptyViolationList()
@@ -198,17 +209,5 @@ class ValidationListenerTest extends TestCase
     public function testInvalidValidatorInterface()
     {
         new ValidationListener(null, $this->violationMapper);
-    }
-
-    protected function setUp()
-    {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->validator = $this->getMockBuilder('Symfony\Component\Validator\Validator\ValidatorInterface')->getMock();
-        $this->violationMapper = $this->getMockBuilder('Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface')->getMock();
-        $this->listener = new ValidationListener($this->validator, $this->violationMapper);
-        $this->message = 'Message';
-        $this->messageTemplate = 'Message template';
-        $this->params = array('foo' => 'bar');
     }
 }

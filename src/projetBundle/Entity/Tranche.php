@@ -25,25 +25,7 @@ class Tranche
      * @ORM\ManyToOne(targetEntity="Paiement", cascade={"remove"})
      *
      */
-    private $paiement;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="numero_tranche", type="integer")
-     */
-    private $numeroTranche;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="montant_tranche", type="integer")
-     */
-    private $montantTranche;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="etat_tranche", type="string", length=50)
-     */
-    private $etatTranche;
+    private $paiement ;
 
     /**
      * @return mixed
@@ -62,23 +44,35 @@ class Tranche
     }
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="numero_tranche", type="integer")
+     */
+    private $numeroTranche;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="montant_tranche", type="integer")
+     */
+    private $montantTranche;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etat_tranche", type="string", length=50)
+     */
+    private $etatTranche;
+
+
+    /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get numeroTranche
-     *
-     * @return integer
-     */
-    public function getNumeroTranche()
-    {
-        return $this->numeroTranche;
     }
 
     /**
@@ -95,13 +89,13 @@ class Tranche
     }
 
     /**
-     * Get montantTranche
+     * Get numeroTranche
      *
-     * @return integer
+     * @return integer 
      */
-    public function getMontantTranche()
+    public function getNumeroTranche()
     {
-        return $this->montantTranche;
+        return $this->numeroTranche;
     }
 
     /**
@@ -118,13 +112,13 @@ class Tranche
     }
 
     /**
-     * Get etatTranche
+     * Get montantTranche
      *
-     * @return string
+     * @return integer 
      */
-    public function getEtatTranche()
+    public function getMontantTranche()
     {
-        return $this->etatTranche;
+        return $this->montantTranche;
     }
 
     /**
@@ -138,5 +132,15 @@ class Tranche
         $this->etatTranche = $etatTranche;
 
         return $this;
+    }
+
+    /**
+     * Get etatTranche
+     *
+     * @return string 
+     */
+    public function getEtatTranche()
+    {
+        return $this->etatTranche;
     }
 }

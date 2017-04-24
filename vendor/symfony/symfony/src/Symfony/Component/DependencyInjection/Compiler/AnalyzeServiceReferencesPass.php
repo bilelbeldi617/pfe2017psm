@@ -38,7 +38,7 @@ class AnalyzeServiceReferencesPass implements RepeatablePassInterface
      */
     public function __construct($onlyConstructorArguments = false)
     {
-        $this->onlyConstructorArguments = (bool)$onlyConstructorArguments;
+        $this->onlyConstructorArguments = (bool) $onlyConstructorArguments;
     }
 
     /**
@@ -86,7 +86,7 @@ class AnalyzeServiceReferencesPass implements RepeatablePassInterface
         }
 
         foreach ($container->getAliases() as $id => $alias) {
-            $this->graph->connect($id, $alias, (string)$alias, $this->getDefinition((string)$alias), null);
+            $this->graph->connect($id, $alias, (string) $alias, $this->getDefinition((string) $alias), null);
         }
     }
 
@@ -104,8 +104,8 @@ class AnalyzeServiceReferencesPass implements RepeatablePassInterface
                 $this->graph->connect(
                     $this->currentId,
                     $this->currentDefinition,
-                    $this->getDefinitionId((string)$argument),
-                    $this->getDefinition((string)$argument),
+                    $this->getDefinitionId((string) $argument),
+                    $this->getDefinition((string) $argument),
                     $argument
                 );
             } elseif ($argument instanceof Definition) {
@@ -123,19 +123,6 @@ class AnalyzeServiceReferencesPass implements RepeatablePassInterface
         }
     }
 
-    private function getDefinitionId($id)
-    {
-        while ($this->container->hasAlias($id)) {
-            $id = (string)$this->container->getAlias($id);
-        }
-
-        if (!$this->container->hasDefinition($id)) {
-            return;
-        }
-
-        return $id;
-    }
-
     /**
      * Returns a service definition given the full name or an alias.
      *
@@ -148,5 +135,18 @@ class AnalyzeServiceReferencesPass implements RepeatablePassInterface
         $id = $this->getDefinitionId($id);
 
         return null === $id ? null : $this->container->getDefinition($id);
+    }
+
+    private function getDefinitionId($id)
+    {
+        while ($this->container->hasAlias($id)) {
+            $id = (string) $this->container->getAlias($id);
+        }
+
+        if (!$this->container->hasDefinition($id)) {
+            return;
+        }
+
+        return $id;
     }
 }

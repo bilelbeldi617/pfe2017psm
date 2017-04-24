@@ -31,7 +31,7 @@ class ControllerGenerator extends Generator
     public function generate(BundleInterface $bundle, $controller, $routeFormat, $templateFormat, array $actions = array())
     {
         $dir = $bundle->getPath();
-        $controllerFile = $dir . '/Controller/' . $controller . 'Controller.php';
+        $controllerFile = $dir.'/Controller/'.$controller.'Controller.php';
         if (file_exists($controllerFile)) {
             throw new \RuntimeException(sprintf('Controller "%s" already exists', $controller));
         }
@@ -56,15 +56,15 @@ class ControllerGenerator extends Generator
             $template = $actions[$i]['template'];
             if ('default' == $template) {
                 @trigger_error('The use of the "default" keyword is deprecated. Use the real template name instead.', E_USER_DEPRECATED);
-                $template = $bundle->getName() . ':' . $controller . ':' .
+                $template = $bundle->getName().':'.$controller.':'.
                     strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('\\1_\\2', '\\1_\\2'), strtr(substr($action['name'], 0, -6), '_', '.')))
-                    . '.html.' . $templateFormat;
+                    .'.html.'.$templateFormat;
             }
 
             if ('twig' == $templateFormat) {
-                $this->renderFile('controller/Template.html.twig.twig', $dir . '/Resources/views/' . $this->parseTemplatePath($template), $params);
+                $this->renderFile('controller/Template.html.twig.twig', $dir.'/Resources/views/'.$this->parseTemplatePath($template), $params);
             } else {
-                $this->renderFile('controller/Template.html.php.twig', $dir . '/Resources/views/' . $this->parseTemplatePath($template), $params);
+                $this->renderFile('controller/Template.html.php.twig', $dir.'/Resources/views/'.$this->parseTemplatePath($template), $params);
             }
 
             $this->generateRouting($bundle, $controller, $actions[$i], $routeFormat);
@@ -73,27 +73,7 @@ class ControllerGenerator extends Generator
         $parameters['actions'] = $actions;
 
         $this->renderFile('controller/Controller.php.twig', $controllerFile, $parameters);
-        $this->renderFile('controller/ControllerTest.php.twig', $dir . '/Tests/Controller/' . $controller . 'ControllerTest.php', $parameters);
-    }
-
-    protected function parseTemplatePath($template)
-    {
-        $data = $this->parseLogicalTemplateName($template);
-
-        return $data['controller'] . '/' . $data['template'];
-    }
-
-    protected function parseLogicalTemplateName($logicalName, $part = '')
-    {
-        if (2 !== substr_count($logicalName, ':')) {
-            throw new \RuntimeException(sprintf('The given template name ("%s") is not correct (it must contain two colons).', $logicalName));
-        }
-
-        $data = array();
-
-        list($data['bundle'], $data['controller'], $data['template']) = explode(':', $logicalName);
-
-        return $part ? $data[$part] : $data;
+        $this->renderFile('controller/ControllerTest.php.twig', $dir.'/Tests/Controller/'.$controller.'ControllerTest.php', $parameters);
     }
 
     public function generateRouting(BundleInterface $bundle, $controller, array $action, $format)
@@ -103,14 +83,14 @@ class ControllerGenerator extends Generator
             return true;
         }
 
-        $file = $bundle->getPath() . '/Resources/config/routing.' . $format;
+        $file = $bundle->getPath().'/Resources/config/routing.'.$format;
         if (file_exists($file)) {
             $content = file_get_contents($file);
-        } elseif (!is_dir($dir = $bundle->getPath() . '/Resources/config')) {
+        } elseif (!is_dir($dir = $bundle->getPath().'/Resources/config')) {
             self::mkdir($dir);
         }
 
-        $controller = $bundle->getName() . ':' . $controller . ':' . $action['basename'];
+        $controller = $bundle->getName().':'.$controller.':'.$action['basename'];
         $name = strtolower(preg_replace('/([A-Z])/', '_\\1', $action['basename']));
 
         if ('yml' == $format) {
@@ -164,7 +144,7 @@ EOT;
                 $content = substr($content, 0, $pointer);
                 $content .= sprintf("%s->add('%s', new Route('%s', array(", $collection[1], $name, $action['route']);
                 $content .= sprintf("\n    '_controller' => '%s',", $controller);
-                $content .= "\n)));\n\nreturn " . $collection[1] . ';';
+                $content .= "\n)));\n\nreturn ".$collection[1].';';
             } else {
                 // new file
                 $content = <<<EOT
@@ -192,5 +172,25 @@ EOT;
         } else {
             throw new \RuntimeException(sprintf('Problems with generating file "%s", did you gave write access to that directory?', $file));
         }
+    }
+
+    protected function parseTemplatePath($template)
+    {
+        $data = $this->parseLogicalTemplateName($template);
+
+        return $data['controller'].'/'.$data['template'];
+    }
+
+    protected function parseLogicalTemplateName($logicalName, $part = '')
+    {
+        if (2 !== substr_count($logicalName, ':')) {
+            throw new \RuntimeException(sprintf('The given template name ("%s") is not correct (it must contain two colons).', $logicalName));
+        }
+
+        $data = array();
+
+        list($data['bundle'], $data['controller'], $data['template']) = explode(':', $logicalName);
+
+        return $part ? $data[$part] : $data;
     }
 }

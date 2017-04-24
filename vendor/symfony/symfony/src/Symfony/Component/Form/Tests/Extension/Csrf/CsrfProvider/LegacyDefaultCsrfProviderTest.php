@@ -29,13 +29,23 @@ class LegacyDefaultCsrfProviderTest extends TestCase
         ini_set('session.save_path', sys_get_temp_dir());
     }
 
+    protected function setUp()
+    {
+        $this->provider = new DefaultCsrfProvider('SECRET');
+    }
+
+    protected function tearDown()
+    {
+        $this->provider = null;
+    }
+
     public function testGenerateCsrfToken()
     {
         session_start();
 
         $token = $this->provider->generateCsrfToken('foo');
 
-        $this->assertEquals(sha1('SECRET' . 'foo' . session_id()), $token);
+        $this->assertEquals(sha1('SECRET'.'foo'.session_id()), $token);
     }
 
     /**
@@ -49,7 +59,7 @@ class LegacyDefaultCsrfProviderTest extends TestCase
 
         $token = $this->provider->generateCsrfToken('foo');
 
-        $this->assertEquals(sha1('SECRET' . 'foo' . session_id()), $token);
+        $this->assertEquals(sha1('SECRET'.'foo'.session_id()), $token);
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
     }
 
@@ -57,7 +67,7 @@ class LegacyDefaultCsrfProviderTest extends TestCase
     {
         session_start();
 
-        $token = sha1('SECRET' . 'foo' . session_id());
+        $token = sha1('SECRET'.'foo'.session_id());
 
         $this->assertTrue($this->provider->isCsrfTokenValid('foo', $token));
     }
@@ -66,18 +76,8 @@ class LegacyDefaultCsrfProviderTest extends TestCase
     {
         session_start();
 
-        $token = sha1('SECRET' . 'bar' . session_id());
+        $token = sha1('SECRET'.'bar'.session_id());
 
         $this->assertFalse($this->provider->isCsrfTokenValid('foo', $token));
-    }
-
-    protected function setUp()
-    {
-        $this->provider = new DefaultCsrfProvider('SECRET');
-    }
-
-    protected function tearDown()
-    {
-        $this->provider = null;
     }
 }

@@ -36,11 +36,11 @@ abstract class CacheCommand extends Command implements ContainerAwareInterface
         $cacheProvider = $container->get($cacheName, ContainerInterface::NULL_ON_INVALID_REFERENCE);
 
         // If cache provider was not found try the service provider name.
-        if (!$cacheProvider instanceof Cache) {
+        if ( ! $cacheProvider instanceof Cache) {
             $cacheProvider = $container->get('doctrine_cache.providers.' . $cacheName, ContainerInterface::NULL_ON_INVALID_REFERENCE);
         }
         // Cache provider was not found.
-        if (!$cacheProvider instanceof Cache) {
+        if ( ! $cacheProvider instanceof Cache) {
             throw new \InvalidArgumentException('Cache provider not found.');
         }
 

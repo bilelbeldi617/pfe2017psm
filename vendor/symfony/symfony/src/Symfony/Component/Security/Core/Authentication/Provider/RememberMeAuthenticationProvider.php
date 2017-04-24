@@ -26,8 +26,8 @@ class RememberMeAuthenticationProvider implements AuthenticationProviderInterfac
      * Constructor.
      *
      * @param UserCheckerInterface $userChecker An UserCheckerInterface interface
-     * @param string $secret A secret
-     * @param string $providerKey A provider secret
+     * @param string               $secret      A secret
+     * @param string               $providerKey A provider secret
      */
     public function __construct(UserCheckerInterface $userChecker, $secret, $providerKey)
     {

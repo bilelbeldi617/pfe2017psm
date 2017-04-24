@@ -47,18 +47,9 @@ class SecurityListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new SecurityListener($securityContext, $language, $trustResolver);
         $request = $this->createRequest(new Security(array('expression' => 'has_role("ROLE_ADMIN") or is_granted("FOO")')));
 
-        $event = new FilterControllerEvent($this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock(), function () {
-            return new Response();
-        }, $request, null);
+        $event = new FilterControllerEvent($this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock(), function () { return new Response(); }, $request, null);
 
         $listener->onKernelController($event);
-    }
-
-    private function createRequest(Security $security = null)
-    {
-        return new Request(array(), array(), array(
-            '_security' => $security,
-        ));
     }
 
     /**
@@ -86,11 +77,16 @@ class SecurityListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new SecurityListener(null, $language, $trustResolver, null, $tokenStorage, $authChecker);
         $request = $this->createRequest(new Security(array('expression' => 'has_role("ROLE_ADMIN") or is_granted("FOO")')));
 
-        $event = new FilterControllerEvent($this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock(), function () {
-            return new Response();
-        }, $request, null);
+        $event = new FilterControllerEvent($this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock(), function () { return new Response(); }, $request, null);
 
         $listener->onKernelController($event);
+    }
+
+    private function createRequest(Security $security = null)
+    {
+        return new Request(array(), array(), array(
+            '_security' => $security,
+        ));
     }
 
     private function getKernel()

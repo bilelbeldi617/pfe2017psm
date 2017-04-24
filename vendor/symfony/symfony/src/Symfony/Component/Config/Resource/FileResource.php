@@ -40,7 +40,7 @@ class FileResource implements SelfCheckingResourceInterface, \Serializable
      */
     public function __toString()
     {
-        return (string)$this->resource;
+        return (string) $this->resource;
     }
 
     /**

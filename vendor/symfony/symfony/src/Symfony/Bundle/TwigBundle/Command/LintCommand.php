@@ -54,14 +54,15 @@ class LintCommand extends BaseLintCommand implements ContainerAwareInterface
 
         $this
             ->setHelp(
-                $this->getHelp() . <<<'EOF'
+                $this->getHelp().<<<'EOF'
 
 Or all template files in a bundle:
 
   <info>php %command.full_name% @AcmeDemoBundle</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     protected function findFiles($filename)

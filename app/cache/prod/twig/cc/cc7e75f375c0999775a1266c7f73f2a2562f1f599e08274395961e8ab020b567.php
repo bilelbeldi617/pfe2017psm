@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:exception_full.html.twig */
-
 class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f70770ede extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -17,6 +16,17 @@ class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f707
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "@Twig/layout.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 3
     public function block_head($context, array $blocks = array())
     {
         // line 4
@@ -26,6 +36,7 @@ class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f707
 ";
     }
 
+    // line 7
     public function block_title($context, array $blocks = array())
     {
         // line 8
@@ -39,8 +50,7 @@ class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f707
 ";
     }
 
-    // line 3
-
+    // line 11
     public function block_body($context, array $blocks = array())
     {
         // line 12
@@ -48,14 +58,10 @@ class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f707
         $this->loadTemplate("@Twig/Exception/exception.html.twig", "TwigBundle:Exception:exception_full.html.twig", 12)->display($context);
     }
 
-    // line 7
-
     public function getTemplateName()
     {
         return "TwigBundle:Exception:exception_full.html.twig";
     }
-
-    // line 11
 
     public function isTraitable()
     {
@@ -64,13 +70,13 @@ class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f707
 
     public function getDebugInfo()
     {
-        return array(57 => 12, 54 => 11, 43 => 8, 40 => 7, 33 => 4, 30 => 3, 11 => 1,);
+        return array (  57 => 12,  54 => 11,  43 => 8,  40 => 7,  33 => 4,  30 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -78,15 +84,5 @@ class __TwigTemplate_4df2f6181706a96bd59c03104af0494321303cfe713bd90dd491f33f707
     public function getSourceContext()
     {
         return new Twig_Source("", "TwigBundle:Exception:exception_full.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception_full.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "@Twig/layout.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

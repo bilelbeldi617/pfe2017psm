@@ -25,6 +25,18 @@ class SymfonyStyleTest extends TestCase
     /** @var CommandTester */
     protected $tester;
 
+    protected function setUp()
+    {
+        $this->command = new Command('sfstyle');
+        $this->tester = new CommandTester($this->command);
+    }
+
+    protected function tearDown()
+    {
+        $this->command = null;
+        $this->tester = null;
+    }
+
     /**
      * @dataProvider inputCommandToOutputFilesProvider
      */
@@ -38,21 +50,9 @@ class SymfonyStyleTest extends TestCase
 
     public function inputCommandToOutputFilesProvider()
     {
-        $baseDir = __DIR__ . '/../Fixtures/Style/SymfonyStyle';
+        $baseDir = __DIR__.'/../Fixtures/Style/SymfonyStyle';
 
-        return array_map(null, glob($baseDir . '/command/command_*.php'), glob($baseDir . '/output/output_*.txt'));
-    }
-
-    protected function setUp()
-    {
-        $this->command = new Command('sfstyle');
-        $this->tester = new CommandTester($this->command);
-    }
-
-    protected function tearDown()
-    {
-        $this->command = null;
-        $this->tester = null;
+        return array_map(null, glob($baseDir.'/command/command_*.php'), glob($baseDir.'/output/output_*.txt'));
     }
 }
 

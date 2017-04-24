@@ -14,7 +14,7 @@ class DigestAuthenticationListenerTest extends TestCase
     {
         $time = microtime(true) + 1000;
         $secret = 'ThisIsASecret';
-        $nonce = base64_encode($time . ':' . md5($time . ':' . $secret));
+        $nonce = base64_encode($time.':'.md5($time.':'.$secret));
         $username = 'user';
         $password = 'password';
         $realm = 'Welcome, robot!';
@@ -26,9 +26,10 @@ class DigestAuthenticationListenerTest extends TestCase
         $serverDigest = $this->calculateServerDigest($username, $realm, $password, $nc, $nonce, $cnonce, $qop, 'GET', $uri);
 
         $digestData =
-            'username="' . $username . '", realm="' . $realm . '", nonce="' . $nonce . '", ' .
-            'uri="' . $uri . '", cnonce="' . $cnonce . '", nc=' . $nc . ', qop="' . $qop . '", ' .
-            'response="' . $serverDigest . '"';
+            'username="'.$username.'", realm="'.$realm.'", nonce="'.$nonce.'", '.
+            'uri="'.$uri.'", cnonce="'.$cnonce.'", nc='.$nc.', qop="'.$qop.'", '.
+            'response="'.$serverDigest.'"'
+        ;
 
         $request = new Request(array(), array(), array(), array(), array(), array('PHP_AUTH_DIGEST' => $digestData));
 
@@ -43,11 +44,13 @@ class DigestAuthenticationListenerTest extends TestCase
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
         $tokenStorage
             ->expects($this->once())
             ->method('setToken')
-            ->with($this->equalTo(new UsernamePasswordToken($user, $password, $providerKey)));
+            ->with($this->equalTo(new UsernamePasswordToken($user, $password, $providerKey)))
+        ;
 
         $userProvider = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserProviderInterface')->getMock();
         $userProvider->method('loadUserByUsername')->willReturn($user);
@@ -58,7 +61,8 @@ class DigestAuthenticationListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($request));
+            ->will($this->returnValue($request))
+        ;
 
         $listener->handle($event);
     }
@@ -66,7 +70,7 @@ class DigestAuthenticationListenerTest extends TestCase
     private function calculateServerDigest($username, $realm, $password, $nc, $nonce, $cnonce, $qop, $method, $uri)
     {
         $response = md5(
-            md5($username . ':' . $realm . ':' . $password) . ':' . $nonce . ':' . $nc . ':' . $cnonce . ':' . $qop . ':' . md5($method . ':' . $uri)
+            md5($username.':'.$realm.':'.$password).':'.$nonce.':'.$nc.':'.$cnonce.':'.$qop.':'.md5($method.':'.$uri)
         );
 
         return sprintf('username="%s", realm="%s", nonce="%s", uri="%s", cnonce="%s", nc=%s, qop="%s", response="%s"',

@@ -25,7 +25,7 @@ class TypePaiement
      * @ORM\ManyToOne(targetEntity="Tranche", cascade={"remove"})
      *
      */
-    private $tranche;
+    private $tranche ;
 
     /**
      * @var string
@@ -40,24 +40,6 @@ class TypePaiement
      * @ORM\Column(name="preuve", type="integer", nullable=true)
      */
     private $preuve;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nomBanque", type="string", length=255, nullable=true)
-     */
-    private $nomBanque;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="numeroCheque", type="integer", nullable=true)
-     */
-    private $numeroCheque;
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="datePaiement", type="date")
-     */
-    private $datePaiement;
 
     /**
      * @return mixed
@@ -76,23 +58,35 @@ class TypePaiement
     }
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nomBanque", type="string", length=255, nullable=true)
+     */
+    private $nomBanque;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="numeroCheque", type="integer", nullable=true)
+     */
+    private $numeroCheque;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="datePaiement", type="date")
+     */
+    private $datePaiement;
+
+
+    /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get typePaiement
-     *
-     * @return string
-     */
-    public function getTypePaiement()
-    {
-        return $this->typePaiement;
     }
 
     /**
@@ -109,13 +103,13 @@ class TypePaiement
     }
 
     /**
-     * Get preuve
+     * Get typePaiement
      *
-     * @return integer
+     * @return string 
      */
-    public function getPreuve()
+    public function getTypePaiement()
     {
-        return $this->preuve;
+        return $this->typePaiement;
     }
 
     /**
@@ -132,13 +126,13 @@ class TypePaiement
     }
 
     /**
-     * Get nomBanque
+     * Get preuve
      *
-     * @return string
+     * @return integer 
      */
-    public function getNomBanque()
+    public function getPreuve()
     {
-        return $this->nomBanque;
+        return $this->preuve;
     }
 
     /**
@@ -155,13 +149,13 @@ class TypePaiement
     }
 
     /**
-     * Get numeroCheque
+     * Get nomBanque
      *
-     * @return integer
+     * @return string 
      */
-    public function getNumeroCheque()
+    public function getNomBanque()
     {
-        return $this->numeroCheque;
+        return $this->nomBanque;
     }
 
     /**
@@ -178,13 +172,13 @@ class TypePaiement
     }
 
     /**
-     * Get datePaiement
+     * Get numeroCheque
      *
-     * @return \DateTime
+     * @return integer 
      */
-    public function getDatePaiement()
+    public function getNumeroCheque()
     {
-        return $this->datePaiement;
+        return $this->numeroCheque;
     }
 
     /**
@@ -198,5 +192,15 @@ class TypePaiement
         $this->datePaiement = $datePaiement;
 
         return $this;
+    }
+
+    /**
+     * Get datePaiement
+     *
+     * @return \DateTime 
+     */
+    public function getDatePaiement()
+    {
+        return $this->datePaiement;
     }
 }

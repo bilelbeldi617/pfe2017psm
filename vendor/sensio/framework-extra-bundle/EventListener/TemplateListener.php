@@ -44,14 +44,6 @@ class TemplateListener implements EventSubscriberInterface
         $this->container = $container;
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::CONTROLLER => array('onKernelController', -128),
-            KernelEvents::VIEW => 'onKernelView',
-        );
-    }
-
     /**
      * Guesses the template name to render and its variables and adds them to
      * the request object.
@@ -125,11 +117,19 @@ class TemplateListener implements EventSubscriberInterface
         $event->setResponse($templating->renderResponse($template->getTemplate(), $parameters));
     }
 
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => array('onKernelController', -128),
+            KernelEvents::VIEW => 'onKernelView',
+        );
+    }
+
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Template $template
-     * @param object $controller
-     * @param string $action
+     * @param object   $controller
+     * @param string   $action
      *
      * @return array
      */

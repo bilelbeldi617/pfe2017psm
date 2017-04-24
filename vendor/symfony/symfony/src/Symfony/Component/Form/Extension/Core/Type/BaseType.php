@@ -55,7 +55,7 @@ abstract class BaseType extends AbstractType
             } else {
                 $id = $name;
                 $fullName = $name;
-                $uniqueBlockPrefix = '_' . $blockName;
+                $uniqueBlockPrefix = '_'.$blockName;
             }
 
             if (null === $translationDomain) {
@@ -68,7 +68,7 @@ abstract class BaseType extends AbstractType
         } else {
             $id = $name;
             $fullName = $name;
-            $uniqueBlockPrefix = '_' . $blockName;
+            $uniqueBlockPrefix = '_'.$blockName;
 
             // Strip leading underscores and digits. These are allowed in
             // form names, but not in HTML4 ID attributes.
@@ -81,7 +81,7 @@ abstract class BaseType extends AbstractType
             if (method_exists($type, 'getBlockPrefix')) {
                 array_unshift($blockPrefixes, $type->getBlockPrefix());
             } else {
-                @trigger_error(get_class($type) . ': The ResolvedFormTypeInterface::getBlockPrefix() method will be added in version 3.0. You should add it to your implementation.', E_USER_DEPRECATED);
+                @trigger_error(get_class($type).': The ResolvedFormTypeInterface::getBlockPrefix() method will be added in version 3.0. You should add it to your implementation.', E_USER_DEPRECATED);
 
                 $fqcn = get_class($type->getInnerType());
                 $name = $type->getName();
@@ -111,7 +111,7 @@ abstract class BaseType extends AbstractType
             // collection form have different types (dynamically), they should
             // be rendered differently.
             // https://github.com/symfony/symfony/issues/5038
-            'cache_key' => $uniqueBlockPrefix . '_' . $form->getConfig()->getType()->getName(),
+            'cache_key' => $uniqueBlockPrefix.'_'.$form->getConfig()->getType()->getName(),
         ));
     }
 

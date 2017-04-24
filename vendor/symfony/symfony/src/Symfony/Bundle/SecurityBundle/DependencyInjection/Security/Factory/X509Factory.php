@@ -25,15 +25,16 @@ class X509Factory implements SecurityFactoryInterface
 {
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        $providerId = 'security.authentication.provider.pre_authenticated.' . $id;
+        $providerId = 'security.authentication.provider.pre_authenticated.'.$id;
         $container
             ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.pre_authenticated'))
             ->replaceArgument(0, new Reference($userProvider))
-            ->replaceArgument(1, new Reference('security.user_checker.' . $id))
-            ->addArgument($id);
+            ->replaceArgument(1, new Reference('security.user_checker.'.$id))
+            ->addArgument($id)
+        ;
 
         // listener
-        $listenerId = 'security.authentication.listener.x509.' . $id;
+        $listenerId = 'security.authentication.listener.x509.'.$id;
         $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.x509'));
         $listener->replaceArgument(2, $id);
         $listener->replaceArgument(3, $config['user']);
@@ -56,9 +57,10 @@ class X509Factory implements SecurityFactoryInterface
     {
         $node
             ->children()
-            ->scalarNode('provider')->end()
-            ->scalarNode('user')->defaultValue('SSL_CLIENT_S_DN_Email')->end()
-            ->scalarNode('credentials')->defaultValue('SSL_CLIENT_S_DN')->end()
-            ->end();
+                ->scalarNode('provider')->end()
+                ->scalarNode('user')->defaultValue('SSL_CLIENT_S_DN_Email')->end()
+                ->scalarNode('credentials')->defaultValue('SSL_CLIENT_S_DN')->end()
+            ->end()
+        ;
     }
 }

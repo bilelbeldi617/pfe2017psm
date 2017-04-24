@@ -29,10 +29,10 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
     /**
      * Constructor.
      *
-     * @param string $inputTimezone The input timezone
+     * @param string $inputTimezone  The input timezone
      * @param string $outputTimezone The output timezone
-     * @param array $fields The date fields
-     * @param bool $pad Whether to use padding
+     * @param array  $fields         The date fields
+     * @param bool   $pad            Whether to use padding
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */
@@ -45,7 +45,7 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
         }
 
         $this->fields = $fields;
-        $this->pad = (bool)$pad;
+        $this->pad = (bool) $pad;
     }
 
     /**
@@ -95,7 +95,7 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
         if (!$this->pad) {
             foreach ($result as &$entry) {
                 // remove leading zeros
-                $entry = (string)(int)$entry;
+                $entry = (string) (int) $entry;
             }
             // unset reference to keep scope clear
             unset($entry);
@@ -139,18 +139,18 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
         if (count($emptyFields) > 0) {
             throw new TransformationFailedException(
                 sprintf('The fields "%s" should not be empty', implode('", "', $emptyFields)
-                ));
+            ));
         }
 
-        if (isset($value['month']) && !ctype_digit((string)$value['month'])) {
+        if (isset($value['month']) && !ctype_digit((string) $value['month'])) {
             throw new TransformationFailedException('This month is invalid');
         }
 
-        if (isset($value['day']) && !ctype_digit((string)$value['day'])) {
+        if (isset($value['day']) && !ctype_digit((string) $value['day'])) {
             throw new TransformationFailedException('This day is invalid');
         }
 
-        if (isset($value['year']) && !ctype_digit((string)$value['year'])) {
+        if (isset($value['year']) && !ctype_digit((string) $value['year'])) {
             throw new TransformationFailedException('This year is invalid');
         }
 
@@ -158,15 +158,15 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
             throw new TransformationFailedException('This is an invalid date');
         }
 
-        if (isset($value['hour']) && !ctype_digit((string)$value['hour'])) {
+        if (isset($value['hour']) && !ctype_digit((string) $value['hour'])) {
             throw new TransformationFailedException('This hour is invalid');
         }
 
-        if (isset($value['minute']) && !ctype_digit((string)$value['minute'])) {
+        if (isset($value['minute']) && !ctype_digit((string) $value['minute'])) {
             throw new TransformationFailedException('This minute is invalid');
         }
 
-        if (isset($value['second']) && !ctype_digit((string)$value['second'])) {
+        if (isset($value['second']) && !ctype_digit((string) $value['second'])) {
             throw new TransformationFailedException('This second is invalid');
         }
 
@@ -179,7 +179,7 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
                 empty($value['hour']) ? '0' : $value['hour'],
                 empty($value['minute']) ? '0' : $value['minute'],
                 empty($value['second']) ? '0' : $value['second']
-            ),
+                ),
                 new \DateTimeZone($this->outputTimezone)
             );
 

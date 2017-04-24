@@ -11,7 +11,7 @@
 
 namespace Symfony\Bundle\TwigBundle\Debug;
 
-@trigger_error('The ' . __NAMESPACE__ . '\TimedTwigEngine class is deprecated since version 2.7 and will be removed in 3.0. Use the Twig native profiler instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\TimedTwigEngine class is deprecated since version 2.7 and will be removed in 3.0. Use the Twig native profiler instead.', E_USER_DEPRECATED);
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Templating\TemplateNameParserInterface;
@@ -32,10 +32,10 @@ class TimedTwigEngine extends TwigEngine
     /**
      * Constructor.
      *
-     * @param \Twig_Environment $environment A \Twig_Environment instance
-     * @param TemplateNameParserInterface $parser A TemplateNameParserInterface instance
-     * @param FileLocatorInterface $locator A FileLocatorInterface instance
-     * @param Stopwatch $stopwatch A Stopwatch instance
+     * @param \Twig_Environment           $environment A \Twig_Environment instance
+     * @param TemplateNameParserInterface $parser      A TemplateNameParserInterface instance
+     * @param FileLocatorInterface        $locator     A FileLocatorInterface instance
+     * @param Stopwatch                   $stopwatch   A Stopwatch instance
      */
     public function __construct(\Twig_Environment $environment, TemplateNameParserInterface $parser, FileLocatorInterface $locator, Stopwatch $stopwatch)
     {

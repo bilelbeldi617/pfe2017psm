@@ -65,67 +65,10 @@ class DisconnectedMetadataFactory
     }
 
     /**
-     * @param string $namespace
-     *
-     * @return ClassMetadataCollection
-     */
-    private function getMetadataForNamespace($namespace)
-    {
-        $metadata = array();
-        foreach ($this->getAllMetadata() as $m) {
-            if (strpos($m->name, $namespace) === 0) {
-                $metadata[] = $m;
-            }
-        }
-
-        return new ClassMetadataCollection($metadata);
-    }
-
-    /**
-     * @return array
-     */
-    private function getAllMetadata()
-    {
-        $metadata = array();
-        foreach ($this->registry->getManagers() as $em) {
-            $cmf = new DisconnectedClassMetadataFactory();
-            $cmf->setEntityManager($em);
-            foreach ($cmf->getAllMetadata() as $m) {
-                $metadata[] = $m;
-            }
-        }
-
-        return $metadata;
-    }
-
-    /**
-     * Get a base path for a class
-     *
-     * @param string $name class name
-     * @param string $namespace class namespace
-     * @param string $path class path
-     *
-     * @return string
-     * @throws \RuntimeException When base path not found
-     */
-    private function getBasePathForClass($name, $namespace, $path)
-    {
-        $namespace = str_replace('\\', '/', $namespace);
-        $search = str_replace('\\', '/', $path);
-        $destination = str_replace('/' . $namespace, '', $search, $c);
-
-        if ($c != 1) {
-            throw new \RuntimeException(sprintf('Can\'t find base path for "%s" (path: "%s", destination: "%s").', $name, $path, $destination));
-        }
-
-        return $destination;
-    }
-
-    /**
      * Gets the metadata of a class.
      *
      * @param string $class A class name
-     * @param string $path The path where the class is stored (if known)
+     * @param string $path  The path where the class is stored (if known)
      *
      * @return ClassMetadataCollection A ClassMetadataCollection instance
      *
@@ -144,29 +87,32 @@ class DisconnectedMetadataFactory
     }
 
     /**
-     * @param string $entity
+     * Gets the metadata of all classes of a namespace.
      *
-     * @return ClassMetadataCollection
+     * @param string $namespace A namespace name
+     * @param string $path      The path where the class is stored (if known)
+     *
+     * @return ClassMetadataCollection A ClassMetadataCollection instance
+     *
+     * @throws \RuntimeException When namespace not contain mapped entities
      */
-    private function getMetadataForClass($entity)
+    public function getNamespaceMetadata($namespace, $path = null)
     {
-        foreach ($this->registry->getManagers() as $em) {
-            $cmf = new DisconnectedClassMetadataFactory();
-            $cmf->setEntityManager($em);
-
-            if (!$cmf->isTransient($entity)) {
-                return new ClassMetadataCollection(array($cmf->getMetadataFor($entity)));
-            }
+        $metadata = $this->getMetadataForNamespace($namespace);
+        if (!$metadata->getMetadata()) {
+            throw new \RuntimeException(sprintf('Namespace "%s" does not contain any mapped entities.', $namespace));
         }
 
-        return new ClassMetadataCollection(array());
+        $this->findNamespaceAndPathForMetadata($metadata, $path);
+
+        return $metadata;
     }
 
     /**
      * Find and configure path and namespace for the metadata collection.
      *
      * @param ClassMetadataCollection $metadata
-     * @param string|null $path
+     * @param string|null             $path
      *
      * @throws \RuntimeException When unable to determine the path
      */
@@ -193,23 +139,77 @@ class DisconnectedMetadataFactory
     }
 
     /**
-     * Gets the metadata of all classes of a namespace.
+     * Get a base path for a class
      *
-     * @param string $namespace A namespace name
-     * @param string $path The path where the class is stored (if known)
+     * @param string $name      class name
+     * @param string $namespace class namespace
+     * @param string $path      class path
      *
-     * @return ClassMetadataCollection A ClassMetadataCollection instance
-     *
-     * @throws \RuntimeException When namespace not contain mapped entities
+     * @return string
+     * @throws \RuntimeException When base path not found
      */
-    public function getNamespaceMetadata($namespace, $path = null)
+    private function getBasePathForClass($name, $namespace, $path)
     {
-        $metadata = $this->getMetadataForNamespace($namespace);
-        if (!$metadata->getMetadata()) {
-            throw new \RuntimeException(sprintf('Namespace "%s" does not contain any mapped entities.', $namespace));
+        $namespace = str_replace('\\', '/', $namespace);
+        $search = str_replace('\\', '/', $path);
+        $destination = str_replace('/'.$namespace, '', $search, $c);
+
+        if ($c != 1) {
+            throw new \RuntimeException(sprintf('Can\'t find base path for "%s" (path: "%s", destination: "%s").', $name, $path, $destination));
         }
 
-        $this->findNamespaceAndPathForMetadata($metadata, $path);
+        return $destination;
+    }
+
+    /**
+     * @param string $namespace
+     *
+     * @return ClassMetadataCollection
+     */
+    private function getMetadataForNamespace($namespace)
+    {
+        $metadata = array();
+        foreach ($this->getAllMetadata() as $m) {
+            if (strpos($m->name, $namespace) === 0) {
+                $metadata[] = $m;
+            }
+        }
+
+        return new ClassMetadataCollection($metadata);
+    }
+
+    /**
+     * @param string $entity
+     *
+     * @return ClassMetadataCollection
+     */
+    private function getMetadataForClass($entity)
+    {
+        foreach ($this->registry->getManagers() as $em) {
+            $cmf = new DisconnectedClassMetadataFactory();
+            $cmf->setEntityManager($em);
+
+            if (!$cmf->isTransient($entity)) {
+                return new ClassMetadataCollection(array($cmf->getMetadataFor($entity)));
+            }
+        }
+
+        return new ClassMetadataCollection(array());
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllMetadata()
+    {
+        $metadata = array();
+        foreach ($this->registry->getManagers() as $em) {
+            $cmf = new DisconnectedClassMetadataFactory();
+            $cmf->setEntityManager($em);
+            foreach ($cmf->getAllMetadata() as $m) {
+                $metadata[] = $m;
+            }
+        }
 
         return $metadata;
     }

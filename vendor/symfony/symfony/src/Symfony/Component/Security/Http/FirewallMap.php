@@ -27,8 +27,8 @@ class FirewallMap implements FirewallMapInterface
 
     /**
      * @param RequestMatcherInterface $requestMatcher
-     * @param array $listeners
-     * @param ExceptionListener $exceptionListener
+     * @param array                   $listeners
+     * @param ExceptionListener       $exceptionListener
      */
     public function add(RequestMatcherInterface $requestMatcher = null, array $listeners = array(), ExceptionListener $exceptionListener = null)
     {

@@ -7,7 +7,7 @@ Displaying Deprecation Notices
 ------------------------------
 
 .. versionadded:: 1.21
-This works as of Twig 1.21.
+    This works as of Twig 1.21.
 
 Deprecated features generate deprecation notices (via a call to the
 ``trigger_error()`` PHP function). By default, they are silenced and never
@@ -327,7 +327,7 @@ If you iterate over a set of files, you can pass the filename to the
     }
 
 .. versionadded:: 1.27
-``Twig_Source`` was introduced in version 1.27, pass the source and the
+    ``Twig_Source`` was introduced in version 1.27, pass the source and the
     identifier directly on previous versions.
 
 .. note::

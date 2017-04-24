@@ -35,22 +35,24 @@ class SimplePreAuthenticationFactory implements SecurityFactoryInterface
     {
         $node
             ->children()
-            ->scalarNode('provider')->end()
-            ->scalarNode('authenticator')->cannotBeEmpty()->end()
-            ->end();
+                ->scalarNode('provider')->end()
+                ->scalarNode('authenticator')->cannotBeEmpty()->end()
+            ->end()
+        ;
     }
 
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        $provider = 'security.authentication.provider.simple_preauth.' . $id;
+        $provider = 'security.authentication.provider.simple_preauth.'.$id;
         $container
             ->setDefinition($provider, new DefinitionDecorator('security.authentication.provider.simple'))
             ->replaceArgument(0, new Reference($config['authenticator']))
             ->replaceArgument(1, new Reference($userProvider))
-            ->replaceArgument(2, $id);
+            ->replaceArgument(2, $id)
+        ;
 
         // listener
-        $listenerId = 'security.authentication.listener.simple_preauth.' . $id;
+        $listenerId = 'security.authentication.listener.simple_preauth.'.$id;
         $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.simple_preauth'));
         $listener->replaceArgument(2, $id);
         $listener->replaceArgument(3, new Reference($config['authenticator']));

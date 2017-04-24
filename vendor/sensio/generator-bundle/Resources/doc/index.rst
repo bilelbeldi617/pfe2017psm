@@ -52,20 +52,20 @@ the command parameters that actually generate the code.
 Read the following articles to learn how to use the new commands:
 
 .. toctree::
-:maxdepth: 1
+   :maxdepth: 1
 
-       commands/generate_bundle
-       commands/generate_command
-       commands/generate_controller
-       commands/generate_doctrine_crud
-       commands/generate_doctrine_entity
-       commands/generate_doctrine_form
+   commands/generate_bundle
+   commands/generate_command
+   commands/generate_controller
+   commands/generate_doctrine_crud
+   commands/generate_doctrine_entity
+   commands/generate_doctrine_form
 
 Overriding Skeleton Templates
 -----------------------------
 
 .. versionadded:: 2.3
-The possibility to override the skeleton templates was added in 2.3.
+  The possibility to override the skeleton templates was added in 2.3.
 
 All generators use a template skeleton to generate files. By default, the
 commands use templates provided by the bundle under its ``Resources/skeleton/``

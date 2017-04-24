@@ -22,7 +22,7 @@ class HtmlDumperTest extends TestCase
 {
     public function testGet()
     {
-        require __DIR__ . '/Fixtures/dumb-var.php';
+        require __DIR__.'/Fixtures/dumb-var.php';
 
         $dumper = new HtmlDumper('php://output');
         $dumper->setDumpHeader('<foo></foo>');
@@ -45,7 +45,7 @@ class HtmlDumperTest extends TestCase
         $intMax = PHP_INT_MAX;
         preg_match('/sf-dump-\d+/', $out, $dumpId);
         $dumpId = $dumpId[0];
-        $res = (int)$var['res'];
+        $res = (int) $var['res'];
         $closure54 = '';
         $r = defined('HHVM_VERSION') ? '' : '<a class=sf-dump-ref>#%d</a>';
 

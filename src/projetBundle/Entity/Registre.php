@@ -20,12 +20,6 @@ class Registre
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    /**
-     * use projetBundle\Entity\Groupe;
-     * @ORM\OneToOne(targetEntity="Groupe", inversedBy="registre")
-     * @ORM\JoinColumn(name="groupe_id", referencedColumnName="id")
-     */
-    private $groupe;
 
     /**
      * @return mixed
@@ -42,6 +36,15 @@ class Registre
     {
         $this->groupe = $groupe;
     }
+
+
+    /**
+     * use projetBundle\Entity\Groupe;
+     * @ORM\OneToOne(targetEntity="Groupe", inversedBy="registre")
+     * @ORM\JoinColumn(name="groupe_id", referencedColumnName="id")
+     */
+    private $groupe;
+
 
     /**
      * Get id

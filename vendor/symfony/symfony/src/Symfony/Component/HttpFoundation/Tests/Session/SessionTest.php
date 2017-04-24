@@ -36,6 +36,18 @@ class SessionTest extends TestCase
      */
     protected $session;
 
+    protected function setUp()
+    {
+        $this->storage = new MockArraySessionStorage();
+        $this->session = new Session($this->storage, new AttributeBag(), new FlashBag());
+    }
+
+    protected function tearDown()
+    {
+        $this->storage = null;
+        $this->session = null;
+    }
+
     public function testStart()
     {
         $this->assertEquals('', $this->session->getId());
@@ -89,7 +101,7 @@ class SessionTest extends TestCase
     {
         $this->session->set($key, $value);
         $this->assertTrue($this->session->has($key));
-        $this->assertFalse($this->session->has($key . 'non_value'));
+        $this->assertFalse($this->session->has($key.'non_value'));
     }
 
     public function testReplace()
@@ -206,17 +218,5 @@ class SessionTest extends TestCase
     public function testGetMeta()
     {
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Session\Storage\MetadataBag', $this->session->getMetadataBag());
-    }
-
-    protected function setUp()
-    {
-        $this->storage = new MockArraySessionStorage();
-        $this->session = new Session($this->storage, new AttributeBag(), new FlashBag());
-    }
-
-    protected function tearDown()
-    {
-        $this->storage = null;
-        $this->session = null;
     }
 }

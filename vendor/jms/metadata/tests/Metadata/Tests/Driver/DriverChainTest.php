@@ -13,7 +13,8 @@ class DriverChainTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->once())
             ->method('loadMetadataForClass')
-            ->will($this->returnValue($metadata = new ClassMetadata('\stdClass')));
+            ->will($this->returnValue($metadata = new ClassMetadata('\stdClass')))
+        ;
         $chain = new DriverChain(array($driver));
 
         $this->assertSame($metadata, $chain->loadMetadataForClass(new \ReflectionClass('\stdClass')));
@@ -47,7 +48,8 @@ class DriverChainTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->once())
             ->method('loadMetadataForClass')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
         $driverChain = new DriverChain(array($driver));
         $this->assertNull($driver->loadMetadataForClass(new \ReflectionClass('\stdClass')));
     }

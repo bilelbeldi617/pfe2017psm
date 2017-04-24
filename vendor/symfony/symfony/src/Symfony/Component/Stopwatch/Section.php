@@ -49,22 +49,6 @@ class Section
     }
 
     /**
-     * Creates or re-opens a child section.
-     *
-     * @param string|null $id null to create a new section, the identifier to re-open an existing one
-     *
-     * @return self
-     */
-    public function open($id)
-    {
-        if (null === $session = $this->get($id)) {
-            $session = $this->children[] = new self(microtime(true) * 1000);
-        }
-
-        return $session;
-    }
-
-    /**
      * Returns the child section.
      *
      * @param string $id The child section identifier
@@ -78,6 +62,22 @@ class Section
                 return $child;
             }
         }
+    }
+
+    /**
+     * Creates or re-opens a child section.
+     *
+     * @param string|null $id null to create a new section, the identifier to re-open an existing one
+     *
+     * @return self
+     */
+    public function open($id)
+    {
+        if (null === $session = $this->get($id)) {
+            $session = $this->children[] = new self(microtime(true) * 1000);
+        }
+
+        return $session;
     }
 
     /**
@@ -105,7 +105,7 @@ class Section
     /**
      * Starts an event.
      *
-     * @param string $name The event name
+     * @param string $name     The event name
      * @param string $category The event category
      *
      * @return StopwatchEvent The event
@@ -132,20 +132,6 @@ class Section
     }
 
     /**
-     * Stops then restarts an event.
-     *
-     * @param string $name The event name
-     *
-     * @return StopwatchEvent The event
-     *
-     * @throws \LogicException When the event has not been started
-     */
-    public function lap($name)
-    {
-        return $this->stopEvent($name)->start();
-    }
-
-    /**
      * Stops an event.
      *
      * @param string $name The event name
@@ -161,6 +147,20 @@ class Section
         }
 
         return $this->events[$name]->stop();
+    }
+
+    /**
+     * Stops then restarts an event.
+     *
+     * @param string $name The event name
+     *
+     * @return StopwatchEvent The event
+     *
+     * @throws \LogicException When the event has not been started
+     */
+    public function lap($name)
+    {
+        return $this->stopEvent($name)->start();
     }
 
     /**

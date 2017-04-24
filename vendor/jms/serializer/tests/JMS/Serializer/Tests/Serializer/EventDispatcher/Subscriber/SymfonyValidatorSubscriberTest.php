@@ -87,7 +87,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $subscriber = $this->subscriber;
         $list = SerializerBuilder::create()
-            ->configureListeners(function (EventDispatcher $dispatcher) use ($subscriber) {
+            ->configureListeners(function(EventDispatcher $dispatcher) use ($subscriber) {
                 $dispatcher->addSubscriber($subscriber);
             })
             ->build()

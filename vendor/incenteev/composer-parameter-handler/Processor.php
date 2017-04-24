@@ -35,11 +35,11 @@ class Processor
         if (!isset($expectedValues[$parameterKey])) {
             throw new \InvalidArgumentException(sprintf('The top-level key %s is missing.', $parameterKey));
         }
-        $expectedParams = (array)$expectedValues[$parameterKey];
+        $expectedParams = (array) $expectedValues[$parameterKey];
 
         // find the actual params
         $actualValues = array_merge(
-        // Preserve other top-level keys than `$parameterKey` in the file
+            // Preserve other top-level keys than `$parameterKey` in the file
             $expectedValues,
             array($parameterKey => array())
         );
@@ -54,7 +54,7 @@ class Processor
             $actualValues = array_merge($actualValues, $existingValues);
         }
 
-        $actualValues[$parameterKey] = $this->processParams($config, $expectedParams, (array)$actualValues[$parameterKey]);
+        $actualValues[$parameterKey] = $this->processParams($config, $expectedParams, (array) $actualValues[$parameterKey]);
 
         if (!is_dir($dir = dirname($realFile))) {
             mkdir($dir, 0755, true);
@@ -70,7 +70,7 @@ class Processor
         }
 
         if (empty($config['dist-file'])) {
-            $config['dist-file'] = $config['file'] . '.dist';
+            $config['dist-file'] = $config['file'].'.dist';
         }
 
         if (!is_file($config['dist-file'])) {
@@ -87,24 +87,37 @@ class Processor
     private function processParams(array $config, array $expectedParams, array $actualParams)
     {
         // Grab values for parameters that were renamed
-        $renameMap = empty($config['rename-map']) ? array() : (array)$config['rename-map'];
+        $renameMap = empty($config['rename-map']) ? array() : (array) $config['rename-map'];
         $actualParams = array_replace($actualParams, $this->processRenamedValues($renameMap, $actualParams));
 
         $keepOutdatedParams = false;
         if (isset($config['keep-outdated'])) {
-            $keepOutdatedParams = (boolean)$config['keep-outdated'];
+            $keepOutdatedParams = (boolean) $config['keep-outdated'];
         }
 
         if (!$keepOutdatedParams) {
             $actualParams = array_intersect_key($actualParams, $expectedParams);
         }
 
-        $envMap = empty($config['env-map']) ? array() : (array)$config['env-map'];
+        $envMap = empty($config['env-map']) ? array() : (array) $config['env-map'];
 
         // Add the params coming from the environment values
         $actualParams = array_replace($actualParams, $this->getEnvValues($envMap));
 
         return $this->getParams($expectedParams, $actualParams);
+    }
+
+    private function getEnvValues(array $envMap)
+    {
+        $params = array();
+        foreach ($envMap as $param => $env) {
+            $value = getenv($env);
+            if ($value) {
+                $params[$param] = Inline::parse($value);
+            }
+        }
+
+        return $params;
     }
 
     private function processRenamedValues(array $renameMap, array $actualParams)
@@ -122,19 +135,6 @@ class Processor
         }
 
         return $actualParams;
-    }
-
-    private function getEnvValues(array $envMap)
-    {
-        $params = array();
-        foreach ($envMap as $param => $env) {
-            $value = getenv($env);
-            if ($value) {
-                $params[$param] = Inline::parse($value);
-            }
-        }
-
-        return $params;
     }
 
     private function getParams(array $expectedParams, array $actualParams)

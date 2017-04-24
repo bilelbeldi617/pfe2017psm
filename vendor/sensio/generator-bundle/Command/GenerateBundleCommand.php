@@ -64,7 +64,8 @@ If you want to disable any user interaction, use <comment>--no-interaction</comm
 
 Note that the bundle namespace must end with "Bundle".
 EOT
-            );
+            )
+        ;
     }
 
     /**
@@ -106,158 +107,6 @@ EOT
         }
 
         $questionHelper->writeGeneratorSummary($output, $errors);
-    }
-
-    /**
-     * Creates the Bundle object based on the user's (non-interactive) input.
-     *
-     * @param InputInterface $input
-     *
-     * @return Bundle
-     */
-    protected function createBundleObject(InputInterface $input)
-    {
-        foreach (array('namespace', 'dir') as $option) {
-            if (null === $input->getOption($option)) {
-                throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
-            }
-        }
-
-        $shared = $input->getOption('shared');
-
-        $namespace = Validators::validateBundleNamespace($input->getOption('namespace'), $shared);
-        if (!$bundleName = $input->getOption('bundle-name')) {
-            $bundleName = strtr($namespace, array('\\' => ''));
-        }
-        $bundleName = Validators::validateBundleName($bundleName);
-        $dir = $input->getOption('dir');
-        if (null === $input->getOption('format')) {
-            $input->setOption('format', 'annotation');
-        }
-        $format = Validators::validateFormat($input->getOption('format'));
-
-        // an assumption that the kernel root dir is in a directory (like app/)
-        $projectRootDirectory = $this->getContainer()->getParameter('kernel.root_dir') . '/..';
-
-        if (!$this->getContainer()->get('filesystem')->isAbsolutePath($dir)) {
-            $dir = $projectRootDirectory . '/' . $dir;
-        }
-        // add trailing / if necessary
-        $dir = '/' === substr($dir, -1, 1) ? $dir : $dir . '/';
-
-        $bundle = new Bundle(
-            $namespace,
-            $bundleName,
-            $dir,
-            $format,
-            $shared
-        );
-
-        // not shared - put the tests in the root
-        if (!$shared) {
-            $testsDir = $projectRootDirectory . '/tests/' . $bundleName;
-            $bundle->setTestsDirectory($testsDir);
-        }
-
-        return $bundle;
-    }
-
-    protected function checkAutoloader(OutputInterface $output, Bundle $bundle)
-    {
-        $output->writeln('> Checking that the bundle is autoloaded');
-        if (!class_exists($bundle->getBundleClassName())) {
-            return array(
-                '- Edit the <comment>composer.json</comment> file and register the bundle',
-                '  namespace in the "autoload" section:',
-                '',
-            );
-        }
-    }
-
-    protected function updateKernel(OutputInterface $output, KernelInterface $kernel, Bundle $bundle)
-    {
-        $kernelManipulator = new KernelManipulator($kernel);
-
-        $output->writeln(sprintf(
-            '> Enabling the bundle inside <info>%s</info>',
-            $this->makePathRelative($kernelManipulator->getFilename())
-        ));
-
-        try {
-            $ret = $kernelManipulator->addBundle($bundle->getBundleClassName());
-
-            if (!$ret) {
-                $reflected = new \ReflectionObject($kernel);
-
-                return array(
-                    sprintf('- Edit <comment>%s</comment>', $reflected->getFilename()),
-                    '  and add the following bundle in the <comment>AppKernel::registerBundles()</comment> method:',
-                    '',
-                    sprintf('    <comment>new %s(),</comment>', $bundle->getBundleClassName()),
-                    '',
-                );
-            }
-        } catch (\RuntimeException $e) {
-            return array(
-                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $bundle->getBundleClassName()),
-                '',
-            );
-        }
-    }
-
-    protected function updateRouting(OutputInterface $output, Bundle $bundle)
-    {
-        $targetRoutingPath = $this->getContainer()->getParameter('kernel.root_dir') . '/config/routing.yml';
-        $output->writeln(sprintf(
-            '> Importing the bundle\'s routes from the <info>%s</info> file',
-            $this->makePathRelative($targetRoutingPath)
-        ));
-        $routing = new RoutingManipulator($targetRoutingPath);
-        try {
-            $ret = $routing->addResource($bundle->getName(), $bundle->getConfigurationFormat());
-            if (!$ret) {
-                if ('annotation' === $bundle->getConfigurationFormat()) {
-                    $help = sprintf("        <comment>resource: \"@%s/Controller/\"</comment>\n        <comment>type:     annotation</comment>\n", $bundle->getName());
-                } else {
-                    $help = sprintf("        <comment>resource: \"@%s/Resources/config/routing.%s\"</comment>\n", $bundle->getName(), $bundle->getConfigurationFormat());
-                }
-                $help .= "        <comment>prefix:   /</comment>\n";
-
-                return array(
-                    '- Import the bundle\'s routing resource in the app\'s main routing file:',
-                    '',
-                    sprintf('    <comment>%s:</comment>', $bundle->getName()),
-                    $help,
-                    '',
-                );
-            }
-        } catch (\RuntimeException $e) {
-            return array(
-                sprintf('Bundle <comment>%s</comment> is already imported.', $bundle->getName()),
-                '',
-            );
-        }
-    }
-
-    protected function updateConfiguration(OutputInterface $output, Bundle $bundle)
-    {
-        $targetConfigurationPath = $this->getContainer()->getParameter('kernel.root_dir') . '/config/config.yml';
-        $output->writeln(sprintf(
-            '> Importing the bundle\'s %s from the <info>%s</info> file',
-            $bundle->getServicesConfigurationFilename(),
-            $this->makePathRelative($targetConfigurationPath)
-        ));
-        $manipulator = new ConfigurationManipulator($targetConfigurationPath);
-        try {
-            $manipulator->addResource($bundle);
-        } catch (\RuntimeException $e) {
-            return array(
-                sprintf('- Import the bundle\'s "%s" resource in the app\'s main configuration file:', $bundle->getServicesConfigurationFilename()),
-                '',
-                $manipulator->getImportCode($bundle),
-                '',
-            );
-        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -352,7 +201,7 @@ EOT
                 'In your code, a bundle is often referenced by its name. It can be the',
                 'concatenation of all namespace parts but it\'s really up to you to come',
                 'up with a unique name (a good practice is to start with the vendor name).',
-                'Based on the namespace, we suggest <comment>' . $bundle . '</comment>.',
+                'Based on the namespace, we suggest <comment>'.$bundle.'</comment>.',
                 '',
             ));
             $question = new Question($questionHelper->getQuestion(
@@ -408,6 +257,158 @@ EOT
         $question->setAutocompleterValues(array('annotation', 'yml', 'xml', 'php'));
         $format = $questionHelper->ask($input, $output, $question);
         $input->setOption('format', $format);
+    }
+
+    protected function checkAutoloader(OutputInterface $output, Bundle $bundle)
+    {
+        $output->writeln('> Checking that the bundle is autoloaded');
+        if (!class_exists($bundle->getBundleClassName())) {
+            return array(
+                '- Edit the <comment>composer.json</comment> file and register the bundle',
+                '  namespace in the "autoload" section:',
+                '',
+            );
+        }
+    }
+
+    protected function updateKernel(OutputInterface $output, KernelInterface $kernel, Bundle $bundle)
+    {
+        $kernelManipulator = new KernelManipulator($kernel);
+
+        $output->writeln(sprintf(
+            '> Enabling the bundle inside <info>%s</info>',
+            $this->makePathRelative($kernelManipulator->getFilename())
+        ));
+
+        try {
+            $ret = $kernelManipulator->addBundle($bundle->getBundleClassName());
+
+            if (!$ret) {
+                $reflected = new \ReflectionObject($kernel);
+
+                return array(
+                    sprintf('- Edit <comment>%s</comment>', $reflected->getFilename()),
+                    '  and add the following bundle in the <comment>AppKernel::registerBundles()</comment> method:',
+                    '',
+                    sprintf('    <comment>new %s(),</comment>', $bundle->getBundleClassName()),
+                    '',
+                );
+            }
+        } catch (\RuntimeException $e) {
+            return array(
+                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $bundle->getBundleClassName()),
+                '',
+            );
+        }
+    }
+
+    protected function updateRouting(OutputInterface $output, Bundle $bundle)
+    {
+        $targetRoutingPath = $this->getContainer()->getParameter('kernel.root_dir').'/config/routing.yml';
+        $output->writeln(sprintf(
+            '> Importing the bundle\'s routes from the <info>%s</info> file',
+            $this->makePathRelative($targetRoutingPath)
+        ));
+        $routing = new RoutingManipulator($targetRoutingPath);
+        try {
+            $ret = $routing->addResource($bundle->getName(), $bundle->getConfigurationFormat());
+            if (!$ret) {
+                if ('annotation' === $bundle->getConfigurationFormat()) {
+                    $help = sprintf("        <comment>resource: \"@%s/Controller/\"</comment>\n        <comment>type:     annotation</comment>\n", $bundle->getName());
+                } else {
+                    $help = sprintf("        <comment>resource: \"@%s/Resources/config/routing.%s\"</comment>\n", $bundle->getName(), $bundle->getConfigurationFormat());
+                }
+                $help .= "        <comment>prefix:   /</comment>\n";
+
+                return array(
+                    '- Import the bundle\'s routing resource in the app\'s main routing file:',
+                    '',
+                    sprintf('    <comment>%s:</comment>', $bundle->getName()),
+                    $help,
+                    '',
+                );
+            }
+        } catch (\RuntimeException $e) {
+            return array(
+                sprintf('Bundle <comment>%s</comment> is already imported.', $bundle->getName()),
+                '',
+            );
+        }
+    }
+
+    protected function updateConfiguration(OutputInterface $output, Bundle $bundle)
+    {
+        $targetConfigurationPath = $this->getContainer()->getParameter('kernel.root_dir').'/config/config.yml';
+        $output->writeln(sprintf(
+            '> Importing the bundle\'s %s from the <info>%s</info> file',
+            $bundle->getServicesConfigurationFilename(),
+            $this->makePathRelative($targetConfigurationPath)
+        ));
+        $manipulator = new ConfigurationManipulator($targetConfigurationPath);
+        try {
+            $manipulator->addResource($bundle);
+        } catch (\RuntimeException $e) {
+            return array(
+                sprintf('- Import the bundle\'s "%s" resource in the app\'s main configuration file:', $bundle->getServicesConfigurationFilename()),
+                '',
+                $manipulator->getImportCode($bundle),
+                '',
+            );
+        }
+    }
+
+    /**
+     * Creates the Bundle object based on the user's (non-interactive) input.
+     *
+     * @param InputInterface $input
+     *
+     * @return Bundle
+     */
+    protected function createBundleObject(InputInterface $input)
+    {
+        foreach (array('namespace', 'dir') as $option) {
+            if (null === $input->getOption($option)) {
+                throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
+            }
+        }
+
+        $shared = $input->getOption('shared');
+
+        $namespace = Validators::validateBundleNamespace($input->getOption('namespace'), $shared);
+        if (!$bundleName = $input->getOption('bundle-name')) {
+            $bundleName = strtr($namespace, array('\\' => ''));
+        }
+        $bundleName = Validators::validateBundleName($bundleName);
+        $dir = $input->getOption('dir');
+        if (null === $input->getOption('format')) {
+            $input->setOption('format', 'annotation');
+        }
+        $format = Validators::validateFormat($input->getOption('format'));
+
+        // an assumption that the kernel root dir is in a directory (like app/)
+        $projectRootDirectory = $this->getContainer()->getParameter('kernel.root_dir').'/..';
+
+        if (!$this->getContainer()->get('filesystem')->isAbsolutePath($dir)) {
+            $dir = $projectRootDirectory.'/'.$dir;
+        }
+        // add trailing / if necessary
+        $dir = '/' === substr($dir, -1, 1) ? $dir : $dir.'/';
+
+        $bundle = new Bundle(
+            $namespace,
+            $bundleName,
+            $dir,
+            $format,
+            $shared
+        );
+
+        // not shared - put the tests in the root
+        if (!$shared) {
+            $testsDir = $projectRootDirectory.'/tests/'.$bundleName;
+            $bundle->setTestsDirectory($testsDir);
+        }
+
+        return $bundle;
     }
 
     protected function createGenerator()

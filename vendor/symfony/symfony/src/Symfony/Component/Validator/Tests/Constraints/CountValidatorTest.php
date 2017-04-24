@@ -20,6 +20,18 @@ use Symfony\Component\Validator\Validation;
  */
 abstract class CountValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new CountValidator();
+    }
+
+    abstract protected function createCollection(array $content);
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Count(6));
@@ -44,8 +56,6 @@ abstract class CountValidatorTest extends AbstractConstraintValidatorTest
             array($this->createCollection(array('a' => 1, 'b' => 2, 'c' => 3))),
         );
     }
-
-    abstract protected function createCollection(array $content);
 
     public function getFourElements()
     {
@@ -189,15 +199,5 @@ abstract class CountValidatorTest extends AbstractConstraintValidatorTest
 
         $this->assertEquals(5, $constraint->min);
         $this->assertEquals(5, $constraint->max);
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new CountValidator();
     }
 }

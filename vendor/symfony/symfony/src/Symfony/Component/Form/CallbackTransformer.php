@@ -33,7 +33,7 @@ class CallbackTransformer implements DataTransformerInterface
     /**
      * Constructor.
      *
-     * @param callable $transform The forward transform callback
+     * @param callable $transform        The forward transform callback
      * @param callable $reverseTransform The reverse transform callback
      *
      * @throws \InvalidArgumentException when the given callbacks is invalid

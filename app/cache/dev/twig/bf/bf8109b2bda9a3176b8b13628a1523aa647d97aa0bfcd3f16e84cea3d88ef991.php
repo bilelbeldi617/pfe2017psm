@@ -15,10 +15,30 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "@WebProfiler/Profiler/layout.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_2918777053e481c42c71f58764f3e0379cc125678a9a4873b72940e88b734191 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_2918777053e481c42c71f58764f3e0379cc125678a9a4873b72940e88b734191->enter($__internal_2918777053e481c42c71f58764f3e0379cc125678a9a4873b72940e88b734191_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Collector/events.html.twig"));
+
+        // line 3
+        $context["helper"] = $this;
+        // line 1
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_2918777053e481c42c71f58764f3e0379cc125678a9a4873b72940e88b734191->leave($__internal_2918777053e481c42c71f58764f3e0379cc125678a9a4873b72940e88b734191_prof);
+
+    }
+
+    // line 5
     public function block_menu($context, array $blocks = array())
     {
-        $__internal_65a9296dd7f054dd71e2e3c624af4772054ca8c4ccfe9c3c49a2aa31b3f14a24 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_65a9296dd7f054dd71e2e3c624af4772054ca8c4ccfe9c3c49a2aa31b3f14a24->enter($__internal_65a9296dd7f054dd71e2e3c624af4772054ca8c4ccfe9c3c49a2aa31b3f14a24_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "menu"));
+        $__internal_5c1d8f7d792b31e2a954d3dd9048b176828424012a0c01f96aa2997ae35b3bc1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_5c1d8f7d792b31e2a954d3dd9048b176828424012a0c01f96aa2997ae35b3bc1->enter($__internal_5c1d8f7d792b31e2a954d3dd9048b176828424012a0c01f96aa2997ae35b3bc1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "menu"));
 
         // line 6
         echo "<span class=\"label\">
@@ -29,15 +49,16 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
     <strong>Events</strong>
 </span>
 ";
-
-        $__internal_65a9296dd7f054dd71e2e3c624af4772054ca8c4ccfe9c3c49a2aa31b3f14a24->leave($__internal_65a9296dd7f054dd71e2e3c624af4772054ca8c4ccfe9c3c49a2aa31b3f14a24_prof);
+        
+        $__internal_5c1d8f7d792b31e2a954d3dd9048b176828424012a0c01f96aa2997ae35b3bc1->leave($__internal_5c1d8f7d792b31e2a954d3dd9048b176828424012a0c01f96aa2997ae35b3bc1_prof);
 
     }
 
+    // line 12
     public function block_panel($context, array $blocks = array())
     {
-        $__internal_fbb1ad08462d5f479c72f2473297147e79f3ea7a9f55392ef0e0de436618d33b = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_fbb1ad08462d5f479c72f2473297147e79f3ea7a9f55392ef0e0de436618d33b->enter($__internal_fbb1ad08462d5f479c72f2473297147e79f3ea7a9f55392ef0e0de436618d33b_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "panel"));
+        $__internal_cc3ca406d87151380fd7bd144feef18ca974e7bf25c749f20cebeb4e90000bdd = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_cc3ca406d87151380fd7bd144feef18ca974e7bf25c749f20cebeb4e90000bdd->enter($__internal_cc3ca406d87151380fd7bd144feef18ca974e7bf25c749f20cebeb4e90000bdd_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "panel"));
 
         // line 13
         echo "    <h2>Event Dispatcher</h2>
@@ -101,13 +122,12 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
         </div>
     ";
         }
-
-        $__internal_fbb1ad08462d5f479c72f2473297147e79f3ea7a9f55392ef0e0de436618d33b->leave($__internal_fbb1ad08462d5f479c72f2473297147e79f3ea7a9f55392ef0e0de436618d33b_prof);
+        
+        $__internal_cc3ca406d87151380fd7bd144feef18ca974e7bf25c749f20cebeb4e90000bdd->leave($__internal_cc3ca406d87151380fd7bd144feef18ca974e7bf25c749f20cebeb4e90000bdd_prof);
 
     }
 
-    // line 5
-
+    // line 52
     public function getrender_table($__listeners__ = null)
     {
         $context = $this->env->mergeGlobals(array(
@@ -119,8 +139,8 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
 
         ob_start();
         try {
-            $__internal_21ef3fc85353a8980e663794ae699f30334addbcf92df659fc2d7e478d6e24ec = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-            $__internal_21ef3fc85353a8980e663794ae699f30334addbcf92df659fc2d7e478d6e24ec->enter($__internal_21ef3fc85353a8980e663794ae699f30334addbcf92df659fc2d7e478d6e24ec_prof = new Twig_Profiler_Profile($this->getTemplateName(), "macro", "render_table"));
+            $__internal_6260ce965dfe6ae4c3edf24930fa1658840f9d9180d28067e3099367f585557f = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+            $__internal_6260ce965dfe6ae4c3edf24930fa1658840f9d9180d28067e3099367f585557f->enter($__internal_6260ce965dfe6ae4c3edf24930fa1658840f9d9180d28067e3099367f585557f_prof = new Twig_Profiler_Profile($this->getTemplateName(), "macro", "render_table"));
 
             // line 53
             echo "    <table>
@@ -139,10 +159,10 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable((isset($context["listeners"]) ? $context["listeners"] : $this->getContext($context, "listeners")));
             $context['loop'] = array(
-                'parent' => $context['_parent'],
-                'index0' => 0,
-                'index' => 1,
-                'first' => true,
+              'parent' => $context['_parent'],
+              'index0' => 0,
+              'index'  => 1,
+              'first'  => true,
             );
             if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
                 $length = count($context['_seq']);
@@ -157,7 +177,7 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
                 if (($this->getAttribute($context["loop"], "first", array()) || ($this->getAttribute($context["listener"], "event", array()) != (isset($context["previous_event"]) ? $context["previous_event"] : $this->getContext($context, "previous_event"))))) {
                     // line 64
                     echo "                ";
-                    if (!$this->getAttribute($context["loop"], "first", array())) {
+                    if ( !$this->getAttribute($context["loop"], "first", array())) {
                         // line 65
                         echo "                    </tbody>
                 ";
@@ -196,8 +216,7 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
 
                     ";
                 } elseif (($this->getAttribute(                // line 84
-                        $context["listener"], "type", array()) == "Function")
-                ) {
+$context["listener"], "type", array()) == "Function")) {
                     // line 85
                     echo "
                         ";
@@ -234,8 +253,7 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
                     echo "
                     ";
                 } elseif (($this->getAttribute(                // line 95
-                        $context["listener"], "type", array()) == "Method")
-                ) {
+$context["listener"], "type", array()) == "Method")) {
                     // line 96
                     echo "
                         ";
@@ -243,7 +261,7 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
                     $context["link"] = $this->env->getExtension('Symfony\Bridge\Twig\Extension\CodeExtension')->getFileLink($this->getAttribute($context["listener"], "file", array()), $this->getAttribute($context["listener"], "line", array()));
                     // line 98
                     echo "                        ";
-                    $context["class_namespace"] = twig_join_filter(twig_split_filter($this->env, $this->getAttribute($context["listener"], "class", array()), "\\", -1), "\\");
+                    $context["class_namespace"] = twig_join_filter(twig_split_filter($this->env, $this->getAttribute($context["listener"], "class", array()), "\\",  -1), "\\");
                     // line 99
                     echo "
                         ";
@@ -311,8 +329,8 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
             // line 116
             echo "    </table>
 ";
-
-            $__internal_21ef3fc85353a8980e663794ae699f30334addbcf92df659fc2d7e478d6e24ec->leave($__internal_21ef3fc85353a8980e663794ae699f30334addbcf92df659fc2d7e478d6e24ec_prof);
+            
+            $__internal_6260ce965dfe6ae4c3edf24930fa1658840f9d9180d28067e3099367f585557f->leave($__internal_6260ce965dfe6ae4c3edf24930fa1658840f9d9180d28067e3099367f585557f_prof);
 
         } catch (Exception $e) {
             ob_end_clean();
@@ -327,24 +345,25 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
         return ('' === $tmp = ob_get_clean()) ? '' : new Twig_Markup($tmp, $this->env->getCharset());
     }
 
-    // line 12
+    public function getTemplateName()
+    {
+        return "@WebProfiler/Collector/events.html.twig";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 52
-
     public function getDebugInfo()
     {
-        return array(330 => 116, 316 => 115, 312 => 113, 310 => 112, 305 => 109, 301 => 107, 294 => 105, 285 => 104, 280 => 102, 271 => 101, 269 => 100, 266 => 99, 263 => 98, 261 => 97, 258 => 96, 256 => 95, 253 => 94, 246 => 92, 241 => 91, 236 => 89, 229 => 88, 226 => 87, 224 => 86, 221 => 85, 219 => 84, 213 => 80, 211 => 79, 206 => 77, 202 => 75, 199 => 74, 197 => 73, 191 => 70, 186 => 67, 182 => 65, 179 => 64, 176 => 63, 158 => 62, 156 => 61, 146 => 53, 131 => 52, 120 => 46, 114 => 44, 101 => 33, 99 => 32, 94 => 30, 86 => 25, 80 => 22, 76 => 20, 70 => 16, 68 => 15, 64 => 13, 58 => 12, 47 => 7, 44 => 6, 38 => 5, 31 => 1, 29 => 3, 11 => 1,);
+        return array (  330 => 116,  316 => 115,  312 => 113,  310 => 112,  305 => 109,  301 => 107,  294 => 105,  285 => 104,  280 => 102,  271 => 101,  269 => 100,  266 => 99,  263 => 98,  261 => 97,  258 => 96,  256 => 95,  253 => 94,  246 => 92,  241 => 91,  236 => 89,  229 => 88,  226 => 87,  224 => 86,  221 => 85,  219 => 84,  213 => 80,  211 => 79,  206 => 77,  202 => 75,  199 => 74,  197 => 73,  191 => 70,  186 => 67,  182 => 65,  179 => 64,  176 => 63,  158 => 62,  156 => 61,  146 => 53,  131 => 52,  120 => 46,  114 => 44,  101 => 33,  99 => 32,  94 => 30,  86 => 25,  80 => 22,  76 => 20,  70 => 16,  68 => 15,  64 => 13,  58 => 12,  47 => 7,  44 => 6,  38 => 5,  31 => 1,  29 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -469,29 +488,5 @@ class __TwigTemplate_e43181cbc3f1a1aa7ce037e1c4ccb103d6237fffc01a90de8355a3a0128
     </table>
 {% endmacro %}
 ", "@WebProfiler/Collector/events.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Collector\\events.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "@WebProfiler/Profiler/layout.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_62499356c4a4a0e5cd4cc5c2e9430b84a206f67cddfb3f545a7cd2fafbfac1ac = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_62499356c4a4a0e5cd4cc5c2e9430b84a206f67cddfb3f545a7cd2fafbfac1ac->enter($__internal_62499356c4a4a0e5cd4cc5c2e9430b84a206f67cddfb3f545a7cd2fafbfac1ac_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Collector/events.html.twig"));
-
-        // line 3
-        $context["helper"] = $this;
-        // line 1
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_62499356c4a4a0e5cd4cc5c2e9430b84a206f67cddfb3f545a7cd2fafbfac1ac->leave($__internal_62499356c4a4a0e5cd4cc5c2e9430b84a206f67cddfb3f545a7cd2fafbfac1ac_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@WebProfiler/Collector/events.html.twig";
     }
 }

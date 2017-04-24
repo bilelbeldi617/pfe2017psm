@@ -36,17 +36,6 @@ class EmailSenderListener implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
-    {
-        $listeners = array(KernelEvents::TERMINATE => 'onTerminate');
-
-        if (class_exists('Symfony\Component\Console\ConsoleEvents')) {
-            $listeners[ConsoleEvents::TERMINATE] = 'onTerminate';
-        }
-
-        return $listeners;
-    }
-
     public function onTerminate()
     {
         if (!$this->container->has('mailer')) {
@@ -73,5 +62,16 @@ class EmailSenderListener implements EventSubscriberInterface
                 }
             }
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        $listeners = array(KernelEvents::TERMINATE => 'onTerminate');
+
+        if (class_exists('Symfony\Component\Console\ConsoleEvents')) {
+            $listeners[ConsoleEvents::TERMINATE] = 'onTerminate';
+        }
+
+        return $listeners;
     }
 }

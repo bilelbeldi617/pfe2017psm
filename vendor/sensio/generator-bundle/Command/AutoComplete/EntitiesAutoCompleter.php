@@ -30,17 +30,19 @@ class EntitiesAutoCompleter
     public function getSuggestions()
     {
         $configuration = $this->manager
-            ->getConfiguration();
+            ->getConfiguration()
+        ;
 
         $namespaceReplacements = array();
 
         foreach ($configuration->getEntityNamespaces() as $alias => $namespace) {
-            $namespaceReplacements[$namespace . '\\'] = $alias . ':';
+            $namespaceReplacements[$namespace.'\\'] = $alias.':';
         }
 
         $entities = $configuration
             ->getMetadataDriverImpl()
-            ->getAllClassNames();
+            ->getAllClassNames()
+        ;
 
         return array_map(function ($entity) use ($namespaceReplacements) {
             return strtr($entity, $namespaceReplacements);

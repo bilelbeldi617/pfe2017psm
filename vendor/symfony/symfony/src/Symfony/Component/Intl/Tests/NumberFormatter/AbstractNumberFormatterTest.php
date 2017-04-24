@@ -31,15 +31,6 @@ abstract class AbstractNumberFormatterTest extends TestCase
         $this->assertEquals($expected, $formatter->formatCurrency($value, $currency));
     }
 
-    /**
-     * @param string $locale
-     * @param null $style
-     * @param null $pattern
-     *
-     * @return \NumberFormatter
-     */
-    abstract protected function getNumberFormatter($locale = 'en', $style = null, $pattern = null);
-
     public function formatCurrencyWithDecimalStyleProvider()
     {
         return array(
@@ -180,23 +171,6 @@ abstract class AbstractNumberFormatterTest extends TestCase
         $this->assertSame($errorCode, $formatter->getErrorCode());
         $this->assertFalse($this->isIntlFailure($formatter->getErrorCode()));
     }
-
-    /**
-     * @return string
-     */
-    abstract protected function getIntlErrorMessage();
-
-    /**
-     * @return int
-     */
-    abstract protected function getIntlErrorCode();
-
-    /**
-     * @param int $errorCode
-     *
-     * @return bool
-     */
-    abstract protected function isIntlFailure($errorCode);
 
     public function testFormatWithCurrencyStyle()
     {
@@ -667,8 +641,8 @@ abstract class AbstractNumberFormatterTest extends TestCase
     {
         return array(
             array('prefix1', false, '->parse() does not parse a number with a string prefix.', 0),
-            array('1.4suffix', (float)1.4, '->parse() parses a number with a string suffix.', 3),
-            array('-.4suffix', (float)-0.4, '->parse() parses a negative dot float with suffix.', 3),
+            array('1.4suffix', (float) 1.4, '->parse() parses a number with a string suffix.', 3),
+            array('-.4suffix', (float) -0.4, '->parse() parses a negative dot float with suffix.', 3),
             array('-123,4', false, '->parse() does not parse when invalid grouping used.', 6),
             array('-1234,567', false, '->parse() does not parse when invalid grouping used.', 5),
             array('-123,,456', false, '->parse() does not parse when invalid grouping used.', 4),
@@ -815,7 +789,7 @@ abstract class AbstractNumberFormatterTest extends TestCase
     public function parseTypeDoubleProvider()
     {
         return array(
-            array('1', (float)1),
+            array('1', (float) 1),
             array('1.1', 1.1),
             array('9,223,372,036,854,775,808', 9223372036854775808),
             array('-9,223,372,036,854,775,809', -9223372036854775809),
@@ -843,4 +817,30 @@ abstract class AbstractNumberFormatterTest extends TestCase
         $formatter->parse('123', NumberFormatter::TYPE_DOUBLE, $position);
         $this->assertEquals(3, $position);
     }
+
+    /**
+     * @param string $locale
+     * @param null   $style
+     * @param null   $pattern
+     *
+     * @return \NumberFormatter
+     */
+    abstract protected function getNumberFormatter($locale = 'en', $style = null, $pattern = null);
+
+    /**
+     * @return string
+     */
+    abstract protected function getIntlErrorMessage();
+
+    /**
+     * @return int
+     */
+    abstract protected function getIntlErrorCode();
+
+    /**
+     * @param int $errorCode
+     *
+     * @return bool
+     */
+    abstract protected function isIntlFailure($errorCode);
 }

@@ -47,6 +47,14 @@ class LintCommand extends Command
         $this->twig = $twig;
     }
 
+    /**
+     * @return \Twig_Environment $twig
+     */
+    protected function getTwigEnvironment()
+    {
+        return $this->twig;
+    }
+
     protected function configure()
     {
         $this
@@ -72,7 +80,8 @@ Or of a whole directory:
   <info>php %command.full_name% dirname --format=json</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -109,12 +118,45 @@ EOF
         return $this->display($input, $output, $io, $filesInfo);
     }
 
-    /**
-     * @return \Twig_Environment $twig
-     */
-    protected function getTwigEnvironment()
+    private function getFilesInfo(\Twig_Environment $twig, array $filenames)
     {
-        return $this->twig;
+        $filesInfo = array();
+        foreach ($filenames as $filename) {
+            foreach ($this->findFiles($filename) as $file) {
+                $filesInfo[] = $this->validate($twig, file_get_contents($file), $file);
+            }
+        }
+
+        return $filesInfo;
+    }
+
+    protected function findFiles($filename)
+    {
+        if (is_file($filename)) {
+            return array($filename);
+        } elseif (is_dir($filename)) {
+            return Finder::create()->files()->in($filename)->name('*.twig');
+        }
+
+        throw new \RuntimeException(sprintf('File or directory "%s" is not readable', $filename));
+    }
+
+    private function validate(\Twig_Environment $twig, $template, $file)
+    {
+        $realLoader = $twig->getLoader();
+        try {
+            $temporaryLoader = new \Twig_Loader_Array(array((string) $file => $template));
+            $twig->setLoader($temporaryLoader);
+            $nodeTree = $twig->parse($twig->tokenize(new \Twig_Source($template, (string) $file)));
+            $twig->compile($nodeTree);
+            $twig->setLoader($realLoader);
+        } catch (\Twig_Error $e) {
+            $twig->setLoader($realLoader);
+
+            return array('template' => $template, 'file' => $file, 'valid' => false, 'exception' => $e);
+        }
+
+        return array('template' => $template, 'file' => $file, 'valid' => true);
     }
 
     private function display(InputInterface $input, OutputInterface $output, SymfonyStyle $io, $files)
@@ -135,7 +177,7 @@ EOF
 
         foreach ($filesInfo as $info) {
             if ($info['valid'] && $output->isVerbose()) {
-                $io->comment('<info>OK</info>' . ($info['file'] ? sprintf(' in %s', $info['file']) : ''));
+                $io->comment('<info>OK</info>'.($info['file'] ? sprintf(' in %s', $info['file']) : ''));
             } elseif (!$info['valid']) {
                 ++$errors;
                 $this->renderException($io, $info['template'], $info['exception'], $info['file']);
@@ -147,6 +189,25 @@ EOF
         } else {
             $io->warning(sprintf('%d Twig files have valid syntax and %d contain errors.', count($filesInfo) - $errors, $errors));
         }
+
+        return min($errors, 1);
+    }
+
+    private function displayJson(OutputInterface $output, $filesInfo)
+    {
+        $errors = 0;
+
+        array_walk($filesInfo, function (&$v) use (&$errors) {
+            $v['file'] = (string) $v['file'];
+            unset($v['template']);
+            if (!$v['valid']) {
+                $v['message'] = $v['exception']->getMessage();
+                unset($v['exception']);
+                ++$errors;
+            }
+        });
+
+        $output->writeln(json_encode($filesInfo, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : 0));
 
         return min($errors, 1);
     }
@@ -188,65 +249,5 @@ EOF
         }
 
         return $result;
-    }
-
-    private function displayJson(OutputInterface $output, $filesInfo)
-    {
-        $errors = 0;
-
-        array_walk($filesInfo, function (&$v) use (&$errors) {
-            $v['file'] = (string)$v['file'];
-            unset($v['template']);
-            if (!$v['valid']) {
-                $v['message'] = $v['exception']->getMessage();
-                unset($v['exception']);
-                ++$errors;
-            }
-        });
-
-        $output->writeln(json_encode($filesInfo, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : 0));
-
-        return min($errors, 1);
-    }
-
-    private function validate(\Twig_Environment $twig, $template, $file)
-    {
-        $realLoader = $twig->getLoader();
-        try {
-            $temporaryLoader = new \Twig_Loader_Array(array((string)$file => $template));
-            $twig->setLoader($temporaryLoader);
-            $nodeTree = $twig->parse($twig->tokenize(new \Twig_Source($template, (string)$file)));
-            $twig->compile($nodeTree);
-            $twig->setLoader($realLoader);
-        } catch (\Twig_Error $e) {
-            $twig->setLoader($realLoader);
-
-            return array('template' => $template, 'file' => $file, 'valid' => false, 'exception' => $e);
-        }
-
-        return array('template' => $template, 'file' => $file, 'valid' => true);
-    }
-
-    private function getFilesInfo(\Twig_Environment $twig, array $filenames)
-    {
-        $filesInfo = array();
-        foreach ($filenames as $filename) {
-            foreach ($this->findFiles($filename) as $file) {
-                $filesInfo[] = $this->validate($twig, file_get_contents($file), $file);
-            }
-        }
-
-        return $filesInfo;
-    }
-
-    protected function findFiles($filename)
-    {
-        if (is_file($filename)) {
-            return array($filename);
-        } elseif (is_dir($filename)) {
-            return Finder::create()->files()->in($filename)->name('*.twig');
-        }
-
-        throw new \RuntimeException(sprintf('File or directory "%s" is not readable', $filename));
     }
 }

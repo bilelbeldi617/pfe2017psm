@@ -26,7 +26,7 @@ class ParsedExpression extends Expression
      * Constructor.
      *
      * @param string $expression An expression
-     * @param Node $nodes A Node representing the expression
+     * @param Node   $nodes      A Node representing the expression
      */
     public function __construct($expression, Node $nodes)
     {

@@ -18,6 +18,16 @@ use Symfony\Component\Validator\Validation;
 
 class CurrencyValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new CurrencyValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Currency());
@@ -87,7 +97,7 @@ class CurrencyValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($currency, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $currency . '"')
+            ->setParameter('{{ value }}', '"'.$currency.'"')
             ->setCode(Currency::NO_SUCH_CURRENCY_ERROR)
             ->assertRaised();
     }
@@ -98,15 +108,5 @@ class CurrencyValidatorTest extends AbstractConstraintValidatorTest
             array('EN'),
             array('foobar'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new CurrencyValidator();
     }
 }

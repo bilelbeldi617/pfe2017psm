@@ -29,7 +29,7 @@ class SearchAndRenderBlockNode extends \Twig_Node_Expression_Function
 
         if (isset($arguments[0])) {
             $compiler->subcompile($arguments[0]);
-            $compiler->raw(', \'' . $blockNameSuffix . '\'');
+            $compiler->raw(', \''.$blockNameSuffix.'\'');
 
             if (isset($arguments[1])) {
                 if ('label' === $blockNameSuffix) {
@@ -54,7 +54,7 @@ class SearchAndRenderBlockNode extends \Twig_Node_Expression_Function
                             if (null !== $originalVariables) {
                                 foreach ($originalVariables->getKeyValuePairs() as $pair) {
                                     // Don't copy the original label attribute over if it exists
-                                    if ((string)$labelKey !== (string)$pair['key']) {
+                                    if ((string) $labelKey !== (string) $pair['key']) {
                                         $variables->addElement($pair['value'], $pair['key']);
                                     }
                                 }

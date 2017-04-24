@@ -42,7 +42,7 @@ class GlobalVariables
      */
     public function getSecurity()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.6 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         if ($this->container->has('security.context')) {
             return $this->container->get('security.context');
@@ -77,18 +77,6 @@ class GlobalVariables
     }
 
     /**
-     * Returns the current session.
-     *
-     * @return Session|null The session
-     */
-    public function getSession()
-    {
-        if ($request = $this->getRequest()) {
-            return $request->getSession();
-        }
-    }
-
-    /**
      * Returns the current request.
      *
      * @return Request|null The HTTP request object
@@ -97,6 +85,18 @@ class GlobalVariables
     {
         if ($this->container->has('request_stack')) {
             return $this->container->get('request_stack')->getCurrentRequest();
+        }
+    }
+
+    /**
+     * Returns the current session.
+     *
+     * @return Session|null The session
+     */
+    public function getSession()
+    {
+        if ($request = $this->getRequest()) {
+            return $request->getSession();
         }
     }
 
@@ -117,6 +117,6 @@ class GlobalVariables
      */
     public function getDebug()
     {
-        return (bool)$this->container->getParameter('kernel.debug');
+        return (bool) $this->container->getParameter('kernel.debug');
     }
 }

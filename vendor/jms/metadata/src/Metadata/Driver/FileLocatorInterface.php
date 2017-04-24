@@ -6,7 +6,7 @@ interface FileLocatorInterface
 {
     /**
      * @param \ReflectionClass $class
-     * @param string $extension
+     * @param string           $extension
      *
      * @return string|null
      */

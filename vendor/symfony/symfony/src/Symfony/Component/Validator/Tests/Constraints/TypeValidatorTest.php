@@ -19,12 +19,14 @@ class TypeValidatorTest extends AbstractConstraintValidatorTest
 {
     protected static $file;
 
-    public static function tearDownAfterClass()
+    protected function getApiVersion()
     {
-        if (static::$file) {
-            fclose(static::$file);
-            static::$file = null;
-        }
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new TypeValidator();
     }
 
     public function testNullIsValid()
@@ -110,15 +112,6 @@ class TypeValidatorTest extends AbstractConstraintValidatorTest
         );
     }
 
-    protected function createFile()
-    {
-        if (!static::$file) {
-            static::$file = fopen(__FILE__, 'r');
-        }
-
-        return static::$file;
-    }
-
     /**
      * @dataProvider getInvalidValues
      */
@@ -175,13 +168,20 @@ class TypeValidatorTest extends AbstractConstraintValidatorTest
         );
     }
 
-    protected function getApiVersion()
+    protected function createFile()
     {
-        return Validation::API_VERSION_2_5;
+        if (!static::$file) {
+            static::$file = fopen(__FILE__, 'r');
+        }
+
+        return static::$file;
     }
 
-    protected function createValidator()
+    public static function tearDownAfterClass()
     {
-        return new TypeValidator();
+        if (static::$file) {
+            fclose(static::$file);
+            static::$file = null;
+        }
     }
 }

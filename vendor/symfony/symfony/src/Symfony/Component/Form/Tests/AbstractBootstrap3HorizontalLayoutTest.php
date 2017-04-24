@@ -21,7 +21,7 @@ abstract class AbstractBootstrap3HorizontalLayoutTest extends AbstractBootstrap3
         $html = $this->renderLabel($view);
 
         $this->assertMatchesXpath($html,
-            '/label
+'/label
     [@class="col-sm-2 control-label required"]
     [.="[trans]Name[/trans]"]
 '
@@ -38,7 +38,7 @@ abstract class AbstractBootstrap3HorizontalLayoutTest extends AbstractBootstrap3
         ));
 
         $this->assertMatchesXpath($html,
-            '/label
+'/label
     [@for="name"]
     [@class="col-sm-2 control-label required"]
 '
@@ -55,7 +55,7 @@ abstract class AbstractBootstrap3HorizontalLayoutTest extends AbstractBootstrap3
         ));
 
         $this->assertMatchesXpath($html,
-            '/label
+'/label
     [@for="name"]
     [@class="my&class col-sm-2 control-label required"]
 '
@@ -72,7 +72,7 @@ abstract class AbstractBootstrap3HorizontalLayoutTest extends AbstractBootstrap3
         ));
 
         $this->assertMatchesXpath($html,
-            '/label
+'/label
     [@for="name"]
     [@class="my&class col-sm-2 control-label required"]
     [.="[trans]Custom label[/trans]"]
@@ -92,7 +92,7 @@ abstract class AbstractBootstrap3HorizontalLayoutTest extends AbstractBootstrap3
         ));
 
         $this->assertMatchesXpath($html,
-            '/label
+'/label
     [@for="name"]
     [@class="my&class col-sm-2 control-label required"]
     [.="[trans]Custom label[/trans]"]
@@ -130,9 +130,9 @@ abstract class AbstractBootstrap3HorizontalLayoutTest extends AbstractBootstrap3
     public function testStartTagForMultipartForm()
     {
         $form = $this->factory->createBuilder('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
-            'method' => 'get',
-            'action' => 'http://example.com/directory',
-        ))
+                'method' => 'get',
+                'action' => 'http://example.com/directory',
+            ))
             ->add('file', 'Symfony\Component\Form\Extension\Core\Type\FileType')
             ->getForm();
 

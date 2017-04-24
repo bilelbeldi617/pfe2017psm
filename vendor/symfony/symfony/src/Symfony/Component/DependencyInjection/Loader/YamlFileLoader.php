@@ -72,87 +72,17 @@ class YamlFileLoader extends FileLoader
     }
 
     /**
-     * Loads a YAML file.
-     *
-     * @param string $file
-     *
-     * @return array The file content
-     *
-     * @throws InvalidArgumentException when the given file is not a local file or when it does not exist
+     * {@inheritdoc}
      */
-    protected function loadFile($file)
+    public function supports($resource, $type = null)
     {
-        if (!class_exists('Symfony\Component\Yaml\Parser')) {
-            throw new RuntimeException('Unable to load YAML config files as the Symfony Yaml Component is not installed.');
-        }
-
-        if (!stream_is_local($file)) {
-            throw new InvalidArgumentException(sprintf('This is not a local file "%s".', $file));
-        }
-
-        if (!file_exists($file)) {
-            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid.', $file));
-        }
-
-        if (null === $this->yamlParser) {
-            $this->yamlParser = new YamlParser();
-        }
-
-        try {
-            $configuration = $this->yamlParser->parse(file_get_contents($file));
-        } catch (ParseException $e) {
-            throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $file), 0, $e);
-        }
-
-        return $this->validate($configuration, $file);
-    }
-
-    /**
-     * Validates a YAML file.
-     *
-     * @param mixed $content
-     * @param string $file
-     *
-     * @return array
-     *
-     * @throws InvalidArgumentException When service file is not valid
-     */
-    private function validate($content, $file)
-    {
-        if (null === $content) {
-            return $content;
-        }
-
-        if (!is_array($content)) {
-            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid. It should contain an array. Check your YAML syntax.', $file));
-        }
-
-        foreach ($content as $namespace => $data) {
-            if (in_array($namespace, array('imports', 'parameters', 'services'))) {
-                continue;
-            }
-
-            if (!$this->container->hasExtension($namespace)) {
-                $extensionNamespaces = array_filter(array_map(function ($ext) {
-                    return $ext->getAlias();
-                }, $this->container->getExtensions()));
-                throw new InvalidArgumentException(sprintf(
-                    'There is no extension able to load the configuration for "%s" (in %s). Looked for namespace "%s", found %s',
-                    $namespace,
-                    $file,
-                    $namespace,
-                    $extensionNamespaces ? sprintf('"%s"', implode('", "', $extensionNamespaces)) : 'none'
-                ));
-            }
-        }
-
-        return $content;
+        return is_string($resource) && in_array(pathinfo($resource, PATHINFO_EXTENSION), array('yml', 'yaml'), true);
     }
 
     /**
      * Parses all imports.
      *
-     * @param array $content
+     * @param array  $content
      * @param string $file
      */
     private function parseImports(array $content, $file)
@@ -172,74 +102,14 @@ class YamlFileLoader extends FileLoader
             }
 
             $this->setCurrentDir($defaultDirectory);
-            $this->import($import['resource'], null, isset($import['ignore_errors']) ? (bool)$import['ignore_errors'] : false, $file);
-        }
-    }
-
-    /**
-     * Resolves services.
-     *
-     * @param string|array $value
-     *
-     * @return array|string|Reference
-     */
-    private function resolveServices($value)
-    {
-        if (is_array($value)) {
-            $value = array_map(array($this, 'resolveServices'), $value);
-        } elseif (is_string($value) && 0 === strpos($value, '@=')) {
-            return new Expression(substr($value, 2));
-        } elseif (is_string($value) && 0 === strpos($value, '@')) {
-            if (0 === strpos($value, '@@')) {
-                $value = substr($value, 1);
-                $invalidBehavior = null;
-            } elseif (0 === strpos($value, '@?')) {
-                $value = substr($value, 2);
-                $invalidBehavior = ContainerInterface::IGNORE_ON_INVALID_REFERENCE;
-            } else {
-                $value = substr($value, 1);
-                $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE;
-            }
-
-            if ('=' === substr($value, -1)) {
-                $value = substr($value, 0, -1);
-                $strict = false;
-            } else {
-                $strict = true;
-            }
-
-            if (null !== $invalidBehavior) {
-                $value = new Reference($value, $invalidBehavior, $strict);
-            }
-        }
-
-        return $value;
-    }
-
-    /**
-     * Loads from Extensions.
-     *
-     * @param array $content
-     */
-    private function loadFromExtensions(array $content)
-    {
-        foreach ($content as $namespace => $values) {
-            if (in_array($namespace, array('imports', 'parameters', 'services'))) {
-                continue;
-            }
-
-            if (!is_array($values)) {
-                $values = array();
-            }
-
-            $this->container->loadFromExtension($namespace, $values);
+            $this->import($import['resource'], null, isset($import['ignore_errors']) ? (bool) $import['ignore_errors'] : false, $file);
         }
     }
 
     /**
      * Parses definitions.
      *
-     * @param array $content
+     * @param array  $content
      * @param string $file
      */
     private function parseDefinitions(array $content, $file)
@@ -260,9 +130,9 @@ class YamlFileLoader extends FileLoader
     /**
      * Parses a definition.
      *
-     * @param string $id
+     * @param string       $id
      * @param array|string $service
-     * @param string $file
+     * @param string       $file
      *
      * @throws InvalidArgumentException When tags are invalid
      */
@@ -279,7 +149,7 @@ class YamlFileLoader extends FileLoader
         }
 
         if (isset($service['alias'])) {
-            $public = !array_key_exists('public', $service) || (bool)$service['public'];
+            $public = !array_key_exists('public', $service) || (bool) $service['public'];
             $this->container->setAlias($id, new Alias($service['alias'], $public));
 
             return;
@@ -335,7 +205,7 @@ class YamlFileLoader extends FileLoader
             if (is_string($service['factory'])) {
                 if (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') === false) {
                     $parts = explode(':', $service['factory']);
-                    $definition->setFactory(array($this->resolveServices('@' . $parts[0]), $parts[1]));
+                    $definition->setFactory(array($this->resolveServices('@'.$parts[0]), $parts[1]));
                 } else {
                     $definition->setFactory($service['factory']);
                 }
@@ -464,10 +334,138 @@ class YamlFileLoader extends FileLoader
     }
 
     /**
-     * {@inheritdoc}
+     * Loads a YAML file.
+     *
+     * @param string $file
+     *
+     * @return array The file content
+     *
+     * @throws InvalidArgumentException when the given file is not a local file or when it does not exist
      */
-    public function supports($resource, $type = null)
+    protected function loadFile($file)
     {
-        return is_string($resource) && in_array(pathinfo($resource, PATHINFO_EXTENSION), array('yml', 'yaml'), true);
+        if (!class_exists('Symfony\Component\Yaml\Parser')) {
+            throw new RuntimeException('Unable to load YAML config files as the Symfony Yaml Component is not installed.');
+        }
+
+        if (!stream_is_local($file)) {
+            throw new InvalidArgumentException(sprintf('This is not a local file "%s".', $file));
+        }
+
+        if (!file_exists($file)) {
+            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid.', $file));
+        }
+
+        if (null === $this->yamlParser) {
+            $this->yamlParser = new YamlParser();
+        }
+
+        try {
+            $configuration = $this->yamlParser->parse(file_get_contents($file));
+        } catch (ParseException $e) {
+            throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $file), 0, $e);
+        }
+
+        return $this->validate($configuration, $file);
+    }
+
+    /**
+     * Validates a YAML file.
+     *
+     * @param mixed  $content
+     * @param string $file
+     *
+     * @return array
+     *
+     * @throws InvalidArgumentException When service file is not valid
+     */
+    private function validate($content, $file)
+    {
+        if (null === $content) {
+            return $content;
+        }
+
+        if (!is_array($content)) {
+            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid. It should contain an array. Check your YAML syntax.', $file));
+        }
+
+        foreach ($content as $namespace => $data) {
+            if (in_array($namespace, array('imports', 'parameters', 'services'))) {
+                continue;
+            }
+
+            if (!$this->container->hasExtension($namespace)) {
+                $extensionNamespaces = array_filter(array_map(function ($ext) { return $ext->getAlias(); }, $this->container->getExtensions()));
+                throw new InvalidArgumentException(sprintf(
+                    'There is no extension able to load the configuration for "%s" (in %s). Looked for namespace "%s", found %s',
+                    $namespace,
+                    $file,
+                    $namespace,
+                    $extensionNamespaces ? sprintf('"%s"', implode('", "', $extensionNamespaces)) : 'none'
+                ));
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * Resolves services.
+     *
+     * @param string|array $value
+     *
+     * @return array|string|Reference
+     */
+    private function resolveServices($value)
+    {
+        if (is_array($value)) {
+            $value = array_map(array($this, 'resolveServices'), $value);
+        } elseif (is_string($value) && 0 === strpos($value, '@=')) {
+            return new Expression(substr($value, 2));
+        } elseif (is_string($value) && 0 === strpos($value, '@')) {
+            if (0 === strpos($value, '@@')) {
+                $value = substr($value, 1);
+                $invalidBehavior = null;
+            } elseif (0 === strpos($value, '@?')) {
+                $value = substr($value, 2);
+                $invalidBehavior = ContainerInterface::IGNORE_ON_INVALID_REFERENCE;
+            } else {
+                $value = substr($value, 1);
+                $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE;
+            }
+
+            if ('=' === substr($value, -1)) {
+                $value = substr($value, 0, -1);
+                $strict = false;
+            } else {
+                $strict = true;
+            }
+
+            if (null !== $invalidBehavior) {
+                $value = new Reference($value, $invalidBehavior, $strict);
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Loads from Extensions.
+     *
+     * @param array $content
+     */
+    private function loadFromExtensions(array $content)
+    {
+        foreach ($content as $namespace => $values) {
+            if (in_array($namespace, array('imports', 'parameters', 'services'))) {
+                continue;
+            }
+
+            if (!is_array($values)) {
+                $values = array();
+            }
+
+            $this->container->loadFromExtension($namespace, $values);
+        }
     }
 }

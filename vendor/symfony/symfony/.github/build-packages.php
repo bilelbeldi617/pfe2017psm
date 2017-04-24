@@ -23,7 +23,7 @@ foreach ($dirs as $k => $dir) {
     }
     echo "$dir\n";
 
-    $json = ltrim(file_get_contents($dir . '/composer.json'));
+    $json = ltrim(file_get_contents($dir.'/composer.json'));
     if (null === $package = json_decode($json)) {
         passthru("composer validate $dir/composer.json");
         exit(1);
@@ -31,11 +31,11 @@ foreach ($dirs as $k => $dir) {
 
     $package->repositories = array(array(
         'type' => 'composer',
-        'url' => 'file://' . str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . '/',
+        'url' => 'file://'.str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)).'/',
     ));
     if (false === strpos($json, "\n    \"repositories\": [\n")) {
-        $json = rtrim(json_encode(array('repositories' => $package->repositories), $flags), "\n}") . ',' . substr($json, 1);
-        file_put_contents($dir . '/composer.json', $json);
+        $json = rtrim(json_encode(array('repositories' => $package->repositories), $flags), "\n}").','.substr($json, 1);
+        file_put_contents($dir.'/composer.json', $json);
     }
     passthru("cd $dir && tar -cf package.tar --exclude='package.tar' *");
 
@@ -45,11 +45,11 @@ foreach ($dirs as $k => $dir) {
     }
     $package->version = str_replace('-dev', '.x-dev', $package->extra->{'branch-alias'}->{'dev-master'});
     $package->dist['type'] = 'tar';
-    $package->dist['url'] = 'file://' . str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . "/$dir/package.tar";
+    $package->dist['url'] = 'file://'.str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__))."/$dir/package.tar";
 
     $packages[$package->name][$package->version] = $package;
 
-    $versions = file_get_contents('https://packagist.org/packages/' . $package->name . '.json');
+    $versions = file_get_contents('https://packagist.org/packages/'.$package->name.'.json');
     $versions = json_decode($versions)->package->versions;
 
     if ($package->version === str_replace('-dev', '.x-dev', $versions->{'dev-master'}->extra->{'branch-alias'}->{'dev-master'})) {
@@ -72,10 +72,10 @@ if ($dirs) {
 
     $package->repositories = array(array(
         'type' => 'composer',
-        'url' => 'file://' . str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . '/',
+        'url' => 'file://'.str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)).'/',
     ));
     if (false === strpos($json, "\n    \"repositories\": [\n")) {
-        $json = rtrim(json_encode(array('repositories' => $package->repositories), $flags), "\n}") . ',' . substr($json, 1);
+        $json = rtrim(json_encode(array('repositories' => $package->repositories), $flags), "\n}").','.substr($json, 1);
         file_put_contents('composer.json', $json);
     }
 }

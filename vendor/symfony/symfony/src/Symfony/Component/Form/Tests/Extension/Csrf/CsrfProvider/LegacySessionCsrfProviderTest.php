@@ -22,39 +22,6 @@ class LegacySessionCsrfProviderTest extends TestCase
     protected $provider;
     protected $session;
 
-    public function testGenerateCsrfToken()
-    {
-        $this->session->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue('ABCDEF'));
-
-        $token = $this->provider->generateCsrfToken('foo');
-
-        $this->assertEquals(sha1('SECRET' . 'foo' . 'ABCDEF'), $token);
-    }
-
-    public function testIsCsrfTokenValidSucceeds()
-    {
-        $this->session->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue('ABCDEF'));
-
-        $token = sha1('SECRET' . 'foo' . 'ABCDEF');
-
-        $this->assertTrue($this->provider->isCsrfTokenValid('foo', $token));
-    }
-
-    public function testIsCsrfTokenValidFails()
-    {
-        $this->session->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue('ABCDEF'));
-
-        $token = sha1('SECRET' . 'bar' . 'ABCDEF');
-
-        $this->assertFalse($this->provider->isCsrfTokenValid('foo', $token));
-    }
-
     protected function setUp()
     {
         $this->session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Session')->disableOriginalConstructor()->getMock();
@@ -65,5 +32,38 @@ class LegacySessionCsrfProviderTest extends TestCase
     {
         $this->provider = null;
         $this->session = null;
+    }
+
+    public function testGenerateCsrfToken()
+    {
+        $this->session->expects($this->once())
+                ->method('getId')
+                ->will($this->returnValue('ABCDEF'));
+
+        $token = $this->provider->generateCsrfToken('foo');
+
+        $this->assertEquals(sha1('SECRET'.'foo'.'ABCDEF'), $token);
+    }
+
+    public function testIsCsrfTokenValidSucceeds()
+    {
+        $this->session->expects($this->once())
+                ->method('getId')
+                ->will($this->returnValue('ABCDEF'));
+
+        $token = sha1('SECRET'.'foo'.'ABCDEF');
+
+        $this->assertTrue($this->provider->isCsrfTokenValid('foo', $token));
+    }
+
+    public function testIsCsrfTokenValidFails()
+    {
+        $this->session->expects($this->once())
+                ->method('getId')
+                ->will($this->returnValue('ABCDEF'));
+
+        $token = sha1('SECRET'.'bar'.'ABCDEF');
+
+        $this->assertFalse($this->provider->isCsrfTokenValid('foo', $token));
     }
 }

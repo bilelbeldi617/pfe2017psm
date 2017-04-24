@@ -51,28 +51,6 @@ class FormTypeGuesserChain implements FormTypeGuesserInterface
     }
 
     /**
-     * Executes a closure for each guesser and returns the best guess from the
-     * return values.
-     *
-     * @param \Closure $closure The closure to execute. Accepts a guesser
-     *                          as argument and should return a Guess instance
-     *
-     * @return Guess|null The guess with the highest confidence
-     */
-    private function guess(\Closure $closure)
-    {
-        $guesses = array();
-
-        foreach ($this->guessers as $guesser) {
-            if ($guess = $closure($guesser)) {
-                $guesses[] = $guess;
-            }
-        }
-
-        return Guess::getBestGuess($guesses);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function guessRequired($class, $property)
@@ -100,5 +78,27 @@ class FormTypeGuesserChain implements FormTypeGuesserInterface
         return $this->guess(function ($guesser) use ($class, $property) {
             return $guesser->guessPattern($class, $property);
         });
+    }
+
+    /**
+     * Executes a closure for each guesser and returns the best guess from the
+     * return values.
+     *
+     * @param \Closure $closure The closure to execute. Accepts a guesser
+     *                          as argument and should return a Guess instance
+     *
+     * @return Guess|null The guess with the highest confidence
+     */
+    private function guess(\Closure $closure)
+    {
+        $guesses = array();
+
+        foreach ($this->guessers as $guesser) {
+            if ($guess = $closure($guesser)) {
+                $guesses[] = $guess;
+            }
+        }
+
+        return Guess::getBestGuess($guesses);
     }
 }

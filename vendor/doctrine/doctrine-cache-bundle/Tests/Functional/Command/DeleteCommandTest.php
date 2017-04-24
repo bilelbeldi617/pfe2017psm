@@ -30,7 +30,7 @@ class DeleteCommandTest extends CommandTestCase
         parent::setUp();
 
         $this->command = new DeleteCommand();
-        $this->tester = $this->getTester($this->command);
+        $this->tester  = $this->getTester($this->command);
     }
 
     /**
@@ -53,8 +53,8 @@ class DeleteCommandTest extends CommandTestCase
     {
         $this->tester->execute(array(
             'cache-name' => $this->cacheName,
-            'cache-id' => $this->cacheId,
-            '--all' => true
+            'cache-id'   => $this->cacheId,
+            '--all'      => true
         ));
         $this->assertEquals("Deletion of all entries in {$this->cacheName} has succeeded\n", $this->tester->getDisplay());
     }

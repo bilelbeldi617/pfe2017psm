@@ -21,11 +21,11 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     /**
      * Create a new Attachment with $headers, $encoder and $cache.
      *
-     * @param Swift_Mime_HeaderSet $headers
+     * @param Swift_Mime_HeaderSet      $headers
      * @param Swift_Mime_ContentEncoder $encoder
-     * @param Swift_KeyCache $cache
-     * @param Swift_Mime_Grammar $grammar
-     * @param array $mimeTypes optional
+     * @param Swift_KeyCache            $cache
+     * @param Swift_Mime_Grammar        $grammar
+     * @param array                     $mimeTypes optional
      */
     public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, $mimeTypes = array())
     {
@@ -33,22 +33,6 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
         $this->setDisposition('attachment');
         $this->setContentType('application/octet-stream');
         $this->_mimeTypes = $mimeTypes;
-    }
-
-    /**
-     * Set the Content-Disposition of this attachment.
-     *
-     * @param string $disposition
-     *
-     * @return Swift_Mime_Attachment
-     */
-    public function setDisposition($disposition)
-    {
-        if (!$this->_setHeaderFieldModel('Content-Disposition', $disposition)) {
-            $this->getHeaders()->addParameterizedHeader('Content-Disposition', $disposition);
-        }
-
-        return $this;
     }
 
     /**
@@ -76,6 +60,22 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     }
 
     /**
+     * Set the Content-Disposition of this attachment.
+     *
+     * @param string $disposition
+     *
+     * @return Swift_Mime_Attachment
+     */
+    public function setDisposition($disposition)
+    {
+        if (!$this->_setHeaderFieldModel('Content-Disposition', $disposition)) {
+            $this->getHeaders()->addParameterizedHeader('Content-Disposition', $disposition);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get the filename of this attachment when downloaded.
      *
      * @return string
@@ -83,6 +83,21 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     public function getFilename()
     {
         return $this->_getHeaderParameter('Content-Disposition', 'filename');
+    }
+
+    /**
+     * Set the filename of this attachment.
+     *
+     * @param string $filename
+     *
+     * @return Swift_Mime_Attachment
+     */
+    public function setFilename($filename)
+    {
+        $this->_setHeaderParameter('Content-Disposition', 'filename', $filename);
+        $this->_setHeaderParameter('Content-Type', 'name', $filename);
+
+        return $this;
     }
 
     /**
@@ -113,7 +128,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      * Set the file that this attachment is for.
      *
      * @param Swift_FileStream $file
-     * @param string $contentType optional
+     * @param string           $contentType optional
      *
      * @return Swift_Mime_Attachment
      */
@@ -128,21 +143,6 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
                 $this->setContentType($this->_mimeTypes[$extension]);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * Set the filename of this attachment.
-     *
-     * @param string $filename
-     *
-     * @return Swift_Mime_Attachment
-     */
-    public function setFilename($filename)
-    {
-        $this->_setHeaderParameter('Content-Disposition', 'filename', $filename);
-        $this->_setHeaderParameter('Content-Type', 'name', $filename);
 
         return $this;
     }

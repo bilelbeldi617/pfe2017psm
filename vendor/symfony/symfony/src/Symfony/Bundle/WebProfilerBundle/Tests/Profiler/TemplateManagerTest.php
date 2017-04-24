@@ -36,6 +36,21 @@ class TemplateManagerTest extends TestCase
      */
     protected $templateManager;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $profiler = $this->mockProfiler();
+        $twigEnvironment = $this->mockTwigEnvironment();
+        $templates = array(
+            'data_collector.foo' => array('foo', 'FooBundle:Collector:foo'),
+            'data_collector.bar' => array('bar', 'FooBundle:Collector:bar'),
+            'data_collector.baz' => array('baz', 'FooBundle:Collector:baz'),
+            );
+
+        $this->templateManager = new TemplateManager($profiler, $twigEnvironment, $templates);
+    }
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -43,11 +58,6 @@ class TemplateManagerTest extends TestCase
     {
         $profile = $this->mockProfile();
         $this->templateManager->getName($profile, 'notexistingpanel');
-    }
-
-    protected function mockProfile()
-    {
-        return $this->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profile')->disableOriginalConstructor()->getMock();
     }
 
     /**
@@ -112,28 +122,9 @@ class TemplateManagerTest extends TestCase
         }
     }
 
-    protected function setUp()
+    protected function mockProfile()
     {
-        parent::setUp();
-
-        $profiler = $this->mockProfiler();
-        $twigEnvironment = $this->mockTwigEnvironment();
-        $templates = array(
-            'data_collector.foo' => array('foo', 'FooBundle:Collector:foo'),
-            'data_collector.bar' => array('bar', 'FooBundle:Collector:bar'),
-            'data_collector.baz' => array('baz', 'FooBundle:Collector:baz'),
-        );
-
-        $this->templateManager = new TemplateManager($profiler, $twigEnvironment, $templates);
-    }
-
-    protected function mockProfiler()
-    {
-        $this->profiler = $this->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profiler')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return $this->profiler;
+        return $this->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profile')->disableOriginalConstructor()->getMock();
     }
 
     protected function mockTwigEnvironment()
@@ -152,5 +143,14 @@ class TemplateManagerTest extends TestCase
         $this->twigEnvironment->expects($this->any())->method('getLoader')->will($this->returnValue($loader));
 
         return $this->twigEnvironment;
+    }
+
+    protected function mockProfiler()
+    {
+        $this->profiler = $this->getMockBuilder('Symfony\Component\HttpKernel\Profiler\Profiler')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return $this->profiler;
     }
 }

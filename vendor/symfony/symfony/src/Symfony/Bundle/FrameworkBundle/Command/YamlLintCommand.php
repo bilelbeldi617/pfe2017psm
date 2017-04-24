@@ -57,7 +57,8 @@ You can also pass the YAML contents from STDIN:
   <info>cat filename | php %command.full_name%</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -103,6 +104,18 @@ EOF
         return $this->display($input, $output, $io, $filesInfo);
     }
 
+    private function validate($content, $file = null)
+    {
+        $parser = new Parser();
+        try {
+            $parser->parse($content);
+        } catch (ParseException $e) {
+            return array('file' => $file, 'valid' => false, 'message' => $e->getMessage());
+        }
+
+        return array('file' => $file, 'valid' => true);
+    }
+
     private function display(InputInterface $input, OutputInterface $output, SymfonyStyle $io, $files)
     {
         switch ($input->getOption('format')) {
@@ -121,7 +134,7 @@ EOF
 
         foreach ($filesInfo as $info) {
             if ($info['valid'] && $output->isVerbose()) {
-                $io->comment('<info>OK</info>' . ($info['file'] ? sprintf(' in %s', $info['file']) : ''));
+                $io->comment('<info>OK</info>'.($info['file'] ? sprintf(' in %s', $info['file']) : ''));
             } elseif (!$info['valid']) {
                 ++$errors;
                 $io->text(sprintf('<error> ERROR </error> in %s', $info['file']));
@@ -143,7 +156,7 @@ EOF
         $errors = 0;
 
         array_walk($filesInfo, function (&$v) use (&$errors) {
-            $v['file'] = (string)$v['file'];
+            $v['file'] = (string) $v['file'];
             if (!$v['valid']) {
                 ++$errors;
             }
@@ -152,17 +165,5 @@ EOF
         $output->writeln(json_encode($filesInfo, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : 0));
 
         return min($errors, 1);
-    }
-
-    private function validate($content, $file = null)
-    {
-        $parser = new Parser();
-        try {
-            $parser->parse($content);
-        } catch (ParseException $e) {
-            return array('file' => $file, 'valid' => false, 'message' => $e->getMessage());
-        }
-
-        return array('file' => $file, 'valid' => true);
     }
 }

@@ -64,7 +64,7 @@ class DefaultFileLocatorTest extends DoctrineTestCase
         $allClasses = $locator->getAllClassNames(null);
         $globalClasses = $locator->getAllClassNames("global");
 
-        $expectedAllClasses = array('global', 'stdClass', 'subDirClass');
+        $expectedAllClasses    = array('global', 'stdClass', 'subDirClass');
         $expectedGlobalClasses = array('subDirClass', 'stdClass');
 
         sort($allClasses);

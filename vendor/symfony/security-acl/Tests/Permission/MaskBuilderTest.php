@@ -55,7 +55,8 @@ class MaskBuilderTest extends \PHPUnit_Framework_TestCase
         $builder
             ->add('view')
             ->add('eDiT')
-            ->add('ownEr');
+            ->add('ownEr')
+        ;
         $mask = $builder->get();
 
         $this->assertEquals(MaskBuilder::MASK_VIEW, $mask & MaskBuilder::MASK_VIEW);
@@ -79,13 +80,13 @@ class MaskBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(MaskBuilder::ALL_OFF, $builder->getPattern());
 
         $builder->add('view');
-        $this->assertEquals(str_repeat('.', 31) . 'V', $builder->getPattern());
+        $this->assertEquals(str_repeat('.', 31).'V', $builder->getPattern());
 
         $builder->add('owner');
-        $this->assertEquals(str_repeat('.', 24) . 'N......V', $builder->getPattern());
+        $this->assertEquals(str_repeat('.', 24).'N......V', $builder->getPattern());
 
         $builder->add(1 << 10);
-        $this->assertEquals(str_repeat('.', 21) . MaskBuilder::ON . '..N......V', $builder->getPattern());
+        $this->assertEquals(str_repeat('.', 21).MaskBuilder::ON.'..N......V', $builder->getPattern());
     }
 
     public function testReset()

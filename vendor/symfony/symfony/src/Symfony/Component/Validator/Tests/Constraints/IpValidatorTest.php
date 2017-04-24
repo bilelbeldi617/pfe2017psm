@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class IpValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new IpValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Ip());
@@ -61,35 +71,6 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
         $this->assertNoViolation();
     }
 
-    /**
-     * @dataProvider getValidIpsV6
-     */
-    public function testValidIpsV6($ip)
-    {
-        $this->validator->validate($ip, new Ip(array(
-            'version' => Ip::V6,
-        )));
-
-        $this->assertNoViolation();
-    }
-
-    /**
-     * @dataProvider getValidIpsAll
-     */
-    public function testValidIpsAll($ip)
-    {
-        $this->validator->validate($ip, new Ip(array(
-            'version' => Ip::ALL,
-        )));
-
-        $this->assertNoViolation();
-    }
-
-    public function getValidIpsAll()
-    {
-        return array_merge($this->getValidIpsV4(), $this->getValidIpsV6());
-    }
-
     public function getValidIpsV4()
     {
         return array(
@@ -102,6 +83,18 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
             array('255.255.255.255'),
             array('127.0.0.0'),
         );
+    }
+
+    /**
+     * @dataProvider getValidIpsV6
+     */
+    public function testValidIpsV6($ip)
+    {
+        $this->validator->validate($ip, new Ip(array(
+            'version' => Ip::V6,
+        )));
+
+        $this->assertNoViolation();
     }
 
     public function getValidIpsV6()
@@ -130,6 +123,23 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
+     * @dataProvider getValidIpsAll
+     */
+    public function testValidIpsAll($ip)
+    {
+        $this->validator->validate($ip, new Ip(array(
+            'version' => Ip::ALL,
+        )));
+
+        $this->assertNoViolation();
+    }
+
+    public function getValidIpsAll()
+    {
+        return array_merge($this->getValidIpsV4(), $this->getValidIpsV6());
+    }
+
+    /**
      * @dataProvider getInvalidIpsV4
      */
     public function testInvalidIpsV4($ip)
@@ -142,158 +152,9 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($ip, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
             ->setCode(Ip::INVALID_IP_ERROR)
             ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidPrivateIpsV4
-     */
-    public function testInvalidPrivateIpsV4($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V4_NO_PRIV,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidReservedIpsV4
-     */
-    public function testInvalidReservedIpsV4($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V4_NO_RES,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidPublicIpsV4
-     */
-    public function testInvalidPublicIpsV4($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V4_ONLY_PUBLIC,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidIpsV6
-     */
-    public function testInvalidIpsV6($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V6,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidPrivateIpsV6
-     */
-    public function testInvalidPrivateIpsV6($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V6_NO_PRIV,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidReservedIpsV6
-     */
-    public function testInvalidReservedIpsV6($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V6_NO_RES,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidPublicIpsV6
-     */
-    public function testInvalidPublicIpsV6($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::V6_ONLY_PUBLIC,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * @dataProvider getInvalidIpsAll
-     */
-    public function testInvalidIpsAll($ip)
-    {
-        $constraint = new Ip(array(
-            'version' => Ip::ALL,
-            'message' => 'myMessage',
-        ));
-
-        $this->validator->validate($ip, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
-            ->setCode(Ip::INVALID_IP_ERROR)
-            ->assertRaised();
-    }
-
-    public function getInvalidIpsAll()
-    {
-        return array_merge($this->getInvalidIpsV4(), $this->getInvalidIpsV6());
     }
 
     public function getInvalidIpsV4()
@@ -309,6 +170,101 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
             array('-1.0.0.0'),
             array('foobar'),
         );
+    }
+
+    /**
+     * @dataProvider getInvalidPrivateIpsV4
+     */
+    public function testInvalidPrivateIpsV4($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V4_NO_PRIV,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidPrivateIpsV4()
+    {
+        return array(
+            array('10.0.0.0'),
+            array('172.16.0.0'),
+            array('192.168.1.0'),
+        );
+    }
+
+    /**
+     * @dataProvider getInvalidReservedIpsV4
+     */
+    public function testInvalidReservedIpsV4($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V4_NO_RES,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidReservedIpsV4()
+    {
+        return array(
+            array('0.0.0.0'),
+            array('240.0.0.1'),
+            array('255.255.255.255'),
+        );
+    }
+
+    /**
+     * @dataProvider getInvalidPublicIpsV4
+     */
+    public function testInvalidPublicIpsV4($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V4_ONLY_PUBLIC,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidPublicIpsV4()
+    {
+        return array_merge($this->getInvalidPrivateIpsV4(), $this->getInvalidReservedIpsV4());
+    }
+
+    /**
+     * @dataProvider getInvalidIpsV6
+     */
+    public function testInvalidIpsV6($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V6,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
     }
 
     public function getInvalidIpsV6()
@@ -331,6 +287,105 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
+     * @dataProvider getInvalidPrivateIpsV6
+     */
+    public function testInvalidPrivateIpsV6($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V6_NO_PRIV,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidPrivateIpsV6()
+    {
+        return array(
+            array('fdfe:dcba:9876:ffff:fdc6:c46b:bb8f:7d4c'),
+            array('fdc6:c46b:bb8f:7d4c:fdc6:c46b:bb8f:7d4c'),
+            array('fdc6:c46b:bb8f:7d4c:0000:8a2e:0370:7334'),
+        );
+    }
+
+    /**
+     * @dataProvider getInvalidReservedIpsV6
+     */
+    public function testInvalidReservedIpsV6($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V6_NO_RES,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidReservedIpsV6()
+    {
+        // Quoting after official filter documentation:
+        // "FILTER_FLAG_NO_RES_RANGE = This flag does not apply to IPv6 addresses."
+        // Full description: http://php.net/manual/en/filter.filters.flags.php
+        return $this->getInvalidIpsV6();
+    }
+
+    /**
+     * @dataProvider getInvalidPublicIpsV6
+     */
+    public function testInvalidPublicIpsV6($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::V6_ONLY_PUBLIC,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidPublicIpsV6()
+    {
+        return array_merge($this->getInvalidPrivateIpsV6(), $this->getInvalidReservedIpsV6());
+    }
+
+    /**
+     * @dataProvider getInvalidIpsAll
+     */
+    public function testInvalidIpsAll($ip)
+    {
+        $constraint = new Ip(array(
+            'version' => Ip::ALL,
+            'message' => 'myMessage',
+        ));
+
+        $this->validator->validate($ip, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
+            ->setCode(Ip::INVALID_IP_ERROR)
+            ->assertRaised();
+    }
+
+    public function getInvalidIpsAll()
+    {
+        return array_merge($this->getInvalidIpsV4(), $this->getInvalidIpsV6());
+    }
+
+    /**
      * @dataProvider getInvalidPrivateIpsAll
      */
     public function testInvalidPrivateIpsAll($ip)
@@ -343,7 +398,7 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($ip, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
             ->setCode(Ip::INVALID_IP_ERROR)
             ->assertRaised();
     }
@@ -351,24 +406,6 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
     public function getInvalidPrivateIpsAll()
     {
         return array_merge($this->getInvalidPrivateIpsV4(), $this->getInvalidPrivateIpsV6());
-    }
-
-    public function getInvalidPrivateIpsV4()
-    {
-        return array(
-            array('10.0.0.0'),
-            array('172.16.0.0'),
-            array('192.168.1.0'),
-        );
-    }
-
-    public function getInvalidPrivateIpsV6()
-    {
-        return array(
-            array('fdfe:dcba:9876:ffff:fdc6:c46b:bb8f:7d4c'),
-            array('fdc6:c46b:bb8f:7d4c:fdc6:c46b:bb8f:7d4c'),
-            array('fdc6:c46b:bb8f:7d4c:0000:8a2e:0370:7334'),
-        );
     }
 
     /**
@@ -384,7 +421,7 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($ip, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
             ->setCode(Ip::INVALID_IP_ERROR)
             ->assertRaised();
     }
@@ -392,23 +429,6 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
     public function getInvalidReservedIpsAll()
     {
         return array_merge($this->getInvalidReservedIpsV4(), $this->getInvalidReservedIpsV6());
-    }
-
-    public function getInvalidReservedIpsV4()
-    {
-        return array(
-            array('0.0.0.0'),
-            array('240.0.0.1'),
-            array('255.255.255.255'),
-        );
-    }
-
-    public function getInvalidReservedIpsV6()
-    {
-        // Quoting after official filter documentation:
-        // "FILTER_FLAG_NO_RES_RANGE = This flag does not apply to IPv6 addresses."
-        // Full description: http://php.net/manual/en/filter.filters.flags.php
-        return $this->getInvalidIpsV6();
     }
 
     /**
@@ -424,7 +444,7 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($ip, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $ip . '"')
+            ->setParameter('{{ value }}', '"'.$ip.'"')
             ->setCode(Ip::INVALID_IP_ERROR)
             ->assertRaised();
     }
@@ -432,25 +452,5 @@ class IpValidatorTest extends AbstractConstraintValidatorTest
     public function getInvalidPublicIpsAll()
     {
         return array_merge($this->getInvalidPublicIpsV4(), $this->getInvalidPublicIpsV6());
-    }
-
-    public function getInvalidPublicIpsV4()
-    {
-        return array_merge($this->getInvalidPrivateIpsV4(), $this->getInvalidReservedIpsV4());
-    }
-
-    public function getInvalidPublicIpsV6()
-    {
-        return array_merge($this->getInvalidPrivateIpsV6(), $this->getInvalidReservedIpsV6());
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new IpValidator();
     }
 }

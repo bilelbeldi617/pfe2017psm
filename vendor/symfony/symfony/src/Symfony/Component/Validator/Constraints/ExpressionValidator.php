@@ -49,7 +49,7 @@ class ExpressionValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Expression) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Expression');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Expression');
         }
 
         $variables = array();
@@ -91,18 +91,6 @@ class ExpressionValidator extends ConstraintValidator
         }
     }
 
-    private function getPropertyAccessor()
-    {
-        if (null === $this->propertyAccessor) {
-            if (!class_exists('Symfony\Component\PropertyAccess\PropertyAccess')) {
-                throw new RuntimeException('Unable to use expressions as the Symfony PropertyAccess component is not installed.');
-            }
-            $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
-        }
-
-        return $this->propertyAccessor;
-    }
-
     private function getExpressionLanguage()
     {
         if (null === $this->expressionLanguage) {
@@ -113,5 +101,17 @@ class ExpressionValidator extends ConstraintValidator
         }
 
         return $this->expressionLanguage;
+    }
+
+    private function getPropertyAccessor()
+    {
+        if (null === $this->propertyAccessor) {
+            if (!class_exists('Symfony\Component\PropertyAccess\PropertyAccess')) {
+                throw new RuntimeException('Unable to use expressions as the Symfony PropertyAccess component is not installed.');
+            }
+            $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        }
+
+        return $this->propertyAccessor;
     }
 }

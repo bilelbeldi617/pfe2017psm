@@ -39,26 +39,6 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $container->getParameter('doctrine.default_connection'), '->load() overrides existing configuration options');
     }
 
-    private function getContainer($bundles = 'YamlBundle', $vendor = null)
-    {
-        $bundles = (array)$bundles;
-
-        $map = array();
-        foreach ($bundles as $bundle) {
-            require_once __DIR__ . '/Fixtures/Bundles/' . ($vendor ? $vendor . '/' : '') . $bundle . '/' . $bundle . '.php';
-
-            $map[$bundle] = 'Fixtures\\Bundles\\' . ($vendor ? $vendor . '\\' : '') . $bundle . '\\' . $bundle;
-        }
-
-        return new ContainerBuilder(new ParameterBag(array(
-            'kernel.debug' => false,
-            'kernel.bundles' => $map,
-            'kernel.cache_dir' => sys_get_temp_dir(),
-            'kernel.environment' => 'test',
-            'kernel.root_dir' => __DIR__ . '/../../', // src dir
-        )));
-    }
-
     /**
      * @expectedException \LogicException
      * @expectedExceptionMessage Configuring the ORM layer requires to configure the DBAL layer as well.
@@ -229,8 +209,8 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
             'entity_managers' => array(
                 'default' => array(
                     'mappings' => array('YamlBundle' => array()),
+                    ),
                 ),
-            ),
         );
 
         $container = $this->getContainer();
@@ -243,8 +223,8 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('pdo_mysql', $args[0]['driver']);
         $this->assertEquals('localhost', $args[0]['host']);
         $this->assertEquals('root', $args[0]['user']);
-        $this->assertEquals('doctrine.dbal.default_connection.configuration', (string)$args[1]);
-        $this->assertEquals('doctrine.dbal.default_connection.event_manager', (string)$args[2]);
+        $this->assertEquals('doctrine.dbal.default_connection.configuration', (string) $args[1]);
+        $this->assertEquals('doctrine.dbal.default_connection.event_manager', (string) $args[2]);
         $this->assertCount(0, $definition->getMethodCalls());
 
         $definition = $container->getDefinition('doctrine.orm.default_entity_manager');
@@ -261,23 +241,23 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);
-        $this->assertEquals('doctrine.dbal.default_connection', (string)$arguments[0]);
+        $this->assertEquals('doctrine.dbal.default_connection', (string) $arguments[0]);
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[1]);
-        $this->assertEquals('doctrine.orm.default_configuration', (string)$arguments[1]);
+        $this->assertEquals('doctrine.orm.default_configuration', (string) $arguments[1]);
 
         $definition = $container->getDefinition('doctrine.orm.default_configuration');
         $calls = array_values($definition->getMethodCalls());
         $this->assertEquals(array('YamlBundle' => 'Fixtures\Bundles\YamlBundle\Entity'), $calls[0][1][0]);
-        $this->assertEquals('doctrine.orm.default_metadata_cache', (string)$calls[1][1][0]);
-        $this->assertEquals('doctrine.orm.default_query_cache', (string)$calls[2][1][0]);
-        $this->assertEquals('doctrine.orm.default_result_cache', (string)$calls[3][1][0]);
+        $this->assertEquals('doctrine.orm.default_metadata_cache', (string) $calls[1][1][0]);
+        $this->assertEquals('doctrine.orm.default_query_cache', (string) $calls[2][1][0]);
+        $this->assertEquals('doctrine.orm.default_result_cache', (string) $calls[3][1][0]);
 
         if (version_compare(Version::VERSION, "2.3.0-DEV") >= 0) {
-            $this->assertEquals('doctrine.orm.naming_strategy.default', (string)$calls[10][1][0]);
-            $this->assertEquals('doctrine.orm.quote_strategy.default', (string)$calls[11][1][0]);
+            $this->assertEquals('doctrine.orm.naming_strategy.default', (string) $calls[10][1][0]);
+            $this->assertEquals('doctrine.orm.quote_strategy.default', (string) $calls[11][1][0]);
         }
         if (version_compare(Version::VERSION, "2.4.0-DEV") >= 0) {
-            $this->assertEquals('doctrine.orm.default_entity_listener_resolver', (string)$calls[12][1][0]);
+            $this->assertEquals('doctrine.orm.default_entity_listener_resolver', (string) $calls[12][1][0]);
         }
 
         $definition = $container->getDefinition($container->getAlias('doctrine.orm.default_metadata_cache'));
@@ -288,13 +268,6 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
 
         $definition = $container->getDefinition($container->getAlias('doctrine.orm.default_result_cache'));
         $this->assertEquals('%doctrine_cache.array.class%', $definition->getClass());
-    }
-
-    private function compileContainer(ContainerBuilder $container)
-    {
-        $container->getCompilerPassConfig()->setOptimizationPasses(array(new ResolveDefinitionTemplatesPass()));
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->compile();
     }
 
     public function testUseSavePointsAddMethodCallToAddSavepointsToTheConnection()
@@ -355,11 +328,6 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    private function assertDICConstructorArguments(Definition $definition, array $args)
-    {
-        $this->assertEquals($args, $definition->getArguments(), "Expected and actual DIC Service constructor arguments of definition '" . $definition->getClass() . "' don't match.");
-    }
-
     public function testBundleEntityAliases()
     {
         $container = $this->getContainer();
@@ -373,39 +341,6 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'setEntityNamespaces',
             array(array('YamlBundle' => 'Fixtures\Bundles\YamlBundle\Entity'))
         );
-    }
-
-    private function getConnectionConfig()
-    {
-        return array('dbal' => array('connections' => array('default' => array('password' => 'foo'))));
-    }
-
-    /**
-     * Assertion for the DI Container, check if the given definition contains a method call with the given parameters.
-     *
-     * @param Definition $definition
-     * @param string $methodName
-     * @param array|null $params
-     */
-    private function assertDICDefinitionMethodCallOnce(Definition $definition, $methodName, array $params = null)
-    {
-        $calls = $definition->getMethodCalls();
-        $called = false;
-        foreach ($calls as $call) {
-            if ($call[0] === $methodName) {
-                if ($called) {
-                    $this->fail("Method '" . $methodName . "' is expected to be called only once, a second call was registered though.");
-                } else {
-                    $called = true;
-                    if ($params !== null) {
-                        $this->assertEquals($params, $call[1], "Expected parameters to methods '" . $methodName . "' do not match the actual parameters.");
-                    }
-                }
-            }
-        }
-        if (!$called) {
-            $this->fail("Method '" . $methodName . "' is expected to be called once, definition does not contain a call though.");
-        }
     }
 
     public function testOverwriteEntityAliases()
@@ -516,18 +451,6 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function assertDICDefinitionMethodCallAt($pos, Definition $definition, $methodName, array $params = null)
-    {
-        $calls = $definition->getMethodCalls();
-        if (isset($calls[$pos][0])) {
-            $this->assertEquals($methodName, $calls[$pos][0], "Method '" . $methodName . "' is expected to be called at position $pos.");
-
-            if ($params !== null) {
-                $this->assertEquals($params, $calls[$pos][1], "Expected parameters to methods '" . $methodName . "' do not match the actual parameters.");
-            }
-        }
-    }
-
     public function testAnnotationsBundleMappingDetectionWithVendorNamespace()
     {
         $container = $this->getContainer('AnnotationsBundle', 'Vendor');
@@ -538,7 +461,7 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
         $extension->load(array($config), $container);
 
         $calls = $container->getDefinition('doctrine.orm.default_metadata_driver')->getMethodCalls();
-        $this->assertEquals('doctrine.orm.default_annotation_metadata_driver', (string)$calls[0][1][0]);
+        $this->assertEquals('doctrine.orm.default_annotation_metadata_driver', (string) $calls[0][1][0]);
         $this->assertEquals('Fixtures\Bundles\Vendor\AnnotationsBundle\Entity', $calls[0][1][1]);
     }
 
@@ -564,15 +487,15 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->hasAlias('doctrine.orm.default_metadata_cache'));
         $alias = $container->getAlias('doctrine.orm.default_metadata_cache');
-        $this->assertEquals('doctrine_cache.providers.metadata_cache', (string)$alias);
+        $this->assertEquals('doctrine_cache.providers.metadata_cache', (string) $alias);
 
         $this->assertTrue($container->hasAlias('doctrine.orm.default_query_cache'));
         $alias = $container->getAlias('doctrine.orm.default_query_cache');
-        $this->assertEquals('doctrine_cache.providers.query_cache', (string)$alias);
+        $this->assertEquals('doctrine_cache.providers.query_cache', (string) $alias);
 
         $this->assertTrue($container->hasAlias('doctrine.orm.default_result_cache'));
         $alias = $container->getAlias('doctrine.orm.default_result_cache');
-        $this->assertEquals('doctrine_cache.providers.result_cache', (string)$alias);
+        $this->assertEquals('doctrine_cache.providers.result_cache', (string) $alias);
     }
 
     public function testShardManager()
@@ -596,5 +519,82 @@ class DoctrineExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->hasDefinition('doctrine.dbal.foo_shard_manager'));
         $this->assertFalse($container->hasDefinition('doctrine.dbal.bar_shard_manager'));
+    }
+
+    private function getContainer($bundles = 'YamlBundle', $vendor = null)
+    {
+        $bundles = (array) $bundles;
+
+        $map = array();
+        foreach ($bundles as $bundle) {
+            require_once __DIR__.'/Fixtures/Bundles/'.($vendor ? $vendor.'/' : '').$bundle.'/'.$bundle.'.php';
+
+            $map[$bundle] = 'Fixtures\\Bundles\\'.($vendor ? $vendor.'\\' : '').$bundle.'\\'.$bundle;
+        }
+
+        return new ContainerBuilder(new ParameterBag(array(
+            'kernel.debug' => false,
+            'kernel.bundles' => $map,
+            'kernel.cache_dir' => sys_get_temp_dir(),
+            'kernel.environment' => 'test',
+            'kernel.root_dir' => __DIR__.'/../../', // src dir
+        )));
+    }
+
+    private function assertDICConstructorArguments(Definition $definition, array $args)
+    {
+        $this->assertEquals($args, $definition->getArguments(), "Expected and actual DIC Service constructor arguments of definition '".$definition->getClass()."' don't match.");
+    }
+
+    private function assertDICDefinitionMethodCallAt($pos, Definition $definition, $methodName, array $params = null)
+    {
+        $calls = $definition->getMethodCalls();
+        if (isset($calls[$pos][0])) {
+            $this->assertEquals($methodName, $calls[$pos][0], "Method '".$methodName."' is expected to be called at position $pos.");
+
+            if ($params !== null) {
+                $this->assertEquals($params, $calls[$pos][1], "Expected parameters to methods '".$methodName."' do not match the actual parameters.");
+            }
+        }
+    }
+
+    /**
+     * Assertion for the DI Container, check if the given definition contains a method call with the given parameters.
+     *
+     * @param Definition $definition
+     * @param string     $methodName
+     * @param array|null $params
+     */
+    private function assertDICDefinitionMethodCallOnce(Definition $definition, $methodName, array $params = null)
+    {
+        $calls = $definition->getMethodCalls();
+        $called = false;
+        foreach ($calls as $call) {
+            if ($call[0] === $methodName) {
+                if ($called) {
+                    $this->fail("Method '".$methodName."' is expected to be called only once, a second call was registered though.");
+                } else {
+                    $called = true;
+                    if ($params !== null) {
+                        $this->assertEquals($params, $call[1], "Expected parameters to methods '".$methodName."' do not match the actual parameters.");
+                    }
+                }
+            }
+        }
+        if (!$called) {
+            $this->fail("Method '".$methodName."' is expected to be called once, definition does not contain a call though.");
+        }
+    }
+
+    private function compileContainer(ContainerBuilder $container)
+    {
+        $container->getCompilerPassConfig()->setOptimizationPasses(array(new ResolveDefinitionTemplatesPass()));
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->compile();
+    }
+
+    private function getConnectionConfig()
+    {
+        return array('dbal' => array('connections' => array('default' => array('password' => 'foo'))));
     }
 }

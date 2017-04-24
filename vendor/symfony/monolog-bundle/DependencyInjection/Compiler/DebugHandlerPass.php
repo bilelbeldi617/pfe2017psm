@@ -34,7 +34,7 @@ class DebugHandlerPass implements CompilerPassInterface
     {
         // Trigger the deprecation only when using a Symfony version supporting the new feature (i.e. 3.2+)
         if (class_exists('Symfony\Bridge\Monolog\Processor\DebugProcessor') && class_exists('Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\AddDebugLogProcessorPass')) {
-            @trigger_error('The ' . __CLASS__ . ' class is deprecated since version 2.12 and will be removed in 4.0. Use AddDebugLogProcessorPass in FrameworkBundle instead.', E_USER_DEPRECATED);
+            @trigger_error('The '.__CLASS__.' class is deprecated since version 2.12 and will be removed in 4.0. Use AddDebugLogProcessorPass in FrameworkBundle instead.', E_USER_DEPRECATED);
         }
 
         $this->channelPass = $channelPass;
@@ -55,7 +55,7 @@ class DebugHandlerPass implements CompilerPassInterface
 
         foreach ($this->channelPass->getChannels() as $channel) {
             $container
-                ->getDefinition($channel === 'app' ? 'monolog.logger' : 'monolog.logger.' . $channel)
+                ->getDefinition($channel === 'app' ? 'monolog.logger' : 'monolog.logger.'.$channel)
                 ->addMethodCall('pushHandler', array(new Reference('monolog.handler.debug')));
         }
     }

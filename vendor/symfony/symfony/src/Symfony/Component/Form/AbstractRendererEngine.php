@@ -85,19 +85,6 @@ abstract class AbstractRendererEngine implements FormRendererEngineInterface
     }
 
     /**
-     * Loads the cache with the resource for a given block name.
-     *
-     * @see getResourceForBlock()
-     *
-     * @param string $cacheKey The cache key of the form view
-     * @param FormView $view The form view for finding the applying themes
-     * @param string $blockName The name of the block to load
-     *
-     * @return bool True if the resource could be loaded, false otherwise
-     */
-    abstract protected function loadResourceForBlockName($cacheKey, FormView $view, $blockName);
-
-    /**
      * {@inheritdoc}
      */
     public function getResourceForBlockNameHierarchy(FormView $view, array $blockNameHierarchy, $hierarchyLevel)
@@ -113,17 +100,52 @@ abstract class AbstractRendererEngine implements FormRendererEngineInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getResourceHierarchyLevel(FormView $view, array $blockNameHierarchy, $hierarchyLevel)
+    {
+        $cacheKey = $view->vars[self::CACHE_KEY_VAR];
+        $blockName = $blockNameHierarchy[$hierarchyLevel];
+
+        if (!isset($this->resources[$cacheKey][$blockName])) {
+            $this->loadResourceForBlockNameHierarchy($cacheKey, $view, $blockNameHierarchy, $hierarchyLevel);
+        }
+
+        // If $block was previously rendered loaded with loadTemplateForBlock(), the template
+        // is cached but the hierarchy level is not. In this case, we know that the  block
+        // exists at this very hierarchy level, so we can just set it.
+        if (!isset($this->resourceHierarchyLevels[$cacheKey][$blockName])) {
+            $this->resourceHierarchyLevels[$cacheKey][$blockName] = $hierarchyLevel;
+        }
+
+        return $this->resourceHierarchyLevels[$cacheKey][$blockName];
+    }
+
+    /**
+     * Loads the cache with the resource for a given block name.
+     *
+     * @see getResourceForBlock()
+     *
+     * @param string   $cacheKey  The cache key of the form view
+     * @param FormView $view      The form view for finding the applying themes
+     * @param string   $blockName The name of the block to load
+     *
+     * @return bool True if the resource could be loaded, false otherwise
+     */
+    abstract protected function loadResourceForBlockName($cacheKey, FormView $view, $blockName);
+
+    /**
      * Loads the cache with the resource for a specific level of a block hierarchy.
      *
      * @see getResourceForBlockHierarchy()
      *
-     * @param string $cacheKey The cache key used for storing the
+     * @param string   $cacheKey           The cache key used for storing the
      *                                     resource.
-     * @param FormView $view The form view for finding the applying
+     * @param FormView $view               The form view for finding the applying
      *                                     themes.
-     * @param array $blockNameHierarchy The block hierarchy, with the most
+     * @param array    $blockNameHierarchy The block hierarchy, with the most
      *                                     specific block name at the end.
-     * @param int $hierarchyLevel The level in the block hierarchy that
+     * @param int      $hierarchyLevel     The level in the block hierarchy that
      *                                     should be loaded.
      *
      * @return bool True if the resource could be loaded, false otherwise
@@ -179,27 +201,5 @@ abstract class AbstractRendererEngine implements FormRendererEngineInterface
         $this->resourceHierarchyLevels[$cacheKey][$blockName] = false;
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getResourceHierarchyLevel(FormView $view, array $blockNameHierarchy, $hierarchyLevel)
-    {
-        $cacheKey = $view->vars[self::CACHE_KEY_VAR];
-        $blockName = $blockNameHierarchy[$hierarchyLevel];
-
-        if (!isset($this->resources[$cacheKey][$blockName])) {
-            $this->loadResourceForBlockNameHierarchy($cacheKey, $view, $blockNameHierarchy, $hierarchyLevel);
-        }
-
-        // If $block was previously rendered loaded with loadTemplateForBlock(), the template
-        // is cached but the hierarchy level is not. In this case, we know that the  block
-        // exists at this very hierarchy level, so we can just set it.
-        if (!isset($this->resourceHierarchyLevels[$cacheKey][$blockName])) {
-            $this->resourceHierarchyLevels[$cacheKey][$blockName] = $hierarchyLevel;
-        }
-
-        return $this->resourceHierarchyLevels[$cacheKey][$blockName];
     }
 }

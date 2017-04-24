@@ -31,10 +31,10 @@ class Registry extends ManagerRegistry implements RegistryInterface
      * Construct.
      *
      * @param ContainerInterface $container
-     * @param array $connections
-     * @param array $entityManagers
-     * @param string $defaultConnection
-     * @param string $defaultEntityManager
+     * @param array              $connections
+     * @param array              $entityManagers
+     * @param string             $defaultConnection
+     * @param string             $defaultEntityManager
      */
     public function __construct(ContainerInterface $container, array $connections, array $entityManagers, $defaultConnection, $defaultEntityManager)
     {

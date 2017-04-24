@@ -29,31 +29,12 @@ class GenerateDoctrineEntityCommandTest extends GenerateCommandTest
             ->expects($this->once())
             ->method('generate')
             ->with($this->getBundle(), $entity, $format, $fields)
-            ->willReturn(new EntityGeneratorResult('', '', ''));
+            ->willReturn(new EntityGeneratorResult('', '', ''))
+        ;
 
         $tester = new CommandTester($command = $this->getCommand($generator));
         $this->setInputs($tester, $command, $input);
         $tester->execute($options);
-    }
-
-    protected function getGenerator()
-    {
-        // get a noop generator
-        return $this
-            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Generator\DoctrineEntityGenerator')
-            ->disableOriginalConstructor()
-            ->setMethods(array('generate', 'isReservedKeyword'))
-            ->getMock();
-    }
-
-    protected function getCommand($generator)
-    {
-        $command = new GenerateDoctrineEntityCommand();
-        $command->setContainer($this->getContainer());
-        $command->setHelperSet($this->getHelperSet());
-        $command->setGenerator($generator);
-
-        return $command;
     }
 
     public function getInteractiveCommandData()
@@ -83,11 +64,13 @@ class GenerateDoctrineEntityCommandTest extends GenerateCommandTest
             ->expects($this->once())
             ->method('generate')
             ->with($this->getBundle(), $entity, $format, $fields)
-            ->willReturn(new EntityGeneratorResult('', '', ''));
+            ->willReturn(new EntityGeneratorResult('', '', ''))
+        ;
         $generator
             ->expects($this->any())
             ->method('isReservedKeyword')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $tester = new CommandTester($this->getCommand($generator));
         $tester->execute($options, array('interactive' => false));
@@ -104,5 +87,26 @@ class GenerateDoctrineEntityCommandTest extends GenerateCommandTest
                 array('fieldName' => 'rating', 'type' => 'decimal', 'precision' => 7, 'scale' => 2),
             ))),
         );
+    }
+
+    protected function getCommand($generator)
+    {
+        $command = new GenerateDoctrineEntityCommand();
+        $command->setContainer($this->getContainer());
+        $command->setHelperSet($this->getHelperSet());
+        $command->setGenerator($generator);
+
+        return $command;
+    }
+
+    protected function getGenerator()
+    {
+        // get a noop generator
+        return $this
+            ->getMockBuilder('Sensio\Bundle\GeneratorBundle\Generator\DoctrineEntityGenerator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('generate', 'isReservedKeyword'))
+            ->getMock()
+        ;
     }
 }

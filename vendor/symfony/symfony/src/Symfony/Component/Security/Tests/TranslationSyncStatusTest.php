@@ -25,7 +25,7 @@ class TranslationSyncStatusTest extends TestCase
         $files = $finder->in($dir1)->files();
 
         foreach ($files as $file) {
-            $this->assertFileExists($dir2 . '/' . $file->getFilename(), 'Missing file ' . $file->getFilename() . ' in directory ' . $dir2);
+            $this->assertFileExists($dir2.'/'.$file->getFilename(), 'Missing file '.$file->getFilename().' in directory '.$dir2);
         }
     }
 
@@ -40,25 +40,25 @@ class TranslationSyncStatusTest extends TestCase
         );
     }
 
-    private function getLegacyTranslationsDirectory()
-    {
-        return __DIR__ . '/../Resources/translations';
-    }
-
-    private function getCoreTranslationsDirectory()
-    {
-        return __DIR__ . '/../Core/Resources/translations';
-    }
-
     public function testFileContentsAreEqual()
     {
         $finder = new Finder();
         $files = $finder->in($this->getLegacyTranslationsDirectory())->files();
 
         foreach ($files as $file) {
-            $coreFile = $this->getCoreTranslationsDirectory() . '/' . $file->getFilename();
+            $coreFile = $this->getCoreTranslationsDirectory().'/'.$file->getFilename();
 
-            $this->assertFileEquals($file->getRealPath(), $coreFile, $file . ' and ' . $coreFile . ' have equal content.');
+            $this->assertFileEquals($file->getRealPath(), $coreFile, $file.' and '.$coreFile.' have equal content.');
         }
+    }
+
+    private function getLegacyTranslationsDirectory()
+    {
+        return __DIR__.'/../Resources/translations';
+    }
+
+    private function getCoreTranslationsDirectory()
+    {
+        return __DIR__.'/../Core/Resources/translations';
     }
 }

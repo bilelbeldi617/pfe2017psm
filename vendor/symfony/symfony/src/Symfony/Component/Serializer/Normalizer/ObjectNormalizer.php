@@ -26,11 +26,12 @@ use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
  */
 class ObjectNormalizer extends AbstractNormalizer
 {
+    private $attributesCache = array();
+
     /**
      * @var PropertyAccessorInterface
      */
     protected $propertyAccessor;
-    private $attributesCache = array();
 
     public function __construct(ClassMetadataFactoryInterface $classMetadataFactory = null, NameConverterInterface $nameConverter = null, PropertyAccessorInterface $propertyAccessor = null)
     {
@@ -93,6 +94,48 @@ class ObjectNormalizer extends AbstractNormalizer
         return $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return class_exists($type);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        if (!isset($context['cache_key'])) {
+            $context['cache_key'] = $this->getCacheKey($context);
+        }
+        $allowedAttributes = $this->getAllowedAttributes($class, $context, true);
+        $normalizedData = $this->prepareForDenormalization($data);
+
+        $reflectionClass = new \ReflectionClass($class);
+        $object = $this->instantiateObject($normalizedData, $class, $context, $reflectionClass, $allowedAttributes);
+
+        foreach ($normalizedData as $attribute => $value) {
+            if ($this->nameConverter) {
+                $attribute = $this->nameConverter->denormalize($attribute);
+            }
+
+            $allowed = $allowedAttributes === false || in_array($attribute, $allowedAttributes);
+            $ignored = in_array($attribute, $this->ignoredAttributes);
+
+            if ($allowed && !$ignored) {
+                try {
+                    $this->propertyAccessor->setValue($object, $attribute, $value);
+                } catch (NoSuchPropertyException $exception) {
+                    // Properties not found are ignored
+                }
+            }
+        }
+
+        return $object;
+    }
+
     private function getCacheKey(array $context)
     {
         try {
@@ -107,14 +150,14 @@ class ObjectNormalizer extends AbstractNormalizer
      * Gets and caches attributes for this class and context.
      *
      * @param object $object
-     * @param array $context
+     * @param array  $context
      *
      * @return string[]
      */
     private function getAttributes($object, array $context)
     {
         $class = get_class($object);
-        $key = $class . '-' . $context['cache_key'];
+        $key = $class.'-'.$context['cache_key'];
 
         if (isset($this->attributesCache[$key])) {
             return $this->attributesCache[$key];
@@ -182,47 +225,5 @@ class ObjectNormalizer extends AbstractNormalizer
         }
 
         return array_keys($attributes);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDenormalization($data, $type, $format = null)
-    {
-        return class_exists($type);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function denormalize($data, $class, $format = null, array $context = array())
-    {
-        if (!isset($context['cache_key'])) {
-            $context['cache_key'] = $this->getCacheKey($context);
-        }
-        $allowedAttributes = $this->getAllowedAttributes($class, $context, true);
-        $normalizedData = $this->prepareForDenormalization($data);
-
-        $reflectionClass = new \ReflectionClass($class);
-        $object = $this->instantiateObject($normalizedData, $class, $context, $reflectionClass, $allowedAttributes);
-
-        foreach ($normalizedData as $attribute => $value) {
-            if ($this->nameConverter) {
-                $attribute = $this->nameConverter->denormalize($attribute);
-            }
-
-            $allowed = $allowedAttributes === false || in_array($attribute, $allowedAttributes);
-            $ignored = in_array($attribute, $this->ignoredAttributes);
-
-            if ($allowed && !$ignored) {
-                try {
-                    $this->propertyAccessor->setValue($object, $attribute, $value);
-                } catch (NoSuchPropertyException $exception) {
-                    // Properties not found are ignored
-                }
-            }
-        }
-
-        return $object;
     }
 }

@@ -30,6 +30,18 @@ class SwitchUserListenerTest extends TestCase
 
     private $event;
 
+    protected function setUp()
+    {
+        $this->tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
+        $this->userProvider = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserProviderInterface')->getMock();
+        $this->userChecker = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserCheckerInterface')->getMock();
+        $this->accessDecisionManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface')->getMock();
+        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
+        $this->request->query = $this->getMockBuilder('Symfony\Component\HttpFoundation\ParameterBag')->getMock();
+        $this->request->server = $this->getMockBuilder('Symfony\Component\HttpFoundation\ServerBag')->getMock();
+        $this->event = $this->getEvent($this->request);
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $providerKey must not be empty
@@ -62,16 +74,6 @@ class SwitchUserListenerTest extends TestCase
 
         $listener = new SwitchUserListener($this->tokenStorage, $this->userProvider, $this->userChecker, 'provider123', $this->accessDecisionManager);
         $listener->handle($this->event);
-    }
-
-    private function getToken(array $roles = array())
-    {
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
-        $token->expects($this->any())
-            ->method('getRoles')
-            ->will($this->returnValue($roles));
-
-        return $token;
     }
 
     public function testExitUserUpdatesToken()
@@ -150,7 +152,8 @@ class SwitchUserListenerTest extends TestCase
             ->method('dispatch')
             ->with(SecurityEvents::SWITCH_USER, $this->callback(function (SwitchUserEvent $event) use ($refreshedUser) {
                 return $event->getTargetUser() === $refreshedUser;
-            }));
+            }))
+        ;
 
         $listener = new SwitchUserListener($this->tokenStorage, $this->userProvider, $this->userChecker, 'provider123', $this->accessDecisionManager, null, '_switch_user', 'ROLE_ALLOWED_TO_SWITCH', $dispatcher);
         $listener->handle($this->event);
@@ -202,7 +205,8 @@ class SwitchUserListenerTest extends TestCase
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
         $dispatcher
             ->expects($this->never())
-            ->method('dispatch');
+            ->method('dispatch')
+        ;
 
         $listener = new SwitchUserListener($this->tokenStorage, $this->userProvider, $this->userChecker, 'provider123', $this->accessDecisionManager, null, '_switch_user', 'ROLE_ALLOWED_TO_SWITCH', $dispatcher);
         $listener->handle($this->event);
@@ -285,18 +289,6 @@ class SwitchUserListenerTest extends TestCase
         $listener->handle($this->event);
     }
 
-    protected function setUp()
-    {
-        $this->tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
-        $this->userProvider = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserProviderInterface')->getMock();
-        $this->userChecker = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserCheckerInterface')->getMock();
-        $this->accessDecisionManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface')->getMock();
-        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $this->request->query = $this->getMockBuilder('Symfony\Component\HttpFoundation\ParameterBag')->getMock();
-        $this->request->server = $this->getMockBuilder('Symfony\Component\HttpFoundation\ServerBag')->getMock();
-        $this->event = $this->getEvent($this->request);
-    }
-
     private function getEvent($request)
     {
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseEvent')
@@ -308,5 +300,15 @@ class SwitchUserListenerTest extends TestCase
             ->will($this->returnValue($request));
 
         return $event;
+    }
+
+    private function getToken(array $roles = array())
+    {
+        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $token->expects($this->any())
+            ->method('getRoles')
+            ->will($this->returnValue($roles));
+
+        return $token;
     }
 }

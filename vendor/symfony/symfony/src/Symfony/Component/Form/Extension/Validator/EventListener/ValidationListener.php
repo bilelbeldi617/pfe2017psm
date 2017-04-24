@@ -29,8 +29,16 @@ class ValidationListener implements EventSubscriberInterface
     private $violationMapper;
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(FormEvents::POST_SUBMIT => 'validateForm');
+    }
+
+    /**
      * @param ValidatorInterface|LegacyValidatorInterface $validator
-     * @param ViolationMapperInterface $violationMapper
+     * @param ViolationMapperInterface                    $violationMapper
      */
     public function __construct($validator, ViolationMapperInterface $violationMapper)
     {
@@ -39,19 +47,11 @@ class ValidationListener implements EventSubscriberInterface
         }
 
         if (!$validator instanceof ValidatorInterface) {
-            @trigger_error('Passing an instance of Symfony\Component\Validator\ValidatorInterface as argument to the ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0. Use an implementation of Symfony\Component\Validator\Validator\ValidatorInterface instead', E_USER_DEPRECATED);
+            @trigger_error('Passing an instance of Symfony\Component\Validator\ValidatorInterface as argument to the '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Use an implementation of Symfony\Component\Validator\Validator\ValidatorInterface instead', E_USER_DEPRECATED);
         }
 
         $this->validator = $validator;
         $this->violationMapper = $violationMapper;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(FormEvents::POST_SUBMIT => 'validateForm');
     }
 
     /**

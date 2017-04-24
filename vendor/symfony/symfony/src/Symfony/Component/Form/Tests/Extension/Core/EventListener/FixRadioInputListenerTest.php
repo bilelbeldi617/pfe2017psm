@@ -23,6 +23,20 @@ class FixRadioInputListenerTest extends TestCase
 {
     private $choiceList;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->choiceList = new ArrayKeyChoiceList(array('' => 'Empty', 0 => 'A', 1 => 'B'));
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $listener = null;
+    }
+
     public function testFixRadio()
     {
         $data = '1';
@@ -85,19 +99,5 @@ class FixRadioInputListenerTest extends TestCase
         $listener->preSubmit($event);
 
         $this->assertEquals(array(), $event->getData());
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->choiceList = new ArrayKeyChoiceList(array('' => 'Empty', 0 => 'A', 1 => 'B'));
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $listener = null;
     }
 }

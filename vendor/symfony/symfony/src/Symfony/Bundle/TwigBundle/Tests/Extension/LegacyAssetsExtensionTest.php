@@ -19,6 +19,13 @@ use Symfony\Bundle\TwigBundle\Tests\TestCase;
  */
 class LegacyAssetsExtensionTest extends TestCase
 {
+    protected function setUp()
+    {
+        if (!class_exists('Symfony\Component\Templating\Helper\CoreAssetsHelper')) {
+            $this->markTestSkipped('The CoreAssetsHelper class does only exist with symfony/templating < 3.0 installed.');
+        }
+    }
+
     /**
      * @dataProvider provideGetAssetUrlArguments
      */
@@ -31,51 +38,6 @@ class LegacyAssetsExtensionTest extends TestCase
 
         $extension = new AssetsExtension($container, $context);
         $this->assertEquals($expectedUrl, $extension->getAssetUrl($path, $packageName, $absolute));
-    }
-
-    private function createHelperMock($path, $packageName, $returnValue)
-    {
-        $helper = $this->getMockBuilder('Symfony\Component\Templating\Helper\CoreAssetsHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $helper->expects($this->any())
-            ->method('getUrl')
-            ->with($path, $packageName)
-            ->will($this->returnValue($returnValue));
-
-        return $helper;
-    }
-
-    private function createContainerMock($helper)
-    {
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
-        $container->expects($this->any())
-            ->method('get')
-            ->with('templating.helper.assets')
-            ->will($this->returnValue($helper));
-
-        return $container;
-    }
-
-    private function createRequestContextMock($scheme, $host, $httpPort, $httpsPort)
-    {
-        $context = $this->getMockBuilder('Symfony\Component\Routing\RequestContext')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $context->expects($this->any())
-            ->method('getScheme')
-            ->will($this->returnValue($scheme));
-        $context->expects($this->any())
-            ->method('getHost')
-            ->will($this->returnValue($host));
-        $context->expects($this->any())
-            ->method('getHttpPort')
-            ->will($this->returnValue($httpPort));
-        $context->expects($this->any())
-            ->method('getHttpsPort')
-            ->will($this->returnValue($httpsPort));
-
-        return $context;
     }
 
     public function testGetAssetWithoutHost()
@@ -106,10 +68,48 @@ class LegacyAssetsExtensionTest extends TestCase
         );
     }
 
-    protected function setUp()
+    private function createRequestContextMock($scheme, $host, $httpPort, $httpsPort)
     {
-        if (!class_exists('Symfony\Component\Templating\Helper\CoreAssetsHelper')) {
-            $this->markTestSkipped('The CoreAssetsHelper class does only exist with symfony/templating < 3.0 installed.');
-        }
+        $context = $this->getMockBuilder('Symfony\Component\Routing\RequestContext')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $context->expects($this->any())
+            ->method('getScheme')
+            ->will($this->returnValue($scheme));
+        $context->expects($this->any())
+            ->method('getHost')
+            ->will($this->returnValue($host));
+        $context->expects($this->any())
+            ->method('getHttpPort')
+            ->will($this->returnValue($httpPort));
+        $context->expects($this->any())
+            ->method('getHttpsPort')
+            ->will($this->returnValue($httpsPort));
+
+        return $context;
+    }
+
+    private function createContainerMock($helper)
+    {
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
+        $container->expects($this->any())
+            ->method('get')
+            ->with('templating.helper.assets')
+            ->will($this->returnValue($helper));
+
+        return $container;
+    }
+
+    private function createHelperMock($path, $packageName, $returnValue)
+    {
+        $helper = $this->getMockBuilder('Symfony\Component\Templating\Helper\CoreAssetsHelper')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helper->expects($this->any())
+            ->method('getUrl')
+            ->with($path, $packageName)
+            ->will($this->returnValue($returnValue));
+
+        return $helper;
     }
 }

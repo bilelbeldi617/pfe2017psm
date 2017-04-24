@@ -20,6 +20,18 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
     private $parameterBag;
     private $container;
 
+    protected function setUp()
+    {
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
+
+        $this->kernel = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\KernelInterface')->getMock();
+        $this->container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')->getMock();
+        $this->parameterBag = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ParameterBag\\ParameterBagInterface')->getMock();
+        $this->factory = new AssetFactory($this->kernel, $this->container, $this->parameterBag, '/path/to/web');
+    }
+
     public function testBundleNotation()
     {
         $input = '@MyBundle/Resources/css/main.css';
@@ -27,9 +39,7 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->parameterBag->expects($this->once())
             ->method('resolveValue')
-            ->will($this->returnCallback(function ($v) {
-                return $v;
-            }));
+            ->will($this->returnCallback(function ($v) { return $v; }));
         $this->kernel->expects($this->once())
             ->method('getBundle')
             ->with('MyBundle')
@@ -58,9 +68,7 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->parameterBag->expects($this->once())
             ->method('resolveValue')
-            ->will($this->returnCallback(function ($v) {
-                return $v;
-            }));
+            ->will($this->returnCallback(function ($v) { return $v; }));
         $this->kernel->expects($this->once())
             ->method('getBundle')
             ->with('MyBundle')
@@ -86,17 +94,5 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
             array('@MyBundle/Resources/css/*'),
             array('@MyBundle/Resources/css/*/*.css'),
         );
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
-
-        $this->kernel = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\KernelInterface')->getMock();
-        $this->container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')->getMock();
-        $this->parameterBag = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ParameterBag\\ParameterBagInterface')->getMock();
-        $this->factory = new AssetFactory($this->kernel, $this->container, $this->parameterBag, '/path/to/web');
     }
 }

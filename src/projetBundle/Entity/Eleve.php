@@ -14,67 +14,7 @@ class Eleve
 {
 
 
-    private $paiement;
-    /**
-     * @var date
-     *
-     * @ORM\Column(name="date_naissance_eleve", type="date")
-     */
-    private $dateNaissanceEleve;
-    /**
-     * @ORM\ManyToMany(targetEntity="Club", inversedBy="eleves")
-     * @ORM\JoinTable(name="adhesion")
-     */
-    private $clubs;
-    /**
-     * @ORM\ManyToOne(targetEntity="ParentEleve")
-     *
-     */
-    private $parent;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-    private $groupe;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="sexe_eleve", type="string", length=6)
-     */
-    private $sexeEleve;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="niveau_eleve", type="integer")
-     */
-    private $niveauEleve;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom_eleve", type="string", length=25)
-     */
-    private $nomEleve;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom_eleve", type="string", length=25)
-     */
-    private $prenomEleve;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="matricule_eleve", type="string", length=10, unique=true)
-     */
-    private $matriculeEleve;
-
-    public function __construct()
-    {
-        $this->clubs = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+    private $paiement ;
 
     /**
      * @return mixed
@@ -92,6 +32,13 @@ class Eleve
         $this->paiement = $paiement;
     }
 
+
+
+
+
+
+
+
     /**
      * @return mixed
      */
@@ -107,6 +54,15 @@ class Eleve
     {
         $this->parent = $parent;
     }
+
+
+
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="date_naissance_eleve", type="date")
+     */
+    private $dateNaissanceEleve;
 
     /**
      * @return mixed
@@ -140,6 +96,47 @@ class Eleve
         $this->dateNaissanceEleve = $dateNaissanceEleve;
     }
 
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Club", inversedBy="eleves")
+     * @ORM\JoinTable(name="adhesion")
+     */
+    private $clubs;
+
+
+
+    public function __construct() {
+        $this->clubs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+
+
+
+
+
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ParentEleve")
+     *
+     */
+    private $parent ;
+
+
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    private $groupe;
+
     /**
      * @return mixed
      */
@@ -155,6 +152,20 @@ class Eleve
     {
         $this->groupe = $groupe;
     }
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sexe_eleve", type="string", length=6)
+     */
+    private $sexeEleve;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="niveau_eleve", type="integer")
+     */
+    private $niveauEleve;
 
     /**
      * @return int
@@ -189,23 +200,34 @@ class Eleve
     }
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_eleve", type="string", length=25)
+     */
+    private $nomEleve;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="prenom_eleve", type="string", length=25)
+     */
+    private $prenomEleve;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="matricule_eleve", type="string", length=10, unique=true)
+     */
+    private $matriculeEleve;
+
+    /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get nomEleve
-     *
-     * @return string
-     */
-    public function getNomEleve()
-    {
-        return $this->nomEleve;
     }
 
     /**
@@ -222,13 +244,13 @@ class Eleve
     }
 
     /**
-     * Get prenomEleve
+     * Get nomEleve
      *
-     * @return string
+     * @return string 
      */
-    public function getPrenomEleve()
+    public function getNomEleve()
     {
-        return $this->prenomEleve;
+        return $this->nomEleve;
     }
 
     /**
@@ -245,13 +267,13 @@ class Eleve
     }
 
     /**
-     * Get matriculeEleve
+     * Get prenomEleve
      *
-     * @return string
+     * @return string 
      */
-    public function getMatriculeEleve()
+    public function getPrenomEleve()
     {
-        return $this->matriculeEleve;
+        return $this->prenomEleve;
     }
 
     /**
@@ -266,6 +288,19 @@ class Eleve
 
         return $this;
     }
+
+    /**
+     * Get matriculeEleve
+     *
+     * @return string 
+     */
+    public function getMatriculeEleve()
+    {
+        return $this->matriculeEleve;
+    }
+
+
+
 
     /**
      * Add clubs

@@ -42,8 +42,8 @@ class RoutingExtension extends \Twig_Extension
 
     /**
      * @param string $name
-     * @param array $parameters
-     * @param bool $relative
+     * @param array  $parameters
+     * @param bool   $relative
      *
      * @return string
      */
@@ -54,8 +54,8 @@ class RoutingExtension extends \Twig_Extension
 
     /**
      * @param string $name
-     * @param array $parameters
-     * @param bool $schemeRelative
+     * @param array  $parameters
+     * @param bool   $schemeRelative
      *
      * @return string
      */
@@ -90,7 +90,7 @@ class RoutingExtension extends \Twig_Extension
     {
         // support named arguments
         $paramsNode = $argsNode->hasNode('parameters') ? $argsNode->getNode('parameters') : (
-        $argsNode->hasNode(1) ? $argsNode->getNode(1) : null
+            $argsNode->hasNode(1) ? $argsNode->getNode(1) : null
         );
 
         if (null === $paramsNode || $paramsNode instanceof \Twig_Node_Expression_Array && count($paramsNode) <= 2 &&

@@ -30,22 +30,9 @@ class SearchAndRenderBlockNodeTest extends TestCase
             sprintf(
                 '$this->env->getExtension(\'Symfony\Bridge\Twig\Extension\FormExtension\')->renderer->searchAndRenderBlock(%s, \'widget\')',
                 $this->getVariableGetter('form')
-            ),
+             ),
             trim($compiler->compile($node)->getSource())
         );
-    }
-
-    protected function getVariableGetter($name)
-    {
-        if (PHP_VERSION_ID >= 70000) {
-            return sprintf('($context["%s"] ?? null)', $name, $name);
-        }
-
-        if (PHP_VERSION_ID >= 50400) {
-            return sprintf('(isset($context["%s"]) ? $context["%s"] : null)', $name, $name);
-        }
-
-        return sprintf('$this->getContext($context, "%s")', $name);
     }
 
     public function testCompileWidgetWithVariables()
@@ -212,7 +199,7 @@ class SearchAndRenderBlockNodeTest extends TestCase
         $arguments = new \Twig_Node(array(
             new \Twig_Node_Expression_Name('form', 0),
             new \Twig_Node_Expression_Conditional(
-            // if
+                // if
                 new \Twig_Node_Expression_Constant(true, 0),
                 // then
                 new \Twig_Node_Expression_Constant(null, 0),
@@ -243,7 +230,7 @@ class SearchAndRenderBlockNodeTest extends TestCase
         $arguments = new \Twig_Node(array(
             new \Twig_Node_Expression_Name('form', 0),
             new \Twig_Node_Expression_Conditional(
-            // if
+                // if
                 new \Twig_Node_Expression_Constant(true, 0),
                 // then
                 new \Twig_Node_Expression_Constant(null, 0),
@@ -273,5 +260,18 @@ class SearchAndRenderBlockNodeTest extends TestCase
             ),
             trim($compiler->compile($node)->getSource())
         );
+    }
+
+    protected function getVariableGetter($name)
+    {
+        if (PHP_VERSION_ID >= 70000) {
+            return sprintf('($context["%s"] ?? null)', $name, $name);
+        }
+
+        if (PHP_VERSION_ID >= 50400) {
+            return sprintf('(isset($context["%s"]) ? $context["%s"] : null)', $name, $name);
+        }
+
+        return sprintf('$this->getContext($context, "%s")', $name);
     }
 }

@@ -46,8 +46,8 @@ class ResolveDefinitionTemplatesPass implements CompilerPassInterface
      * Resolves definition decorator arguments.
      *
      * @param ContainerBuilder $container The ContainerBuilder
-     * @param array $arguments An array of arguments
-     * @param bool $isRoot If we are processing the root definitions or not
+     * @param array            $arguments An array of arguments
+     * @param bool             $isRoot    If we are processing the root definitions or not
      *
      * @return array
      */
@@ -87,7 +87,7 @@ class ResolveDefinitionTemplatesPass implements CompilerPassInterface
     /**
      * Resolves the definition.
      *
-     * @param ContainerBuilder $container The ContainerBuilder
+     * @param ContainerBuilder    $container  The ContainerBuilder
      * @param DefinitionDecorator $definition
      *
      * @return Definition
@@ -193,7 +193,7 @@ class ResolveDefinitionTemplatesPass implements CompilerPassInterface
                 throw new RuntimeException(sprintf('Invalid argument key "%s" found.', $k));
             }
 
-            $index = (int)substr($k, strlen('index_'));
+            $index = (int) substr($k, strlen('index_'));
             $def->replaceArgument($index, $v);
         }
 

@@ -54,7 +54,7 @@ interface FormDataCollectorInterface extends DataCollectorInterface
      * Specifies that the given objects represent the same conceptual form.
      *
      * @param FormInterface $form A form object
-     * @param FormView $view A view object
+     * @param FormView      $view A view object
      */
     public function associateFormWithView(FormInterface $form, FormView $view);
 
@@ -87,7 +87,7 @@ interface FormDataCollectorInterface extends DataCollectorInterface
      * {@link associateFormWithView()} before calling this method.
      *
      * @param FormInterface $form A root form
-     * @param FormView $view A root view
+     * @param FormView      $view A root view
      */
     public function buildFinalFormTree(FormInterface $form, FormView $view);
 

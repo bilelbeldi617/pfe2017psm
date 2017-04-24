@@ -18,6 +18,15 @@ use Doctrine\DBAL\Types\Type;
 
 class ContainerTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        if (!class_exists('Doctrine\\ORM\\Version')) {
+            $this->markTestSkipped('Doctrine ORM is not available.');
+        }
+    }
+
     public function testContainer()
     {
         $container = $this->createYamlBundleTestContainer();
@@ -58,15 +67,6 @@ class ContainerTest extends TestCase
         } else {
             $this->assertFalse($container->has('doctrine.orm.default_entity_manager.metadata_factory'));
             $this->assertFalse($container->has('doctrine.orm.default_entity_manager.property_info_extractor'));
-        }
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        if (!class_exists('Doctrine\\ORM\\Version')) {
-            $this->markTestSkipped('Doctrine ORM is not available.');
         }
     }
 }

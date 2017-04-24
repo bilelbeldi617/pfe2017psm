@@ -26,40 +26,6 @@ class EntitiesAutoCompleterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $autoCompleter->getSuggestions());
     }
 
-    /**
-     * @param $aliases
-     * @param $classes
-     *
-     * @return EntityManagerInterface
-     */
-    protected function getEntityManagerMock($aliases, $classes)
-    {
-        $cache = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver')->getMock();
-        $cache
-            ->expects($this->any())
-            ->method('getAllClassNames')
-            ->will($this->returnValue($classes));
-
-        $configuration = $this->getMockBuilder('Doctrine\ORM\Configuration')->getMock();
-        $configuration
-            ->expects($this->any())
-            ->method('getMetadataDriverImpl')
-            ->will($this->returnValue($cache));
-
-        $configuration
-            ->expects($this->any())
-            ->method('getEntityNamespaces')
-            ->will($this->returnValue($aliases));
-
-        $manager = $this->getMockBuilder('Doctrine\ORM\EntityManagerInterface')->getMock();
-        $manager
-            ->expects($this->any())
-            ->method('getConfiguration')
-            ->will($this->returnValue($configuration));
-
-        return $manager;
-    }
-
     public function getNamespaces()
     {
         return array(
@@ -90,5 +56,43 @@ class EntitiesAutoCompleterTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
         );
+    }
+
+    /**
+     * @param $aliases
+     * @param $classes
+     *
+     * @return EntityManagerInterface
+     */
+    protected function getEntityManagerMock($aliases, $classes)
+    {
+        $cache = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver')->getMock();
+        $cache
+            ->expects($this->any())
+            ->method('getAllClassNames')
+            ->will($this->returnValue($classes))
+        ;
+
+        $configuration = $this->getMockBuilder('Doctrine\ORM\Configuration')->getMock();
+        $configuration
+            ->expects($this->any())
+            ->method('getMetadataDriverImpl')
+            ->will($this->returnValue($cache))
+        ;
+
+        $configuration
+            ->expects($this->any())
+            ->method('getEntityNamespaces')
+            ->will($this->returnValue($aliases))
+        ;
+
+        $manager = $this->getMockBuilder('Doctrine\ORM\EntityManagerInterface')->getMock();
+        $manager
+            ->expects($this->any())
+            ->method('getConfiguration')
+            ->will($this->returnValue($configuration))
+        ;
+
+        return $manager;
     }
 }

@@ -9,7 +9,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 class Twig_Node_Expression_Name extends Twig_Node_Expression
 {
     protected $specialVars = array(
@@ -41,14 +40,16 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
             $compiler
                 ->raw('$context[')
                 ->string($name)
-                ->raw(']');
+                ->raw(']')
+            ;
         } else {
             if (PHP_VERSION_ID >= 70000) {
                 // use PHP 7 null coalescing operator
                 $compiler
                     ->raw('($context[')
                     ->string($name)
-                    ->raw('] ?? ');
+                    ->raw('] ?? ')
+                ;
 
                 if ($this->getAttribute('ignore_strict_check') || !$compiler->getEnvironment()->isStrictVariables()) {
                     $compiler->raw('null)');
@@ -62,7 +63,8 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
                     ->string($name)
                     ->raw(']) ? $context[')
                     ->string($name)
-                    ->raw('] : ');
+                    ->raw('] : ')
+                ;
 
                 if ($this->getAttribute('ignore_strict_check') || !$compiler->getEnvironment()->isStrictVariables()) {
                     $compiler->raw('null)');
@@ -72,14 +74,16 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
             } else {
                 $compiler
                     ->raw('$this->getContext($context, ')
-                    ->string($name);
+                    ->string($name)
+                ;
 
                 if ($this->getAttribute('ignore_strict_check')) {
                     $compiler->raw(', true');
                 }
 
                 $compiler
-                    ->raw(')');
+                    ->raw(')')
+                ;
             }
         }
     }

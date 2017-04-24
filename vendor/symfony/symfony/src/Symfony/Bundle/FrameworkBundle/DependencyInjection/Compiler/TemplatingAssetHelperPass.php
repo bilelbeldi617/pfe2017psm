@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-@trigger_error('The ' . __NAMESPACE__ . '\TemplatingAssetHelperPass class is deprecated since version 2.7 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\TemplatingAssetHelperPass class is deprecated since version 2.7 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 /**
  * @deprecated since 2.7, will be removed in 3.0
@@ -58,7 +58,7 @@ class TemplatingAssetHelperPass implements CompilerPassInterface
     private function getPackageScope(ContainerBuilder $container, $package)
     {
         if ($package instanceof Reference) {
-            return $container->findDefinition((string)$package)->getScope();
+            return $container->findDefinition((string) $package)->getScope();
         }
 
         if ($package instanceof Definition) {

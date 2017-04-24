@@ -31,56 +31,13 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
         'choice_attr',
     );
 
-    public static function themeBlockInheritanceProvider()
-    {
-        return array(
-            array(array('TestBundle:Parent')),
-        );
-    }
-
-    public static function themeInheritanceProvider()
-    {
-        return array(
-            array(array('TestBundle:Parent'), array('TestBundle:Child')),
-        );
-    }
-
-    public function testStartTagHasNoActionAttributeWhenActionIsEmpty()
-    {
-        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
-            'method' => 'get',
-            'action' => '',
-        ));
-
-        $html = $this->renderStart($form->createView());
-
-        $this->assertSame('<form name="form" method="get">', $html);
-    }
-
-    protected function renderStart(FormView $view, array $vars = array())
-    {
-        return (string)$this->engine->get('form')->start($view, $vars);
-    }
-
-    public function testStartTagHasActionAttributeWhenActionIsZero()
-    {
-        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
-            'method' => 'get',
-            'action' => '0',
-        ));
-
-        $html = $this->renderStart($form->createView());
-
-        $this->assertSame('<form name="form" method="get" action="0">', $html);
-    }
-
     protected function getExtensions()
     {
         // should be moved to the Form component once absolute file paths are supported
         // by the default name parser in the Templating component
         $reflClass = new \ReflectionClass('Symfony\Bundle\FrameworkBundle\FrameworkBundle');
-        $root = realpath(dirname($reflClass->getFileName()) . '/Resources/views');
-        $rootTheme = realpath(__DIR__ . '/Resources');
+        $root = realpath(dirname($reflClass->getFileName()).'/Resources/views');
+        $rootTheme = realpath(__DIR__.'/Resources');
         $templateNameParser = new StubTemplateNameParser($root, $rootTheme);
         $loader = new FilesystemLoader(array());
 
@@ -104,9 +61,33 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
         parent::tearDown();
     }
 
+    public function testStartTagHasNoActionAttributeWhenActionIsEmpty()
+    {
+        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
+            'method' => 'get',
+            'action' => '',
+        ));
+
+        $html = $this->renderStart($form->createView());
+
+        $this->assertSame('<form name="form" method="get">', $html);
+    }
+
+    public function testStartTagHasActionAttributeWhenActionIsZero()
+    {
+        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
+            'method' => 'get',
+            'action' => '0',
+        ));
+
+        $html = $this->renderStart($form->createView());
+
+        $this->assertSame('<form name="form" method="get" action="0">', $html);
+    }
+
     protected function renderForm(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->form($view, $vars);
+        return (string) $this->engine->get('form')->form($view, $vars);
     }
 
     protected function renderEnctype(FormView $view)
@@ -115,41 +96,60 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
             $this->markTestSkipped(sprintf('Deprecated method %s->enctype() is not implemented.', get_class($form)));
         }
 
-        return (string)$form->enctype($view);
+        return (string) $form->enctype($view);
     }
 
     protected function renderLabel(FormView $view, $label = null, array $vars = array())
     {
-        return (string)$this->engine->get('form')->label($view, $label, $vars);
+        return (string) $this->engine->get('form')->label($view, $label, $vars);
     }
 
     protected function renderErrors(FormView $view)
     {
-        return (string)$this->engine->get('form')->errors($view);
+        return (string) $this->engine->get('form')->errors($view);
     }
 
     protected function renderWidget(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->widget($view, $vars);
+        return (string) $this->engine->get('form')->widget($view, $vars);
     }
 
     protected function renderRow(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->row($view, $vars);
+        return (string) $this->engine->get('form')->row($view, $vars);
     }
 
     protected function renderRest(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->rest($view, $vars);
+        return (string) $this->engine->get('form')->rest($view, $vars);
+    }
+
+    protected function renderStart(FormView $view, array $vars = array())
+    {
+        return (string) $this->engine->get('form')->start($view, $vars);
     }
 
     protected function renderEnd(FormView $view, array $vars = array())
     {
-        return (string)$this->engine->get('form')->end($view, $vars);
+        return (string) $this->engine->get('form')->end($view, $vars);
     }
 
     protected function setTheme(FormView $view, array $themes)
     {
         $this->engine->get('form')->setTheme($view, $themes);
+    }
+
+    public static function themeBlockInheritanceProvider()
+    {
+        return array(
+            array(array('TestBundle:Parent')),
+        );
+    }
+
+    public static function themeInheritanceProvider()
+    {
+        return array(
+            array(array('TestBundle:Parent'), array('TestBundle:Child')),
+        );
     }
 }

@@ -28,7 +28,7 @@ class InteractiveLoginEvent extends Event
     /**
      * Constructor.
      *
-     * @param Request $request A Request instance
+     * @param Request        $request             A Request instance
      * @param TokenInterface $authenticationToken A TokenInterface instance
      */
     public function __construct(Request $request, TokenInterface $authenticationToken)

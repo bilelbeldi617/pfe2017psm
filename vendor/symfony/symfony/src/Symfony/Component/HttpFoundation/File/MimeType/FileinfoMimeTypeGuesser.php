@@ -36,6 +36,16 @@ class FileinfoMimeTypeGuesser implements MimeTypeGuesserInterface
     }
 
     /**
+     * Returns whether this guesser is supported on the current OS/PHP setup.
+     *
+     * @return bool
+     */
+    public static function isSupported()
+    {
+        return function_exists('finfo_open');
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function guess($path)
@@ -57,15 +67,5 @@ class FileinfoMimeTypeGuesser implements MimeTypeGuesserInterface
         }
 
         return $finfo->file($path);
-    }
-
-    /**
-     * Returns whether this guesser is supported on the current OS/PHP setup.
-     *
-     * @return bool
-     */
-    public static function isSupported()
-    {
-        return function_exists('finfo_open');
     }
 }

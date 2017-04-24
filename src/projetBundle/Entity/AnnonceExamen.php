@@ -32,45 +32,36 @@ class AnnonceExamen
      * @ORM\ManyToOne(targetEntity="Groupe")
      *
      */
-    private $groupe;
+    private $groupe ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Salle")
      *
      */
-    private $salle;
+    private $salle ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Enseignant")
      *
      */
-    private $enseignant;
+    private $enseignant ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Matiere")
      *
      */
-    private $matiere;
+    private $matiere ;
+
 
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get dateExamen
-     *
-     * @return \DateTime
-     */
-    public function getDateExamen()
-    {
-        return $this->dateExamen;
     }
 
     /**
@@ -84,5 +75,15 @@ class AnnonceExamen
         $this->dateExamen = $dateExamen;
 
         return $this;
+    }
+
+    /**
+     * Get dateExamen
+     *
+     * @return \DateTime 
+     */
+    public function getDateExamen()
+    {
+        return $this->dateExamen;
     }
 }

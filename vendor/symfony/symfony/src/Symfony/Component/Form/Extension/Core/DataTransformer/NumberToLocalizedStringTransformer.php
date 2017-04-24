@@ -151,25 +151,6 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     }
 
     /**
-     * Returns a preconfigured \NumberFormatter instance.
-     *
-     * @return \NumberFormatter
-     */
-    protected function getNumberFormatter()
-    {
-        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
-
-        if (null !== $this->precision) {
-            $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->precision);
-            $formatter->setAttribute(\NumberFormatter::ROUNDING_MODE, $this->roundingMode);
-        }
-
-        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
-
-        return $formatter;
-    }
-
-    /**
      * Transforms a localized number into an integer or float.
      *
      * @param string $value The localized value
@@ -224,7 +205,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
             throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like');
         }
 
-        if (is_int($result) && $result === (int)$float = (float)$result) {
+        if (is_int($result) && $result === (int) $float = (float) $result) {
             $result = $float;
         }
 
@@ -255,6 +236,25 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     }
 
     /**
+     * Returns a preconfigured \NumberFormatter instance.
+     *
+     * @return \NumberFormatter
+     */
+    protected function getNumberFormatter()
+    {
+        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+
+        if (null !== $this->precision) {
+            $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->precision);
+            $formatter->setAttribute(\NumberFormatter::ROUNDING_MODE, $this->roundingMode);
+        }
+
+        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
+
+        return $formatter;
+    }
+
+    /**
      * Rounds a number according to the configured scale and rounding mode.
      *
      * @param int|float $number A number
@@ -267,7 +267,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
             // shift number to maintain the correct scale during rounding
             $roundingCoef = pow(10, $this->precision);
             // string representation to avoid rounding errors, similar to bcmul()
-            $number = (string)($number * $roundingCoef);
+            $number = (string) ($number * $roundingCoef);
 
             switch ($this->roundingMode) {
                 case self::ROUND_CEILING:

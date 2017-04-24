@@ -5,9 +5,9 @@
 
 {% block script %}
     <script language="JavaScript">
-        $("document").ready(function () {
+        $("document").ready(function(){
             $("#tableEnseignant").dataTable();
-            $(".btnMail").click(function () {
+            $(".btnMail").click(function(){
                 $("#mailEnseignant").val($("#emailEnseignant").val());
                 console.log("click");
                 $("#mailContainer").slideDown("fast");
@@ -22,27 +22,26 @@
     <div class="col-xs-12">
         <table class="table table-bordered" width="80%" id="tableEnseignant">
             <thead>
-            <th>L'enseignant</th>
-            <th>Enseigne votre enfant</th>
-            <th>La matiere</th>
-            <th>Contacter</th>
+                <th>L'enseignant</th>
+                <th>Enseigne votre enfant</th>
+                <th>La matiere</th>
+                <th>Contacter</th>
             </thead>
             <tbody>
-            {% for l in listEnseignant %}
-                <tr>
-                    <td>{{ l.enseignant.nomenseignant }} {{ l.enseignant.prenomenseignant }}</td>
-                    <td>{{ l.eleve.prenomeleve }} {{ l.eleve.nomeleve }}</td>
-                    <td>{{ l.matiere.libellematiere }}</td>
-                    <td><a href="{{ path('envoyerMail') }}?emailEnseignant={{ l.enseignant.emailenseignant }}"><input
-                                    type="button" value="Envoyer un e-mail" class="btn btn-primary"></a></td>
-                </tr>
-            {% endfor %}
+                {% for l in listEnseignant %}
+                    <tr>
+                        <td>{{ l.enseignant.nomenseignant }} {{ l.enseignant.prenomenseignant }}</td>
+                        <td>{{ l.eleve.prenomeleve }} {{ l.eleve.nomeleve }}</td>
+                        <td>{{ l.matiere.libellematiere }}</td>
+                        <td><a href="{{ path('envoyerMail') }}?emailEnseignant={{ l.enseignant.emailenseignant }}" ><input type="button" value="Envoyer un e-mail" class="btn btn-primary"></a></td>
+                    </tr>
+                {% endfor %}
             </tbody>
             <tfoot>
-            <th>L'enseignant</th>
-            <th>Enseigne votre enfant</th>
-            <th>La matiere</th>
-            <th>Contacter</th>
+                 <th>L'enseignant</th>
+                 <th>Enseigne votre enfant</th>
+                 <th>La matiere</th>
+                 <th>Contacter</th>
             </tfoot>
         </table>
     </div>

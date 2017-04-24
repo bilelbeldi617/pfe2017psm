@@ -39,6 +39,36 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
      */
     protected $validator;
 
+    /**
+     * @param MetadataFactoryInterface $metadataFactory
+     * @param array                    $objectInitializers
+     *
+     * @return ValidatorInterface
+     */
+    abstract protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array());
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->validator = $this->createValidator($this->metadataFactory);
+    }
+
+    protected function validate($value, $constraints = null, $groups = null)
+    {
+        return $this->validator->validate($value, $constraints, $groups);
+    }
+
+    protected function validateProperty($object, $propertyName, $groups = null)
+    {
+        return $this->validator->validateProperty($object, $propertyName, $groups);
+    }
+
+    protected function validatePropertyValue($object, $propertyName, $value, $groups = null)
+    {
+        return $this->validator->validatePropertyValue($object, $propertyName, $value, $groups);
+    }
+
     public function testValidateConstraintWithoutGroup()
     {
         $violations = $this->validator->validate(null, new NotNull());
@@ -64,8 +94,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
         };
 
         $this->metadata->addConstraint(new Callback(array(
-            'callback' => function () {
-            },
+            'callback' => function () {},
             'groups' => 'Group 1',
         )));
         $this->metadata->addConstraint(new Callback(array(
@@ -126,7 +155,8 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
                 ->getValidator()
                 // Since the validator is not context aware, the group must
                 // be passed explicitly
-                ->validate($value->reference, new Valid(), 'Group');
+                ->validate($value->reference, new Valid(), 'Group')
+            ;
 
             /* @var ConstraintViolationInterface[] $violations */
             $test->assertCount(1, $violations);
@@ -190,7 +220,8 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
                 ->getValidator()
                 ->inContext($context)
                 ->atPath('subpath')
-                ->validate($value->reference);
+                ->validate($value->reference)
+            ;
 
             // context changes shouldn't leak out of the validate() call
             $test->assertSame($previousValue, $context->getValue());
@@ -253,7 +284,8 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
                 ->getValidator()
                 ->inContext($context)
                 ->atPath('subpath')
-                ->validate(array('key' => $value->reference));
+                ->validate(array('key' => $value->reference))
+            ;
 
             // context changes shouldn't leak out of the validate() call
             $test->assertSame($previousValue, $context->getValue());
@@ -336,11 +368,6 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
         $this->assertSame($entity, $violations[0]->getInvalidValue());
         $this->assertNull($violations[0]->getPlural());
         $this->assertNull($violations[0]->getCode());
-    }
-
-    protected function validate($value, $constraints = null, $groups = null)
-    {
-        return $this->validator->validate($value, $constraints, $groups);
     }
 
     public function testTraversalEnabledOnClass()
@@ -711,30 +738,5 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
 
         $this->assertCount(1, $violations);
         $this->assertSame($constraint, $violations[0]->getConstraint());
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->validator = $this->createValidator($this->metadataFactory);
-    }
-
-    /**
-     * @param MetadataFactoryInterface $metadataFactory
-     * @param array $objectInitializers
-     *
-     * @return ValidatorInterface
-     */
-    abstract protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array());
-
-    protected function validateProperty($object, $propertyName, $groups = null)
-    {
-        return $this->validator->validateProperty($object, $propertyName, $groups);
-    }
-
-    protected function validatePropertyValue($object, $propertyName, $value, $groups = null)
-    {
-        return $this->validator->validatePropertyValue($object, $propertyName, $value, $groups);
     }
 }

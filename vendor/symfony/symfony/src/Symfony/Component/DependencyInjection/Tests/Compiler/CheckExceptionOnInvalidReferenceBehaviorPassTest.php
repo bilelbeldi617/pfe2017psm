@@ -25,7 +25,8 @@ class CheckExceptionOnInvalidReferenceBehaviorPassTest extends TestCase
 
         $container
             ->register('a', '\stdClass')
-            ->addArgument(new Reference('b'));
+            ->addArgument(new Reference('b'))
+        ;
         $container->register('b', '\stdClass');
     }
 
@@ -38,15 +39,10 @@ class CheckExceptionOnInvalidReferenceBehaviorPassTest extends TestCase
 
         $container
             ->register('a', '\stdClass')
-            ->addArgument(new Reference('b'));
+            ->addArgument(new Reference('b'))
+        ;
 
         $this->process($container);
-    }
-
-    private function process(ContainerBuilder $container)
-    {
-        $pass = new CheckExceptionOnInvalidReferenceBehaviorPass();
-        $pass->process($container);
     }
 
     /**
@@ -61,8 +57,15 @@ class CheckExceptionOnInvalidReferenceBehaviorPassTest extends TestCase
 
         $container
             ->register('a', '\stdClass')
-            ->addArgument($def);
+            ->addArgument($def)
+        ;
 
         $this->process($container);
+    }
+
+    private function process(ContainerBuilder $container)
+    {
+        $pass = new CheckExceptionOnInvalidReferenceBehaviorPass();
+        $pass->process($container);
     }
 }

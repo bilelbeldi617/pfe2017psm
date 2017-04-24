@@ -38,7 +38,7 @@ class CoreAssetsHelper extends Helper implements PackageInterface
      * Constructor.
      *
      * @param PackageInterface $defaultPackage The default package
-     * @param array $namedPackages Additional packages indexed by name
+     * @param array            $namedPackages  Additional packages indexed by name
      */
     public function __construct(PackageInterface $defaultPackage, array $namedPackages = array())
     {
@@ -47,17 +47,6 @@ class CoreAssetsHelper extends Helper implements PackageInterface
         foreach ($namedPackages as $name => $package) {
             $this->addPackage($name, $package);
         }
-    }
-
-    /**
-     * Adds an asset package to the helper.
-     *
-     * @param string $name The package name
-     * @param PackageInterface $package The package
-     */
-    public function addPackage($name, PackageInterface $package)
-    {
-        $this->namedPackages[$name] = $package;
     }
 
     /**
@@ -71,15 +60,14 @@ class CoreAssetsHelper extends Helper implements PackageInterface
     }
 
     /**
-     * Gets the version to add to public URL.
+     * Adds an asset package to the helper.
      *
-     * @param string $packageName A package name
-     *
-     * @return string The current version
+     * @param string           $name    The package name
+     * @param PackageInterface $package The package
      */
-    public function getVersion($packageName = null)
+    public function addPackage($name, PackageInterface $package)
     {
-        return $this->getPackage($packageName)->getVersion();
+        $this->namedPackages[$name] = $package;
     }
 
     /**
@@ -105,13 +93,25 @@ class CoreAssetsHelper extends Helper implements PackageInterface
     }
 
     /**
+     * Gets the version to add to public URL.
+     *
+     * @param string $packageName A package name
+     *
+     * @return string The current version
+     */
+    public function getVersion($packageName = null)
+    {
+        return $this->getPackage($packageName)->getVersion();
+    }
+
+    /**
      * Returns the public path.
      *
      * Absolute paths (i.e. http://...) are returned unmodified.
      *
-     * @param string $path A public path
-     * @param string $packageName The name of the asset package to use
-     * @param string|bool|null $version A specific version
+     * @param string           $path        A public path
+     * @param string           $packageName The name of the asset package to use
+     * @param string|bool|null $version     A specific version
      *
      * @return string A public path which takes into account the base path and URL path
      */

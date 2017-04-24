@@ -21,8 +21,8 @@ use Symfony\Component\Routing\RequestContext;
 class SwiftmailerTransportFactory
 {
     /**
-     * @param array $options
-     * @param RequestContext|null $requestContext
+     * @param array                         $options
+     * @param RequestContext|null           $requestContext
      * @param \Swift_Events_EventDispatcher $eventDispatcher
      *
      * @return \Swift_Transport

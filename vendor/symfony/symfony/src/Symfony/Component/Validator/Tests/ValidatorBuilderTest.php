@@ -22,6 +22,16 @@ class ValidatorBuilderTest extends TestCase
      */
     protected $builder;
 
+    protected function setUp()
+    {
+        $this->builder = new ValidatorBuilder();
+    }
+
+    protected function tearDown()
+    {
+        $this->builder = null;
+    }
+
     public function testAddObjectInitializer()
     {
         $this->assertSame($this->builder, $this->builder->addObjectInitializer(
@@ -103,15 +113,5 @@ class ValidatorBuilderTest extends TestCase
     public function testGetValidator()
     {
         $this->assertInstanceOf('Symfony\Component\Validator\Validator\RecursiveValidator', $this->builder->getValidator());
-    }
-
-    protected function setUp()
-    {
-        $this->builder = new ValidatorBuilder();
-    }
-
-    protected function tearDown()
-    {
-        $this->builder = null;
     }
 }

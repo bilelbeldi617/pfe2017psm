@@ -28,7 +28,7 @@ class StatsCommand extends CacheCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cacheName = $input->getArgument('cache-name');
+        $cacheName     = $input->getArgument('cache-name');
         $cacheProvider = $this->getCacheProvider($cacheName);
         $cacheProviderName = get_class($cacheProvider);
 

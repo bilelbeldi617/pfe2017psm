@@ -50,7 +50,8 @@ APP_PATH/Resources/SensioGeneratorBundle/skeleton/form</info>
 You can check https://github.com/sensio/SensioGeneratorBundle/tree/master/Resources/skeleton
 in order to know the file structure of the skeleton
 EOT
-            );
+            )
+        ;
     }
 
     /**
@@ -61,7 +62,7 @@ EOT
         $entity = Validators::validateEntityName($input->getArgument('entity'));
         list($bundle, $entity) = $this->parseShortcutNotation($entity);
 
-        $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle) . '\\' . $entity;
+        $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle).'\\'.$entity;
         $metadata = $this->getEntityMetadata($entityClass);
         $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
         $generator = $this->getGenerator($bundle);

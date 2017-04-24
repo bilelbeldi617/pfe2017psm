@@ -41,17 +41,17 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->disableExternalEntities = false;
     }
 
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-
     public function setNavigator(GraphNavigator $navigator)
     {
         $this->navigator = $navigator;
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
         $this->result = null;
+    }
+
+    public function getNavigator()
+    {
+        return $this->navigator;
     }
 
     public function prepare($data)
@@ -91,7 +91,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
-        $data = (string)$data;
+        $data = (string) $data;
 
         if (null === $this->result) {
             $this->result = $data;
@@ -102,7 +102,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
-        $data = (string)$data;
+        $data = (string) $data;
 
         if ('true' === $data) {
             $data = true;
@@ -121,7 +121,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitInteger($data, array $type, Context $context)
     {
-        $data = (integer)$data;
+        $data = (integer) $data;
 
         if (null === $this->result) {
             $this->result = $data;
@@ -132,7 +132,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitDouble($data, array $type, Context $context)
     {
-        $data = (double)$data;
+        $data = (double) $data;
 
         if (null === $this->result) {
             $this->result = $data;
@@ -145,7 +145,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
 
-        if (!isset($data->$entryName)) {
+        if ( ! isset($data->$entryName)) {
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -214,19 +214,19 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlAttribute) {
-            if ('' !== $namespace = (string)$metadata->xmlNamespace) {
+            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
                 $registeredNamespaces = $data->getDocNamespaces();
                 if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
                     $prefix = uniqid('ns-');
-                    $data->registerXPathNamespace($prefix, $namespace);
+                    $data->registerXPathNamespace ($prefix, $namespace);
                 }
-                $attributeName = ($prefix === '') ? $name : $prefix . ':' . $name;
-                $nodes = $data->xpath('./@' . $attributeName);
+                $attributeName = ($prefix === '')?$name:$prefix.':'.$name;
+                $nodes = $data->xpath('./@'.$attributeName);
                 if (!empty($nodes)) {
-                    $v = (string)reset($nodes);
-                    $metadata->reflection->setValue($this->currentObject, $v);
+                    $v = (string) reset($nodes);
+                    $metadata->reflection->setValue($this->currentObject, $v);    
                 }
-
+                
             } elseif (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
                 $metadata->reflection->setValue($this->currentObject, $v);
@@ -256,14 +256,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if ('' !== $namespace = (string)$metadata->xmlNamespace) {
+        if ('' !== $namespace = (string) $metadata->xmlNamespace) {
             $registeredNamespaces = $data->getDocNamespaces();
             if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespace);
             }
-            $elementName = ($prefix === '') ? $name : $prefix . ':' . $name;
-            $nodes = $data->xpath('./' . $elementName);
+            $elementName = ($prefix === '')?$name:$prefix.':'.$name;
+            $nodes = $data->xpath('./'.$elementName );
             if (empty($nodes)) {
                 return;
             }
@@ -286,11 +286,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->currentObject->{$metadata->setter}($v);
     }
 
-    public function revertCurrentMetadata()
-    {
-        return $this->currentMetadata = $this->metadataStack->pop();
-    }
-
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         $rs = $this->currentObject;
@@ -299,9 +294,10 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $rs;
     }
 
-    public function revertCurrentObject()
+    public function setCurrentObject($object)
     {
-        return $this->currentObject = $this->objectStack->pop();
+        $this->objectStack->push($this->currentObject);
+        $this->currentObject = $object;
     }
 
     public function getCurrentObject()
@@ -309,15 +305,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $this->currentObject;
     }
 
-    public function setCurrentObject($object)
+    public function revertCurrentObject()
     {
-        $this->objectStack->push($this->currentObject);
-        $this->currentObject = $object;
-    }
-
-    public function getCurrentMetadata()
-    {
-        return $this->currentMetadata;
+        return $this->currentObject = $this->objectStack->pop();
     }
 
     public function setCurrentMetadata(PropertyMetadata $metadata)
@@ -326,9 +316,27 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->currentMetadata = $metadata;
     }
 
+    public function getCurrentMetadata()
+    {
+        return $this->currentMetadata;
+    }
+
+    public function revertCurrentMetadata()
+    {
+        return $this->currentMetadata = $this->metadataStack->pop();
+    }
+
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * @param array<string> $doctypeWhitelist
+     */
+    public function setDoctypeWhitelist(array $doctypeWhitelist)
+    {
+        $this->doctypeWhitelist = $doctypeWhitelist;
     }
 
     /**
@@ -337,13 +345,5 @@ class XmlDeserializationVisitor extends AbstractVisitor
     public function getDoctypeWhitelist()
     {
         return $this->doctypeWhitelist;
-    }
-
-    /**
-     * @param array <string> $doctypeWhitelist
-     */
-    public function setDoctypeWhitelist(array $doctypeWhitelist)
-    {
-        $this->doctypeWhitelist = $doctypeWhitelist;
     }
 }

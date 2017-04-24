@@ -34,9 +34,9 @@ class TemplateCacheCacheWarmer implements CacheWarmerInterface
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container The dependency injection container
-     * @param TemplateFinderInterface $finder The template paths cache warmer
-     * @param array $paths Additional twig paths to warm
+     * @param ContainerInterface      $container The dependency injection container
+     * @param TemplateFinderInterface $finder    The template paths cache warmer
+     * @param array                   $paths     Additional twig paths to warm
      */
     public function __construct(ContainerInterface $container, TemplateFinderInterface $finder = null, array $paths = array())
     {
@@ -83,10 +83,20 @@ class TemplateCacheCacheWarmer implements CacheWarmerInterface
     }
 
     /**
+     * Checks whether this warmer is optional or not.
+     *
+     * @return bool always true
+     */
+    public function isOptional()
+    {
+        return true;
+    }
+
+    /**
      * Find templates in the given directory.
      *
      * @param string $namespace The namespace for these templates
-     * @param string $dir The folder where to look for templates
+     * @param string $dir       The folder where to look for templates
      *
      * @return array An array of templates of type TemplateReferenceInterface
      */
@@ -108,15 +118,5 @@ class TemplateCacheCacheWarmer implements CacheWarmerInterface
         }
 
         return $templates;
-    }
-
-    /**
-     * Checks whether this warmer is optional or not.
-     *
-     * @return bool always true
-     */
-    public function isOptional()
-    {
-        return true;
     }
 }

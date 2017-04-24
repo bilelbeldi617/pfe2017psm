@@ -74,6 +74,36 @@ class PermissionGrantingStrategy implements PermissionGrantingStrategyInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isFieldGranted(AclInterface $acl, $field, array $masks, array $sids, $administrativeMode = false)
+    {
+        try {
+            try {
+                $aces = $acl->getObjectFieldAces($field);
+                if (!$aces) {
+                    throw new NoAceFoundException();
+                }
+
+                return $this->hasSufficientPermissions($acl, $aces, $masks, $sids, $administrativeMode);
+            } catch (NoAceFoundException $e) {
+                $aces = $acl->getClassFieldAces($field);
+                if (!$aces) {
+                    throw $e;
+                }
+
+                return $this->hasSufficientPermissions($acl, $aces, $masks, $sids, $administrativeMode);
+            }
+        } catch (NoAceFoundException $e) {
+            if ($acl->isEntriesInheriting() && null !== $parentAcl = $acl->getParentAcl()) {
+                return $parentAcl->isFieldGranted($field, $masks, $sids, $administrativeMode);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
      * Makes an authorization decision.
      *
      * The order of ACEs, and SIDs is significant; the order of permission masks
@@ -94,11 +124,11 @@ class PermissionGrantingStrategy implements PermissionGrantingStrategyInterface
      * permission/identity combinations are left. Finally, we will either throw
      * an NoAceFoundException, or deny access.
      *
-     * @param AclInterface $acl
-     * @param EntryInterface[] $aces An array of ACE to check against
-     * @param array $masks An array of permission masks
-     * @param SecurityIdentityInterface[] $sids An array of SecurityIdentityInterface implementations
-     * @param bool $administrativeMode True turns off audit logging
+     * @param AclInterface                $acl
+     * @param EntryInterface[]            $aces               An array of ACE to check against
+     * @param array                       $masks              An array of permission masks
+     * @param SecurityIdentityInterface[] $sids               An array of SecurityIdentityInterface implementations
+     * @param bool                        $administrativeMode True turns off audit logging
      *
      * @return bool true, or false; either granting, or denying access respectively.
      *
@@ -158,7 +188,7 @@ class PermissionGrantingStrategy implements PermissionGrantingStrategyInterface
      * Strategy EQUAL:
      * The ACE will be considered applicable when the bitmasks are equal.
      *
-     * @param int $requiredMask
+     * @param int            $requiredMask
      * @param EntryInterface $ace
      *
      * @return bool
@@ -177,35 +207,5 @@ class PermissionGrantingStrategy implements PermissionGrantingStrategyInterface
         }
 
         throw new \RuntimeException(sprintf('The strategy "%s" is not supported.', $strategy));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isFieldGranted(AclInterface $acl, $field, array $masks, array $sids, $administrativeMode = false)
-    {
-        try {
-            try {
-                $aces = $acl->getObjectFieldAces($field);
-                if (!$aces) {
-                    throw new NoAceFoundException();
-                }
-
-                return $this->hasSufficientPermissions($acl, $aces, $masks, $sids, $administrativeMode);
-            } catch (NoAceFoundException $e) {
-                $aces = $acl->getClassFieldAces($field);
-                if (!$aces) {
-                    throw $e;
-                }
-
-                return $this->hasSufficientPermissions($acl, $aces, $masks, $sids, $administrativeMode);
-            }
-        } catch (NoAceFoundException $e) {
-            if ($acl->isEntriesInheriting() && null !== $parentAcl = $acl->getParentAcl()) {
-                return $parentAcl->isFieldGranted($field, $masks, $sids, $administrativeMode);
-            }
-
-            throw $e;
-        }
     }
 }

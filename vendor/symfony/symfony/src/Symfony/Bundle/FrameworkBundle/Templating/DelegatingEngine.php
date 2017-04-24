@@ -28,12 +28,22 @@ class DelegatingEngine extends BaseDelegatingEngine implements EngineInterface
      * Constructor.
      *
      * @param ContainerInterface $container The DI container
-     * @param array $engineIds An array of engine Ids
+     * @param array              $engineIds An array of engine Ids
      */
     public function __construct(ContainerInterface $container, array $engineIds)
     {
         $this->container = $container;
         $this->engines = $engineIds;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEngine($name)
+    {
+        $this->resolveEngines();
+
+        return parent::getEngine($name);
     }
 
     /**
@@ -54,16 +64,6 @@ class DelegatingEngine extends BaseDelegatingEngine implements EngineInterface
         $response->setContent($engine->render($view, $parameters));
 
         return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEngine($name)
-    {
-        $this->resolveEngines();
-
-        return parent::getEngine($name);
     }
 
     /**

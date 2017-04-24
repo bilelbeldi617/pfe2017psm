@@ -47,7 +47,7 @@ abstract class AbstractLoader implements LoaderInterface
      *
      *     $constraint = $this->newConstraint('mynamespace:NotNull');
      *
-     * @param string $alias The alias
+     * @param string $alias     The alias
      * @param string $namespace The PHP namespace
      */
     protected function addNamespaceAlias($alias, $namespace)
@@ -58,13 +58,13 @@ abstract class AbstractLoader implements LoaderInterface
     /**
      * Creates a new constraint instance for the given constraint name.
      *
-     * @param string $name The constraint name. Either a constraint relative
+     * @param string $name    The constraint name. Either a constraint relative
      *                        to the default constraint namespace, or a fully
      *                        qualified class name. Alternatively, the constraint
      *                        may be preceded by a namespace alias and a colon.
      *                        The namespace alias must have been defined using
      *                        {@link addNamespaceAlias()}.
-     * @param mixed $options The constraint options
+     * @param mixed  $options The constraint options
      *
      * @return Constraint
      *
@@ -73,7 +73,7 @@ abstract class AbstractLoader implements LoaderInterface
     protected function newConstraint($name, $options = null)
     {
         if (strpos($name, '\\') !== false && class_exists($name)) {
-            $className = (string)$name;
+            $className = (string) $name;
         } elseif (strpos($name, ':') !== false) {
             list($prefix, $className) = explode(':', $name, 2);
 
@@ -81,9 +81,9 @@ abstract class AbstractLoader implements LoaderInterface
                 throw new MappingException(sprintf('Undefined namespace prefix "%s"', $prefix));
             }
 
-            $className = $this->namespaces[$prefix] . $className;
+            $className = $this->namespaces[$prefix].$className;
         } else {
-            $className = self::DEFAULT_NAMESPACE . $name;
+            $className = self::DEFAULT_NAMESPACE.$name;
         }
 
         return new $className($options);

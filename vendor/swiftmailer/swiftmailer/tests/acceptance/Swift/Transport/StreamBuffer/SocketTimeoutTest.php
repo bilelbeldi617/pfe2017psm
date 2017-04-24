@@ -8,16 +8,27 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
 
     protected $_server;
 
-    public function testTimeoutException()
+    protected function setUp()
     {
-        $this->_initializeBuffer();
-        $e = null;
-        try {
-            $line = $this->_buffer->readLine(0);
-        } catch (Exception $e) {
+        if (!defined('SWIFT_SMTP_HOST')) {
+            $this->markTestSkipped(
+                'Cannot run test without an SMTP host to connect to (define '.
+                'SWIFT_SMTP_HOST in tests/acceptance.conf.php if you wish to run this test)'
+             );
         }
-        $this->assertInstanceof('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
-        $this->assertRegExp('/Connection to .* Timed Out/', $e->getMessage());
+
+        $serverStarted = false;
+        for ($i = 0; $i < 5; ++$i) {
+            $this->_randomHighPort = rand(50000, 65000);
+            $this->_server = stream_socket_server('tcp://127.0.0.1:'.$this->_randomHighPort);
+            if ($this->_server) {
+                $serverStarted = true;
+            }
+        }
+
+        $this->_buffer = new Swift_Transport_StreamBuffer(
+            $this->getMockBuilder('Swift_ReplacementFilterFactory')->getMock()
+        );
     }
 
     protected function _initializeBuffer()
@@ -35,27 +46,16 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
         ));
     }
 
-    protected function setUp()
+    public function testTimeoutException()
     {
-        if (!defined('SWIFT_SMTP_HOST')) {
-            $this->markTestSkipped(
-                'Cannot run test without an SMTP host to connect to (define ' .
-                'SWIFT_SMTP_HOST in tests/acceptance.conf.php if you wish to run this test)'
-            );
+        $this->_initializeBuffer();
+        $e = null;
+        try {
+            $line = $this->_buffer->readLine(0);
+        } catch (Exception $e) {
         }
-
-        $serverStarted = false;
-        for ($i = 0; $i < 5; ++$i) {
-            $this->_randomHighPort = rand(50000, 65000);
-            $this->_server = stream_socket_server('tcp://127.0.0.1:' . $this->_randomHighPort);
-            if ($this->_server) {
-                $serverStarted = true;
-            }
-        }
-
-        $this->_buffer = new Swift_Transport_StreamBuffer(
-            $this->getMockBuilder('Swift_ReplacementFilterFactory')->getMock()
-        );
+        $this->assertInstanceof('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
+        $this->assertRegExp('/Connection to .* Timed Out/', $e->getMessage());
     }
 
     protected function tearDown()

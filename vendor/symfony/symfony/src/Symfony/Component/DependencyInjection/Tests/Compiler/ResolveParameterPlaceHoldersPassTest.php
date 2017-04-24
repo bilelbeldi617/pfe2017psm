@@ -21,6 +21,14 @@ class ResolveParameterPlaceHoldersPassTest extends TestCase
     private $container;
     private $fooDefinition;
 
+    protected function setUp()
+    {
+        $this->compilerPass = new ResolveParameterPlaceHoldersPass();
+        $this->container = $this->createContainerBuilder();
+        $this->compilerPass->process($this->container);
+        $this->fooDefinition = $this->container->getDefinition('foo');
+    }
+
     public function testClassParametersShouldBeResolved()
     {
         $this->assertSame('Foo', $this->fooDefinition->getClass());
@@ -54,14 +62,6 @@ class ResolveParameterPlaceHoldersPassTest extends TestCase
     public function testAliasParametersShouldBeResolved()
     {
         $this->assertSame('foo', $this->container->getAlias('bar')->__toString());
-    }
-
-    protected function setUp()
-    {
-        $this->compilerPass = new ResolveParameterPlaceHoldersPass();
-        $this->container = $this->createContainerBuilder();
-        $this->compilerPass->process($this->container);
-        $this->fooDefinition = $this->container->getDefinition('foo');
     }
 
     private function createContainerBuilder()

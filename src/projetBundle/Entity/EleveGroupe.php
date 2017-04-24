@@ -25,19 +25,19 @@ class EleveGroupe
      * @ORM\ManyToOne(targetEntity="AnneeScolaire")
      *
      */
-    private $anneeScolaire;
+    private $anneeScolaire ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Eleve")
      *
      */
-    private $eleve;
+    private $eleve ;
 
     /**
      * @ORM\ManyToOne(targetEntity="Groupe")
      *
      */
-    private $groupe;
+    private $groupe ;
 
     /**
      * @return mixed
@@ -91,7 +91,7 @@ class EleveGroupe
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {

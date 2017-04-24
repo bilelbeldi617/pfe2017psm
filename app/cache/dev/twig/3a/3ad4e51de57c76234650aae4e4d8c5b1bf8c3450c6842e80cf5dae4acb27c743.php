@@ -14,26 +14,43 @@ class __TwigTemplate_041dc013efa00c8b5f4c45b36fda7364a0b53d8fcabaa4e18c2fed632bc
         );
     }
 
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_99c853e9ffd63c231201ac4f0734272421039bd4935ac319a0d7ef415c979aec = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_99c853e9ffd63c231201ac4f0734272421039bd4935ac319a0d7ef415c979aec->enter($__internal_99c853e9ffd63c231201ac4f0734272421039bd4935ac319a0d7ef415c979aec_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/ajax_layout.html.twig"));
+
+        // line 1
+        $this->displayBlock('panel', $context, $blocks);
+        
+        $__internal_99c853e9ffd63c231201ac4f0734272421039bd4935ac319a0d7ef415c979aec->leave($__internal_99c853e9ffd63c231201ac4f0734272421039bd4935ac319a0d7ef415c979aec_prof);
+
+    }
+
     public function block_panel($context, array $blocks = array())
     {
-        $__internal_900a82fa76ddc9b952d3f59dd9f493a6714bb818ca85d451e9dbda4f9a227c17 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_900a82fa76ddc9b952d3f59dd9f493a6714bb818ca85d451e9dbda4f9a227c17->enter($__internal_900a82fa76ddc9b952d3f59dd9f493a6714bb818ca85d451e9dbda4f9a227c17_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "panel"));
+        $__internal_40817ffde38ff894b657b9ade51b7bf1dd445da017146087d1c0f401bfe7258e = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_40817ffde38ff894b657b9ade51b7bf1dd445da017146087d1c0f401bfe7258e->enter($__internal_40817ffde38ff894b657b9ade51b7bf1dd445da017146087d1c0f401bfe7258e_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "panel"));
 
         echo "";
+        
+        $__internal_40817ffde38ff894b657b9ade51b7bf1dd445da017146087d1c0f401bfe7258e->leave($__internal_40817ffde38ff894b657b9ade51b7bf1dd445da017146087d1c0f401bfe7258e_prof);
 
-        $__internal_900a82fa76ddc9b952d3f59dd9f493a6714bb818ca85d451e9dbda4f9a227c17->leave($__internal_900a82fa76ddc9b952d3f59dd9f493a6714bb818ca85d451e9dbda4f9a227c17_prof);
+    }
 
+    public function getTemplateName()
+    {
+        return "@WebProfiler/Profiler/ajax_layout.html.twig";
     }
 
     public function getDebugInfo()
     {
-        return array(23 => 1,);
+        return array (  23 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -42,22 +59,5 @@ class __TwigTemplate_041dc013efa00c8b5f4c45b36fda7364a0b53d8fcabaa4e18c2fed632bc
     {
         return new Twig_Source("{% block panel '' %}
 ", "@WebProfiler/Profiler/ajax_layout.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Profiler\\ajax_layout.html.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_46b71b58c7c4cd2307cf9318bc7e6eae737330dbe4edf954392d6cc9bf586b29 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_46b71b58c7c4cd2307cf9318bc7e6eae737330dbe4edf954392d6cc9bf586b29->enter($__internal_46b71b58c7c4cd2307cf9318bc7e6eae737330dbe4edf954392d6cc9bf586b29_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/ajax_layout.html.twig"));
-
-        // line 1
-        $this->displayBlock('panel', $context, $blocks);
-
-        $__internal_46b71b58c7c4cd2307cf9318bc7e6eae737330dbe4edf954392d6cc9bf586b29->leave($__internal_46b71b58c7c4cd2307cf9318bc7e6eae737330dbe4edf954392d6cc9bf586b29_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@WebProfiler/Profiler/ajax_layout.html.twig";
     }
 }

@@ -31,6 +31,42 @@ class TimezoneType extends AbstractType
     private static $flippedTimezones;
 
     /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'choices' => self::getFlippedTimezones(),
+            'choices_as_values' => true,
+            'choice_translation_domain' => false,
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return __NAMESPACE__.'\ChoiceType';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'timezone';
+    }
+
+    /**
      * Returns the timezone choices.
      *
      * The choices are generated from the ICU function
@@ -54,7 +90,7 @@ class TimezoneType extends AbstractType
 
                 if (count($parts) > 2) {
                     $region = $parts[0];
-                    $name = $parts[1] . ' - ' . $parts[2];
+                    $name = $parts[1].' - '.$parts[2];
                 } elseif (count($parts) > 1) {
                     $region = $parts[0];
                     $name = $parts[1];
@@ -68,18 +104,6 @@ class TimezoneType extends AbstractType
         }
 
         return static::$timezones;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(array(
-            'choices' => self::getFlippedTimezones(),
-            'choices_as_values' => true,
-            'choice_translation_domain' => false,
-        ));
     }
 
     /**
@@ -102,7 +126,7 @@ class TimezoneType extends AbstractType
 
                 if (count($parts) > 2) {
                     $region = $parts[0];
-                    $name = $parts[1] . ' - ' . $parts[2];
+                    $name = $parts[1].' - '.$parts[2];
                 } elseif (count($parts) > 1) {
                     $region = $parts[0];
                     $name = $parts[1];
@@ -116,29 +140,5 @@ class TimezoneType extends AbstractType
         }
 
         return self::$timezones;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return __NAMESPACE__ . '\ChoiceType';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'timezone';
     }
 }

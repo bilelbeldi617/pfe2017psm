@@ -50,7 +50,8 @@ class ConsoleHandlerTest extends TestCase
         $output
             ->expects($this->atLeastOnce())
             ->method('getVerbosity')
-            ->will($this->returnValue($verbosity));
+            ->will($this->returnValue($verbosity))
+        ;
         $handler = new ConsoleHandler($output, true, $map);
         $this->assertSame($isHandling, $handler->isHandling(array('level' => $level)),
             '->isHandling returns correct value depending on console verbosity and log level'
@@ -84,11 +85,13 @@ class ConsoleHandlerTest extends TestCase
         $output
             ->expects($this->at(0))
             ->method('getVerbosity')
-            ->will($this->returnValue(OutputInterface::VERBOSITY_QUIET));
+            ->will($this->returnValue(OutputInterface::VERBOSITY_QUIET))
+        ;
         $output
             ->expects($this->at(1))
             ->method('getVerbosity')
-            ->will($this->returnValue(OutputInterface::VERBOSITY_DEBUG));
+            ->will($this->returnValue(OutputInterface::VERBOSITY_DEBUG))
+        ;
         $handler = new ConsoleHandler($output);
         $this->assertFalse($handler->isHandling(array('level' => Logger::NOTICE)),
             'when verbosity is set to quiet, the handler does not handle the log'
@@ -112,11 +115,13 @@ class ConsoleHandlerTest extends TestCase
         $output
             ->expects($this->any())
             ->method('getVerbosity')
-            ->will($this->returnValue(OutputInterface::VERBOSITY_DEBUG));
+            ->will($this->returnValue(OutputInterface::VERBOSITY_DEBUG))
+        ;
         $output
             ->expects($this->once())
             ->method('write')
-            ->with('<info>[2013-05-29 16:21:54] app.INFO:</info> My info message  ' . "\n");
+            ->with('<info>[2013-05-29 16:21:54] app.INFO:</info> My info message  '."\n")
+        ;
 
         $handler = new ConsoleHandler(null, false);
         $handler->setOutput($output);

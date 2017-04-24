@@ -11,14 +11,10 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
     public function testExists()
     {
-        $this->assertFalse($this->map->exists(function ($k) {
-            return $k === 0;
-        }));
+        $this->assertFalse($this->map->exists(function($k) { return $k === 0; }));
 
         $this->map->set('foo', 'bar');
-        $this->assertTrue($this->map->exists(function ($k, $v) {
-            return $k === 'foo' && $v === 'bar';
-        }));
+        $this->assertTrue($this->map->exists(function($k, $v) { return $k === 'foo' && $v === 'bar'; }));
     }
 
     public function testSet()
@@ -37,7 +33,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->map->setAll(array('foo' => 'asdf', 'bar' => array('foo')));
         $this->assertEquals(array('foo' => 'asdf', 'bar' => array('foo'), 'baz' => 'boo'), iterator_to_array($this->map));
     }
-
+    
     public function testAll()
     {
         $this->map->setAll(array('foo' => 'asdf', 'bar' => array('foo')));
@@ -112,9 +108,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     public function testFilter()
     {
         $map = new Map(array('a' => 'b', 'c' => 'd', 'e' => 'f'));
-        $newMap = $map->filter(function ($v) {
-            return $v === 'd';
-        });
+        $newMap = $map->filter(function($v) { return $v === 'd'; });
 
         $this->assertNotSame($newMap, $map);
         $this->assertCount(3, $map);
@@ -125,9 +119,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     public function testFilterNot()
     {
         $map = new Map(array('a' => 'b', 'c' => 'd', 'e' => 'f'));
-        $newMap = $map->filterNot(function ($v) {
-            return $v === 'd';
-        });
+        $newMap = $map->filterNot(function($v) { return $v === 'd'; });
 
         $this->assertNotSame($newMap, $map);
         $this->assertCount(3, $map);
@@ -138,12 +130,8 @@ class MapTest extends \PHPUnit_Framework_TestCase
     public function testFoldLeftRight()
     {
         $map = new Map(array('a' => 'b', 'c' => 'd', 'e' => 'f'));
-        $rsLeft = $map->foldLeft('', function ($a, $b) {
-            return $a . $b;
-        });
-        $rsRight = $map->foldRight('', function ($a, $b) {
-            return $a . $b;
-        });
+        $rsLeft = $map->foldLeft('', function($a, $b) { return $a.$b; });
+        $rsRight = $map->foldRight('', function($a, $b) { return $a.$b; });
 
         $this->assertEquals('bdf', $rsLeft);
         $this->assertEquals('bdf', $rsRight);
@@ -151,9 +139,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
     public function testDropWhile()
     {
-        $newMap = $this->map->dropWhile(function ($k, $v) {
-            return 'foo' === $k || 'baz' === $v;
-        });
+        $newMap = $this->map->dropWhile(function($k, $v) { return 'foo' === $k || 'baz' === $v; });
         $this->assertEquals(array('baz' => 'boo'), iterator_to_array($newMap));
         $this->assertCount(3, $this->map);
     }
@@ -208,23 +194,17 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
     public function testTakeWhile()
     {
-        $newMap = $this->map->takeWhile(function ($k, $v) {
-            return 'foo' === $k || 'baz' === $v;
-        });
+        $newMap = $this->map->takeWhile(function($k, $v) { return 'foo' === $k || 'baz' === $v; });
         $this->assertEquals(array('foo' => 'bar', 'bar' => 'baz'), iterator_to_array($newMap));
         $this->assertCount(3, $this->map);
     }
 
     public function testFind()
     {
-        $foundElem = $this->map->find(function ($k, $v) {
-            return 'foo' === $k && 'bar' === $v;
-        });
+        $foundElem = $this->map->find(function($k, $v) { return 'foo' === $k && 'bar' === $v; });
         $this->assertEquals(array('foo', 'bar'), $foundElem->get());
 
-        $this->assertTrue($this->map->find(function () {
-            return false;
-        })->isEmpty());
+        $this->assertTrue($this->map->find(function() { return false; })->isEmpty());
     }
 
     public function testKeys()

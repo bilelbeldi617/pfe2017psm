@@ -106,18 +106,18 @@ abstract class RegisterMappingsPass implements CompilerPassInterface
      * The $aliasMap parameter can be used to define bundle namespace shortcuts like the
      * DoctrineBundle provides automatically for objects in the default Entity/Document folder.
      *
-     * @param Definition|Reference $driver Driver DI definition or reference
-     * @param string[] $namespaces List of namespaces handled by $driver
-     * @param string[] $managerParameters List of container parameters that could
+     * @param Definition|Reference $driver                  Driver DI definition or reference
+     * @param string[]             $namespaces              List of namespaces handled by $driver
+     * @param string[]             $managerParameters       List of container parameters that could
      *                                                      hold the manager name.
-     * @param string $driverPattern Pattern for the metadata driver service name
-     * @param string|false $enabledParameter Service container parameter that must be
+     * @param string               $driverPattern           Pattern for the metadata driver service name
+     * @param string|false         $enabledParameter        Service container parameter that must be
      *                                                      present to enable the mapping. Set to false
      *                                                      to not do any check, optional.
-     * @param string $configurationPattern Pattern for the Configuration service name
-     * @param string $registerAliasMethodName Name of Configuration class method to
+     * @param string               $configurationPattern    Pattern for the Configuration service name
+     * @param string               $registerAliasMethodName Name of Configuration class method to
      *                                                      register alias.
-     * @param string[] $aliasMap Map of alias to namespace
+     * @param string[]             $aliasMap                Map of alias to namespace
      */
     public function __construct($driver, array $namespaces, array $managerParameters, $driverPattern, $enabledParameter = false, $configurationPattern = '', $registerAliasMethodName = '', array $aliasMap = array())
     {
@@ -166,19 +166,19 @@ abstract class RegisterMappingsPass implements CompilerPassInterface
     }
 
     /**
-     * Determine whether this mapping should be activated or not. This allows
-     * to take this decision with the container builder available.
-     *
-     * This default implementation checks if the class has the enabledParameter
-     * configured and if so if that parameter is present in the container.
+     * Get the service name of the metadata chain driver that the mappings
+     * should be registered with.
      *
      * @param ContainerBuilder $container
      *
-     * @return bool whether this compiler pass really should register the mappings
+     * @return string The name of the chain driver service
+     *
+     * @throws ParameterNotFoundException if non of the managerParameters has a
+     *                                    non-empty value.
      */
-    protected function enabled(ContainerBuilder $container)
+    protected function getChainDriverServiceName(ContainerBuilder $container)
     {
-        return !$this->enabledParameter || $container->hasParameter($this->enabledParameter);
+        return sprintf($this->driverPattern, $this->getManagerName($container));
     }
 
     /**
@@ -195,19 +195,18 @@ abstract class RegisterMappingsPass implements CompilerPassInterface
     }
 
     /**
-     * Get the service name of the metadata chain driver that the mappings
-     * should be registered with.
+     * Get the service name from the pattern and the configured manager name.
      *
      * @param ContainerBuilder $container
      *
-     * @return string The name of the chain driver service
+     * @return string a service definition name
      *
-     * @throws ParameterNotFoundException if non of the managerParameters has a
+     * @throws ParameterNotFoundException if none of the managerParameters has a
      *                                    non-empty value.
      */
-    protected function getChainDriverServiceName(ContainerBuilder $container)
+    private function getConfigurationServiceName(ContainerBuilder $container)
     {
-        return sprintf($this->driverPattern, $this->getManagerName($container));
+        return sprintf($this->configurationPattern, $this->getManagerName($container));
     }
 
     /**
@@ -237,17 +236,18 @@ abstract class RegisterMappingsPass implements CompilerPassInterface
     }
 
     /**
-     * Get the service name from the pattern and the configured manager name.
+     * Determine whether this mapping should be activated or not. This allows
+     * to take this decision with the container builder available.
+     *
+     * This default implementation checks if the class has the enabledParameter
+     * configured and if so if that parameter is present in the container.
      *
      * @param ContainerBuilder $container
      *
-     * @return string a service definition name
-     *
-     * @throws ParameterNotFoundException if none of the managerParameters has a
-     *                                    non-empty value.
+     * @return bool whether this compiler pass really should register the mappings
      */
-    private function getConfigurationServiceName(ContainerBuilder $container)
+    protected function enabled(ContainerBuilder $container)
     {
-        return sprintf($this->configurationPattern, $this->getManagerName($container));
+        return !$this->enabledParameter || $container->hasParameter($this->enabledParameter);
     }
 }

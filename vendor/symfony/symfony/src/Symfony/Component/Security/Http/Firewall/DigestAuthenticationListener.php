@@ -190,24 +190,24 @@ class DigestData
 
         $this->nonceExpiryTime = $nonceTokens[0];
 
-        if (md5($this->nonceExpiryTime . ':' . $entryPointKey) !== $nonceTokens[1]) {
+        if (md5($this->nonceExpiryTime.':'.$entryPointKey) !== $nonceTokens[1]) {
             throw new BadCredentialsException(sprintf('Nonce token compromised "%s".', $nonceAsPlainText));
         }
     }
 
     public function calculateServerDigest($password, $httpMethod)
     {
-        $a2Md5 = md5(strtoupper($httpMethod) . ':' . $this->elements['uri']);
-        $a1Md5 = md5($this->elements['username'] . ':' . $this->elements['realm'] . ':' . $password);
+        $a2Md5 = md5(strtoupper($httpMethod).':'.$this->elements['uri']);
+        $a1Md5 = md5($this->elements['username'].':'.$this->elements['realm'].':'.$password);
 
-        $digest = $a1Md5 . ':' . $this->elements['nonce'];
+        $digest = $a1Md5.':'.$this->elements['nonce'];
         if (!isset($this->elements['qop'])) {
         } elseif ('auth' === $this->elements['qop']) {
-            $digest .= ':' . $this->elements['nc'] . ':' . $this->elements['cnonce'] . ':' . $this->elements['qop'];
+            $digest .= ':'.$this->elements['nc'].':'.$this->elements['cnonce'].':'.$this->elements['qop'];
         } else {
             throw new \InvalidArgumentException(sprintf('This method does not support a qop: "%s".', $this->elements['qop']));
         }
-        $digest .= ':' . $a2Md5;
+        $digest .= ':'.$a2Md5;
 
         return md5($digest);
     }

@@ -35,7 +35,7 @@ class DayOfYearTransformer extends Transformer
      */
     public function getReverseMatchingRegExp($length)
     {
-        return '\d{' . $length . '}';
+        return '\d{'.$length.'}';
     }
 
     /**

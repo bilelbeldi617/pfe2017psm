@@ -64,7 +64,7 @@ class SerializationContext extends Context
 
     public function isVisiting($object)
     {
-        if (!is_object($object)) {
+        if (! is_object($object)) {
             throw new LogicException('Expected object but got ' . gettype($object) . '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
         }
 
@@ -78,7 +78,7 @@ class SerializationContext extends Context
             $path[] = get_class($obj);
         }
 
-        if (!$path) {
+        if ( ! $path) {
             return null;
         }
 

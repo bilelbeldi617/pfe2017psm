@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\HttpKernel\EventListener;
 
-@trigger_error('The ' . __NAMESPACE__ . '\ErrorsLoggerListener class is deprecated since version 2.6 and will be removed in 3.0. Use the Symfony\Component\HttpKernel\EventListener\DebugHandlersListener class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\ErrorsLoggerListener class is deprecated since version 2.6 and will be removed in 3.0. Use the Symfony\Component\HttpKernel\EventListener\DebugHandlersListener class instead.', E_USER_DEPRECATED);
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Debug\ErrorHandler;
@@ -37,16 +37,16 @@ class ErrorsLoggerListener implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(KernelEvents::REQUEST => array('injectLogger', 2048));
-    }
-
     public function injectLogger()
     {
         if (null !== $this->logger) {
             ErrorHandler::setLogger($this->logger, $this->channel);
             $this->logger = null;
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::REQUEST => array('injectLogger', 2048));
     }
 }

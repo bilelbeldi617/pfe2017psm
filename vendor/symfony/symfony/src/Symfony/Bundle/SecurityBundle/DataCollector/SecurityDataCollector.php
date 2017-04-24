@@ -33,9 +33,9 @@ class SecurityDataCollector extends DataCollector
     /**
      * Constructor.
      *
-     * @param TokenStorageInterface|null $tokenStorage
+     * @param TokenStorageInterface|null  $tokenStorage
      * @param RoleHierarchyInterface|null $roleHierarchy
-     * @param LogoutUrlGenerator|null $logoutUrlGenerator
+     * @param LogoutUrlGenerator|null     $logoutUrlGenerator
      */
     public function __construct(TokenStorageInterface $tokenStorage = null, RoleHierarchyInterface $roleHierarchy = null, LogoutUrlGenerator $logoutUrlGenerator = null)
     {
@@ -99,12 +99,8 @@ class SecurityDataCollector extends DataCollector
                 'token_class' => get_class($token),
                 'logout_url' => $logoutUrl,
                 'user' => $token->getUsername(),
-                'roles' => array_map(function (RoleInterface $role) {
-                    return $role->getRole();
-                }, $assignedRoles),
-                'inherited_roles' => array_map(function (RoleInterface $role) {
-                    return $role->getRole();
-                }, $inheritedRoles),
+                'roles' => array_map(function (RoleInterface $role) { return $role->getRole(); }, $assignedRoles),
+                'inherited_roles' => array_map(function (RoleInterface $role) { return $role->getRole(); }, $inheritedRoles),
                 'supports_role_hierarchy' => null !== $this->roleHierarchy,
             );
         }

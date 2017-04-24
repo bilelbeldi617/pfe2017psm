@@ -53,7 +53,7 @@ show:
 
 <info>php %command.full_name% "SELECT u FROM UserBundle:User u" --first-result=0 --max-result=30</info>
 EOT
-            );
+        );
     }
 
     /**

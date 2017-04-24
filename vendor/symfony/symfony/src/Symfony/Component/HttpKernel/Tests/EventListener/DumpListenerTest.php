@@ -68,7 +68,7 @@ class MockCloner implements ClonerInterface
 {
     public function cloneVar($var)
     {
-        return new Data(array($var . '-'));
+        return new Data(array($var.'-'));
     }
 }
 
@@ -78,6 +78,6 @@ class MockDumper implements DataDumperInterface
     {
         $rawData = $data->getRawData();
 
-        echo '+' . $rawData[0];
+        echo '+'.$rawData[0];
     }
 }

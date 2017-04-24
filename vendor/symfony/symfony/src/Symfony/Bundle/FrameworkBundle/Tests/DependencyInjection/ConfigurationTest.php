@@ -28,79 +28,6 @@ class ConfigurationTest extends TestCase
         );
     }
 
-    protected static function getBundleDefaultConfig()
-    {
-        return array(
-            'http_method_override' => true,
-            'trusted_proxies' => array(),
-            'ide' => null,
-            'default_locale' => 'en',
-            'form' => array(
-                'enabled' => false,
-                'csrf_protection' => array(
-                    'enabled' => null, // defaults to csrf_protection.enabled
-                    'field_name' => null,
-                ),
-            ),
-            'csrf_protection' => array(
-                'enabled' => false,
-                'field_name' => '_token',
-            ),
-            'esi' => array('enabled' => false),
-            'ssi' => array('enabled' => false),
-            'fragments' => array(
-                'enabled' => false,
-                'path' => '/_fragment',
-            ),
-            'profiler' => array(
-                'enabled' => false,
-                'only_exceptions' => false,
-                'only_master_requests' => false,
-                'dsn' => 'file:%kernel.cache_dir%/profiler',
-                'username' => '',
-                'password' => '',
-                'lifetime' => 86400,
-                'collect' => true,
-            ),
-            'translator' => array(
-                'enabled' => false,
-                'fallbacks' => array('en'),
-                'logging' => true,
-                'paths' => array(),
-            ),
-            'validation' => array(
-                'enabled' => false,
-                'enable_annotations' => false,
-                'static_method' => array('loadValidatorMetadata'),
-                'translation_domain' => 'validators',
-                'strict_email' => false,
-            ),
-            'annotations' => array(
-                'cache' => 'file',
-                'file_cache_dir' => '%kernel.cache_dir%/annotations',
-                'debug' => true,
-            ),
-            'serializer' => array(
-                'enabled' => false,
-                'enable_annotations' => false,
-            ),
-            'property_access' => array(
-                'magic_call' => false,
-                'throw_exception_on_invalid_index' => false,
-            ),
-            'property_info' => array(
-                'enabled' => false,
-            ),
-            'assets' => array(
-                'version' => null,
-                'version_format' => '%%s?%%s',
-                'base_path' => '',
-                'base_urls' => array(),
-                'packages' => array(),
-            ),
-        );
-    }
-
     public function testDoNoDuplicateDefaultFormResources()
     {
         $input = array('templating' => array(
@@ -192,5 +119,78 @@ class ConfigurationTest extends TestCase
                 'assets' => null,
             ),
         ));
+    }
+
+    protected static function getBundleDefaultConfig()
+    {
+        return array(
+            'http_method_override' => true,
+            'trusted_proxies' => array(),
+            'ide' => null,
+            'default_locale' => 'en',
+            'form' => array(
+                'enabled' => false,
+                'csrf_protection' => array(
+                    'enabled' => null, // defaults to csrf_protection.enabled
+                    'field_name' => null,
+                ),
+            ),
+            'csrf_protection' => array(
+                'enabled' => false,
+                'field_name' => '_token',
+            ),
+            'esi' => array('enabled' => false),
+            'ssi' => array('enabled' => false),
+            'fragments' => array(
+                'enabled' => false,
+                'path' => '/_fragment',
+            ),
+            'profiler' => array(
+                'enabled' => false,
+                'only_exceptions' => false,
+                'only_master_requests' => false,
+                'dsn' => 'file:%kernel.cache_dir%/profiler',
+                'username' => '',
+                'password' => '',
+                'lifetime' => 86400,
+                'collect' => true,
+            ),
+            'translator' => array(
+                'enabled' => false,
+                'fallbacks' => array('en'),
+                'logging' => true,
+                'paths' => array(),
+            ),
+            'validation' => array(
+                'enabled' => false,
+                'enable_annotations' => false,
+                'static_method' => array('loadValidatorMetadata'),
+                'translation_domain' => 'validators',
+                'strict_email' => false,
+            ),
+            'annotations' => array(
+                'cache' => 'file',
+                'file_cache_dir' => '%kernel.cache_dir%/annotations',
+                'debug' => true,
+            ),
+            'serializer' => array(
+                'enabled' => false,
+                'enable_annotations' => false,
+            ),
+            'property_access' => array(
+                'magic_call' => false,
+                'throw_exception_on_invalid_index' => false,
+            ),
+            'property_info' => array(
+                'enabled' => false,
+            ),
+            'assets' => array(
+                'version' => null,
+                'version_format' => '%%s?%%s',
+                'base_path' => '',
+                'base_urls' => array(),
+                'packages' => array(),
+            ),
+        );
     }
 }

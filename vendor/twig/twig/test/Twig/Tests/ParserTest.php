@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 class Twig_Tests_ParserTest extends PHPUnit_Framework_TestCase
 {
     /**
@@ -18,15 +17,6 @@ class Twig_Tests_ParserTest extends PHPUnit_Framework_TestCase
     {
         $parser = $this->getParser();
         $parser->setMacro('parent', $this->getMockBuilder('Twig_Node_Macro')->disableOriginalConstructor()->getMock());
-    }
-
-    protected function getParser()
-    {
-        $parser = new TestParser(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $parser->setParent(new Twig_Node());
-        $parser->stream = new Twig_TokenStream(array());
-
-        return $parser;
     }
 
     /**
@@ -115,12 +105,8 @@ class Twig_Tests_ParserTest extends PHPUnit_Framework_TestCase
     public function testFilterBodyNodesWithBOM()
     {
         $parser = $this->getParser();
-        $parser->filterBodyNodes(new Twig_Node_Text(chr(0xEF) . chr(0xBB) . chr(0xBF), 1));
+        $parser->filterBodyNodes(new Twig_Node_Text(chr(0xEF).chr(0xBB).chr(0xBF), 1));
     }
-
-    // The getVarName() must not depend on the template loaders,
-    // If this test does not throw any exception, that's good.
-    // see https://github.com/symfony/symfony/issues/4218
 
     public function testParseIsReentrant()
     {
@@ -145,6 +131,9 @@ class Twig_Tests_ParserTest extends PHPUnit_Framework_TestCase
         $this->assertNull($parser->getParent());
     }
 
+    // The getVarName() must not depend on the template loaders,
+    // If this test does not throw any exception, that's good.
+    // see https://github.com/symfony/symfony/issues/4218
     public function testGetVarName()
     {
         $twig = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array(
@@ -159,7 +148,16 @@ class Twig_Tests_ParserTest extends PHPUnit_Framework_TestCase
     {{ foo }}
 {% endmacro %}
 EOF
-            , 'index')));
+        , 'index')));
+    }
+
+    protected function getParser()
+    {
+        $parser = new TestParser(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
+        $parser->setParent(new Twig_Node());
+        $parser->stream = new Twig_TokenStream(array());
+
+        return $parser;
     }
 }
 

@@ -43,13 +43,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
         $p = new PropertyMetadata($m->name, 'id');
         $p->type = array('name' => 'string', 'params' => array());
-        $p->groups = array("comments", "post");
+        $p->groups = array("comments","post");
         $p->xmlElementCData = false;
         $this->assertEquals($p, $m->propertyMetadata['id']);
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = array('name' => 'string', 'params' => array());
-        $p->groups = array("comments", "post");
+        $p->groups = array("comments","post");
         $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
         $this->assertEquals($p, $m->propertyMetadata['title']);
 
@@ -95,11 +95,6 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['price']);
     }
 
-    /**
-     * @return DriverInterface
-     */
-    abstract protected function getDriver();
-
     public function testVirtualProperty()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties'));
@@ -109,7 +104,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('virtualSerializedValue', $m->propertyMetadata);
         $this->assertArrayHasKey('typedVirtualProperty', $m->propertyMetadata);
 
-        $this->assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing');
+        $this->assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing' );
 
         $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
         $p->getter = 'getVirtualValue';
@@ -325,4 +320,10 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->xmlNamespace = "http://new.foo.example.org";
         $this->assertEquals($p, $m->propertyMetadata['qux']);
     }
+
+
+    /**
+     * @return DriverInterface
+     */
+    abstract protected function getDriver();
 }

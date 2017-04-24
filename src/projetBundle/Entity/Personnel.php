@@ -22,65 +22,12 @@ class Personnel
     private $id;
 
 
+
     /**
      * @ORM\ManyToOne(targetEntity="Poste")
      *
      */
-    private $poste;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom_personnel", type="string", length=50)
-     */
-    private $nomPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom_personnel", type="string", length=50)
-     */
-    private $prenomPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="num_tel_personnel", type="string", length=8, unique=true)
-     */
-    private $numTelPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="adresse_personnel", type="string", length=100)
-     */
-    private $adressePersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="cin_personnel", type="string", length=8, unique=true)
-     */
-    private $cinPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="login_personnel", type="string", length=50)
-     */
-    private $loginPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password_personnel", type="string", length=50)
-     */
-    private $passwordPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email_personnel", type="string", length=100, unique=true)
-     */
-    private $emailPersonnel;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="matricule_personnel", type="string", length=8, unique=true)
-     */
-    private $matriculePersonnel;
+    private $poste ;
 
     /**
      * @return mixed
@@ -98,24 +45,80 @@ class Personnel
         $this->poste = $poste;
     }
 
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_personnel", type="string", length=50)
+     */
+    private $nomPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="prenom_personnel", type="string", length=50)
+     */
+    private $prenomPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="num_tel_personnel", type="string", length=8, unique=true)
+     */
+    private $numTelPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="adresse_personnel", type="string", length=100)
+     */
+    private $adressePersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cin_personnel", type="string", length=8, unique=true)
+     */
+    private $cinPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="login_personnel", type="string", length=50)
+     */
+    private $loginPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password_personnel", type="string", length=50)
+     */
+    private $passwordPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email_personnel", type="string", length=100, unique=true)
+     */
+    private $emailPersonnel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="matricule_personnel", type="string", length=8, unique=true)
+     */
+    private $matriculePersonnel;
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get nomPersonnel
-     *
-     * @return string
-     */
-    public function getNomPersonnel()
-    {
-        return $this->nomPersonnel;
     }
 
     /**
@@ -132,13 +135,13 @@ class Personnel
     }
 
     /**
-     * Get prenomPersonnel
+     * Get nomPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getPrenomPersonnel()
+    public function getNomPersonnel()
     {
-        return $this->prenomPersonnel;
+        return $this->nomPersonnel;
     }
 
     /**
@@ -155,13 +158,13 @@ class Personnel
     }
 
     /**
-     * Get numTelPersonnel
+     * Get prenomPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getNumTelPersonnel()
+    public function getPrenomPersonnel()
     {
-        return $this->numTelPersonnel;
+        return $this->prenomPersonnel;
     }
 
     /**
@@ -178,13 +181,13 @@ class Personnel
     }
 
     /**
-     * Get adressePersonnel
+     * Get numTelPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getAdressePersonnel()
+    public function getNumTelPersonnel()
     {
-        return $this->adressePersonnel;
+        return $this->numTelPersonnel;
     }
 
     /**
@@ -201,13 +204,13 @@ class Personnel
     }
 
     /**
-     * Get cinPersonnel
+     * Get adressePersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getCinPersonnel()
+    public function getAdressePersonnel()
     {
-        return $this->cinPersonnel;
+        return $this->adressePersonnel;
     }
 
     /**
@@ -224,13 +227,13 @@ class Personnel
     }
 
     /**
-     * Get loginPersonnel
+     * Get cinPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getLoginPersonnel()
+    public function getCinPersonnel()
     {
-        return $this->loginPersonnel;
+        return $this->cinPersonnel;
     }
 
     /**
@@ -247,13 +250,13 @@ class Personnel
     }
 
     /**
-     * Get passwordPersonnel
+     * Get loginPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getPasswordPersonnel()
+    public function getLoginPersonnel()
     {
-        return $this->passwordPersonnel;
+        return $this->loginPersonnel;
     }
 
     /**
@@ -270,13 +273,13 @@ class Personnel
     }
 
     /**
-     * Get emailPersonnel
+     * Get passwordPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getEmailPersonnel()
+    public function getPasswordPersonnel()
     {
-        return $this->emailPersonnel;
+        return $this->passwordPersonnel;
     }
 
     /**
@@ -293,13 +296,13 @@ class Personnel
     }
 
     /**
-     * Get matriculePersonnel
+     * Get emailPersonnel
      *
-     * @return string
+     * @return string 
      */
-    public function getMatriculePersonnel()
+    public function getEmailPersonnel()
     {
-        return $this->matriculePersonnel;
+        return $this->emailPersonnel;
     }
 
     /**
@@ -313,5 +316,15 @@ class Personnel
         $this->matriculePersonnel = $matriculePersonnel;
 
         return $this;
+    }
+
+    /**
+     * Get matriculePersonnel
+     *
+     * @return string 
+     */
+    public function getMatriculePersonnel()
+    {
+        return $this->matriculePersonnel;
     }
 }

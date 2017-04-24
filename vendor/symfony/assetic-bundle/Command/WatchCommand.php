@@ -32,7 +32,8 @@ class WatchCommand extends AbstractCommand
             ->setDescription('Dumps assets to the filesystem as their source files are modified')
             ->addArgument('write_to', InputArgument::OPTIONAL, 'Override the configured asset root')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Force an initial generation of all assets')
-            ->addOption('period', null, InputOption::VALUE_REQUIRED, 'Set the polling period in seconds', 1);
+            ->addOption('period', null, InputOption::VALUE_REQUIRED, 'Set the polling period in seconds', 1)
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $stdout)
@@ -48,7 +49,7 @@ class WatchCommand extends AbstractCommand
         $stdout->writeln('');
 
         // establish a temporary status file
-        $cache = sys_get_temp_dir() . '/assetic_watch_' . substr(sha1($this->basePath), 0, 7);
+        $cache = sys_get_temp_dir().'/assetic_watch_'.substr(sha1($this->basePath), 0, 7);
         if ($input->getOption('force') || !file_exists($cache)) {
             $previously = array();
         } else {
@@ -75,12 +76,12 @@ class WatchCommand extends AbstractCommand
                 $error = '';
             } catch (\Exception $e) {
                 if ($error != $msg = $e->getMessage()) {
-                    $stderr->writeln('<error>[error]</error> ' . $msg);
+                    $stderr->writeln('<error>[error]</error> '.$msg);
                     $error = $msg;
                 }
             }
 
-            clearstatcache();
+            clearstatcache ();
             sleep($input->getOption('period'));
         }
     }
@@ -88,8 +89,8 @@ class WatchCommand extends AbstractCommand
     /**
      * Checks if an asset should be dumped.
      *
-     * @param string $name The asset name
-     * @param array &$previously An array of previous visits
+     * @param string $name        The asset name
+     * @param array  &$previously An array of previous visits
      *
      * @return Boolean Whether the asset should be dumped
      */

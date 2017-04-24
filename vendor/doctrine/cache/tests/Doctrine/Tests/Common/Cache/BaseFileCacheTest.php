@@ -9,6 +9,32 @@ abstract class BaseFileCacheTest extends CacheTest
 {
     protected $directory;
 
+    protected function setUp()
+    {
+        do {
+            $this->directory = sys_get_temp_dir() . '/doctrine_cache_'. uniqid();
+        } while (file_exists($this->directory));
+    }
+
+    protected function tearDown()
+    {
+        if ( ! is_dir($this->directory)) {
+            return;
+        }
+
+        $iterator = new RecursiveDirectoryIterator($this->directory);
+
+        foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $file) {
+            if ($file->isFile()) {
+                @unlink($file->getRealPath());
+            } elseif ($file->isDir()) {
+                @rmdir($file->getRealPath());
+            }
+        }
+
+        @rmdir($this->directory);
+    }
+
     public function testFlushAllRemovesBalancingDirectories()
     {
         $cache = $this->_getCacheDriver();
@@ -20,6 +46,11 @@ abstract class BaseFileCacheTest extends CacheTest
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->directory, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
 
         $this->assertCount(0, $iterator);
+    }
+
+    protected function isSharedStorage()
+    {
+        return false;
     }
 
     public function getPathLengthsToTest()
@@ -35,40 +66,6 @@ abstract class BaseFileCacheTest extends CacheTest
             array(259, true),
             array(260, true)
         );
-    }
-
-    /**
-     * @dataProvider getPathLengthsToTest
-     */
-    public function testWindowsPathLengthLimitIsCorrectlyHandled($length, $pathShouldBeHashed)
-    {
-        $this->directory = self::getBasePathForWindowsPathLengthTests($length);
-
-        list($key, $keyPath, $hashedKeyPath) = self::getKeyAndPathFittingLength($length);
-
-        $this->assertEquals($length, strlen($keyPath), "Unhashed path should be of correct length.");
-
-        $cacheClass = get_class($this->_getCacheDriver());
-        $cache = new $cacheClass($this->directory, '.doctrine.cache');
-
-        // Trick it into thinking this is windows.
-        $reflClass = new \ReflectionClass('\Doctrine\Common\Cache\FileCache');
-        $reflProp = $reflClass->getProperty('isRunningOnWindows');
-        $reflProp->setAccessible(true);
-        $reflProp->setValue($cache, true);
-        $reflProp->setAccessible(false);
-
-        $cache->save($key, $length);
-        $fetched = $cache->fetch($key);
-        $this->assertEquals($length, $fetched);
-
-        if ($pathShouldBeHashed) {
-            $this->assertFileExists($hashedKeyPath, "Path generated for key should be hashed.");
-            unlink($hashedKeyPath);
-        } else {
-            $this->assertFileExists($keyPath, "Path generated for key should not be hashed.");
-            unlink($keyPath);
-        }
     }
 
     private static function getBasePathForWindowsPathLengthTests($pathLength)
@@ -112,34 +109,37 @@ abstract class BaseFileCacheTest extends CacheTest
         return array($key, $keyPath, $hashedKeyPath);
     }
 
-    protected function setUp()
+    /**
+     * @dataProvider getPathLengthsToTest
+     */
+    public function testWindowsPathLengthLimitIsCorrectlyHandled($length, $pathShouldBeHashed)
     {
-        do {
-            $this->directory = sys_get_temp_dir() . '/doctrine_cache_' . uniqid();
-        } while (file_exists($this->directory));
-    }
+        $this->directory = self::getBasePathForWindowsPathLengthTests($length);
 
-    protected function tearDown()
-    {
-        if (!is_dir($this->directory)) {
-            return;
+        list($key, $keyPath, $hashedKeyPath) = self::getKeyAndPathFittingLength($length);
+
+        $this->assertEquals($length, strlen($keyPath), "Unhashed path should be of correct length.");
+
+        $cacheClass = get_class($this->_getCacheDriver());
+        $cache = new $cacheClass($this->directory, '.doctrine.cache');
+
+        // Trick it into thinking this is windows.
+        $reflClass = new \ReflectionClass('\Doctrine\Common\Cache\FileCache');
+        $reflProp = $reflClass->getProperty('isRunningOnWindows');
+        $reflProp->setAccessible(true);
+        $reflProp->setValue($cache, true);
+        $reflProp->setAccessible(false);
+
+        $cache->save($key, $length);
+        $fetched = $cache->fetch($key);
+        $this->assertEquals($length, $fetched);
+
+        if ($pathShouldBeHashed) {
+            $this->assertFileExists($hashedKeyPath, "Path generated for key should be hashed.");
+            unlink($hashedKeyPath);
+        } else {
+            $this->assertFileExists($keyPath, "Path generated for key should not be hashed.");
+            unlink($keyPath);
         }
-
-        $iterator = new RecursiveDirectoryIterator($this->directory);
-
-        foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $file) {
-            if ($file->isFile()) {
-                @unlink($file->getRealPath());
-            } elseif ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            }
-        }
-
-        @rmdir($this->directory);
-    }
-
-    protected function isSharedStorage()
-    {
-        return false;
     }
 }

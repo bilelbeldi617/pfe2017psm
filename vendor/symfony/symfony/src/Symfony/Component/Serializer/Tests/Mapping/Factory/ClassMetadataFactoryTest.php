@@ -52,7 +52,8 @@ class ClassMetadataFactoryTest extends TestCase
         $cache
             ->expects($this->once())
             ->method('fetch')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         $factory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()), $cache);
         $this->assertEquals('foo', $factory->getMetadataFor('Symfony\Component\Serializer\Tests\Fixtures\GroupDummy'));
@@ -63,10 +64,12 @@ class ClassMetadataFactoryTest extends TestCase
         $cache = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
         $cache
             ->method('fetch')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
 
         $cache
-            ->method('save');
+            ->method('save')
+        ;
 
         $factory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()), $cache);
         $metadata = $factory->getMetadataFor('Symfony\Component\Serializer\Tests\Fixtures\GroupDummy');

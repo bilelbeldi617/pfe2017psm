@@ -4,6 +4,22 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
 {
     protected $_buffer;
 
+    abstract protected function _initializeBuffer();
+
+    protected function setUp()
+    {
+        if (true == getenv('TRAVIS')) {
+            $this->markTestSkipped(
+                'Will fail on travis-ci if not skipped due to travis blocking '.
+                'socket mailing tcp connections.'
+             );
+        }
+
+        $this->_buffer = new Swift_Transport_StreamBuffer(
+            $this->getMockBuilder('Swift_ReplacementFilterFactory')->getMock()
+        );
+    }
+
     public function testReadLine()
     {
         $this->_initializeBuffer();
@@ -11,13 +27,11 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
         $line = $this->_buffer->readLine(0);
         $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
         $seq = $this->_buffer->write("QUIT\r\n");
-        $this->assertTrue((bool)$seq);
+        $this->assertTrue((bool) $seq);
         $line = $this->_buffer->readLine($seq);
         $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
         $this->_buffer->terminate();
     }
-
-    abstract protected function _initializeBuffer();
 
     public function testWrite()
     {
@@ -27,12 +41,12 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
         $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
 
         $seq = $this->_buffer->write("HELO foo\r\n");
-        $this->assertTrue((bool)$seq);
+        $this->assertTrue((bool) $seq);
         $line = $this->_buffer->readLine($seq);
         $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
 
         $seq = $this->_buffer->write("QUIT\r\n");
-        $this->assertTrue((bool)$seq);
+        $this->assertTrue((bool) $seq);
         $line = $this->_buffer->readLine($seq);
         $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
         $this->_buffer->terminate();
@@ -63,11 +77,6 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
 
         $this->_buffer->write('x');
         $this->_buffer->write('y');
-    }
-
-    private function _createMockInputStream()
-    {
-        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
     }
 
     public function testBindingOtherStreamsMirrorsFlushOperations()
@@ -115,17 +124,8 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
         $this->_buffer->write('y');
     }
 
-    protected function setUp()
+    private function _createMockInputStream()
     {
-        if (true == getenv('TRAVIS')) {
-            $this->markTestSkipped(
-                'Will fail on travis-ci if not skipped due to travis blocking ' .
-                'socket mailing tcp connections.'
-            );
-        }
-
-        $this->_buffer = new Swift_Transport_StreamBuffer(
-            $this->getMockBuilder('Swift_ReplacementFilterFactory')->getMock()
-        );
+        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
     }
 }

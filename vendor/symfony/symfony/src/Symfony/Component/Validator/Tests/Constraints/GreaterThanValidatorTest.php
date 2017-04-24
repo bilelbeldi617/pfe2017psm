@@ -20,6 +20,26 @@ use Symfony\Component\Validator\Validation;
  */
 class GreaterThanValidatorTest extends AbstractComparisonValidatorTestCase
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new GreaterThanValidator();
+    }
+
+    protected function createConstraint(array $options)
+    {
+        return new GreaterThan($options);
+    }
+
+    protected function getErrorCode()
+    {
+        return GreaterThan::TOO_LOW_ERROR;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -50,30 +70,10 @@ class GreaterThanValidatorTest extends AbstractComparisonValidatorTestCase
             array(new \DateTime('2000/01/01'), 'Jan 1, 2000, 12:00 AM', '2000/01/01', 'Jan 1, 2000, 12:00 AM', 'DateTime'),
             array(new \DateTime('2000/01/01 UTC'), 'Jan 1, 2000, 12:00 AM', '2005/01/01 UTC', 'Jan 1, 2005, 12:00 AM', 'DateTime'),
             array(new \DateTime('2000/01/01 UTC'), 'Jan 1, 2000, 12:00 AM', '2000/01/01 UTC', 'Jan 1, 2000, 12:00 AM', 'DateTime'),
-            array(new ComparisonTest_Class(4), '4', new ComparisonTest_Class(5), '5', __NAMESPACE__ . '\ComparisonTest_Class'),
-            array(new ComparisonTest_Class(5), '5', new ComparisonTest_Class(5), '5', __NAMESPACE__ . '\ComparisonTest_Class'),
+            array(new ComparisonTest_Class(4), '4', new ComparisonTest_Class(5), '5', __NAMESPACE__.'\ComparisonTest_Class'),
+            array(new ComparisonTest_Class(5), '5', new ComparisonTest_Class(5), '5', __NAMESPACE__.'\ComparisonTest_Class'),
             array('22', '"22"', '333', '"333"', 'string'),
             array('22', '"22"', '22', '"22"', 'string'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new GreaterThanValidator();
-    }
-
-    protected function createConstraint(array $options)
-    {
-        return new GreaterThan($options);
-    }
-
-    protected function getErrorCode()
-    {
-        return GreaterThan::TOO_LOW_ERROR;
     }
 }

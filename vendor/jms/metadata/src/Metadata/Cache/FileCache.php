@@ -25,7 +25,7 @@ class FileCache implements CacheInterface
      */
     public function loadClassMetadataFromCache(\ReflectionClass $class)
     {
-        $path = $this->dir . '/' . strtr($class->name, '\\', '-') . '.cache.php';
+        $path = $this->dir.'/'.strtr($class->name, '\\', '-').'.cache.php';
         if (!file_exists($path)) {
             return null;
         }
@@ -38,11 +38,11 @@ class FileCache implements CacheInterface
      */
     public function putClassMetadataInCache(ClassMetadata $metadata)
     {
-        $path = $this->dir . '/' . strtr($metadata->name, '\\', '-') . '.cache.php';
+        $path = $this->dir.'/'.strtr($metadata->name, '\\', '-').'.cache.php';
 
         $tmpFile = tempnam($this->dir, 'metadata-cache');
-        file_put_contents($tmpFile, '<?php return unserialize(' . var_export(serialize($metadata), true) . ');');
-
+        file_put_contents($tmpFile, '<?php return unserialize('.var_export(serialize($metadata), true).');');
+        
         // Let's not break filesystems which do not support chmod.
         @chmod($tmpFile, 0666 & ~umask());
 
@@ -55,8 +55,7 @@ class FileCache implements CacheInterface
      * @param string $source
      * @param string $target
      */
-    private function renameFile($source, $target)
-    {
+    private function renameFile($source, $target) {
         if (false === @rename($source, $target)) {
             if (defined('PHP_WINDOWS_VERSION_BUILD')) {
                 if (false === copy($source, $target)) {
@@ -76,7 +75,7 @@ class FileCache implements CacheInterface
      */
     public function evictClassMetadataFromCache(\ReflectionClass $class)
     {
-        $path = $this->dir . '/' . strtr($class->name, '\\', '-') . '.cache.php';
+        $path = $this->dir.'/'.strtr($class->name, '\\', '-').'.cache.php';
         if (file_exists($path)) {
             unlink($path);
         }

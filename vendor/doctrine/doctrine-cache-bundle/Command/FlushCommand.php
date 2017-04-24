@@ -29,10 +29,10 @@ class FlushCommand extends CacheCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cacheName = $input->getArgument('cache-name');
+        $cacheName     = $input->getArgument('cache-name');
         $cacheProvider = $this->getCacheProvider($cacheName);
 
-        if (!method_exists($cacheProvider, 'flushAll')) {
+        if ( ! method_exists($cacheProvider, 'flushAll')) {
             throw new \RuntimeException('Cache provider does not implement a flushAll method.');
         }
 

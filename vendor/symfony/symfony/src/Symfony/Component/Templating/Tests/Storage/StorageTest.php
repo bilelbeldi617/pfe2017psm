@@ -19,7 +19,7 @@ class StorageTest extends TestCase
     public function testMagicToString()
     {
         $storage = new TestStorage('foo');
-        $this->assertEquals('foo', (string)$storage, '__toString() returns the template name');
+        $this->assertEquals('foo', (string) $storage, '__toString() returns the template name');
     }
 }
 

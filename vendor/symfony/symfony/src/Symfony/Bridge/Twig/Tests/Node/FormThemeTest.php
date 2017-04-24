@@ -48,7 +48,7 @@ class FormThemeTest extends TestCase
             sprintf(
                 '$this->env->getExtension(\'Symfony\Bridge\Twig\Extension\FormExtension\')->renderer->setTheme(%s, array(0 => "tpl1", 1 => "tpl2"));',
                 $this->getVariableGetter('form')
-            ),
+             ),
             trim($compiler->compile($node)->getSource())
         );
 
@@ -60,7 +60,7 @@ class FormThemeTest extends TestCase
             sprintf(
                 '$this->env->getExtension(\'Symfony\Bridge\Twig\Extension\FormExtension\')->renderer->setTheme(%s, "tpl1");',
                 $this->getVariableGetter('form')
-            ),
+             ),
             trim($compiler->compile($node)->getSource())
         );
     }

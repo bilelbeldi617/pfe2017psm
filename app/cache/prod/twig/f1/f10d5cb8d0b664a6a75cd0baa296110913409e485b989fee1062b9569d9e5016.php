@@ -16,6 +16,17 @@ class __TwigTemplate_1fb197ee9e892aa51b1f9d09e8954854d11e63a049cb90bc2aa06848a67
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 2
     public function block_script($context, array $blocks = array())
     {
         // line 3
@@ -56,6 +67,7 @@ class __TwigTemplate_1fb197ee9e892aa51b1f9d09e8954854d11e63a049cb90bc2aa06848a67
 ";
     }
 
+    // line 35
     public function block_title($context, array $blocks = array())
     {
         // line 36
@@ -63,8 +75,7 @@ class __TwigTemplate_1fb197ee9e892aa51b1f9d09e8954854d11e63a049cb90bc2aa06848a67
 ";
     }
 
-    // line 2
-
+    // line 38
     public function block_mainContent($context, array $blocks = array())
     {
         // line 39
@@ -139,14 +150,10 @@ class __TwigTemplate_1fb197ee9e892aa51b1f9d09e8954854d11e63a049cb90bc2aa06848a67
 ";
     }
 
-    // line 35
-
     public function getTemplateName()
     {
         return "@projet/Default/Admin/affecterEleve.html.twig";
     }
-
-    // line 38
 
     public function isTraitable()
     {
@@ -155,13 +162,13 @@ class __TwigTemplate_1fb197ee9e892aa51b1f9d09e8954854d11e63a049cb90bc2aa06848a67
 
     public function getDebugInfo()
     {
-        return array(147 => 65, 140 => 63, 136 => 61, 128 => 58, 124 => 57, 119 => 56, 117 => 55, 113 => 54, 109 => 53, 105 => 52, 101 => 51, 98 => 50, 94 => 49, 82 => 39, 79 => 38, 74 => 36, 71 => 35, 42 => 10, 33 => 3, 30 => 2, 11 => 1,);
+        return array (  147 => 65,  140 => 63,  136 => 61,  128 => 58,  124 => 57,  119 => 56,  117 => 55,  113 => 54,  109 => 53,  105 => 52,  101 => 51,  98 => 50,  94 => 49,  82 => 39,  79 => 38,  74 => 36,  71 => 35,  42 => 10,  33 => 3,  30 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -169,15 +176,5 @@ class __TwigTemplate_1fb197ee9e892aa51b1f9d09e8954854d11e63a049cb90bc2aa06848a67
     public function getSourceContext()
     {
         return new Twig_Source("", "@projet/Default/Admin/affecterEleve.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Admin\\affecterEleve.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

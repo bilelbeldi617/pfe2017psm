@@ -60,6 +60,6 @@ class NonTraversableArrayObject implements \ArrayAccess, \Countable, \Serializab
 
     public function unserialize($serialized)
     {
-        $this->array = (array)unserialize((string)$serialized);
+        $this->array = (array) unserialize((string) $serialized);
     }
 }

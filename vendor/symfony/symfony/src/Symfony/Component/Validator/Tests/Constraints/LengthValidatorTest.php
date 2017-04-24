@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class LengthValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new LengthValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Length(6));
@@ -133,7 +143,7 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($value, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $value . '"')
+            ->setParameter('{{ value }}', '"'.$value.'"')
             ->setParameter('{{ limit }}', 4)
             ->setInvalidValue($value)
             ->setPlural(4)
@@ -154,7 +164,7 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($value, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $value . '"')
+            ->setParameter('{{ value }}', '"'.$value.'"')
             ->setParameter('{{ limit }}', 4)
             ->setInvalidValue($value)
             ->setPlural(4)
@@ -176,7 +186,7 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($value, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $value . '"')
+            ->setParameter('{{ value }}', '"'.$value.'"')
             ->setParameter('{{ limit }}', 4)
             ->setInvalidValue($value)
             ->setPlural(4)
@@ -198,7 +208,7 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($value, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $value . '"')
+            ->setParameter('{{ value }}', '"'.$value.'"')
             ->setParameter('{{ limit }}', 4)
             ->setInvalidValue($value)
             ->setPlural(4)
@@ -224,7 +234,7 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
             $this->assertNoViolation();
         } else {
             $this->buildViolation('myMessage')
-                ->setParameter('{{ value }}', '"' . $value . '"')
+                ->setParameter('{{ value }}', '"'.$value.'"')
                 ->setParameter('{{ charset }}', $charset)
                 ->setInvalidValue($value)
                 ->setCode(Length::INVALID_CHARACTERS_ERROR)
@@ -238,15 +248,5 @@ class LengthValidatorTest extends AbstractConstraintValidatorTest
 
         $this->assertEquals(5, $constraint->min);
         $this->assertEquals(5, $constraint->max);
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new LengthValidator();
     }
 }

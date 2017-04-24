@@ -27,18 +27,6 @@ class ClientTest extends WebTestCase
         $client->request('GET', '/');
     }
 
-    private function getKernelMock()
-    {
-        $mock = $this->getMockBuilder($this->getKernelClass())
-            ->setMethods(array('shutdown', 'boot', 'handle'))
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mock->expects($this->any())->method('handle')->willReturn(new Response('foo'));
-
-        return $mock;
-    }
-
     public function testDisabledRebootKernel()
     {
         $mock = $this->getKernelMock();
@@ -61,5 +49,17 @@ class ClientTest extends WebTestCase
         $client->request('GET', '/');
         $client->enableReboot();
         $client->request('GET', '/');
+    }
+
+    private function getKernelMock()
+    {
+        $mock = $this->getMockBuilder($this->getKernelClass())
+            ->setMethods(array('shutdown', 'boot', 'handle'))
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())->method('handle')->willReturn(new Response('foo'));
+
+        return $mock;
     }
 }

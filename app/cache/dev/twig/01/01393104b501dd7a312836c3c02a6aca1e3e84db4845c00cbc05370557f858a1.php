@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:logs.html.twig */
-
 class __TwigTemplate_02294fc411aeb3a606860c0c6223e12f1e10d29a3e75f128990cb2cc28c08050 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,43 +9,14 @@ class __TwigTemplate_02294fc411aeb3a606860c0c6223e12f1e10d29a3e75f128990cb2cc28c
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(49 => 7, 38 => 4, 29 => 3, 25 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<ol class=\"traces logs\">
-    {% for log in logs %}
-        <li{% if log.priority >= 400 %} class=\"error\"{% elseif log.priority >= 300 %} class=\"warning\"{% endif %}>
-            {{ log.priorityName }} - {{ log.message }}
-        </li>
-    {% endfor %}
-</ol>
-", "TwigBundle:Exception:logs.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/logs.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_bc263c776e02fc6f15bfd32a6702575f4525d22e18c9ba45e7a4fb5cbe20f587 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_bc263c776e02fc6f15bfd32a6702575f4525d22e18c9ba45e7a4fb5cbe20f587->enter($__internal_bc263c776e02fc6f15bfd32a6702575f4525d22e18c9ba45e7a4fb5cbe20f587_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:logs.html.twig"));
+        $__internal_aaee7f0749ce8f0ee096d708a8a4c1c823ae6807f543a8205c6afff40cb97e07 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_aaee7f0749ce8f0ee096d708a8a4c1c823ae6807f543a8205c6afff40cb97e07->enter($__internal_aaee7f0749ce8f0ee096d708a8a4c1c823ae6807f543a8205c6afff40cb97e07_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:logs.html.twig"));
 
         // line 1
         echo "<ol class=\"traces logs\">
@@ -78,13 +48,43 @@ class __TwigTemplate_02294fc411aeb3a606860c0c6223e12f1e10d29a3e75f128990cb2cc28c
         // line 7
         echo "</ol>
 ";
-
-        $__internal_bc263c776e02fc6f15bfd32a6702575f4525d22e18c9ba45e7a4fb5cbe20f587->leave($__internal_bc263c776e02fc6f15bfd32a6702575f4525d22e18c9ba45e7a4fb5cbe20f587_prof);
+        
+        $__internal_aaee7f0749ce8f0ee096d708a8a4c1c823ae6807f543a8205c6afff40cb97e07->leave($__internal_aaee7f0749ce8f0ee096d708a8a4c1c823ae6807f543a8205c6afff40cb97e07_prof);
 
     }
 
     public function getTemplateName()
     {
         return "TwigBundle:Exception:logs.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  49 => 7,  38 => 4,  29 => 3,  25 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<ol class=\"traces logs\">
+    {% for log in logs %}
+        <li{% if log.priority >= 400 %} class=\"error\"{% elseif log.priority >= 300 %} class=\"warning\"{% endif %}>
+            {{ log.priorityName }} - {{ log.message }}
+        </li>
+    {% endfor %}
+</ol>
+", "TwigBundle:Exception:logs.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/logs.html.twig");
     }
 }

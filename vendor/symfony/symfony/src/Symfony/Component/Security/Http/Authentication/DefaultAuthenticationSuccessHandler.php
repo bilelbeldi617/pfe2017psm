@@ -40,7 +40,7 @@ class DefaultAuthenticationSuccessHandler implements AuthenticationSuccessHandle
      * Constructor.
      *
      * @param HttpUtils $httpUtils
-     * @param array $options Options for processing a successful authentication attempt
+     * @param array     $options   Options for processing a successful authentication attempt
      */
     public function __construct(HttpUtils $httpUtils, array $options = array())
     {
@@ -54,36 +54,6 @@ class DefaultAuthenticationSuccessHandler implements AuthenticationSuccessHandle
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    /**
-     * Builds the target URL according to the defined options.
-     *
-     * @param Request $request
-     *
-     * @return string
-     */
-    protected function determineTargetUrl(Request $request)
-    {
-        if ($this->options['always_use_default_target_path']) {
-            return $this->options['default_target_path'];
-        }
-
-        if ($targetUrl = ParameterBagUtils::getRequestParameterValue($request, $this->options['target_path_parameter'])) {
-            return $targetUrl;
-        }
-
-        if (null !== $this->providerKey && $targetUrl = $request->getSession()->get('_security.' . $this->providerKey . '.target_path')) {
-            $request->getSession()->remove('_security.' . $this->providerKey . '.target_path');
-
-            return $targetUrl;
-        }
-
-        if ($this->options['use_referer'] && ($targetUrl = $request->headers->get('Referer')) && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])) {
-            return $targetUrl;
-        }
-
-        return $this->options['default_target_path'];
     }
 
     /**
@@ -124,5 +94,35 @@ class DefaultAuthenticationSuccessHandler implements AuthenticationSuccessHandle
     public function setProviderKey($providerKey)
     {
         $this->providerKey = $providerKey;
+    }
+
+    /**
+     * Builds the target URL according to the defined options.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function determineTargetUrl(Request $request)
+    {
+        if ($this->options['always_use_default_target_path']) {
+            return $this->options['default_target_path'];
+        }
+
+        if ($targetUrl = ParameterBagUtils::getRequestParameterValue($request, $this->options['target_path_parameter'])) {
+            return $targetUrl;
+        }
+
+        if (null !== $this->providerKey && $targetUrl = $request->getSession()->get('_security.'.$this->providerKey.'.target_path')) {
+            $request->getSession()->remove('_security.'.$this->providerKey.'.target_path');
+
+            return $targetUrl;
+        }
+
+        if ($this->options['use_referer'] && ($targetUrl = $request->headers->get('Referer')) && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])) {
+            return $targetUrl;
+        }
+
+        return $this->options['default_target_path'];
     }
 }

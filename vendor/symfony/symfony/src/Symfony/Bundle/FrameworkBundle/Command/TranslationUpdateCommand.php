@@ -61,7 +61,8 @@ Example running against app messages (app/Resources folder)
   <info>php %command.full_name% --dump-messages en</info>
   <info>php %command.full_name% --force --prefix="new_" fr</info>
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -82,14 +83,14 @@ EOF
         $writer = $this->getContainer()->get('translation.writer');
         $supportedFormats = $writer->getFormats();
         if (!in_array($input->getOption('output-format'), $supportedFormats)) {
-            $io->error(array('Wrong output format', 'Supported formats are: ' . implode(', ', $supportedFormats) . '.'));
+            $io->error(array('Wrong output format', 'Supported formats are: '.implode(', ', $supportedFormats).'.'));
 
             return 1;
         }
         $kernel = $this->getContainer()->get('kernel');
 
         // Define Root Path to App folder
-        $transPaths = array($kernel->getRootDir() . '/Resources/');
+        $transPaths = array($kernel->getRootDir().'/Resources/');
         $currentName = 'app folder';
 
         // Override with provided Bundle info
@@ -97,13 +98,13 @@ EOF
             try {
                 $foundBundle = $kernel->getBundle($input->getArgument('bundle'));
                 $transPaths = array(
-                    $foundBundle->getPath() . '/Resources/',
+                    $foundBundle->getPath().'/Resources/',
                     sprintf('%s/Resources/%s/', $kernel->getRootDir(), $foundBundle->getName()),
                 );
                 $currentName = $foundBundle->getName();
             } catch (\InvalidArgumentException $e) {
                 // such a bundle does not exist, so treat the argument as path
-                $transPaths = array($input->getArgument('bundle') . '/Resources/');
+                $transPaths = array($input->getArgument('bundle').'/Resources/');
                 $currentName = $transPaths[0];
 
                 if (!is_dir($transPaths[0])) {
@@ -202,7 +203,7 @@ EOF
             }
 
             if (!$bundleTransPath) {
-                $bundleTransPath = end($transPaths) . 'translations';
+                $bundleTransPath = end($transPaths).'translations';
             }
 
             $writer->writeTranslations($operation->getResult(), $input->getOption('output-format'), array('path' => $bundleTransPath, 'default_locale' => $this->getContainer()->getParameter('kernel.default_locale')));
@@ -212,6 +213,6 @@ EOF
             }
         }
 
-        $io->success($resultMessage . '.');
+        $io->success($resultMessage.'.');
     }
 }

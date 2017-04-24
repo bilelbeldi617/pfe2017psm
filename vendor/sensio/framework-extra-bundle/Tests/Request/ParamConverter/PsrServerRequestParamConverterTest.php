@@ -40,28 +40,6 @@ class PsrServerRequestParamConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($converter->supports($config));
     }
 
-    private function createConfiguration($class = null, $name = null)
-    {
-        $config = $this
-            ->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter')
-            ->setMethods(array('getClass', 'getAliasName', 'getOptions', 'getName', 'allowArray', 'isOptional'))
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        if (null !== $name) {
-            $config->expects($this->any())
-                ->method('getName')
-                ->will($this->returnValue($name));
-        }
-        if (null !== $class) {
-            $config->expects($this->any())
-                ->method('getClass')
-                ->will($this->returnValue($class));
-        }
-
-        return $config;
-    }
-
     public function testApply()
     {
         $converter = new PsrServerRequestParamConverter(new DiactorosFactory());
@@ -79,5 +57,28 @@ class PsrServerRequestParamConverterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Psr\Http\Message\ServerRequestInterface', $request->attributes->get('request'));
         $this->assertEquals('bar', $request->query->get('foo'));
+    }
+
+    private function createConfiguration($class = null, $name = null)
+    {
+        $config = $this
+            ->getMockBuilder('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter')
+            ->setMethods(array('getClass', 'getAliasName', 'getOptions', 'getName', 'allowArray', 'isOptional'))
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        if (null !== $name) {
+            $config->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue($name));
+        }
+        if (null !== $class) {
+            $config->expects($this->any())
+                ->method('getClass')
+                ->will($this->returnValue($class));
+        }
+
+        return $config;
     }
 }

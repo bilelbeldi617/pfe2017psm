@@ -43,7 +43,7 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritdoc} 
      */
     protected function getSelectColumnsSQL()
     {
@@ -53,12 +53,12 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
 
         $columnList[] = parent::getSelectColumnsSQL();
 
-        $rootClass = $this->em->getClassMetadata($this->class->rootEntityName);
+        $rootClass  = $this->em->getClassMetadata($this->class->rootEntityName);
         $tableAlias = $this->getSQLTableAlias($rootClass->name);
 
-        // Append discriminator column
-        $discrColumn = $this->class->discriminatorColumn['name'];
-        $columnList[] = $tableAlias . '.' . $discrColumn;
+         // Append discriminator column
+        $discrColumn    = $this->class->discriminatorColumn['name'];
+        $columnList[]   = $tableAlias . '.' . $discrColumn;
 
         $resultColumnName = $this->platform->getSQLResultCasing($discrColumn);
 
@@ -80,16 +80,15 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
 
             // Foreign key columns
             foreach ($subClass->associationMappings as $assoc) {
-                if (!$assoc['isOwningSide']
-                    || !($assoc['type'] & ClassMetadata::TO_ONE)
-                    || isset($assoc['inherited'])
-                ) {
+                if ( ! $assoc['isOwningSide'] 
+                        || ! ($assoc['type'] & ClassMetadata::TO_ONE)
+                        || isset($assoc['inherited'])) {
                     continue;
                 }
 
                 foreach ($assoc['targetToSourceKeyColumns'] as $srcColumn) {
-                    $className = isset($assoc['inherited']) ? $assoc['inherited'] : $this->class->name;
-                    $columnList[] = $this->getSelectJoinColumnSQL($tableAlias, $srcColumn, $className);
+                    $className      = isset($assoc['inherited']) ? $assoc['inherited'] : $this->class->name;
+                    $columnList[]   = $this->getSelectJoinColumnSQL($tableAlias, $srcColumn, $className);
                 }
             }
         }
@@ -97,14 +96,6 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
         $this->selectColumnListSql = implode(', ', $columnList);
 
         return $this->selectColumnListSql;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getSQLTableAlias($className, $assocName = '')
-    {
-        return parent::getSQLTableAlias($this->class->rootEntityName, $assocName);
     }
 
     /**
@@ -123,9 +114,31 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
     /**
      * {@inheritdoc}
      */
+    protected function getSQLTableAlias($className, $assocName = '')
+    {
+        return parent::getSQLTableAlias($this->class->rootEntityName, $assocName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getSelectConditionSQL(array $criteria, $assoc = null)
     {
         $conditionSql = parent::getSelectConditionSQL($criteria, $assoc);
+
+        if ($conditionSql) {
+            $conditionSql .= ' AND ';
+        }
+
+        return $conditionSql . $this->getSelectConditionDiscriminatorValueSQL();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSelectConditionCriteriaSQL(Criteria $criteria)
+    {
+        $conditionSql = parent::getSelectConditionCriteriaSQL($criteria);
 
         if ($conditionSql) {
             $conditionSql .= ' AND ';
@@ -151,25 +164,11 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
             $values[] = $this->conn->quote($discrValues[$subclassName]);
         }
 
-        $values = implode(', ', $values);
+        $values     = implode(', ', $values);
         $discColumn = $this->class->discriminatorColumn['name'];
         $tableAlias = $this->getSQLTableAlias($this->class->name);
 
         return $tableAlias . '.' . $discColumn . ' IN (' . $values . ')';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getSelectConditionCriteriaSQL(Criteria $criteria)
-    {
-        $conditionSql = parent::getSelectConditionCriteriaSQL($criteria);
-
-        if ($conditionSql) {
-            $conditionSql .= ' AND ';
-        }
-
-        return $conditionSql . $this->getSelectConditionDiscriminatorValueSQL();
     }
 
     /**

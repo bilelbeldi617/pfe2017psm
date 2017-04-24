@@ -29,7 +29,7 @@ abstract class DoctrineCommandHelper
      * Convenience method to push the helper sets of a given entity manager into the application.
      *
      * @param Application $application
-     * @param string $emName
+     * @param string      $emName
      */
     public static function setApplicationEntityManager(Application $application, $emName)
     {
@@ -44,7 +44,7 @@ abstract class DoctrineCommandHelper
      * Convenience method to push the helper sets of a given connection into the application.
      *
      * @param Application $application
-     * @param string $connName
+     * @param string      $connName
      */
     public static function setApplicationConnection(Application $application, $connName)
     {

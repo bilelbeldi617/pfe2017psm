@@ -285,7 +285,7 @@ class SerializerTest extends TestCase
         );
 
         $this->assertTrue(
-            $serializer->supportsDenormalization(array(), __NAMESPACE__ . '\Model[]', 'json')
+            $serializer->supportsDenormalization(array(), __NAMESPACE__.'\Model[]', 'json')
         );
     }
 
@@ -310,7 +310,7 @@ class SerializerTest extends TestCase
 
         $this->assertEquals(
             $expectedData,
-            $serializer->deserialize($jsonData, __NAMESPACE__ . '\Model[]', 'json')
+            $serializer->deserialize($jsonData, __NAMESPACE__.'\Model[]', 'json')
         );
     }
 }

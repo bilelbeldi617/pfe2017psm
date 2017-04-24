@@ -38,7 +38,7 @@ class EmailValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Email) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Email');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Email');
         }
 
         if (null === $value || '' === $value) {
@@ -49,7 +49,7 @@ class EmailValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if (null === $constraint->strict) {
             $constraint->strict = $this->isStrict;

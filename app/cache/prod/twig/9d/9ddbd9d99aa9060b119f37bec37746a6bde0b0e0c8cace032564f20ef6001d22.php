@@ -1,7 +1,6 @@
 <?php
 
 /* ::baseForLogin.html.twig */
-
 class __TwigTemplate_8a21d55fc0cfb0b28973631d6e122d7823ac85e88ac8b5a2e3615f55d47d7e5c extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -13,41 +12,6 @@ class __TwigTemplate_8a21d55fc0cfb0b28973631d6e122d7823ac85e88ac8b5a2e3615f55d47
         $this->blocks = array(
             'title' => array($this, 'block_title'),
         );
-    }
-
-    public function block_title($context, array $blocks = array())
-    {
-        echo " ";
-    }
-
-    // line 6
-
-    public function getTemplateName()
-    {
-        return "::baseForLogin.html.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(519 => 6, 291 => 197, 287 => 196, 281 => 193, 277 => 192, 273 => 191, 269 => 190, 265 => 189, 261 => 188, 257 => 187, 247 => 180, 234 => 170, 158 => 96, 156 => 95, 150 => 92, 142 => 86, 139 => 85, 97 => 43, 93 => 42, 85 => 37, 76 => 31, 70 => 28, 66 => 27, 61 => 25, 55 => 22, 49 => 19, 41 => 14, 37 => 13, 29 => 7, 27 => 6, 20 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "::baseForLogin.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\app\\Resources\\views\\baseForLogin.html.twig");
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -549,5 +513,39 @@ jQuery(function(\$) {
 </body>
 </html>
 ";
+    }
+
+    // line 6
+    public function block_title($context, array $blocks = array())
+    {
+        echo " ";
+    }
+
+    public function getTemplateName()
+    {
+        return "::baseForLogin.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  519 => 6,  291 => 197,  287 => 196,  281 => 193,  277 => 192,  273 => 191,  269 => 190,  265 => 189,  261 => 188,  257 => 187,  247 => 180,  234 => 170,  158 => 96,  156 => 95,  150 => 92,  142 => 86,  139 => 85,  97 => 43,  93 => 42,  85 => 37,  76 => 31,  70 => 28,  66 => 27,  61 => 25,  55 => 22,  49 => 19,  41 => 14,  37 => 13,  29 => 7,  27 => 6,  20 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "::baseForLogin.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\app\\Resources\\views\\baseForLogin.html.twig");
     }
 }

@@ -4,7 +4,7 @@
 
 {% block toolbar %}
     {% if collector.tokenClass %}
-        {% set is_authenticated = collector.enabled and collector.authenticated %}
+        {% set is_authenticated = collector.enabled and collector.authenticated  %}
         {% set color_code = is_authenticated ? '' : 'yellow' %}
     {% else %}
         {% set color_code = collector.enabled ? 'red' : '' %}
@@ -28,16 +28,16 @@
             </div>
 
             {% if collector.tokenClass != null %}
-                <div class="sf-toolbar-info-piece">
-                    <b>Token class</b>
-                    <span>{{ collector.tokenClass|abbr_class }}</span>
-                </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Token class</b>
+                <span>{{ collector.tokenClass|abbr_class }}</span>
+            </div>
             {% endif %}
             {% if collector.logoutUrl %}
-                <div class="sf-toolbar-info-piece">
-                    <b>Actions</b>
-                    <span><a href="{{ collector.logoutUrl }}">Logout</a></span>
-                </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Actions</b>
+                <span><a href="{{ collector.logoutUrl }}">Logout</a></span>
+            </div>
             {% endif %}
         {% elseif collector.enabled %}
             <div class="sf-toolbar-info-piece">
@@ -78,36 +78,36 @@
 
         <table>
             <thead>
-            <tr>
-                <th scope="col" class="key">Property</th>
-                <th scope="col">Value</th>
-            </tr>
+                <tr>
+                    <th scope="col" class="key">Property</th>
+                    <th scope="col">Value</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <th>Roles</th>
-                <td>
-                    {{ collector.roles is empty ? 'none' : collector.roles|yaml_encode }}
+                <tr>
+                    <th>Roles</th>
+                    <td>
+                        {{ collector.roles is empty ? 'none' : collector.roles|yaml_encode }}
 
-                    {% if not collector.authenticated and collector.roles is empty %}
-                        <p class="help">User is not authenticated probably because they have no roles.</p>
-                    {% endif %}
-                </td>
-            </tr>
+                        {% if not collector.authenticated and collector.roles is empty %}
+                            <p class="help">User is not authenticated probably because they have no roles.</p>
+                        {% endif %}
+                    </td>
+                </tr>
 
-            {% if collector.supportsRoleHierarchy %}
+                {% if collector.supportsRoleHierarchy %}
                 <tr>
                     <th>Inherited Roles</th>
                     <td>{{ collector.inheritedRoles is empty ? 'none' : collector.inheritedRoles|yaml_encode }}</td>
                 </tr>
-            {% endif %}
+                {% endif %}
 
-            {% if collector.tokenClass %}
+                {% if collector.tokenClass %}
                 <tr>
                     <th>Token class</th>
                     <td>{{ collector.tokenClass }}</td>
                 </tr>
-            {% endif %}
+                {% endif %}
             </tbody>
         </table>
     {% elseif collector.enabled %}

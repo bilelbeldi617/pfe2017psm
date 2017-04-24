@@ -52,7 +52,7 @@ class FormRegistry implements FormRegistryInterface
     /**
      * Constructor.
      *
-     * @param FormExtensionInterface[] $extensions An array of FormExtensionInterface
+     * @param FormExtensionInterface[]         $extensions          An array of FormExtensionInterface
      * @param ResolvedFormTypeFactoryInterface $resolvedTypeFactory The factory for resolved form types
      *
      * @throws UnexpectedTypeException if any extension does not implement FormExtensionInterface
@@ -67,28 +67,6 @@ class FormRegistry implements FormRegistryInterface
 
         $this->extensions = $extensions;
         $this->resolvedTypeFactory = $resolvedTypeFactory;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasType($name)
-    {
-        if (isset($this->legacyNames[$name])) {
-            @trigger_error(sprintf('Accessing type "%s" by its string name is deprecated since version 2.8 and will be removed in 3.0. Use the fully-qualified type class name "%s" instead.', $name, get_class($this->types[$name]->getInnerType())), E_USER_DEPRECATED);
-        }
-
-        if (isset($this->types[$name])) {
-            return true;
-        }
-
-        try {
-            $this->getType($name);
-        } catch (ExceptionInterface $e) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -178,6 +156,28 @@ class FormRegistry implements FormRegistryInterface
             $this->types[$name] = $resolvedType;
             $this->legacyNames[$name] = true;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasType($name)
+    {
+        if (isset($this->legacyNames[$name])) {
+            @trigger_error(sprintf('Accessing type "%s" by its string name is deprecated since version 2.8 and will be removed in 3.0. Use the fully-qualified type class name "%s" instead.', $name, get_class($this->types[$name]->getInnerType())), E_USER_DEPRECATED);
+        }
+
+        if (isset($this->types[$name])) {
+            return true;
+        }
+
+        try {
+            $this->getType($name);
+        } catch (ExceptionInterface $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

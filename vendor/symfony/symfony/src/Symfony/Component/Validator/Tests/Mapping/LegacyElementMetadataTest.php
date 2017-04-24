@@ -23,6 +23,16 @@ class LegacyElementMetadataTest extends TestCase
 {
     protected $metadata;
 
+    protected function setUp()
+    {
+        $this->metadata = new TestElementMetadata();
+    }
+
+    protected function tearDown()
+    {
+        $this->metadata = null;
+    }
+
     public function testAddConstraints()
     {
         $this->metadata->addConstraint($constraint1 = new ConstraintA());
@@ -61,16 +71,6 @@ class LegacyElementMetadataTest extends TestCase
         $metadata = unserialize(serialize($this->metadata));
 
         $this->assertEquals($this->metadata, $metadata);
-    }
-
-    protected function setUp()
-    {
-        $this->metadata = new TestElementMetadata();
-    }
-
-    protected function tearDown()
-    {
-        $this->metadata = null;
     }
 }
 

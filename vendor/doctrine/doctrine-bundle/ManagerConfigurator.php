@@ -66,7 +66,7 @@ class ManagerConfigurator
     /**
      * Sets default parameters for a given filter
      *
-     * @param string $name Filter name
+     * @param string    $name   Filter name
      * @param SQLFilter $filter Filter object
      */
     private function setFilterParameters($name, SQLFilter $filter)

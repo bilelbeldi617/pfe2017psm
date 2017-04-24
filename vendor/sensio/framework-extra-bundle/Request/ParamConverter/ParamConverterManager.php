@@ -36,7 +36,7 @@ class ParamConverterManager
      * Applies all converters to the passed configurations and stops when a
      * converter is applied it will move on to the next configuration and so on.
      *
-     * @param Request $request
+     * @param Request      $request
      * @param array|object $configurations
      */
     public function apply(Request $request, $configurations)
@@ -53,7 +53,7 @@ class ParamConverterManager
     /**
      * Apply converter on request based on the given configuration.
      *
-     * @param Request $request
+     * @param Request                $request
      * @param ConfigurationInterface $configuration
      */
     protected function applyConverter(Request $request, ConfigurationInterface $configuration)
@@ -99,23 +99,6 @@ class ParamConverterManager
     }
 
     /**
-     * Returns all registered param converters.
-     *
-     * @return array An array of param converters
-     */
-    public function all()
-    {
-        krsort($this->converters);
-
-        $converters = array();
-        foreach ($this->converters as $all) {
-            $converters = array_merge($converters, $all);
-        }
-
-        return $converters;
-    }
-
-    /**
      * Adds a parameter converter.
      *
      * Converters match either explicitly via $name or by iteration over all
@@ -124,8 +107,8 @@ class ParamConverterManager
      * be invoked explicitly.
      *
      * @param ParamConverterInterface $converter A ParamConverterInterface instance
-     * @param int $priority The priority (between -10 and 10).
-     * @param string $name Name of the converter.
+     * @param int                     $priority  The priority (between -10 and 10).
+     * @param string                  $name      Name of the converter.
      */
     public function add(ParamConverterInterface $converter, $priority = 0, $name = null)
     {
@@ -141,4 +124,21 @@ class ParamConverterManager
             $this->namedConverters[$name] = $converter;
         }
     }
+
+   /**
+    * Returns all registered param converters.
+    *
+    * @return array An array of param converters
+    */
+   public function all()
+   {
+       krsort($this->converters);
+
+       $converters = array();
+       foreach ($this->converters as $all) {
+           $converters = array_merge($converters, $all);
+       }
+
+       return $converters;
+   }
 }

@@ -119,14 +119,6 @@ class ObjectsProvider
         );
     }
 
-    public static function getContainerAliases()
-    {
-        return array(
-            'alias_1' => new Alias('service_1', true),
-            'alias_2' => new Alias('service_2', false),
-        );
-    }
-
     /**
      * @deprecated since version 2.7, to be removed in 3.0
      *
@@ -161,14 +153,20 @@ class ObjectsProvider
         );
     }
 
+    public static function getContainerAliases()
+    {
+        return array(
+            'alias_1' => new Alias('service_1', true),
+            'alias_2' => new Alias('service_2', false),
+        );
+    }
+
     public static function getEventDispatchers()
     {
         $eventDispatcher = new EventDispatcher();
 
         $eventDispatcher->addListener('event1', 'global_function', 255);
-        $eventDispatcher->addListener('event1', function () {
-            return 'Closure';
-        }, -1);
+        $eventDispatcher->addListener('event1', function () { return 'Closure'; }, -1);
         $eventDispatcher->addListener('event2', new CallableClass());
 
         return array('event_dispatcher_1' => $eventDispatcher);
@@ -182,9 +180,7 @@ class ObjectsProvider
             'callable_3' => array(new CallableClass(), 'method'),
             'callable_4' => 'Symfony\\Bundle\\FrameworkBundle\\Tests\\Console\\Descriptor\\CallableClass::staticMethod',
             'callable_5' => array('Symfony\\Bundle\\FrameworkBundle\\Tests\\Console\\Descriptor\\ExtendedCallableClass', 'parent::staticMethod'),
-            'callable_6' => function () {
-                return 'Closure';
-            },
+            'callable_6' => function () { return 'Closure'; },
             'callable_7' => new CallableClass(),
         );
     }
@@ -192,11 +188,11 @@ class ObjectsProvider
 
 class CallableClass
 {
-    public static function staticMethod()
+    public function __invoke()
     {
     }
 
-    public function __invoke()
+    public static function staticMethod()
     {
     }
 

@@ -224,7 +224,8 @@ class CollectionTypeTest extends BaseTypeTest
                 'entry_type' => FileTypeTest::TESTED_TYPE,
                 'allow_add' => true,
                 'prototype' => true,
-            ));
+            ))
+        ;
 
         $this->assertTrue($form->createView()->vars['multipart']);
     }

@@ -66,7 +66,8 @@ matching.
   <info>php %command.full_name%</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

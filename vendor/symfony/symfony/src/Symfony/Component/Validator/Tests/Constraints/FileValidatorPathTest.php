@@ -15,6 +15,11 @@ use Symfony\Component\Validator\Constraints\File;
 
 class FileValidatorPathTest extends FileValidatorTest
 {
+    protected function getFile($filename)
+    {
+        return $filename;
+    }
+
     public function testFileNotFound()
     {
         $constraint = new File(array(
@@ -27,10 +32,5 @@ class FileValidatorPathTest extends FileValidatorTest
             ->setParameter('{{ file }}', '"foobar"')
             ->setCode(File::NOT_FOUND_ERROR)
             ->assertRaised();
-    }
-
-    protected function getFile($filename)
-    {
-        return $filename;
     }
 }

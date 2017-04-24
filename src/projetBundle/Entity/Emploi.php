@@ -22,11 +22,6 @@ class Emploi
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    /**
-     * use projetBundle\Entity\Groupe;
-     * @ORM\OneToOne(targetEntity="Groupe", mappedBy="emploi")
-     */
-    private $groupe;
 
     /**
      * @return mixed
@@ -44,10 +39,18 @@ class Emploi
         $this->groupe = $groupe;
     }
 
+
+    /**
+     * use projetBundle\Entity\Groupe;
+     * @ORM\OneToOne(targetEntity="Groupe", mappedBy="emploi")
+     */
+    private $groupe;
+
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {

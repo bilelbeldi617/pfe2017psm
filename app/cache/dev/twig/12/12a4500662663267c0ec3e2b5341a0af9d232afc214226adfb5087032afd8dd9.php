@@ -1,7 +1,6 @@
 <?php
 
 /* WebProfilerBundle:Router:panel.html.twig */
-
 class __TwigTemplate_dd0d1a8c6c0f03b669c249686254719231a47c6ed3aecbb100fb39b221d08f5a extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,114 +9,14 @@ class __TwigTemplate_dd0d1a8c6c0f03b669c249686254719231a47c6ed3aecbb100fb39b221d
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(191 => 72, 175 => 69, 171 => 67, 165 => 65, 163 => 64, 159 => 63, 156 => 62, 154 => 61, 149 => 59, 145 => 58, 141 => 57, 136 => 56, 119 => 55, 103 => 42, 97 => 38, 93 => 36, 87 => 35, 83 => 34, 77 => 30, 75 => 29, 72 => 28, 65 => 25, 59 => 21, 57 => 20, 53 => 18, 51 => 17, 47 => 15, 40 => 11, 37 => 10, 35 => 9, 28 => 5, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<h2>Routing</h2>
-
-<div class=\"metrics\">
-    <div class=\"metric\">
-        <span class=\"value\">{{ request.route ?: '(none)' }}</span>
-        <span class=\"label\">Matched route</span>
-    </div>
-
-    {% if request.route %}
-        <div class=\"metric\">
-            <span class=\"value\">{{ traces|length }}</span>
-            <span class=\"label\">Tested routes before match</span>
-        </div>
-    {% endif %}
-</div>
-
-{% if request.route %}
-    <h3>Route Parameters</h3>
-
-    {% if request.routeParams is empty %}
-        <div class=\"empty\">
-            <p>No parameters.</p>
-        </div>
-    {% else %}
-        {{ include('@WebProfiler/Profiler/table.html.twig', { data: request.routeParams, labels: ['Name', 'Value'] }, with_context = false) }}
-    {% endif %}
-{% endif %}
-
-{% if router.redirect %}
-    <h3>Route Redirection</h3>
-
-    <p>This page redirects to:</p>
-    <div class=\"card break-long-words\">
-        {{ router.targetUrl }}
-        {% if router.targetRoute %}<span class=\"text-muted\">(route: \"{{ router.targetRoute }}\")</span>{% endif %}
-    </div>
-{% endif %}
-
-<h3>Route Matching Logs</h3>
-
-<div class=\"card\">
-    <strong>Path to match:</strong> <code>{{ request.pathinfo }}</code>
-</div>
-
-<table id=\"router-logs\">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Route name</th>
-            <th>Path</th>
-            <th>Log</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for trace in traces %}
-        <tr class=\"{{ trace.level == 1 ? 'status-warning' : trace.level == 2 ? 'status-success' }}\">
-            <td class=\"font-normal text-muted\">{{ loop.index }}</td>
-            <td>{{ trace.name }}</td>
-            <td>{{ trace.path }}</td>
-            <td class=\"font-normal\">
-                {% if trace.level == 1 %}
-                    Path almost matches, but
-                    <span class=\"newline\">{{ trace.log }}</span>
-                {% elseif trace.level == 2 %}
-                    {{ trace.log }}
-                {% else %}
-                    Path does not match
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<p class=\"help\">
-    Note: These matching logs are based on the current router configuration,
-    which might differ from the configuration used when profiling this request.
-</p>
-", "WebProfilerBundle:Router:panel.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Router/panel.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_1505e8b63b81ae742864414f21ea1c30233b2da2c92cdaa9b6148d9538d70221 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_1505e8b63b81ae742864414f21ea1c30233b2da2c92cdaa9b6148d9538d70221->enter($__internal_1505e8b63b81ae742864414f21ea1c30233b2da2c92cdaa9b6148d9538d70221_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Router:panel.html.twig"));
+        $__internal_4667dad3be891c0d35612c552610f7323763eab53507de5f1359aee071ceb53e = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_4667dad3be891c0d35612c552610f7323763eab53507de5f1359aee071ceb53e->enter($__internal_4667dad3be891c0d35612c552610f7323763eab53507de5f1359aee071ceb53e_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Router:panel.html.twig"));
 
         // line 1
         echo "<h2>Routing</h2>
@@ -220,10 +119,10 @@ class __TwigTemplate_dd0d1a8c6c0f03b669c249686254719231a47c6ed3aecbb100fb39b221d
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable((isset($context["traces"]) ? $context["traces"] : $this->getContext($context, "traces")));
         $context['loop'] = array(
-            'parent' => $context['_parent'],
-            'index0' => 0,
-            'index' => 1,
-            'first' => true,
+          'parent' => $context['_parent'],
+          'index0' => 0,
+          'index'  => 1,
+          'first'  => true,
         );
         if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
             $length = count($context['_seq']);
@@ -235,7 +134,7 @@ class __TwigTemplate_dd0d1a8c6c0f03b669c249686254719231a47c6ed3aecbb100fb39b221d
         foreach ($context['_seq'] as $context["_key"] => $context["trace"]) {
             // line 56
             echo "        <tr class=\"";
-            echo((($this->getAttribute($context["trace"], "level", array()) == 1)) ? ("status-warning") : (((($this->getAttribute($context["trace"], "level", array()) == 2)) ? ("status-success") : (""))));
+            echo ((($this->getAttribute($context["trace"], "level", array()) == 1)) ? ("status-warning") : (((($this->getAttribute($context["trace"], "level", array()) == 2)) ? ("status-success") : (""))));
             echo "\">
             <td class=\"font-normal text-muted\">";
             // line 57
@@ -261,8 +160,7 @@ class __TwigTemplate_dd0d1a8c6c0f03b669c249686254719231a47c6ed3aecbb100fb39b221d
                 echo "</span>
                 ";
             } elseif (($this->getAttribute(            // line 64
-                    $context["trace"], "level", array()) == 2)
-            ) {
+$context["trace"], "level", array()) == 2)) {
                 // line 65
                 echo "                    ";
                 echo twig_escape_filter($this->env, $this->getAttribute($context["trace"], "log", array()), "html", null, true);
@@ -298,13 +196,114 @@ class __TwigTemplate_dd0d1a8c6c0f03b669c249686254719231a47c6ed3aecbb100fb39b221d
     which might differ from the configuration used when profiling this request.
 </p>
 ";
-
-        $__internal_1505e8b63b81ae742864414f21ea1c30233b2da2c92cdaa9b6148d9538d70221->leave($__internal_1505e8b63b81ae742864414f21ea1c30233b2da2c92cdaa9b6148d9538d70221_prof);
+        
+        $__internal_4667dad3be891c0d35612c552610f7323763eab53507de5f1359aee071ceb53e->leave($__internal_4667dad3be891c0d35612c552610f7323763eab53507de5f1359aee071ceb53e_prof);
 
     }
 
     public function getTemplateName()
     {
         return "WebProfilerBundle:Router:panel.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  191 => 72,  175 => 69,  171 => 67,  165 => 65,  163 => 64,  159 => 63,  156 => 62,  154 => 61,  149 => 59,  145 => 58,  141 => 57,  136 => 56,  119 => 55,  103 => 42,  97 => 38,  93 => 36,  87 => 35,  83 => 34,  77 => 30,  75 => 29,  72 => 28,  65 => 25,  59 => 21,  57 => 20,  53 => 18,  51 => 17,  47 => 15,  40 => 11,  37 => 10,  35 => 9,  28 => 5,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<h2>Routing</h2>
+
+<div class=\"metrics\">
+    <div class=\"metric\">
+        <span class=\"value\">{{ request.route ?: '(none)' }}</span>
+        <span class=\"label\">Matched route</span>
+    </div>
+
+    {% if request.route %}
+        <div class=\"metric\">
+            <span class=\"value\">{{ traces|length }}</span>
+            <span class=\"label\">Tested routes before match</span>
+        </div>
+    {% endif %}
+</div>
+
+{% if request.route %}
+    <h3>Route Parameters</h3>
+
+    {% if request.routeParams is empty %}
+        <div class=\"empty\">
+            <p>No parameters.</p>
+        </div>
+    {% else %}
+        {{ include('@WebProfiler/Profiler/table.html.twig', { data: request.routeParams, labels: ['Name', 'Value'] }, with_context = false) }}
+    {% endif %}
+{% endif %}
+
+{% if router.redirect %}
+    <h3>Route Redirection</h3>
+
+    <p>This page redirects to:</p>
+    <div class=\"card break-long-words\">
+        {{ router.targetUrl }}
+        {% if router.targetRoute %}<span class=\"text-muted\">(route: \"{{ router.targetRoute }}\")</span>{% endif %}
+    </div>
+{% endif %}
+
+<h3>Route Matching Logs</h3>
+
+<div class=\"card\">
+    <strong>Path to match:</strong> <code>{{ request.pathinfo }}</code>
+</div>
+
+<table id=\"router-logs\">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Route name</th>
+            <th>Path</th>
+            <th>Log</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for trace in traces %}
+        <tr class=\"{{ trace.level == 1 ? 'status-warning' : trace.level == 2 ? 'status-success' }}\">
+            <td class=\"font-normal text-muted\">{{ loop.index }}</td>
+            <td>{{ trace.name }}</td>
+            <td>{{ trace.path }}</td>
+            <td class=\"font-normal\">
+                {% if trace.level == 1 %}
+                    Path almost matches, but
+                    <span class=\"newline\">{{ trace.log }}</span>
+                {% elseif trace.level == 2 %}
+                    {{ trace.log }}
+                {% else %}
+                    Path does not match
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<p class=\"help\">
+    Note: These matching logs are based on the current router configuration,
+    which might differ from the configuration used when profiling this request.
+</p>
+", "WebProfilerBundle:Router:panel.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Router/panel.html.twig");
     }
 }

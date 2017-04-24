@@ -41,13 +41,6 @@ class ControllerListener implements EventSubscriberInterface
         $this->reader = $reader;
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::CONTROLLER => 'onKernelController',
-        );
-    }
-
     /**
      * Modifies the Request object to apply configuration information found in
      * controllers annotations like the template to render or HTTP caching
@@ -105,9 +98,9 @@ class ControllerListener implements EventSubscriberInterface
         foreach ($annotations as $configuration) {
             if ($configuration instanceof ConfigurationInterface) {
                 if ($configuration->allowArray()) {
-                    $configurations['_' . $configuration->getAliasName()][] = $configuration;
-                } elseif (!isset($configurations['_' . $configuration->getAliasName()])) {
-                    $configurations['_' . $configuration->getAliasName()] = $configuration;
+                    $configurations['_'.$configuration->getAliasName()][] = $configuration;
+                } elseif (!isset($configurations['_'.$configuration->getAliasName()])) {
+                    $configurations['_'.$configuration->getAliasName()] = $configuration;
                 } else {
                     throw new \LogicException(sprintf('Multiple "%s" annotations are not allowed.', $configuration->getAliasName()));
                 }
@@ -115,5 +108,12 @@ class ControllerListener implements EventSubscriberInterface
         }
 
         return $configurations;
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => 'onKernelController',
+        );
     }
 }

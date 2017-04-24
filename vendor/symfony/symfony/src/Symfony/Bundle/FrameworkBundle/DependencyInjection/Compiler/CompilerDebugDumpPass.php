@@ -36,6 +36,6 @@ class CompilerDebugDumpPass implements CompilerPassInterface
     {
         $class = $container->getParameter('kernel.container_class');
 
-        return $container->getParameter('kernel.cache_dir') . '/' . $class . 'Compiler.log';
+        return $container->getParameter('kernel.cache_dir').'/'.$class.'Compiler.log';
     }
 }

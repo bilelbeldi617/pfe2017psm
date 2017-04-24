@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class NotBlankValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new NotBlankValidator();
+    }
+
     /**
      * @dataProvider getValidValues
      */
@@ -92,15 +102,5 @@ class NotBlankValidatorTest extends AbstractConstraintValidatorTest
             ->setParameter('{{ value }}', 'array')
             ->setCode(NotBlank::IS_BLANK_ERROR)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new NotBlankValidator();
     }
 }

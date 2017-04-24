@@ -65,7 +65,7 @@ class Scope
      * Stores data into current scope.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return $this
      *
@@ -106,7 +106,7 @@ class Scope
      * Returns data visible from current scope.
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      *
      * @return mixed
      */

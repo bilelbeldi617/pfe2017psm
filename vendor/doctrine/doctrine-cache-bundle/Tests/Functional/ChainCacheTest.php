@@ -31,8 +31,8 @@ class ChainCacheTest extends BaseCacheTest
         parent::setUp();
 
         if (!class_exists('Doctrine\Common\Cache\ChainCache')) {
-            $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of ChainCache available in doctrine/cache since 1.4');
-        }
+    	    $this->markTestSkipped('The ' . __CLASS__ .' requires the use of ChainCache available in doctrine/cache since 1.4');
+    	}
     }
 
     /**
@@ -41,7 +41,7 @@ class ChainCacheTest extends BaseCacheTest
     protected function createCacheDriver()
     {
         $container = $this->compileContainer('chain');
-        $cache = $container->get('doctrine_cache.providers.my_chain_cache');
+        $cache     = $container->get('doctrine_cache.providers.my_chain_cache');
 
         return $cache;
     }

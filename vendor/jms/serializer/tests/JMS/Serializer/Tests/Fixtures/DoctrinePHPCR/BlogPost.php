@@ -37,15 +37,18 @@ class BlogPost
      * @PHPCRODM\Id()
      */
     protected $id;
-    /**
-     * @PHPCRODM\String()
-     */
-    protected $slug;
+
     /**
      * @PHPCRODM\String()
      * @Groups({"comments","post"})
      */
     private $title;
+
+    /**
+     * @PHPCRODM\String()
+     */
+    protected $slug;
+
     /**
      * @PHPCRODM\Date()
      * @XmlAttribute

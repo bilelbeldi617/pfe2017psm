@@ -15,6 +15,13 @@ use Symfony\Bundle\AsseticBundle\FilterManager;
 
 class FilterManagerTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
+    }
+
     public function testGet()
     {
         $container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')->getMock();
@@ -48,12 +55,5 @@ class FilterManagerTest extends \PHPUnit_Framework_TestCase
         $fm->set('bar', $filter);
 
         $this->assertEquals(array('foo', 'bar'), $fm->getNames(), '->getNames() returns all lazy and normal filter names');
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
     }
 }

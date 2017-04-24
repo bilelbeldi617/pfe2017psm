@@ -19,11 +19,19 @@ use Doctrine\ORM\Mapping as ORM;
 class AssociationEntity
 {
     /**
+     * @var int
+     * @ORM\Id @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
      * @ORM\ManyToOne(targetEntity="SingleIntIdEntity")
      *
      * @var \Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity
      */
     public $single;
+
     /**
      * @ORM\ManyToOne(targetEntity="CompositeIntIdEntity")
      * @ORM\JoinColumns({
@@ -34,10 +42,4 @@ class AssociationEntity
      * @var \Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeIntIdEntity
      */
     public $composite;
-    /**
-     * @var int
-     * @ORM\Id @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 }

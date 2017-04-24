@@ -1,7 +1,6 @@
 <?php
 
 /* WebProfilerBundle:Profiler:toolbar.html.twig */
-
 class __TwigTemplate_e2c6d3554e458726c0ab410039f53b4a0db5c444301a5107b3653befe6b585a7 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,90 +9,14 @@ class __TwigTemplate_e2c6d3554e458726c0ab410039f53b4a0db5c444301a5107b3653befe6b
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(161 => 53, 155 => 50, 149 => 47, 143 => 43, 141 => 42, 138 => 41, 124 => 40, 121 => 39, 115 => 37, 108 => 35, 107 => 34, 106 => 33, 105 => 32, 104 => 31, 102 => 30, 99 => 29, 82 => 28, 78 => 27, 75 => 26, 70 => 24, 65 => 22, 58 => 18, 49 => 12, 45 => 11, 39 => 8, 35 => 7, 27 => 3, 25 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<!-- START of Symfony Web Debug Toolbar -->
-{% if 'normal' != position %}
-    <div id=\"sfMiniToolbar-{{ token }}\" class=\"sf-minitoolbar\" data-no-turbolink>
-        <a href=\"javascript:void(0);\" title=\"Show Symfony toolbar\" tabindex=\"-1\" accesskey=\"D\" onclick=\"
-            var elem = this.parentNode;
-            if (elem.style.display == 'none') {
-                document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'none';
-                document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'none';
-                elem.style.display = 'block';
-            } else {
-                document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'block';
-                document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'block';
-                elem.style.display = 'none'
-            }
-
-            Sfjs.setPreference('toolbar/displayState', 'block');
-        \">
-            {{ include('@WebProfiler/Icon/symfony.svg') }}
-        </a>
-    </div>
-    <style>
-        {{ include('@WebProfiler/Profiler/toolbar.css.twig', { 'position': position, 'floatable': true }) }}
-    </style>
-    <div id=\"sfToolbarClearer-{{ token }}\" style=\"clear: both; height: 36px;\"></div>
-{% endif %}
-
-<div id=\"sfToolbarMainContent-{{ token }}\" class=\"sf-toolbarreset clear-fix\" data-no-turbolink>
-    {% for name, template in templates %}
-        {% if block('toolbar', template) is defined %}
-            {% with {
-                collector: profile.getcollector(name),
-                profiler_url: profiler_url,
-                token: profile.token,
-                name: name,
-                profiler_markup_version: profiler_markup_version
-              } %}
-                {{ block('toolbar', template) }}
-            {% endwith %}
-        {% endif %}
-    {% endfor %}
-
-    {% if 'normal' != position %}
-        <a class=\"hide-button\" title=\"Close Toolbar\" tabindex=\"-1\" accesskey=\"D\" onclick=\"
-            var p = this.parentNode;
-            p.style.display = 'none';
-            (p.previousElementSibling || p.previousSibling).style.display = 'none';
-            document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'block';
-            Sfjs.setPreference('toolbar/displayState', 'none');
-        \">
-            {{ include('@WebProfiler/Icon/close.svg') }}
-        </a>
-    {% endif %}
-</div>
-<!-- END of Symfony Web Debug Toolbar -->
-", "WebProfilerBundle:Profiler:toolbar.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Profiler/toolbar.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_177a48e8a6d88bf26202f6f4ecf067e525589760d2be0a130c5a32ff4202eba2 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_177a48e8a6d88bf26202f6f4ecf067e525589760d2be0a130c5a32ff4202eba2->enter($__internal_177a48e8a6d88bf26202f6f4ecf067e525589760d2be0a130c5a32ff4202eba2_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Profiler:toolbar.html.twig"));
+        $__internal_2388380e054fab179b76c41ee2bb803e8effb56433db08a9ac96d4e5377a61b3 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_2388380e054fab179b76c41ee2bb803e8effb56433db08a9ac96d4e5377a61b3->enter($__internal_2388380e054fab179b76c41ee2bb803e8effb56433db08a9ac96d4e5377a61b3_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "WebProfilerBundle:Profiler:toolbar.html.twig"));
 
         // line 1
         echo "<!-- START of Symfony Web Debug Toolbar -->
@@ -159,10 +82,10 @@ class __TwigTemplate_e2c6d3554e458726c0ab410039f53b4a0db5c444301a5107b3653befe6b
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable((isset($context["templates"]) ? $context["templates"] : $this->getContext($context, "templates")));
         $context['loop'] = array(
-            'parent' => $context['_parent'],
-            'index0' => 0,
-            'index' => 1,
-            'first' => true,
+          'parent' => $context['_parent'],
+          'index0' => 0,
+          'index'  => 1,
+          'first'  => true,
         );
         if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof Countable)) {
             $length = count($context['_seq']);
@@ -174,20 +97,20 @@ class __TwigTemplate_e2c6d3554e458726c0ab410039f53b4a0db5c444301a5107b3653befe6b
         foreach ($context['_seq'] as $context["name"] => $context["template"]) {
             // line 29
             echo "        ";
-            if ($this->loadTemplate($context["template"], "WebProfilerBundle:Profiler:toolbar.html.twig", 29)->hasBlock("toolbar", $context)) {
+            if (            $this->loadTemplate($context["template"], "WebProfilerBundle:Profiler:toolbar.html.twig", 29)->hasBlock("toolbar", $context)) {
                 // line 30
                 echo "            ";
-                $__internal_1c9bc8f1f53bd61c91f5ac1f2a4a62be823621b24ac3a3292d86efec3b48ba5e = array("collector" => $this->getAttribute(                // line 31
-                    (isset($context["profile"]) ? $context["profile"] : $this->getContext($context, "profile")), "getcollector", array(0 => $context["name"]), "method"), "profiler_url" =>                 // line 32
-                    (isset($context["profiler_url"]) ? $context["profiler_url"] : $this->getContext($context, "profiler_url")), "token" => $this->getAttribute(                // line 33
-                    (isset($context["profile"]) ? $context["profile"] : $this->getContext($context, "profile")), "token", array()), "name" =>                 // line 34
-                    $context["name"], "profiler_markup_version" =>                 // line 35
-                    (isset($context["profiler_markup_version"]) ? $context["profiler_markup_version"] : $this->getContext($context, "profiler_markup_version")));
-                if (!is_array($__internal_1c9bc8f1f53bd61c91f5ac1f2a4a62be823621b24ac3a3292d86efec3b48ba5e)) {
+                $__internal_83b68fa4688284da82e6b3b8264fbf1c3690a2d3d21bedf45dbdc9bc5ed053c0 = array("collector" => $this->getAttribute(                // line 31
+(isset($context["profile"]) ? $context["profile"] : $this->getContext($context, "profile")), "getcollector", array(0 => $context["name"]), "method"), "profiler_url" =>                 // line 32
+(isset($context["profiler_url"]) ? $context["profiler_url"] : $this->getContext($context, "profiler_url")), "token" => $this->getAttribute(                // line 33
+(isset($context["profile"]) ? $context["profile"] : $this->getContext($context, "profile")), "token", array()), "name" =>                 // line 34
+$context["name"], "profiler_markup_version" =>                 // line 35
+(isset($context["profiler_markup_version"]) ? $context["profiler_markup_version"] : $this->getContext($context, "profiler_markup_version")));
+                if (!is_array($__internal_83b68fa4688284da82e6b3b8264fbf1c3690a2d3d21bedf45dbdc9bc5ed053c0)) {
                     throw new Twig_Error_Runtime('Variables passed to the "with" tag must be a hash.');
                 }
                 $context['_parent'] = $context;
-                $context = array_merge($context, $__internal_1c9bc8f1f53bd61c91f5ac1f2a4a62be823621b24ac3a3292d86efec3b48ba5e);
+                $context = array_merge($context, $__internal_83b68fa4688284da82e6b3b8264fbf1c3690a2d3d21bedf45dbdc9bc5ed053c0);
                 // line 37
                 echo "                ";
                 $this->loadTemplate($context["template"], "WebProfilerBundle:Profiler:toolbar.html.twig", 37)->displayBlock("toolbar", $context);
@@ -238,13 +161,90 @@ class __TwigTemplate_e2c6d3554e458726c0ab410039f53b4a0db5c444301a5107b3653befe6b
         echo "</div>
 <!-- END of Symfony Web Debug Toolbar -->
 ";
-
-        $__internal_177a48e8a6d88bf26202f6f4ecf067e525589760d2be0a130c5a32ff4202eba2->leave($__internal_177a48e8a6d88bf26202f6f4ecf067e525589760d2be0a130c5a32ff4202eba2_prof);
+        
+        $__internal_2388380e054fab179b76c41ee2bb803e8effb56433db08a9ac96d4e5377a61b3->leave($__internal_2388380e054fab179b76c41ee2bb803e8effb56433db08a9ac96d4e5377a61b3_prof);
 
     }
 
     public function getTemplateName()
     {
         return "WebProfilerBundle:Profiler:toolbar.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  161 => 53,  155 => 50,  149 => 47,  143 => 43,  141 => 42,  138 => 41,  124 => 40,  121 => 39,  115 => 37,  108 => 35,  107 => 34,  106 => 33,  105 => 32,  104 => 31,  102 => 30,  99 => 29,  82 => 28,  78 => 27,  75 => 26,  70 => 24,  65 => 22,  58 => 18,  49 => 12,  45 => 11,  39 => 8,  35 => 7,  27 => 3,  25 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<!-- START of Symfony Web Debug Toolbar -->
+{% if 'normal' != position %}
+    <div id=\"sfMiniToolbar-{{ token }}\" class=\"sf-minitoolbar\" data-no-turbolink>
+        <a href=\"javascript:void(0);\" title=\"Show Symfony toolbar\" tabindex=\"-1\" accesskey=\"D\" onclick=\"
+            var elem = this.parentNode;
+            if (elem.style.display == 'none') {
+                document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'none';
+                document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'none';
+                elem.style.display = 'block';
+            } else {
+                document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'block';
+                document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'block';
+                elem.style.display = 'none'
+            }
+
+            Sfjs.setPreference('toolbar/displayState', 'block');
+        \">
+            {{ include('@WebProfiler/Icon/symfony.svg') }}
+        </a>
+    </div>
+    <style>
+        {{ include('@WebProfiler/Profiler/toolbar.css.twig', { 'position': position, 'floatable': true }) }}
+    </style>
+    <div id=\"sfToolbarClearer-{{ token }}\" style=\"clear: both; height: 36px;\"></div>
+{% endif %}
+
+<div id=\"sfToolbarMainContent-{{ token }}\" class=\"sf-toolbarreset clear-fix\" data-no-turbolink>
+    {% for name, template in templates %}
+        {% if block('toolbar', template) is defined %}
+            {% with {
+                collector: profile.getcollector(name),
+                profiler_url: profiler_url,
+                token: profile.token,
+                name: name,
+                profiler_markup_version: profiler_markup_version
+              } %}
+                {{ block('toolbar', template) }}
+            {% endwith %}
+        {% endif %}
+    {% endfor %}
+
+    {% if 'normal' != position %}
+        <a class=\"hide-button\" title=\"Close Toolbar\" tabindex=\"-1\" accesskey=\"D\" onclick=\"
+            var p = this.parentNode;
+            p.style.display = 'none';
+            (p.previousElementSibling || p.previousSibling).style.display = 'none';
+            document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'block';
+            Sfjs.setPreference('toolbar/displayState', 'none');
+        \">
+            {{ include('@WebProfiler/Icon/close.svg') }}
+        </a>
+    {% endif %}
+</div>
+<!-- END of Symfony Web Debug Toolbar -->
+", "WebProfilerBundle:Profiler:toolbar.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views/Profiler/toolbar.html.twig");
     }
 }

@@ -40,9 +40,9 @@ class DoctrineEntityGenerator extends Generator
 
     /**
      * @param BundleInterface $bundle
-     * @param string $entity
-     * @param string $format
-     * @param array $fields
+     * @param string          $entity
+     * @param string          $format
+     * @param array           $fields
      *
      * @return EntityGeneratorResult
      *
@@ -53,18 +53,18 @@ class DoctrineEntityGenerator extends Generator
         // configure the bundle (needed if the bundle does not contain any Entities yet)
         $config = $this->registry->getManager(null)->getConfiguration();
         $config->setEntityNamespaces(array_merge(
-            array($bundle->getName() => $bundle->getNamespace() . '\\Entity'),
+            array($bundle->getName() => $bundle->getNamespace().'\\Entity'),
             $config->getEntityNamespaces()
         ));
 
-        $entityClass = $this->registry->getAliasNamespace($bundle->getName()) . '\\' . $entity;
-        $entityPath = $bundle->getPath() . '/Entity/' . str_replace('\\', '/', $entity) . '.php';
+        $entityClass = $this->registry->getAliasNamespace($bundle->getName()).'\\'.$entity;
+        $entityPath = $bundle->getPath().'/Entity/'.str_replace('\\', '/', $entity).'.php';
         if (file_exists($entityPath)) {
             throw new \RuntimeException(sprintf('Entity "%s" already exists.', $entityClass));
         }
 
         $class = new ClassMetadataInfo($entityClass, $config->getNamingStrategy());
-        $class->customRepositoryClassName = str_replace('\\Entity\\', '\\Repository\\', $entityClass) . 'Repository';
+        $class->customRepositoryClassName = str_replace('\\Entity\\', '\\Repository\\', $entityClass).'Repository';
         $class->mapField(array('fieldName' => 'id', 'type' => 'integer', 'id' => true));
         $class->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
         foreach ($fields as $field) {
@@ -80,7 +80,7 @@ class DoctrineEntityGenerator extends Generator
         } else {
             $cme = new ClassMetadataExporter();
             $exporter = $cme->getExporter('yml' == $format ? 'yaml' : $format);
-            $mappingPath = $bundle->getPath() . '/Resources/config/doctrine/' . str_replace('\\', '.', $entity) . '.orm.' . $format;
+            $mappingPath = $bundle->getPath().'/Resources/config/doctrine/'.str_replace('\\', '.', $entity).'.orm.'.$format;
 
             if (file_exists($mappingPath)) {
                 throw new \RuntimeException(sprintf('Cannot generate entity when mapping "%s" already exists.', $mappingPath));
@@ -104,11 +104,16 @@ class DoctrineEntityGenerator extends Generator
             self::dump($mappingPath, $mappingCode);
         }
 
-        $path = $bundle->getPath() . str_repeat('/..', substr_count(get_class($bundle), '\\'));
+        $path = $bundle->getPath().str_repeat('/..', substr_count(get_class($bundle), '\\'));
         $this->getRepositoryGenerator()->writeEntityRepositoryClass($class->customRepositoryClassName, $path);
-        $repositoryPath = $path . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class->customRepositoryClassName) . '.php';
+        $repositoryPath = $path.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class->customRepositoryClassName).'.php';
 
         return new EntityGeneratorResult($entityPath, $repositoryPath, $mappingPath);
+    }
+
+    public function isReservedKeyword($keyword)
+    {
+        return $this->registry->getConnection()->getDatabasePlatform()->getReservedKeywordsList()->isKeyword($keyword);
     }
 
     protected function getEntityGenerator()
@@ -129,11 +134,6 @@ class DoctrineEntityGenerator extends Generator
         return new EntityRepositoryGenerator();
     }
 
-    public function isReservedKeyword($keyword)
-    {
-        return $this->registry->getConnection()->getDatabasePlatform()->getReservedKeywordsList()->isKeyword($keyword);
-    }
-
     /**
      * Checks if the given name is a valid PHP variable name.
      *
@@ -145,6 +145,6 @@ class DoctrineEntityGenerator extends Generator
      */
     public function isValidPhpVariableName($name)
     {
-        return (bool)preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name, $matches);
+        return (bool) preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name, $matches);
     }
 }

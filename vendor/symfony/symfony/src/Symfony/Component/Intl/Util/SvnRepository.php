@@ -37,19 +37,9 @@ class SvnRepository
     private $lastCommit;
 
     /**
-     * Reads the SVN repository at the given path.
-     *
-     * @param string $path The path to the repository
-     */
-    public function __construct($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
      * Downloads the ICU data for the given version.
      *
-     * @param string $url The URL to download from
+     * @param string $url       The URL to download from
      * @param string $targetDir The directory in which to store the repository
      *
      * @return static
@@ -66,18 +56,28 @@ class SvnRepository
 
         $filesystem = new Filesystem();
 
-        if (!$filesystem->exists($targetDir . '/.svn')) {
+        if (!$filesystem->exists($targetDir.'/.svn')) {
             $filesystem->remove($targetDir);
             $filesystem->mkdir($targetDir);
 
-            exec('svn checkout ' . $url . ' ' . $targetDir, $output, $result);
+            exec('svn checkout '.$url.' '.$targetDir, $output, $result);
 
             if ($result !== 0) {
-                throw new RuntimeException('The SVN checkout of ' . $url . 'failed.');
+                throw new RuntimeException('The SVN checkout of '.$url.'failed.');
             }
         }
 
         return new static(realpath($targetDir));
+    }
+
+    /**
+     * Reads the SVN repository at the given path.
+     *
+     * @param string $path The path to the repository
+     */
+    public function __construct($path)
+    {
+        $this->path = $path;
     }
 
     /**
@@ -97,31 +97,7 @@ class SvnRepository
      */
     public function getUrl()
     {
-        return (string)$this->getSvnInfo()->entry->url;
-    }
-
-    /**
-     * Returns information about the SVN repository.
-     *
-     * @return \SimpleXMLElement The XML result from the "svn info" command
-     *
-     * @throws RuntimeException If the "svn info" command failed.
-     */
-    private function getSvnInfo()
-    {
-        if (null === $this->svnInfo) {
-            exec('svn info --xml ' . $this->path, $output, $result);
-
-            $svnInfo = simplexml_load_string(implode("\n", $output));
-
-            if ($result !== 0) {
-                throw new RuntimeException('svn info failed');
-            }
-
-            $this->svnInfo = $svnInfo;
-        }
-
-        return $this->svnInfo;
+        return (string) $this->getSvnInfo()->entry->url;
     }
 
     /**
@@ -136,5 +112,29 @@ class SvnRepository
         }
 
         return $this->lastCommit;
+    }
+
+    /**
+     * Returns information about the SVN repository.
+     *
+     * @return \SimpleXMLElement The XML result from the "svn info" command
+     *
+     * @throws RuntimeException If the "svn info" command failed.
+     */
+    private function getSvnInfo()
+    {
+        if (null === $this->svnInfo) {
+            exec('svn info --xml '.$this->path, $output, $result);
+
+            $svnInfo = simplexml_load_string(implode("\n", $output));
+
+            if ($result !== 0) {
+                throw new RuntimeException('svn info failed');
+            }
+
+            $this->svnInfo = $svnInfo;
+        }
+
+        return $this->svnInfo;
     }
 }

@@ -21,11 +21,6 @@ class Route extends BaseRoute
 {
     protected $service;
 
-    public function getService()
-    {
-        return $this->service;
-    }
-
     public function setService($service)
     {
         // avoid a BC notice in case of @Route(service="") with sf ^2.7
@@ -33,6 +28,11 @@ class Route extends BaseRoute
             $this->setPath('');
         }
         $this->service = $service;
+    }
+
+    public function getService()
+    {
+        return $this->service;
     }
 
     /**

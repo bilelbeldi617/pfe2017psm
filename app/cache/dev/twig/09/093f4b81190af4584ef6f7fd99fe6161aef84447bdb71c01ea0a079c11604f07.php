@@ -9,7 +9,55 @@ class __TwigTemplate_2db0ccaacfedfca93354fc4ee250c2655f4951f9c1ecec31255d5f99b55
 
         $this->parent = false;
 
-        $this->blocks = array();
+        $this->blocks = array(
+        );
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_01d23c99d6ef4aef60b31e248639f27f4ada3aab1c4a8f13caa84e97d8f9242d = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_01d23c99d6ef4aef60b31e248639f27f4ada3aab1c4a8f13caa84e97d8f9242d->enter($__internal_01d23c99d6ef4aef60b31e248639f27f4ada3aab1c4a8f13caa84e97d8f9242d_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/toolbar_item.html.twig"));
+
+        // line 1
+        echo "<div class=\"sf-toolbar-block sf-toolbar-block-";
+        echo twig_escape_filter($this->env, (isset($context["name"]) ? $context["name"] : $this->getContext($context, "name")), "html", null, true);
+        echo " sf-toolbar-status-";
+        echo twig_escape_filter($this->env, ((array_key_exists("status", $context)) ? (_twig_default_filter((isset($context["status"]) ? $context["status"] : $this->getContext($context, "status")), "normal")) : ("normal")), "html", null, true);
+        echo " ";
+        echo twig_escape_filter($this->env, ((array_key_exists("additional_classes", $context)) ? (_twig_default_filter((isset($context["additional_classes"]) ? $context["additional_classes"] : $this->getContext($context, "additional_classes")), "")) : ("")), "html", null, true);
+        echo "\" ";
+        echo ((array_key_exists("block_attrs", $context)) ? (_twig_default_filter((isset($context["block_attrs"]) ? $context["block_attrs"] : $this->getContext($context, "block_attrs")), "")) : (""));
+        echo ">
+    ";
+        // line 2
+        if (( !array_key_exists("link", $context) || (isset($context["link"]) ? $context["link"] : $this->getContext($context, "link")))) {
+            echo "<a href=\"";
+            echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("_profiler", array("token" => (isset($context["token"]) ? $context["token"] : $this->getContext($context, "token")), "panel" => (isset($context["name"]) ? $context["name"] : $this->getContext($context, "name")))), "html", null, true);
+            echo "\">";
+        }
+        // line 3
+        echo "        <div class=\"sf-toolbar-icon\">";
+        echo twig_escape_filter($this->env, ((array_key_exists("icon", $context)) ? (_twig_default_filter((isset($context["icon"]) ? $context["icon"] : $this->getContext($context, "icon")), "")) : ("")), "html", null, true);
+        echo "</div>
+    ";
+        // line 4
+        if (( !array_key_exists("link", $context) || (isset($context["link"]) ? $context["link"] : $this->getContext($context, "link")))) {
+            echo "</a>";
+        }
+        // line 5
+        echo "        <div class=\"sf-toolbar-info\">";
+        echo twig_escape_filter($this->env, ((array_key_exists("text", $context)) ? (_twig_default_filter((isset($context["text"]) ? $context["text"] : $this->getContext($context, "text")), "")) : ("")), "html", null, true);
+        echo "</div>
+</div>
+";
+        
+        $__internal_01d23c99d6ef4aef60b31e248639f27f4ada3aab1c4a8f13caa84e97d8f9242d->leave($__internal_01d23c99d6ef4aef60b31e248639f27f4ada3aab1c4a8f13caa84e97d8f9242d_prof);
+
+    }
+
+    public function getTemplateName()
+    {
+        return "@WebProfiler/Profiler/toolbar_item.html.twig";
     }
 
     public function isTraitable()
@@ -19,13 +67,13 @@ class __TwigTemplate_2db0ccaacfedfca93354fc4ee250c2655f4951f9c1ecec31255d5f99b55
 
     public function getDebugInfo()
     {
-        return array(48 => 5, 44 => 4, 39 => 3, 33 => 2, 22 => 1,);
+        return array (  48 => 5,  44 => 4,  39 => 3,  33 => 2,  22 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -39,52 +87,5 @@ class __TwigTemplate_2db0ccaacfedfca93354fc4ee250c2655f4951f9c1ecec31255d5f99b55
         <div class=\"sf-toolbar-info\">{{ text|default('') }}</div>
 </div>
 ", "@WebProfiler/Profiler/toolbar_item.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle\\Resources\\views\\Profiler\\toolbar_item.html.twig");
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_23024881c9b735654cea4f70cac20f114d083a4075815278d1453ecf53d1b92b = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_23024881c9b735654cea4f70cac20f114d083a4075815278d1453ecf53d1b92b->enter($__internal_23024881c9b735654cea4f70cac20f114d083a4075815278d1453ecf53d1b92b_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@WebProfiler/Profiler/toolbar_item.html.twig"));
-
-        // line 1
-        echo "<div class=\"sf-toolbar-block sf-toolbar-block-";
-        echo twig_escape_filter($this->env, (isset($context["name"]) ? $context["name"] : $this->getContext($context, "name")), "html", null, true);
-        echo " sf-toolbar-status-";
-        echo twig_escape_filter($this->env, ((array_key_exists("status", $context)) ? (_twig_default_filter((isset($context["status"]) ? $context["status"] : $this->getContext($context, "status")), "normal")) : ("normal")), "html", null, true);
-        echo " ";
-        echo twig_escape_filter($this->env, ((array_key_exists("additional_classes", $context)) ? (_twig_default_filter((isset($context["additional_classes"]) ? $context["additional_classes"] : $this->getContext($context, "additional_classes")), "")) : ("")), "html", null, true);
-        echo "\" ";
-        echo((array_key_exists("block_attrs", $context)) ? (_twig_default_filter((isset($context["block_attrs"]) ? $context["block_attrs"] : $this->getContext($context, "block_attrs")), "")) : (""));
-        echo ">
-    ";
-        // line 2
-        if ((!array_key_exists("link", $context) || (isset($context["link"]) ? $context["link"] : $this->getContext($context, "link")))) {
-            echo "<a href=\"";
-            echo twig_escape_filter($this->env, $this->env->getExtension('Symfony\Bridge\Twig\Extension\RoutingExtension')->getPath("_profiler", array("token" => (isset($context["token"]) ? $context["token"] : $this->getContext($context, "token")), "panel" => (isset($context["name"]) ? $context["name"] : $this->getContext($context, "name")))), "html", null, true);
-            echo "\">";
-        }
-        // line 3
-        echo "        <div class=\"sf-toolbar-icon\">";
-        echo twig_escape_filter($this->env, ((array_key_exists("icon", $context)) ? (_twig_default_filter((isset($context["icon"]) ? $context["icon"] : $this->getContext($context, "icon")), "")) : ("")), "html", null, true);
-        echo "</div>
-    ";
-        // line 4
-        if ((!array_key_exists("link", $context) || (isset($context["link"]) ? $context["link"] : $this->getContext($context, "link")))) {
-            echo "</a>";
-        }
-        // line 5
-        echo "        <div class=\"sf-toolbar-info\">";
-        echo twig_escape_filter($this->env, ((array_key_exists("text", $context)) ? (_twig_default_filter((isset($context["text"]) ? $context["text"] : $this->getContext($context, "text")), "")) : ("")), "html", null, true);
-        echo "</div>
-</div>
-";
-
-        $__internal_23024881c9b735654cea4f70cac20f114d083a4075815278d1453ecf53d1b92b->leave($__internal_23024881c9b735654cea4f70cac20f114d083a4075815278d1453ecf53d1b92b_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@WebProfiler/Profiler/toolbar_item.html.twig";
     }
 }

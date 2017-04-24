@@ -24,7 +24,8 @@ class UnusedTagsPassTest extends TestCase
         $formatter
             ->expects($this->at(0))
             ->method('format')
-            ->with($pass, 'Tag "kenrel.event_subscriber" was defined on service(s) "foo", "bar", but was never used. Did you mean "kernel.event_subscriber"?');
+            ->with($pass, 'Tag "kenrel.event_subscriber" was defined on service(s) "foo", "bar", but was never used. Did you mean "kernel.event_subscriber"?')
+        ;
 
         $compiler = $this->getMockBuilder('Symfony\Component\DependencyInjection\Compiler\Compiler')->getMock();
         $compiler->expects($this->once())->method('getLoggingFormatter')->will($this->returnValue($formatter));

@@ -30,14 +30,6 @@ class NewEmailCommand extends ContainerAwareCommand
     /**
      * {@inheritdoc}
      */
-    public function isEnabled()
-    {
-        return $this->getContainer()->has('mailer');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function configure()
     {
         $this
@@ -105,6 +97,26 @@ EOF
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
+        foreach ($input->getOptions() as $option => $value) {
+            if ($value === null) {
+                $input->setOption($option, $this->io->ask(sprintf('%s', ucfirst($option))));
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabled()
+    {
+        return $this->getContainer()->has('mailer');
+    }
+
+    /**
      * Creates new message from input options.
      *
      * @param InputInterface $input An InputInterface instance
@@ -123,17 +135,5 @@ EOF
         $message->setTo($input->getOption('to'));
 
         return $message;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        foreach ($input->getOptions() as $option => $value) {
-            if ($value === null) {
-                $input->setOption($option, $this->io->ask(sprintf('%s', ucfirst($option))));
-            }
-        }
     }
 }

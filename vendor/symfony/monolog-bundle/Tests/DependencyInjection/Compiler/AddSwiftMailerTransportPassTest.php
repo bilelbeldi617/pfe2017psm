@@ -25,6 +25,26 @@ class AddSwiftMailerTransportPassTest extends \PHPUnit_Framework_TestCase
 
     private $definition;
 
+    protected function setUp()
+    {
+        $this->compilerPass = new AddSwiftMailerTransportPass();
+        $this->definition = $this->getMockBuilder('\Symfony\Component\DependencyInjection\Definition')->getMock();
+        $this->definition->expects($this->any())
+            ->method('getArgument')
+            ->with(0)
+            ->will($this->returnValue(new Reference('swiftmailer')));
+        $this->container = $this->getMockBuilder('\Symfony\Component\DependencyInjection\ContainerBuilder')
+            ->setMethods(array('getParameter', 'getDefinition', 'hasDefinition', 'addMethodCall'))->getMock();
+        $this->container->expects($this->any())
+            ->method('getParameter')
+            ->with('monolog.swift_mailer.handlers')
+            ->will($this->returnValue(array('foo')));
+        $this->container->expects($this->any())
+            ->method('getDefinition')
+            ->with('foo')
+            ->will($this->returnValue($this->definition));
+    }
+
     public function testWithRealTransport()
     {
         $this->container
@@ -63,25 +83,5 @@ class AddSwiftMailerTransportPassTest extends \PHPUnit_Framework_TestCase
             );
 
         $this->compilerPass->process($this->container);
-    }
-
-    protected function setUp()
-    {
-        $this->compilerPass = new AddSwiftMailerTransportPass();
-        $this->definition = $this->getMockBuilder('\Symfony\Component\DependencyInjection\Definition')->getMock();
-        $this->definition->expects($this->any())
-            ->method('getArgument')
-            ->with(0)
-            ->will($this->returnValue(new Reference('swiftmailer')));
-        $this->container = $this->getMockBuilder('\Symfony\Component\DependencyInjection\ContainerBuilder')
-            ->setMethods(array('getParameter', 'getDefinition', 'hasDefinition', 'addMethodCall'))->getMock();
-        $this->container->expects($this->any())
-            ->method('getParameter')
-            ->with('monolog.swift_mailer.handlers')
-            ->will($this->returnValue(array('foo')));
-        $this->container->expects($this->any())
-            ->method('getDefinition')
-            ->with('foo')
-            ->will($this->returnValue($this->definition));
     }
 }

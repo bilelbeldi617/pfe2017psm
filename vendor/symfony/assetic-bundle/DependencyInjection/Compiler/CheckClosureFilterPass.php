@@ -25,8 +25,7 @@ class CheckClosureFilterPass implements CompilerPassInterface
     {
         if ($container->hasDefinition('assetic.filter.closure.jar')
             && $container->hasParameter('assetic.filter.closure.jar')
-            && $container->getParameterBag()->resolveValue($container->getParameter('assetic.filter.closure.jar'))
-        ) {
+            && $container->getParameterBag()->resolveValue($container->getParameter('assetic.filter.closure.jar'))) {
             $container->removeDefinition('assetic.filter.closure.api');
             $container->setAlias('assetic.filter.closure', 'assetic.filter.closure.jar');
         } elseif ($container->hasDefinition('assetic.filter.closure.api')) {

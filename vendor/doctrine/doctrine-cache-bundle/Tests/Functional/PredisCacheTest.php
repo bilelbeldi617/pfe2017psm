@@ -36,8 +36,8 @@ class PredisCacheTest extends BaseCacheTest
     {
         parent::setUp();
 
-        if (!class_exists('Doctrine\Common\Cache\PredisCache')) {
-            $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of PredisCache available in doctrine/cache since 1.4');
+        if ( ! class_exists('Doctrine\Common\Cache\PredisCache')) {
+            $this->markTestSkipped('The ' . __CLASS__ .' requires the use of PredisCache available in doctrine/cache since 1.4');
         }
     }
 
@@ -47,7 +47,7 @@ class PredisCacheTest extends BaseCacheTest
     protected function createCacheDriver()
     {
         $container = $this->compileContainer('predis');
-        $cache = $container->get('doctrine_cache.providers.my_predis_cache');
+        $cache     = $container->get('doctrine_cache.providers.my_predis_cache');
 
         return $cache;
     }

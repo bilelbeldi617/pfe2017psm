@@ -21,7 +21,7 @@ interface RegionBundleInterface extends ResourceBundleInterface
     /**
      * Returns the name of a country.
      *
-     * @param string $country A country code (e.g. "US")
+     * @param string $country       A country code (e.g. "US")
      * @param string $displayLocale Optional. The locale to return the name in
      *                              Defaults to {@link \Locale::getDefault()}.
      *

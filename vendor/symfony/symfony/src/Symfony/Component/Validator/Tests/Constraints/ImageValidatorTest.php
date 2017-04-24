@@ -33,6 +33,26 @@ class ImageValidatorTest extends AbstractConstraintValidatorTest
     protected $imagePortrait;
     protected $image4By3;
 
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new ImageValidator();
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->image = __DIR__.'/Fixtures/test.gif';
+        $this->imageLandscape = __DIR__.'/Fixtures/test_landscape.gif';
+        $this->imagePortrait = __DIR__.'/Fixtures/test_portrait.gif';
+        $this->image4By3 = __DIR__.'/Fixtures/test_4by3.gif';
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Image());
@@ -308,25 +328,5 @@ class ImageValidatorTest extends AbstractConstraintValidatorTest
             ->setParameter('{{ height }}', 2)
             ->setCode(Image::PORTRAIT_NOT_ALLOWED_ERROR)
             ->assertRaised();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new ImageValidator();
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->image = __DIR__ . '/Fixtures/test.gif';
-        $this->imageLandscape = __DIR__ . '/Fixtures/test_landscape.gif';
-        $this->imagePortrait = __DIR__ . '/Fixtures/test_portrait.gif';
-        $this->image4By3 = __DIR__ . '/Fixtures/test_4by3.gif';
     }
 }

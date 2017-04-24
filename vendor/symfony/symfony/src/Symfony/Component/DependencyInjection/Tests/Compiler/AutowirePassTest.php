@@ -16,22 +16,6 @@ use Symfony\Component\DependencyInjection\Compiler\AutowirePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-interface DInterface
-{
-}
-
-interface EInterface extends DInterface
-{
-}
-
-interface IInterface
-{
-}
-
-interface CollisionInterface
-{
-}
-
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -41,81 +25,81 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('foo', __NAMESPACE__ . '\Foo');
-        $barDefinition = $container->register('bar', __NAMESPACE__ . '\Bar');
+        $container->register('foo', __NAMESPACE__.'\Foo');
+        $barDefinition = $container->register('bar', __NAMESPACE__.'\Bar');
         $barDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(1, $container->getDefinition('bar')->getArguments());
-        $this->assertEquals('foo', (string)$container->getDefinition('bar')->getArgument(0));
+        $this->assertEquals('foo', (string) $container->getDefinition('bar')->getArgument(0));
     }
 
     public function testProcessAutowireParent()
     {
         $container = new ContainerBuilder();
 
-        $container->register('b', __NAMESPACE__ . '\B');
-        $cDefinition = $container->register('c', __NAMESPACE__ . '\C');
+        $container->register('b', __NAMESPACE__.'\B');
+        $cDefinition = $container->register('c', __NAMESPACE__.'\C');
         $cDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(1, $container->getDefinition('c')->getArguments());
-        $this->assertEquals('b', (string)$container->getDefinition('c')->getArgument(0));
+        $this->assertEquals('b', (string) $container->getDefinition('c')->getArgument(0));
     }
 
     public function testProcessAutowireInterface()
     {
         $container = new ContainerBuilder();
 
-        $container->register('f', __NAMESPACE__ . '\F');
-        $gDefinition = $container->register('g', __NAMESPACE__ . '\G');
+        $container->register('f', __NAMESPACE__.'\F');
+        $gDefinition = $container->register('g', __NAMESPACE__.'\G');
         $gDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(3, $container->getDefinition('g')->getArguments());
-        $this->assertEquals('f', (string)$container->getDefinition('g')->getArgument(0));
-        $this->assertEquals('f', (string)$container->getDefinition('g')->getArgument(1));
-        $this->assertEquals('f', (string)$container->getDefinition('g')->getArgument(2));
+        $this->assertEquals('f', (string) $container->getDefinition('g')->getArgument(0));
+        $this->assertEquals('f', (string) $container->getDefinition('g')->getArgument(1));
+        $this->assertEquals('f', (string) $container->getDefinition('g')->getArgument(2));
     }
 
     public function testCompleteExistingDefinition()
     {
         $container = new ContainerBuilder();
 
-        $container->register('b', __NAMESPACE__ . '\B');
-        $container->register('f', __NAMESPACE__ . '\F');
-        $hDefinition = $container->register('h', __NAMESPACE__ . '\H')->addArgument(new Reference('b'));
+        $container->register('b', __NAMESPACE__.'\B');
+        $container->register('f', __NAMESPACE__.'\F');
+        $hDefinition = $container->register('h', __NAMESPACE__.'\H')->addArgument(new Reference('b'));
         $hDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(2, $container->getDefinition('h')->getArguments());
-        $this->assertEquals('b', (string)$container->getDefinition('h')->getArgument(0));
-        $this->assertEquals('f', (string)$container->getDefinition('h')->getArgument(1));
+        $this->assertEquals('b', (string) $container->getDefinition('h')->getArgument(0));
+        $this->assertEquals('f', (string) $container->getDefinition('h')->getArgument(1));
     }
 
     public function testCompleteExistingDefinitionWithNotDefinedArguments()
     {
         $container = new ContainerBuilder();
 
-        $container->register('b', __NAMESPACE__ . '\B');
-        $container->register('f', __NAMESPACE__ . '\F');
-        $hDefinition = $container->register('h', __NAMESPACE__ . '\H')->addArgument('')->addArgument('');
+        $container->register('b', __NAMESPACE__.'\B');
+        $container->register('f', __NAMESPACE__.'\F');
+        $hDefinition = $container->register('h', __NAMESPACE__.'\H')->addArgument('')->addArgument('');
         $hDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(2, $container->getDefinition('h')->getArguments());
-        $this->assertEquals('b', (string)$container->getDefinition('h')->getArgument(0));
-        $this->assertEquals('f', (string)$container->getDefinition('h')->getArgument(1));
+        $this->assertEquals('b', (string) $container->getDefinition('h')->getArgument(0));
+        $this->assertEquals('f', (string) $container->getDefinition('h')->getArgument(1));
     }
 
     /**
@@ -126,10 +110,10 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('c1', __NAMESPACE__ . '\CollisionA');
-        $container->register('c2', __NAMESPACE__ . '\CollisionB');
-        $container->register('c3', __NAMESPACE__ . '\CollisionB');
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\CannotBeAutowired');
+        $container->register('c1', __NAMESPACE__.'\CollisionA');
+        $container->register('c2', __NAMESPACE__.'\CollisionB');
+        $container->register('c3', __NAMESPACE__.'\CollisionB');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\CannotBeAutowired');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -144,9 +128,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a1', __NAMESPACE__ . '\Foo');
-        $container->register('a2', __NAMESPACE__ . '\Foo');
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\NotGuessableArgument');
+        $container->register('a1', __NAMESPACE__.'\Foo');
+        $container->register('a2', __NAMESPACE__.'\Foo');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\NotGuessableArgument');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -161,9 +145,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a1', __NAMESPACE__ . '\B');
-        $container->register('a2', __NAMESPACE__ . '\B');
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\NotGuessableArgumentForSubclass');
+        $container->register('a1', __NAMESPACE__.'\B');
+        $container->register('a2', __NAMESPACE__.'\B');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\NotGuessableArgumentForSubclass');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -178,7 +162,7 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\CannotBeAutowired');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\CannotBeAutowired');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -189,40 +173,40 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a1', __NAMESPACE__ . '\Foo');
-        $container->register('a2', __NAMESPACE__ . '\Foo');
-        $container->register('a3', __NAMESPACE__ . '\Foo')->addAutowiringType(__NAMESPACE__ . '\Foo');
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\NotGuessableArgument');
+        $container->register('a1', __NAMESPACE__.'\Foo');
+        $container->register('a2', __NAMESPACE__.'\Foo');
+        $container->register('a3', __NAMESPACE__.'\Foo')->addAutowiringType(__NAMESPACE__.'\Foo');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\NotGuessableArgument');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(1, $container->getDefinition('a')->getArguments());
-        $this->assertEquals('a3', (string)$container->getDefinition('a')->getArgument(0));
+        $this->assertEquals('a3', (string) $container->getDefinition('a')->getArgument(0));
     }
 
     public function testWithTypeSet()
     {
         $container = new ContainerBuilder();
 
-        $container->register('c1', __NAMESPACE__ . '\CollisionA');
-        $container->register('c2', __NAMESPACE__ . '\CollisionB')->addAutowiringType(__NAMESPACE__ . '\CollisionInterface');
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\CannotBeAutowired');
+        $container->register('c1', __NAMESPACE__.'\CollisionA');
+        $container->register('c2', __NAMESPACE__.'\CollisionB')->addAutowiringType(__NAMESPACE__.'\CollisionInterface');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\CannotBeAutowired');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $this->assertCount(1, $container->getDefinition('a')->getArguments());
-        $this->assertEquals('c2', (string)$container->getDefinition('a')->getArgument(0));
+        $this->assertEquals('c2', (string) $container->getDefinition('a')->getArgument(0));
     }
 
     public function testCreateDefinition()
     {
         $container = new ContainerBuilder();
 
-        $coopTilleulsDefinition = $container->register('coop_tilleuls', __NAMESPACE__ . '\LesTilleuls');
+        $coopTilleulsDefinition = $container->register('coop_tilleuls', __NAMESPACE__.'\LesTilleuls');
         $coopTilleulsDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -232,22 +216,22 @@ class AutowirePassTest extends TestCase
         $this->assertEquals('autowired.symfony\component\dependencyinjection\tests\compiler\dunglas', $container->getDefinition('coop_tilleuls')->getArgument(0));
 
         $dunglasDefinition = $container->getDefinition('autowired.Symfony\Component\DependencyInjection\Tests\Compiler\Dunglas');
-        $this->assertEquals(__NAMESPACE__ . '\Dunglas', $dunglasDefinition->getClass());
+        $this->assertEquals(__NAMESPACE__.'\Dunglas', $dunglasDefinition->getClass());
         $this->assertFalse($dunglasDefinition->isPublic());
         $this->assertCount(1, $dunglasDefinition->getArguments());
         $this->assertEquals('autowired.symfony\component\dependencyinjection\tests\compiler\lille', $dunglasDefinition->getArgument(0));
 
         $lilleDefinition = $container->getDefinition('autowired.Symfony\Component\DependencyInjection\Tests\Compiler\Lille');
-        $this->assertEquals(__NAMESPACE__ . '\Lille', $lilleDefinition->getClass());
+        $this->assertEquals(__NAMESPACE__.'\Lille', $lilleDefinition->getClass());
     }
 
     public function testResolveParameter()
     {
         $container = new ContainerBuilder();
 
-        $container->setParameter('class_name', __NAMESPACE__ . '\Foo');
+        $container->setParameter('class_name', __NAMESPACE__.'\Foo');
         $container->register('foo', '%class_name%');
-        $barDefinition = $container->register('bar', __NAMESPACE__ . '\Bar');
+        $barDefinition = $container->register('bar', __NAMESPACE__.'\Bar');
         $barDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -260,9 +244,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('foo', __NAMESPACE__ . '\Foo');
-        $optDefinition = $container->register('opt', __NAMESPACE__ . '\OptionalParameter');
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('foo', __NAMESPACE__.'\Foo');
+        $optDefinition = $container->register('opt', __NAMESPACE__.'\OptionalParameter');
         $optDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -278,8 +262,8 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('foo', __NAMESPACE__ . '\Foo');
-        $container->register('bar', __NAMESPACE__ . '\Bar');
+        $container->register('foo', __NAMESPACE__.'\Foo');
+        $container->register('bar', __NAMESPACE__.'\Bar');
 
         $pass = new AutowirePass();
         $pass->process($container);
@@ -295,7 +279,7 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\BadTypeHintedArgument');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\BadTypeHintedArgument');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -310,7 +294,7 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $aDefinition = $container->register('a', __NAMESPACE__ . '\BadParentTypeHintedArgument');
+        $aDefinition = $container->register('a', __NAMESPACE__.'\BadParentTypeHintedArgument');
         $aDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -321,25 +305,25 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('abstract_foo', __NAMESPACE__ . '\Foo')->setAbstract(true);
-        $container->register('foo', __NAMESPACE__ . '\Foo');
-        $container->register('bar', __NAMESPACE__ . '\Bar')->setAutowired(true);
+        $container->register('abstract_foo', __NAMESPACE__.'\Foo')->setAbstract(true);
+        $container->register('foo', __NAMESPACE__.'\Foo');
+        $container->register('bar', __NAMESPACE__.'\Bar')->setAutowired(true);
 
         $pass = new AutowirePass();
         $pass->process($container);
 
         $arguments = $container->getDefinition('bar')->getArguments();
-        $this->assertSame('foo', (string)$arguments[0]);
+        $this->assertSame('foo', (string) $arguments[0]);
     }
 
     public function testSomeSpecificArgumentsAreSet()
     {
         $container = new ContainerBuilder();
 
-        $container->register('foo', __NAMESPACE__ . '\Foo');
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('dunglas', __NAMESPACE__ . '\Dunglas');
-        $container->register('multiple', __NAMESPACE__ . '\MultipleArguments')
+        $container->register('foo', __NAMESPACE__.'\Foo');
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('dunglas', __NAMESPACE__.'\Dunglas');
+        $container->register('multiple', __NAMESPACE__.'\MultipleArguments')
             ->setAutowired(true)
             // set the 2nd (index 1) argument only: autowire the first and third
             // args are: A, Foo, Dunglas
@@ -369,9 +353,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('dunglas', __NAMESPACE__ . '\Dunglas');
-        $container->register('arg_no_type_hint', __NAMESPACE__ . '\MultipleArguments')
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('dunglas', __NAMESPACE__.'\Dunglas');
+        $container->register('arg_no_type_hint', __NAMESPACE__.'\MultipleArguments')
             ->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -388,9 +372,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('lille', __NAMESPACE__ . '\Lille');
-        $container->register('not_really_optional_scalar', __NAMESPACE__ . '\MultipleArgumentsOptionalScalarNotReallyOptional')
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('lille', __NAMESPACE__.'\Lille');
+        $container->register('not_really_optional_scalar', __NAMESPACE__.'\MultipleArgumentsOptionalScalarNotReallyOptional')
             ->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -401,9 +385,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('lille', __NAMESPACE__ . '\Lille');
-        $container->register('with_optional_scalar', __NAMESPACE__ . '\MultipleArgumentsOptionalScalar')
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('lille', __NAMESPACE__.'\Lille');
+        $container->register('with_optional_scalar', __NAMESPACE__.'\MultipleArgumentsOptionalScalar')
             ->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -425,9 +409,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('lille', __NAMESPACE__ . '\Lille');
-        $container->register('with_optional_scalar_last', __NAMESPACE__ . '\MultipleArgumentsOptionalScalarLast')
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('lille', __NAMESPACE__.'\Lille');
+        $container->register('with_optional_scalar_last', __NAMESPACE__.'\MultipleArgumentsOptionalScalarLast')
             ->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -451,9 +435,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('class_not_exist', __NAMESPACE__ . '\OptionalServiceClass');
+        $container->register('class_not_exist', __NAMESPACE__.'\OptionalServiceClass');
 
-        $barDefinition = $container->register('bar', __NAMESPACE__ . '\Bar');
+        $barDefinition = $container->register('bar', __NAMESPACE__.'\Bar');
         $barDefinition->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -466,9 +450,9 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\A');
-        $container->register('lille', __NAMESPACE__ . '\Lille');
-        $container->register('foo', __NAMESPACE__ . '\MultipleArgumentsOptionalScalar')
+        $container->register('a', __NAMESPACE__.'\A');
+        $container->register('lille', __NAMESPACE__.'\Lille');
+        $container->register('foo', __NAMESPACE__.'\MultipleArgumentsOptionalScalar')
             ->setAutowired(true)
             ->setArguments(array('', ''));
 
@@ -488,7 +472,7 @@ class AutowirePassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->register('a', __NAMESPACE__ . '\\' . $class)
+        $container->register('a', __NAMESPACE__.'\\'.$class)
             ->setAutowired(true);
 
         $pass = new AutowirePass();
@@ -530,6 +514,18 @@ class C
     }
 }
 
+interface DInterface
+{
+}
+
+interface EInterface extends DInterface
+{
+}
+
+interface IInterface
+{
+}
+
 class I implements IInterface
 {
 }
@@ -550,6 +546,10 @@ class H
     public function __construct(B $b, DInterface $d)
     {
     }
+}
+
+interface CollisionInterface
+{
 }
 
 class CollisionA implements CollisionInterface
@@ -612,28 +612,24 @@ class BadTypeHintedArgument
     {
     }
 }
-
 class BadParentTypeHintedArgument
 {
     public function __construct(Dunglas $k, OptionalServiceClass $r)
     {
     }
 }
-
 class NotGuessableArgument
 {
     public function __construct(Foo $k)
     {
     }
 }
-
 class NotGuessableArgumentForSubclass
 {
     public function __construct(A $k)
     {
     }
 }
-
 class MultipleArguments
 {
     public function __construct(A $k, $foo, Dunglas $dunglas)
@@ -647,14 +643,12 @@ class MultipleArgumentsOptionalScalar
     {
     }
 }
-
 class MultipleArgumentsOptionalScalarLast
 {
     public function __construct(A $a, Lille $lille, $foo = 'some_val')
     {
     }
 }
-
 class MultipleArgumentsOptionalScalarNotReallyOptional
 {
     public function __construct(A $a, $foo = 'default_val', Lille $lille)

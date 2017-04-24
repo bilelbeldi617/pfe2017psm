@@ -16,10 +16,10 @@
             <directory>./tests/Metadata/</directory>
         </testsuite>
     </testsuites>
-
+    
     <groups>
         <exclude>
             <group>performance</group>
         </exclude>
-    </groups>
+    </groups>    
 </phpunit>

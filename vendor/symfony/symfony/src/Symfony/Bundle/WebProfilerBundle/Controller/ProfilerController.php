@@ -37,11 +37,11 @@ class ProfilerController
     /**
      * Constructor.
      *
-     * @param UrlGeneratorInterface $generator The URL Generator
-     * @param Profiler $profiler The profiler
-     * @param \Twig_Environment $twig The twig environment
-     * @param array $templates The templates
-     * @param string $toolbarPosition The toolbar position (top, bottom, normal, or null -- use the configuration)
+     * @param UrlGeneratorInterface $generator       The URL Generator
+     * @param Profiler              $profiler        The profiler
+     * @param \Twig_Environment     $twig            The twig environment
+     * @param array                 $templates       The templates
+     * @param string                $toolbarPosition The toolbar position (top, bottom, normal, or null -- use the configuration)
      */
     public function __construct(UrlGeneratorInterface $generator, Profiler $profiler = null, \Twig_Environment $twig, array $templates, $toolbarPosition = 'normal')
     {
@@ -74,7 +74,7 @@ class ProfilerController
      * Renders a profiler panel for the given token.
      *
      * @param Request $request The current HTTP request
-     * @param string $token The profiler token
+     * @param string  $token   The profiler token
      *
      * @return Response A Response instance
      *
@@ -117,20 +117,6 @@ class ProfilerController
     }
 
     /**
-     * Gets the Template Manager.
-     *
-     * @return TemplateManager The Template Manager
-     */
-    protected function getTemplateManager()
-    {
-        if (null === $this->templateManager) {
-            $this->templateManager = new TemplateManager($this->profiler, $this->twig, $this->templates);
-        }
-
-        return $this->templateManager;
-    }
-
-    /**
      * Purges all tokens.
      *
      * @return Response A Response instance
@@ -139,7 +125,7 @@ class ProfilerController
      */
     public function purgeAction()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         if (null === $this->profiler) {
             throw new NotFoundHttpException('The profiler must be enabled.');
@@ -155,7 +141,7 @@ class ProfilerController
      * Displays information page.
      *
      * @param Request $request The current HTTP Request
-     * @param string $about The about message
+     * @param string  $about   The about message
      *
      * @return Response A Response instance
      *
@@ -179,7 +165,7 @@ class ProfilerController
      * Renders the Web Debug Toolbar.
      *
      * @param Request $request The current HTTP Request
-     * @param string $token The profiler token
+     * @param string  $token   The profiler token
      *
      * @return Response A Response instance
      *
@@ -286,7 +272,7 @@ class ProfilerController
      * Renders the search results.
      *
      * @param Request $request The current HTTP Request
-     * @param string $token The token
+     * @param string  $token   The token
      *
      * @return Response A Response instance
      *
@@ -396,5 +382,19 @@ class ProfilerController
         $phpinfo = ob_get_clean();
 
         return new Response($phpinfo, 200, array('Content-Type' => 'text/html'));
+    }
+
+    /**
+     * Gets the Template Manager.
+     *
+     * @return TemplateManager The Template Manager
+     */
+    protected function getTemplateManager()
+    {
+        if (null === $this->templateManager) {
+            $this->templateManager = new TemplateManager($this->profiler, $this->twig, $this->templates);
+        }
+
+        return $this->templateManager;
     }
 }

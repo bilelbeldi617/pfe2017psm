@@ -34,7 +34,7 @@ class ConfigDataCollector extends DataCollector
     /**
      * Constructor.
      *
-     * @param string $name The name of the application using the web profiler
+     * @param string $name    The name of the application using the web profiler
      * @param string $version The version of the application using the web profiler
      */
     public function __construct($name = null, $version = null)
@@ -85,30 +85,6 @@ class ConfigDataCollector extends DataCollector
 
             $this->data['symfony_state'] = $this->determineSymfonyState();
         }
-    }
-
-    /**
-     * Tries to retrieve information about the current Symfony version.
-     *
-     * @return string One of: dev, stable, eom, eol
-     */
-    private function determineSymfonyState()
-    {
-        $now = new \DateTime();
-        $eom = \DateTime::createFromFormat('m/Y', Kernel::END_OF_MAINTENANCE)->modify('last day of this month');
-        $eol = \DateTime::createFromFormat('m/Y', Kernel::END_OF_LIFE)->modify('last day of this month');
-
-        if ($now > $eol) {
-            $versionState = 'eol';
-        } elseif ($now > $eom) {
-            $versionState = 'eom';
-        } elseif ('' !== Kernel::EXTRA_VERSION) {
-            $versionState = 'dev';
-        } else {
-            $versionState = 'stable';
-        }
-
-        return $versionState;
     }
 
     public function getApplicationName()
@@ -207,13 +183,13 @@ class ConfigDataCollector extends DataCollector
     }
 
     /**
-     * Returns true if any accelerator is enabled.
+     * Returns true if EAccelerator is enabled.
      *
-     * @return bool true if any accelerator is enabled, false otherwise
+     * @return bool true if EAccelerator is enabled, false otherwise
      */
-    public function hasAccelerator()
+    public function hasEAccelerator()
     {
-        return $this->hasApc() || $this->hasZendOpcache() || $this->hasEAccelerator() || $this->hasXCache() || $this->hasWinCache();
+        return $this->data['eaccel_enabled'];
     }
 
     /**
@@ -237,16 +213,6 @@ class ConfigDataCollector extends DataCollector
     }
 
     /**
-     * Returns true if EAccelerator is enabled.
-     *
-     * @return bool true if EAccelerator is enabled, false otherwise
-     */
-    public function hasEAccelerator()
-    {
-        return $this->data['eaccel_enabled'];
-    }
-
-    /**
      * Returns true if XCache is enabled.
      *
      * @return bool true if XCache is enabled, false otherwise
@@ -264,6 +230,16 @@ class ConfigDataCollector extends DataCollector
     public function hasWinCache()
     {
         return $this->data['wincache_enabled'];
+    }
+
+    /**
+     * Returns true if any accelerator is enabled.
+     *
+     * @return bool true if any accelerator is enabled, false otherwise
+     */
+    public function hasAccelerator()
+    {
+        return $this->hasApc() || $this->hasZendOpcache() || $this->hasEAccelerator() || $this->hasXCache() || $this->hasWinCache();
     }
 
     public function getBundles()
@@ -287,5 +263,29 @@ class ConfigDataCollector extends DataCollector
     public function getName()
     {
         return 'config';
+    }
+
+    /**
+     * Tries to retrieve information about the current Symfony version.
+     *
+     * @return string One of: dev, stable, eom, eol
+     */
+    private function determineSymfonyState()
+    {
+        $now = new \DateTime();
+        $eom = \DateTime::createFromFormat('m/Y', Kernel::END_OF_MAINTENANCE)->modify('last day of this month');
+        $eol = \DateTime::createFromFormat('m/Y', Kernel::END_OF_LIFE)->modify('last day of this month');
+
+        if ($now > $eol) {
+            $versionState = 'eol';
+        } elseif ($now > $eom) {
+            $versionState = 'eom';
+        } elseif ('' !== Kernel::EXTRA_VERSION) {
+            $versionState = 'dev';
+        } else {
+            $versionState = 'stable';
+        }
+
+        return $versionState;
     }
 }

@@ -39,34 +39,6 @@ class ChainEncoder implements EncoderInterface
     }
 
     /**
-     * Gets the encoder supporting the format.
-     *
-     * @param string $format
-     *
-     * @return EncoderInterface
-     *
-     * @throws RuntimeException if no encoder is found
-     */
-    private function getEncoder($format)
-    {
-        if (isset($this->encoderByFormat[$format])
-            && isset($this->encoders[$this->encoderByFormat[$format]])
-        ) {
-            return $this->encoders[$this->encoderByFormat[$format]];
-        }
-
-        foreach ($this->encoders as $i => $encoder) {
-            if ($encoder->supportsEncoding($format)) {
-                $this->encoderByFormat[$format] = $i;
-
-                return $encoder;
-            }
-        }
-
-        throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function supportsEncoding($format)
@@ -100,5 +72,33 @@ class ChainEncoder implements EncoderInterface
         }
 
         return false;
+    }
+
+    /**
+     * Gets the encoder supporting the format.
+     *
+     * @param string $format
+     *
+     * @return EncoderInterface
+     *
+     * @throws RuntimeException if no encoder is found
+     */
+    private function getEncoder($format)
+    {
+        if (isset($this->encoderByFormat[$format])
+            && isset($this->encoders[$this->encoderByFormat[$format]])
+        ) {
+            return $this->encoders[$this->encoderByFormat[$format]];
+        }
+
+        foreach ($this->encoders as $i => $encoder) {
+            if ($encoder->supportsEncoding($format)) {
+                $this->encoderByFormat[$format] = $i;
+
+                return $encoder;
+            }
+        }
+
+        throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
     }
 }

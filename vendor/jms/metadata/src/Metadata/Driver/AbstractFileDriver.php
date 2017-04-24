@@ -29,23 +29,6 @@ abstract class AbstractFileDriver implements AdvancedDriverInterface
     }
 
     /**
-     * Returns the extension of the file.
-     *
-     * @return string
-     */
-    abstract protected function getExtension();
-
-    /**
-     * Parses the content of the file, and converts it to the desired metadata.
-     *
-     * @param \ReflectionClass $class
-     * @param string $file
-     *
-     * @return \Metadata\ClassMetadata|null
-     */
-    abstract protected function loadMetadataFromFile(\ReflectionClass $class, $file);
-
-    /**
      * {@inheritDoc}
      */
     public function getAllClassNames()
@@ -56,4 +39,21 @@ abstract class AbstractFileDriver implements AdvancedDriverInterface
 
         return $this->locator->findAllClasses($this->getExtension());
     }
+
+    /**
+     * Parses the content of the file, and converts it to the desired metadata.
+     *
+     * @param \ReflectionClass $class
+     * @param string           $file
+     *
+     * @return \Metadata\ClassMetadata|null
+     */
+    abstract protected function loadMetadataFromFile(\ReflectionClass $class, $file);
+
+    /**
+     * Returns the extension of the file.
+     *
+     * @return string
+     */
+    abstract protected function getExtension();
 }

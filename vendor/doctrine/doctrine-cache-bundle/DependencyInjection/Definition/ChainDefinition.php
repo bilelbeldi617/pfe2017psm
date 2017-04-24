@@ -28,15 +28,15 @@ class ChainDefinition extends CacheDefinition
     public function configure($name, array $config, Definition $service, ContainerBuilder $container)
     {
         $providersConf = $config['chain'];
-        $providers = $this->getProviders($name, $providersConf, $container);
+        $providers     = $this->getProviders($name, $providersConf, $container);
 
         $service->setArguments(array($providers));
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return array
      */

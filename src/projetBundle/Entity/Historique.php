@@ -9,13 +9,12 @@
 namespace projetBundle\Entity;
 
 
-class Historique
-{
+class Historique {
     private $anneeScolaire;
     private $trimestres;
-    private $resultat;
+    private  $resultat;
     private $eleve;
-    private $moyenneGenerale;
+    private  $moyenneGenerale;
 
     /**
      * @return mixed

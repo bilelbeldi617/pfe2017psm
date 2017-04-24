@@ -35,22 +35,6 @@ class SecurityDataCollectorTest extends TestCase
         $this->assertEmpty($collector->getUser());
     }
 
-    private function getRequest()
-    {
-        return $this
-            ->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getResponse()
-    {
-        return $this
-            ->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
     public function testCollectWhenAuthenticationTokenIsNull()
     {
         $tokenStorage = new TokenStorage();
@@ -64,13 +48,6 @@ class SecurityDataCollectorTest extends TestCase
         $this->assertCount(0, $collector->getRoles());
         $this->assertCount(0, $collector->getInheritedRoles());
         $this->assertEmpty($collector->getUser());
-    }
-
-    private function getRoleHierarchy()
-    {
-        return new RoleHierarchy(array(
-            'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
-        ));
     }
 
     /**
@@ -135,5 +112,28 @@ class SecurityDataCollectorTest extends TestCase
                 array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
             ),
         );
+    }
+
+    private function getRoleHierarchy()
+    {
+        return new RoleHierarchy(array(
+            'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
+        ));
+    }
+
+    private function getRequest()
+    {
+        return $this
+            ->getMockBuilder('Symfony\Component\HttpFoundation\Request')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getResponse()
+    {
+        return $this
+            ->getMockBuilder('Symfony\Component\HttpFoundation\Response')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

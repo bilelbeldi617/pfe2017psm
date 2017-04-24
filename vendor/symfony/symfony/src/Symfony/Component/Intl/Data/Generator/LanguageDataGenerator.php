@@ -97,7 +97,7 @@ class LanguageDataGenerator extends AbstractDataGenerator
      */
     protected function scanLocales(LocaleScanner $scanner, $sourceDir)
     {
-        return $scanner->scanLocales($sourceDir . '/lang');
+        return $scanner->scanLocales($sourceDir.'/lang');
     }
 
     /**
@@ -105,8 +105,8 @@ class LanguageDataGenerator extends AbstractDataGenerator
      */
     protected function compileTemporaryBundles(GenrbCompiler $compiler, $sourceDir, $tempDir)
     {
-        $compiler->compile($sourceDir . '/lang', $tempDir);
-        $compiler->compile($sourceDir . '/misc/metadata.txt', $tempDir);
+        $compiler->compile($sourceDir.'/lang', $tempDir);
+        $compiler->compile($sourceDir.'/misc/metadata.txt', $tempDir);
     }
 
     /**
@@ -178,9 +178,9 @@ class LanguageDataGenerator extends AbstractDataGenerator
                     // Validate to prevent typos
                     if (!isset($aliases[self::$preferredAlpha2ToAlpha3Mapping[$language]])) {
                         throw new RuntimeException(
-                            'The statically set three-letter mapping ' .
-                            self::$preferredAlpha2ToAlpha3Mapping[$language] . ' ' .
-                            'for the language code ' . $language . ' seems to be ' .
+                            'The statically set three-letter mapping '.
+                            self::$preferredAlpha2ToAlpha3Mapping[$language].' '.
+                            'for the language code '.$language.' seems to be '.
                             'invalid. Typo?'
                         );
                     }
@@ -190,17 +190,17 @@ class LanguageDataGenerator extends AbstractDataGenerator
 
                     if ($language !== $alpha2) {
                         throw new RuntimeException(
-                            'The statically set three-letter mapping ' . $alpha3 . ' ' .
-                            'for the language code ' . $language . ' seems to be ' .
-                            'an alias for ' . $alpha2 . '. Wrong mapping?'
+                            'The statically set three-letter mapping '.$alpha3.' '.
+                            'for the language code '.$language.' seems to be '.
+                            'an alias for '.$alpha2.'. Wrong mapping?'
                         );
                     }
 
                     $alpha2ToAlpha3[$language] = $alpha3;
                 } elseif (isset($alpha2ToAlpha3[$language])) {
                     throw new RuntimeException(
-                        'Multiple three-letter mappings exist for the language ' .
-                        'code ' . $language . '. Please add one of them to the ' .
+                        'Multiple three-letter mappings exist for the language '.
+                        'code '.$language.'. Please add one of them to the '.
                         'property $preferredAlpha2ToAlpha3Mapping.'
                     );
                 } else {

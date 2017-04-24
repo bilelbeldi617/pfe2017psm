@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-require_once __DIR__ . '/../Fixtures/includes/foo.php';
+require_once __DIR__.'/../Fixtures/includes/foo.php';
 
 class ReplaceAliasByActualDefinitionPassTest extends TestCase
 {
@@ -53,13 +53,7 @@ class ReplaceAliasByActualDefinitionPassTest extends TestCase
         $this->assertTrue($container->has('container'));
 
         $resolvedFactory = $aDefinition->getFactory();
-        $this->assertSame('b_alias', (string)$resolvedFactory[0]);
-    }
-
-    protected function process(ContainerBuilder $container)
-    {
-        $pass = new ReplaceAliasByActualDefinitionPass();
-        $pass->process($container);
+        $this->assertSame('b_alias', (string) $resolvedFactory[0]);
     }
 
     /**
@@ -90,5 +84,11 @@ class ReplaceAliasByActualDefinitionPassTest extends TestCase
         $container = new ContainerBuilder();
         $container->setAlias('a_alias', 'a');
         $this->process($container);
+    }
+
+    protected function process(ContainerBuilder $container)
+    {
+        $pass = new ReplaceAliasByActualDefinitionPass();
+        $pass->process($container);
     }
 }

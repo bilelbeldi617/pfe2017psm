@@ -109,7 +109,7 @@ class ClassMetadataBuilder
     /**
      * Adds Index.
      *
-     * @param array $columns
+     * @param array  $columns
      * @param string $name
      *
      * @return ClassMetadataBuilder
@@ -128,14 +128,14 @@ class ClassMetadataBuilder
     /**
      * Adds Unique Constraint.
      *
-     * @param array $columns
+     * @param array  $columns
      * @param string $name
      *
      * @return ClassMetadataBuilder
      */
     public function addUniqueConstraint(array $columns, $name)
     {
-        if (!isset($this->cm->table['uniqueConstraints'])) {
+        if ( ! isset($this->cm->table['uniqueConstraints'])) {
             $this->cm->table['uniqueConstraints'] = array();
         }
 
@@ -191,7 +191,7 @@ class ClassMetadataBuilder
      *
      * @param string $name
      * @param string $type
-     * @param int $length
+     * @param int    $length
      *
      * @return ClassMetadataBuilder
      */
@@ -265,7 +265,7 @@ class ClassMetadataBuilder
      *
      * @param string $name
      * @param string $type
-     * @param array $mapping
+     * @param array  $mapping
      *
      * @return ClassMetadataBuilder
      */
@@ -293,7 +293,7 @@ class ClassMetadataBuilder
             $this,
             array(
                 'fieldName' => $name,
-                'type' => $type
+                'type'      => $type
             )
         );
     }
@@ -301,8 +301,8 @@ class ClassMetadataBuilder
     /**
      * Adds a simple many to one association, optionally with the inversed by field.
      *
-     * @param string $name
-     * @param string $targetEntity
+     * @param string      $name
+     * @param string      $targetEntity
      * @param string|null $inversedBy
      *
      * @return ClassMetadataBuilder
@@ -333,10 +333,30 @@ class ClassMetadataBuilder
         return new AssociationBuilder(
             $this,
             array(
-                'fieldName' => $name,
+                'fieldName'    => $name,
                 'targetEntity' => $targetEntity
             ),
             ClassMetadata::MANY_TO_ONE
+        );
+    }
+
+    /**
+     * Creates a OneToOne Association Builder.
+     *
+     * @param string $name
+     * @param string $targetEntity
+     *
+     * @return AssociationBuilder
+     */
+    public function createOneToOne($name, $targetEntity)
+    {
+        return new AssociationBuilder(
+            $this,
+            array(
+                'fieldName'    => $name,
+                'targetEntity' => $targetEntity
+            ),
+            ClassMetadata::ONE_TO_ONE
         );
     }
 
@@ -358,30 +378,10 @@ class ClassMetadataBuilder
     }
 
     /**
-     * Creates a OneToOne Association Builder.
-     *
-     * @param string $name
-     * @param string $targetEntity
-     *
-     * @return AssociationBuilder
-     */
-    public function createOneToOne($name, $targetEntity)
-    {
-        return new AssociationBuilder(
-            $this,
-            array(
-                'fieldName' => $name,
-                'targetEntity' => $targetEntity
-            ),
-            ClassMetadata::ONE_TO_ONE
-        );
-    }
-
-    /**
      * Adds simple owning one-to-one association.
      *
-     * @param string $name
-     * @param string $targetEntity
+     * @param string      $name
+     * @param string      $targetEntity
      * @param string|null $inversedBy
      *
      * @return ClassMetadataBuilder
@@ -389,26 +389,6 @@ class ClassMetadataBuilder
     public function addOwningOneToOne($name, $targetEntity, $inversedBy = null)
     {
         $builder = $this->createOneToOne($name, $targetEntity);
-
-        if ($inversedBy) {
-            $builder->inversedBy($inversedBy);
-        }
-
-        return $builder->build();
-    }
-
-    /**
-     * Adds a simple owning many to many association.
-     *
-     * @param string $name
-     * @param string $targetEntity
-     * @param string|null $inversedBy
-     *
-     * @return ClassMetadataBuilder
-     */
-    public function addOwningManyToMany($name, $targetEntity, $inversedBy = null)
-    {
-        $builder = $this->createManyToMany($name, $targetEntity);
 
         if ($inversedBy) {
             $builder->inversedBy($inversedBy);
@@ -430,11 +410,31 @@ class ClassMetadataBuilder
         return new ManyToManyAssociationBuilder(
             $this,
             array(
-                'fieldName' => $name,
+                'fieldName'    => $name,
                 'targetEntity' => $targetEntity
             ),
             ClassMetadata::MANY_TO_MANY
         );
+    }
+
+    /**
+     * Adds a simple owning many to many association.
+     *
+     * @param string      $name
+     * @param string      $targetEntity
+     * @param string|null $inversedBy
+     *
+     * @return ClassMetadataBuilder
+     */
+    public function addOwningManyToMany($name, $targetEntity, $inversedBy = null)
+    {
+        $builder = $this->createManyToMany($name, $targetEntity);
+
+        if ($inversedBy) {
+            $builder->inversedBy($inversedBy);
+        }
+
+        return $builder->build();
     }
 
     /**
@@ -455,6 +455,26 @@ class ClassMetadataBuilder
     }
 
     /**
+     * Creates a one to many association builder.
+     *
+     * @param string $name
+     * @param string $targetEntity
+     *
+     * @return OneToManyAssociationBuilder
+     */
+    public function createOneToMany($name, $targetEntity)
+    {
+        return new OneToManyAssociationBuilder(
+            $this,
+            array(
+                'fieldName'    => $name,
+                'targetEntity' => $targetEntity
+            ),
+            ClassMetadata::ONE_TO_MANY
+        );
+    }
+
+    /**
      * Adds simple OneToMany association.
      *
      * @param string $name
@@ -469,25 +489,5 @@ class ClassMetadataBuilder
         $builder->mappedBy($mappedBy);
 
         return $builder->build();
-    }
-
-    /**
-     * Creates a one to many association builder.
-     *
-     * @param string $name
-     * @param string $targetEntity
-     *
-     * @return OneToManyAssociationBuilder
-     */
-    public function createOneToMany($name, $targetEntity)
-    {
-        return new OneToManyAssociationBuilder(
-            $this,
-            array(
-                'fieldName' => $name,
-                'targetEntity' => $targetEntity
-            ),
-            ClassMetadata::ONE_TO_MANY
-        );
     }
 }

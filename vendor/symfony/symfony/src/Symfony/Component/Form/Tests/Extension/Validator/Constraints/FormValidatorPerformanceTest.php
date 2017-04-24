@@ -20,6 +20,13 @@ use Symfony\Component\Validator\Validation;
  */
 class FormValidatorPerformanceTest extends FormPerformanceTestCase
 {
+    protected function getExtensions()
+    {
+        return array(
+            new ValidatorExtension(Validation::createValidator()),
+        );
+    }
+
     /**
      * findClickedButton() used to have an exponential number of calls.
      *
@@ -43,12 +50,5 @@ class FormValidatorPerformanceTest extends FormPerformanceTestCase
         $form = $builder->getForm();
 
         $form->submit(null);
-    }
-
-    protected function getExtensions()
-    {
-        return array(
-            new ValidatorExtension(Validation::createValidator()),
-        );
     }
 }

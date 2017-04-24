@@ -50,7 +50,8 @@ class LdapBindAuthenticationProviderTest extends TestCase
         $ldap
             ->expects($this->once())
             ->method('bind')
-            ->will($this->throwException(new ConnectionException()));
+            ->will($this->throwException(new ConnectionException()))
+        ;
         $userChecker = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserCheckerInterface')->getMock();
 
         $provider = new LdapBindAuthenticationProvider($userProvider, $userChecker, 'key', $ldap);
@@ -66,7 +67,8 @@ class LdapBindAuthenticationProviderTest extends TestCase
         $userProvider
             ->expects($this->once())
             ->method('loadUserByUsername')
-            ->with('foo');
+            ->with('foo')
+        ;
         $ldap = $this->getMockBuilder('Symfony\Component\Ldap\LdapClientInterface')->getMock();
 
         $userChecker = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserCheckerInterface')->getMock();

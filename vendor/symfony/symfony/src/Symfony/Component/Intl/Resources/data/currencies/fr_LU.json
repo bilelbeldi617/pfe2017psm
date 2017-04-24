@@ -1,13 +1,13 @@
 {
-  "Version": "2.1.27.99",
-  "Names": {
-    "FRF": [
-      "FRF",
-      "franc français"
-    ],
-    "LUF": [
-      "F",
-      "franc luxembourgeois"
-    ]
-  }
+    "Version": "2.1.27.99",
+    "Names": {
+        "FRF": [
+            "FRF",
+            "franc français"
+        ],
+        "LUF": [
+            "F",
+            "franc luxembourgeois"
+        ]
+    }
 }

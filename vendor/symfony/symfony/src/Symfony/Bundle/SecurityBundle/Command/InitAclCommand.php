@@ -54,7 +54,8 @@ The name of the DBAL connection must be configured in your <info>app/config/secu
       acl:
           connection: default</info>
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -70,7 +71,7 @@ EOF
         try {
             $schema->addToSchema($connection->getSchemaManager()->createSchema());
         } catch (SchemaException $e) {
-            $output->writeln('Aborting: ' . $e->getMessage());
+            $output->writeln('Aborting: '.$e->getMessage());
 
             return 1;
         }

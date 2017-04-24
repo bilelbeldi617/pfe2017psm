@@ -39,17 +39,6 @@ class LoaderResolver implements LoaderResolverInterface
     }
 
     /**
-     * Adds a loader.
-     *
-     * @param LoaderInterface $loader A LoaderInterface instance
-     */
-    public function addLoader(LoaderInterface $loader)
-    {
-        $this->loaders[] = $loader;
-        $loader->setResolver($this);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function resolve($resource, $type = null)
@@ -61,6 +50,17 @@ class LoaderResolver implements LoaderResolverInterface
         }
 
         return false;
+    }
+
+    /**
+     * Adds a loader.
+     *
+     * @param LoaderInterface $loader A LoaderInterface instance
+     */
+    public function addLoader(LoaderInterface $loader)
+    {
+        $this->loaders[] = $loader;
+        $loader->setResolver($this);
     }
 
     /**

@@ -27,7 +27,7 @@ class AllValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof All) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\All');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\All');
         }
 
         if (null === $value) {
@@ -44,12 +44,12 @@ class AllValidator extends ConstraintValidator
             $validator = $context->getValidator()->inContext($context);
 
             foreach ($value as $key => $element) {
-                $validator->atPath('[' . $key . ']')->validate($element, $constraint->constraints);
+                $validator->atPath('['.$key.']')->validate($element, $constraint->constraints);
             }
         } else {
             // 2.4 API
             foreach ($value as $key => $element) {
-                $context->validateValue($element, $constraint->constraints, '[' . $key . ']');
+                $context->validateValue($element, $constraint->constraints, '['.$key.']');
             }
         }
     }

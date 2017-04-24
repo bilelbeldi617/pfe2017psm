@@ -68,6 +68,19 @@ class ResolvedFormTypeTest extends TestCase
      */
     private $resolvedType;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->dataMapper = $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
+        $this->parentType = $this->getMockFormType();
+        $this->type = $this->getMockFormType();
+        $this->extension1 = $this->getMockFormTypeExtension();
+        $this->extension2 = $this->getMockFormTypeExtension();
+        $this->parentResolvedType = new ResolvedFormType($this->parentType);
+        $this->resolvedType = new ResolvedFormType($this->type, array($this->extension1, $this->extension2), $this->parentResolvedType);
+    }
+
     public function testGetOptionsResolver()
     {
         $test = $this;
@@ -76,7 +89,7 @@ class ResolvedFormTypeTest extends TestCase
         $assertIndexAndAddOption = function ($index, $option, $default) use (&$i, $test) {
             return function (OptionsResolver $resolver) use (&$i, $test, $index, $option, $default) {
                 /* @var TestCase $test */
-                $test->assertEquals($index, $i, 'Executed at index ' . $index);
+                $test->assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
 
@@ -139,14 +152,6 @@ class ResolvedFormTypeTest extends TestCase
         $this->assertNull($builder->getDataClass());
     }
 
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getMockFormFactory()
-    {
-        return $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-    }
-
     public function testCreateBuilderWithDataClassOption()
     {
         $givenOptions = array('data_class' => 'Foo');
@@ -183,7 +188,7 @@ class ResolvedFormTypeTest extends TestCase
         $assertIndex = function ($index) use (&$i, $test) {
             return function () use (&$i, $test, $index) {
                 /* @var TestCase $test */
-                $test->assertEquals($index, $i, 'Executed at index ' . $index);
+                $test->assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
             };
@@ -251,7 +256,7 @@ class ResolvedFormTypeTest extends TestCase
         $assertIndex = function ($index) use (&$i, $test) {
             return function () use (&$i, $test, $index) {
                 /* @var TestCase $test */
-                $test->assertEquals($index, $i, 'Executed at index ' . $index);
+                $test->assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
             };
@@ -295,7 +300,7 @@ class ResolvedFormTypeTest extends TestCase
         $assertIndex = function ($index) use (&$i, $test) {
             return function () use (&$i, $test, $index) {
                 /* @var TestCase $test */
-                $test->assertEquals($index, $i, 'Executed at index ' . $index);
+                $test->assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
             };
@@ -413,26 +418,13 @@ class ResolvedFormTypeTest extends TestCase
     public function provideTypeClassBlockPrefixTuples()
     {
         return array(
-            array(__NAMESPACE__ . '\Fixtures\FooType', 'foo'),
-            array(__NAMESPACE__ . '\Fixtures\Foo', 'foo'),
-            array(__NAMESPACE__ . '\Fixtures\Type', 'type'),
-            array(__NAMESPACE__ . '\Fixtures\FooBarHTMLType', 'foo_bar_html'),
-            array(__NAMESPACE__ . '\Fixtures\Foo1Bar2Type', 'foo1_bar2'),
-            array(__NAMESPACE__ . '\Fixtures\FBooType', 'f_boo'),
+            array(__NAMESPACE__.'\Fixtures\FooType', 'foo'),
+            array(__NAMESPACE__.'\Fixtures\Foo', 'foo'),
+            array(__NAMESPACE__.'\Fixtures\Type', 'type'),
+            array(__NAMESPACE__.'\Fixtures\FooBarHTMLType', 'foo_bar_html'),
+            array(__NAMESPACE__.'\Fixtures\Foo1Bar2Type', 'foo1_bar2'),
+            array(__NAMESPACE__.'\Fixtures\FBooType', 'f_boo'),
         );
-    }
-
-    protected function setUp()
-    {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->dataMapper = $this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock();
-        $this->parentType = $this->getMockFormType();
-        $this->type = $this->getMockFormType();
-        $this->extension1 = $this->getMockFormTypeExtension();
-        $this->extension2 = $this->getMockFormTypeExtension();
-        $this->parentResolvedType = new ResolvedFormType($this->parentType);
-        $this->resolvedType = new ResolvedFormType($this->type, array($this->extension1, $this->extension2), $this->parentResolvedType);
     }
 
     /**
@@ -452,8 +444,16 @@ class ResolvedFormTypeTest extends TestCase
     }
 
     /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getMockFormFactory()
+    {
+        return $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+    }
+
+    /**
      * @param string $name
-     * @param array $options
+     * @param array  $options
      *
      * @return FormBuilder
      */

@@ -45,14 +45,14 @@ class FrameworkExtension extends Extension
     /**
      * Responds to the app.config configuration parameter.
      *
-     * @param array $configs
+     * @param array            $configs
      * @param ContainerBuilder $container
      *
      * @throws LogicException
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(dirname(__DIR__).'/Resources/config'));
 
         $loader->load('web.xml');
         $loader->load('services.xml');
@@ -199,87 +199,11 @@ class FrameworkExtension extends Extension
     }
 
     /**
-     * Loads the session configuration.
-     *
-     * @param array $config A session configuration array
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
-     */
-    private function registerSessionConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        $loader->load('session.xml');
-
-        // session storage
-        $container->setAlias('session.storage', $config['storage_id']);
-        $options = array();
-        foreach (array('name', 'cookie_lifetime', 'cookie_path', 'cookie_domain', 'cookie_secure', 'cookie_httponly', 'use_cookies', 'gc_maxlifetime', 'gc_probability', 'gc_divisor') as $key) {
-            if (isset($config[$key])) {
-                $options[$key] = $config[$key];
-            }
-        }
-
-        $container->setParameter('session.storage.options', $options);
-
-        // session handler (the internal callback registered with PHP session management)
-        if (null === $config['handler_id']) {
-            // Set the handler class to be null
-            $container->getDefinition('session.storage.native')->replaceArgument(1, null);
-            $container->getDefinition('session.storage.php_bridge')->replaceArgument(0, null);
-        } else {
-            $handlerId = $config['handler_id'];
-
-            if ($config['metadata_update_threshold'] > 0) {
-                $container->getDefinition('session.handler.write_check')->addArgument(new Reference($handlerId));
-                $handlerId = 'session.handler.write_check';
-            }
-
-            $container->setAlias('session.handler', $handlerId);
-        }
-
-        $container->setParameter('session.save_path', $config['save_path']);
-
-        $this->addClassesToCompile(array(
-            'Symfony\\Bundle\\FrameworkBundle\\EventListener\\SessionListener',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\NativeSessionStorage',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\PhpBridgeSessionStorage',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\NativeFileSessionHandler',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Proxy\\AbstractProxy',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Proxy\\SessionHandlerProxy',
-            $container->getDefinition('session')->getClass(),
-        ));
-
-        if ($container->hasDefinition($config['storage_id'])) {
-            $this->addClassesToCompile(array(
-                $container->findDefinition('session.storage')->getClass(),
-            ));
-        }
-
-        $container->setParameter('session.metadata.update_threshold', $config['metadata_update_threshold']);
-    }
-
-    /**
-     * Loads the request configuration.
-     *
-     * @param array $config A request configuration array
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
-     */
-    private function registerRequestConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        if ($config['formats']) {
-            $loader->load('request.xml');
-            $container
-                ->getDefinition('request.add_request_formats_listener')
-                ->replaceArgument(0, $config['formats']);
-        }
-    }
-
-    /**
      * Loads Form configuration.
      *
-     * @param array $config A configuration array
+     * @param array            $config    A configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      *
      * @throws \LogicException
      */
@@ -306,328 +230,11 @@ class FrameworkExtension extends Extension
     }
 
     /**
-     * Loads the security configuration.
-     *
-     * @param array $config A CSRF configuration array
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
-     *
-     * @throws \LogicException
-     */
-    private function registerSecurityCsrfConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        if (!$this->isConfigEnabled($container, $config)) {
-            return;
-        }
-
-        if (!$this->sessionConfigEnabled) {
-            throw new \LogicException('CSRF protection needs sessions to be enabled.');
-        }
-
-        // Enable services for CSRF protection (even without forms)
-        $loader->load('security_csrf.xml');
-    }
-
-    /**
-     * Loads the assets configuration.
-     *
-     * @param array $config A assets configuration array
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
-     */
-    private function registerAssetsConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        $loader->load('assets.xml');
-
-        $defaultVersion = $this->createVersion($container, $config['version'], $config['version_format'], '_default');
-
-        $defaultPackage = $this->createPackageDefinition($config['base_path'], $config['base_urls'], $defaultVersion);
-        $container->setDefinition('assets._default_package', $defaultPackage);
-
-        $namedPackages = array();
-        foreach ($config['packages'] as $name => $package) {
-            if (!array_key_exists('version', $package)) {
-                $version = $defaultVersion;
-            } else {
-                $format = $package['version_format'] ?: $config['version_format'];
-                $version = $this->createVersion($container, $package['version'], $format, $name);
-            }
-
-            $container->setDefinition('assets._package_' . $name, $this->createPackageDefinition($package['base_path'], $package['base_urls'], $version));
-            $namedPackages[$name] = new Reference('assets._package_' . $name);
-        }
-
-        $container->getDefinition('assets.packages')
-            ->replaceArgument(0, new Reference('assets._default_package'))
-            ->replaceArgument(1, $namedPackages);
-    }
-
-    private function createVersion(ContainerBuilder $container, $version, $format, $name)
-    {
-        if (null === $version) {
-            return new Reference('assets.empty_version_strategy');
-        }
-
-        $def = new DefinitionDecorator('assets.static_version_strategy');
-        $def
-            ->replaceArgument(0, $version)
-            ->replaceArgument(1, $format);
-        $container->setDefinition('assets._version_' . $name, $def);
-
-        return new Reference('assets._version_' . $name);
-    }
-
-    /**
-     * Returns a definition for an asset package.
-     */
-    private function createPackageDefinition($basePath, array $baseUrls, Reference $version)
-    {
-        if ($basePath && $baseUrls) {
-            throw new \LogicException('An asset package cannot have base URLs and base paths.');
-        }
-
-        $package = new DefinitionDecorator($baseUrls ? 'assets.url_package' : 'assets.path_package');
-        $package
-            ->setPublic(false)
-            ->replaceArgument(0, $baseUrls ?: $basePath)
-            ->replaceArgument(1, $version);
-
-        return $package;
-    }
-
-    /**
-     * Loads the templating configuration.
-     *
-     * @param array $config A templating configuration array
-     * @param string $ide
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
-     */
-    private function registerTemplatingConfiguration(array $config, $ide, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        $loader->load('templating.xml');
-
-        if (!$container->hasParameter('templating.helper.code.file_link_format')) {
-            $links = array(
-                'textmate' => 'txmt://open?url=file://%%f&line=%%l',
-                'macvim' => 'mvim://open?url=file://%%f&line=%%l',
-                'emacs' => 'emacs://open?url=file://%%f&line=%%l',
-                'sublime' => 'subl://open?url=file://%%f&line=%%l',
-            );
-
-            $container->setParameter('templating.helper.code.file_link_format', str_replace('%', '%%', ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format')) ?: (isset($links[$ide]) ? $links[$ide] : $ide));
-        }
-
-        $container->setParameter('fragment.renderer.hinclude.global_template', $config['hinclude_default_template']);
-
-        if ($container->getParameter('kernel.debug')) {
-            $logger = new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
-
-            $container->getDefinition('templating.loader.cache')
-                ->addTag('monolog.logger', array('channel' => 'templating'))
-                ->addMethodCall('setLogger', array($logger));
-            $container->getDefinition('templating.loader.chain')
-                ->addTag('monolog.logger', array('channel' => 'templating'))
-                ->addMethodCall('setLogger', array($logger));
-        }
-
-        if (!empty($config['loaders'])) {
-            $loaders = array_map(function ($loader) {
-                return new Reference($loader);
-            }, $config['loaders']);
-
-            // Use a delegation unless only a single loader was registered
-            if (1 === count($loaders)) {
-                $container->setAlias('templating.loader', (string)reset($loaders));
-            } else {
-                $container->getDefinition('templating.loader.chain')->addArgument($loaders);
-                $container->setAlias('templating.loader', 'templating.loader.chain');
-            }
-        }
-
-        $container->setParameter('templating.loader.cache.path', null);
-        if (isset($config['cache'])) {
-            // Wrap the existing loader with cache (must happen after loaders are registered)
-            $container->setDefinition('templating.loader.wrapped', $container->findDefinition('templating.loader'));
-            $loaderCache = $container->getDefinition('templating.loader.cache');
-            $container->setParameter('templating.loader.cache.path', $config['cache']);
-
-            $container->setDefinition('templating.loader', $loaderCache);
-        }
-
-        $this->addClassesToCompile(array(
-            'Symfony\\Bundle\\FrameworkBundle\\Templating\\GlobalVariables',
-            'Symfony\\Bundle\\FrameworkBundle\\Templating\\TemplateReference',
-            'Symfony\\Bundle\\FrameworkBundle\\Templating\\TemplateNameParser',
-            $container->findDefinition('templating.locator')->getClass(),
-        ));
-
-        $container->setParameter('templating.engines', $config['engines']);
-        $engines = array_map(function ($engine) {
-            return new Reference('templating.engine.' . $engine);
-        }, $config['engines']);
-
-        // Use a delegation unless only a single engine was registered
-        if (1 === count($engines)) {
-            $container->setAlias('templating', (string)reset($engines));
-        } else {
-            foreach ($engines as $engine) {
-                $container->getDefinition('templating.engine.delegating')->addMethodCall('addEngine', array($engine));
-            }
-            $container->setAlias('templating', 'templating.engine.delegating');
-        }
-
-        $container->getDefinition('fragment.renderer.hinclude')
-            ->addTag('kernel.fragment_renderer', array('alias' => 'hinclude'))
-            ->replaceArgument(0, new Reference('templating'));
-
-        // configure the PHP engine if needed
-        if (in_array('php', $config['engines'], true)) {
-            $loader->load('templating_php.xml');
-
-            $container->setParameter('templating.helper.form.resources', $config['form']['resources']);
-
-            if ($container->getParameter('kernel.debug')) {
-                $loader->load('templating_debug.xml');
-
-                $container->setDefinition('templating.engine.php', $container->findDefinition('debug.templating.engine.php'));
-                $container->setAlias('debug.templating.engine.php', 'templating.engine.php');
-            }
-
-            $this->addClassesToCompile(array(
-                'Symfony\\Component\\Templating\\Storage\\FileStorage',
-                'Symfony\\Bundle\\FrameworkBundle\\Templating\\PhpEngine',
-                'Symfony\\Bundle\\FrameworkBundle\\Templating\\Loader\\FilesystemLoader',
-            ));
-        }
-
-        if ($container->hasDefinition('assets.packages')) {
-            $container->getDefinition('templating.helper.assets')->replaceArgument(0, new Reference('assets.packages'));
-        } else {
-            $container->removeDefinition('templating.helper.assets');
-        }
-    }
-
-    /**
-     * Loads the validator configuration.
-     *
-     * @param array $config A validation configuration array
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
-     */
-    private function registerValidationConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        if (!$this->isConfigEnabled($container, $config)) {
-            return;
-        }
-
-        if (!class_exists('Symfony\Component\Validator\Validation')) {
-            throw new LogicException('Validation support cannot be enabled as the Validator component is not installed.');
-        }
-
-        $loader->load('validator.xml');
-
-        $validatorBuilder = $container->getDefinition('validator.builder');
-
-        $container->setParameter('validator.translation_domain', $config['translation_domain']);
-
-        list($xmlMappings, $yamlMappings) = $this->getValidatorMappingFiles($container);
-        if (count($xmlMappings) > 0) {
-            $validatorBuilder->addMethodCall('addXmlMappings', array($xmlMappings));
-        }
-
-        if (count($yamlMappings) > 0) {
-            $validatorBuilder->addMethodCall('addYamlMappings', array($yamlMappings));
-        }
-
-        $definition = $container->findDefinition('validator.email');
-        $definition->replaceArgument(0, $config['strict_email']);
-
-        if (array_key_exists('enable_annotations', $config) && $config['enable_annotations']) {
-            $validatorBuilder->addMethodCall('enableAnnotationMapping', array(new Reference('annotation_reader')));
-        }
-
-        if (array_key_exists('static_method', $config) && $config['static_method']) {
-            foreach ($config['static_method'] as $methodName) {
-                $validatorBuilder->addMethodCall('addMethodMapping', array($methodName));
-            }
-        }
-
-        if (isset($config['cache'])) {
-            $container->setParameter(
-                'validator.mapping.cache.prefix',
-                'validator_' . $this->getKernelRootHash($container)
-            );
-
-            $validatorBuilder->addMethodCall('setMetadataCache', array(new Reference($config['cache'])));
-        }
-
-        // You can use this parameter to check the API version in your own
-        // bundle extension classes
-        // This is set to 2.5-bc for compatibility with Symfony 2.5 and 2.6.
-        // @deprecated since version 2.7, to be removed in 3.0
-        $container->setParameter('validator.api', '2.5-bc');
-    }
-
-    private function getValidatorMappingFiles(ContainerBuilder $container)
-    {
-        $files = array(array(), array());
-
-        if (interface_exists('Symfony\Component\Form\FormInterface')) {
-            $reflClass = new \ReflectionClass('Symfony\Component\Form\FormInterface');
-            $files[0][] = dirname($reflClass->getFileName()) . '/Resources/config/validation.xml';
-            $container->addResource(new FileResource($files[0][0]));
-        }
-
-        foreach ($container->getParameter('kernel.bundles_metadata') as $bundle) {
-            $dirname = $bundle['path'];
-            if (is_file($file = $dirname . '/Resources/config/validation.xml')) {
-                $files[0][] = $file;
-                $container->addResource(new FileResource($file));
-            }
-
-            if (is_file($file = $dirname . '/Resources/config/validation.yml')) {
-                $files[1][] = $file;
-                $container->addResource(new FileResource($file));
-            }
-
-            if (is_dir($dir = $dirname . '/Resources/config/validation')) {
-                foreach (Finder::create()->files()->in($dir)->name('*.xml') as $file) {
-                    $files[0][] = $file->getPathname();
-                }
-                foreach (Finder::create()->files()->in($dir)->name('*.yml') as $file) {
-                    $files[1][] = $file->getPathname();
-                }
-
-                $container->addResource(new DirectoryResource($dir));
-            }
-        }
-
-        return $files;
-    }
-
-    /**
-     * Gets a hash of the kernel root directory.
-     *
-     * @param ContainerBuilder $container
-     *
-     * @return string
-     */
-    private function getKernelRootHash(ContainerBuilder $container)
-    {
-        if (!$this->kernelRootHash) {
-            $this->kernelRootHash = hash('sha256', $container->getParameter('kernel.root_dir'));
-        }
-
-        return $this->kernelRootHash;
-    }
-
-    /**
      * Loads the ESI configuration.
      *
-     * @param array $config An ESI configuration array
+     * @param array            $config    An ESI configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      */
     private function registerEsiConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
@@ -641,9 +248,9 @@ class FrameworkExtension extends Extension
     /**
      * Loads the SSI configuration.
      *
-     * @param array $config An SSI configuration array
+     * @param array            $config    An SSI configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      */
     private function registerSsiConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
@@ -657,9 +264,9 @@ class FrameworkExtension extends Extension
     /**
      * Loads the fragments configuration.
      *
-     * @param array $config A fragments configuration array
+     * @param array            $config    A fragments configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      */
     private function registerFragmentsConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
@@ -672,102 +279,11 @@ class FrameworkExtension extends Extension
     }
 
     /**
-     * Loads the translator configuration.
-     *
-     * @param array $config A translator configuration array
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     */
-    private function registerTranslatorConfiguration(array $config, ContainerBuilder $container)
-    {
-        if (!$this->isConfigEnabled($container, $config)) {
-            return;
-        }
-        $this->translationConfigEnabled = true;
-
-        // Use the "real" translator instead of the identity default
-        $container->setAlias('translator', 'translator.default');
-        $translator = $container->findDefinition('translator.default');
-        $translator->addMethodCall('setFallbackLocales', array($config['fallbacks']));
-
-        $container->setParameter('translator.logging', $config['logging']);
-
-        // Discover translation directories
-        $dirs = array();
-        if (class_exists('Symfony\Component\Validator\Validation')) {
-            $r = new \ReflectionClass('Symfony\Component\Validator\Validation');
-
-            $dirs[] = dirname($r->getFileName()) . '/Resources/translations';
-        }
-        if (class_exists('Symfony\Component\Form\Form')) {
-            $r = new \ReflectionClass('Symfony\Component\Form\Form');
-
-            $dirs[] = dirname($r->getFileName()) . '/Resources/translations';
-        }
-        if (class_exists('Symfony\Component\Security\Core\Exception\AuthenticationException')) {
-            $r = new \ReflectionClass('Symfony\Component\Security\Core\Exception\AuthenticationException');
-
-            $dirs[] = dirname(dirname($r->getFileName())) . '/Resources/translations';
-        }
-        $rootDir = $container->getParameter('kernel.root_dir');
-        foreach ($container->getParameter('kernel.bundles_metadata') as $name => $bundle) {
-            if (is_dir($dir = $bundle['path'] . '/Resources/translations')) {
-                $dirs[] = $dir;
-            }
-            if (is_dir($dir = $rootDir . sprintf('/Resources/%s/translations', $name))) {
-                $dirs[] = $dir;
-            }
-        }
-
-        foreach ($config['paths'] as $dir) {
-            if (is_dir($dir)) {
-                $dirs[] = $dir;
-            } else {
-                throw new \UnexpectedValueException(sprintf('%s defined in translator.paths does not exist or is not a directory', $dir));
-            }
-        }
-
-        if (is_dir($dir = $rootDir . '/Resources/translations')) {
-            $dirs[] = $dir;
-        }
-
-        // Register translation resources
-        if ($dirs) {
-            foreach ($dirs as $dir) {
-                $container->addResource(new DirectoryResource($dir));
-            }
-
-            $files = array();
-            $finder = Finder::create()
-                ->files()
-                ->filter(function (\SplFileInfo $file) {
-                    return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
-                })
-                ->in($dirs);
-
-            foreach ($finder as $file) {
-                list(, $locale) = explode('.', $file->getBasename(), 3);
-                if (!isset($files[$locale])) {
-                    $files[$locale] = array();
-                }
-
-                $files[$locale][] = (string)$file;
-            }
-
-            $options = array_merge(
-                $translator->getArgument(3),
-                array('resource_files' => $files)
-            );
-
-            $translator->replaceArgument(3, $options);
-        }
-    }
-
-    /**
      * Loads the profiler configuration.
      *
-     * @param array $config A profiler configuration array
+     * @param array            $config    A profiler configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      *
      * @throws \LogicException
      */
@@ -846,9 +362,9 @@ class FrameworkExtension extends Extension
     /**
      * Loads the router configuration.
      *
-     * @param array $config A router configuration array
+     * @param array            $config    A router configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      */
     private function registerRouterConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
@@ -876,6 +392,453 @@ class FrameworkExtension extends Extension
         ));
     }
 
+    /**
+     * Loads the session configuration.
+     *
+     * @param array            $config    A session configuration array
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
+     */
+    private function registerSessionConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        $loader->load('session.xml');
+
+        // session storage
+        $container->setAlias('session.storage', $config['storage_id']);
+        $options = array();
+        foreach (array('name', 'cookie_lifetime', 'cookie_path', 'cookie_domain', 'cookie_secure', 'cookie_httponly', 'use_cookies', 'gc_maxlifetime', 'gc_probability', 'gc_divisor') as $key) {
+            if (isset($config[$key])) {
+                $options[$key] = $config[$key];
+            }
+        }
+
+        $container->setParameter('session.storage.options', $options);
+
+        // session handler (the internal callback registered with PHP session management)
+        if (null === $config['handler_id']) {
+            // Set the handler class to be null
+            $container->getDefinition('session.storage.native')->replaceArgument(1, null);
+            $container->getDefinition('session.storage.php_bridge')->replaceArgument(0, null);
+        } else {
+            $handlerId = $config['handler_id'];
+
+            if ($config['metadata_update_threshold'] > 0) {
+                $container->getDefinition('session.handler.write_check')->addArgument(new Reference($handlerId));
+                $handlerId = 'session.handler.write_check';
+            }
+
+            $container->setAlias('session.handler', $handlerId);
+        }
+
+        $container->setParameter('session.save_path', $config['save_path']);
+
+        $this->addClassesToCompile(array(
+            'Symfony\\Bundle\\FrameworkBundle\\EventListener\\SessionListener',
+            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\NativeSessionStorage',
+            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\PhpBridgeSessionStorage',
+            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\NativeFileSessionHandler',
+            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Proxy\\AbstractProxy',
+            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Proxy\\SessionHandlerProxy',
+            $container->getDefinition('session')->getClass(),
+        ));
+
+        if ($container->hasDefinition($config['storage_id'])) {
+            $this->addClassesToCompile(array(
+                $container->findDefinition('session.storage')->getClass(),
+            ));
+        }
+
+        $container->setParameter('session.metadata.update_threshold', $config['metadata_update_threshold']);
+    }
+
+    /**
+     * Loads the request configuration.
+     *
+     * @param array            $config    A request configuration array
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
+     */
+    private function registerRequestConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        if ($config['formats']) {
+            $loader->load('request.xml');
+            $container
+                ->getDefinition('request.add_request_formats_listener')
+                ->replaceArgument(0, $config['formats'])
+            ;
+        }
+    }
+
+    /**
+     * Loads the templating configuration.
+     *
+     * @param array            $config    A templating configuration array
+     * @param string           $ide
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
+     */
+    private function registerTemplatingConfiguration(array $config, $ide, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        $loader->load('templating.xml');
+
+        if (!$container->hasParameter('templating.helper.code.file_link_format')) {
+            $links = array(
+                'textmate' => 'txmt://open?url=file://%%f&line=%%l',
+                'macvim' => 'mvim://open?url=file://%%f&line=%%l',
+                'emacs' => 'emacs://open?url=file://%%f&line=%%l',
+                'sublime' => 'subl://open?url=file://%%f&line=%%l',
+            );
+
+            $container->setParameter('templating.helper.code.file_link_format', str_replace('%', '%%', ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format')) ?: (isset($links[$ide]) ? $links[$ide] : $ide));
+        }
+
+        $container->setParameter('fragment.renderer.hinclude.global_template', $config['hinclude_default_template']);
+
+        if ($container->getParameter('kernel.debug')) {
+            $logger = new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
+
+            $container->getDefinition('templating.loader.cache')
+                ->addTag('monolog.logger', array('channel' => 'templating'))
+                ->addMethodCall('setLogger', array($logger));
+            $container->getDefinition('templating.loader.chain')
+                ->addTag('monolog.logger', array('channel' => 'templating'))
+                ->addMethodCall('setLogger', array($logger));
+        }
+
+        if (!empty($config['loaders'])) {
+            $loaders = array_map(function ($loader) { return new Reference($loader); }, $config['loaders']);
+
+            // Use a delegation unless only a single loader was registered
+            if (1 === count($loaders)) {
+                $container->setAlias('templating.loader', (string) reset($loaders));
+            } else {
+                $container->getDefinition('templating.loader.chain')->addArgument($loaders);
+                $container->setAlias('templating.loader', 'templating.loader.chain');
+            }
+        }
+
+        $container->setParameter('templating.loader.cache.path', null);
+        if (isset($config['cache'])) {
+            // Wrap the existing loader with cache (must happen after loaders are registered)
+            $container->setDefinition('templating.loader.wrapped', $container->findDefinition('templating.loader'));
+            $loaderCache = $container->getDefinition('templating.loader.cache');
+            $container->setParameter('templating.loader.cache.path', $config['cache']);
+
+            $container->setDefinition('templating.loader', $loaderCache);
+        }
+
+        $this->addClassesToCompile(array(
+            'Symfony\\Bundle\\FrameworkBundle\\Templating\\GlobalVariables',
+            'Symfony\\Bundle\\FrameworkBundle\\Templating\\TemplateReference',
+            'Symfony\\Bundle\\FrameworkBundle\\Templating\\TemplateNameParser',
+            $container->findDefinition('templating.locator')->getClass(),
+        ));
+
+        $container->setParameter('templating.engines', $config['engines']);
+        $engines = array_map(function ($engine) { return new Reference('templating.engine.'.$engine); }, $config['engines']);
+
+        // Use a delegation unless only a single engine was registered
+        if (1 === count($engines)) {
+            $container->setAlias('templating', (string) reset($engines));
+        } else {
+            foreach ($engines as $engine) {
+                $container->getDefinition('templating.engine.delegating')->addMethodCall('addEngine', array($engine));
+            }
+            $container->setAlias('templating', 'templating.engine.delegating');
+        }
+
+        $container->getDefinition('fragment.renderer.hinclude')
+            ->addTag('kernel.fragment_renderer', array('alias' => 'hinclude'))
+            ->replaceArgument(0, new Reference('templating'))
+        ;
+
+        // configure the PHP engine if needed
+        if (in_array('php', $config['engines'], true)) {
+            $loader->load('templating_php.xml');
+
+            $container->setParameter('templating.helper.form.resources', $config['form']['resources']);
+
+            if ($container->getParameter('kernel.debug')) {
+                $loader->load('templating_debug.xml');
+
+                $container->setDefinition('templating.engine.php', $container->findDefinition('debug.templating.engine.php'));
+                $container->setAlias('debug.templating.engine.php', 'templating.engine.php');
+            }
+
+            $this->addClassesToCompile(array(
+                'Symfony\\Component\\Templating\\Storage\\FileStorage',
+                'Symfony\\Bundle\\FrameworkBundle\\Templating\\PhpEngine',
+                'Symfony\\Bundle\\FrameworkBundle\\Templating\\Loader\\FilesystemLoader',
+            ));
+        }
+
+        if ($container->hasDefinition('assets.packages')) {
+            $container->getDefinition('templating.helper.assets')->replaceArgument(0, new Reference('assets.packages'));
+        } else {
+            $container->removeDefinition('templating.helper.assets');
+        }
+    }
+
+    /**
+     * Loads the assets configuration.
+     *
+     * @param array            $config    A assets configuration array
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
+     */
+    private function registerAssetsConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        $loader->load('assets.xml');
+
+        $defaultVersion = $this->createVersion($container, $config['version'], $config['version_format'], '_default');
+
+        $defaultPackage = $this->createPackageDefinition($config['base_path'], $config['base_urls'], $defaultVersion);
+        $container->setDefinition('assets._default_package', $defaultPackage);
+
+        $namedPackages = array();
+        foreach ($config['packages'] as $name => $package) {
+            if (!array_key_exists('version', $package)) {
+                $version = $defaultVersion;
+            } else {
+                $format = $package['version_format'] ?: $config['version_format'];
+                $version = $this->createVersion($container, $package['version'], $format, $name);
+            }
+
+            $container->setDefinition('assets._package_'.$name, $this->createPackageDefinition($package['base_path'], $package['base_urls'], $version));
+            $namedPackages[$name] = new Reference('assets._package_'.$name);
+        }
+
+        $container->getDefinition('assets.packages')
+            ->replaceArgument(0, new Reference('assets._default_package'))
+            ->replaceArgument(1, $namedPackages)
+        ;
+    }
+
+    /**
+     * Returns a definition for an asset package.
+     */
+    private function createPackageDefinition($basePath, array $baseUrls, Reference $version)
+    {
+        if ($basePath && $baseUrls) {
+            throw new \LogicException('An asset package cannot have base URLs and base paths.');
+        }
+
+        $package = new DefinitionDecorator($baseUrls ? 'assets.url_package' : 'assets.path_package');
+        $package
+            ->setPublic(false)
+            ->replaceArgument(0, $baseUrls ?: $basePath)
+            ->replaceArgument(1, $version)
+        ;
+
+        return $package;
+    }
+
+    private function createVersion(ContainerBuilder $container, $version, $format, $name)
+    {
+        if (null === $version) {
+            return new Reference('assets.empty_version_strategy');
+        }
+
+        $def = new DefinitionDecorator('assets.static_version_strategy');
+        $def
+            ->replaceArgument(0, $version)
+            ->replaceArgument(1, $format)
+        ;
+        $container->setDefinition('assets._version_'.$name, $def);
+
+        return new Reference('assets._version_'.$name);
+    }
+
+    /**
+     * Loads the translator configuration.
+     *
+     * @param array            $config    A translator configuration array
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     */
+    private function registerTranslatorConfiguration(array $config, ContainerBuilder $container)
+    {
+        if (!$this->isConfigEnabled($container, $config)) {
+            return;
+        }
+        $this->translationConfigEnabled = true;
+
+        // Use the "real" translator instead of the identity default
+        $container->setAlias('translator', 'translator.default');
+        $translator = $container->findDefinition('translator.default');
+        $translator->addMethodCall('setFallbackLocales', array($config['fallbacks']));
+
+        $container->setParameter('translator.logging', $config['logging']);
+
+        // Discover translation directories
+        $dirs = array();
+        if (class_exists('Symfony\Component\Validator\Validation')) {
+            $r = new \ReflectionClass('Symfony\Component\Validator\Validation');
+
+            $dirs[] = dirname($r->getFileName()).'/Resources/translations';
+        }
+        if (class_exists('Symfony\Component\Form\Form')) {
+            $r = new \ReflectionClass('Symfony\Component\Form\Form');
+
+            $dirs[] = dirname($r->getFileName()).'/Resources/translations';
+        }
+        if (class_exists('Symfony\Component\Security\Core\Exception\AuthenticationException')) {
+            $r = new \ReflectionClass('Symfony\Component\Security\Core\Exception\AuthenticationException');
+
+            $dirs[] = dirname(dirname($r->getFileName())).'/Resources/translations';
+        }
+        $rootDir = $container->getParameter('kernel.root_dir');
+        foreach ($container->getParameter('kernel.bundles_metadata') as $name => $bundle) {
+            if (is_dir($dir = $bundle['path'].'/Resources/translations')) {
+                $dirs[] = $dir;
+            }
+            if (is_dir($dir = $rootDir.sprintf('/Resources/%s/translations', $name))) {
+                $dirs[] = $dir;
+            }
+        }
+
+        foreach ($config['paths'] as $dir) {
+            if (is_dir($dir)) {
+                $dirs[] = $dir;
+            } else {
+                throw new \UnexpectedValueException(sprintf('%s defined in translator.paths does not exist or is not a directory', $dir));
+            }
+        }
+
+        if (is_dir($dir = $rootDir.'/Resources/translations')) {
+            $dirs[] = $dir;
+        }
+
+        // Register translation resources
+        if ($dirs) {
+            foreach ($dirs as $dir) {
+                $container->addResource(new DirectoryResource($dir));
+            }
+
+            $files = array();
+            $finder = Finder::create()
+                ->files()
+                ->filter(function (\SplFileInfo $file) {
+                    return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
+                })
+                ->in($dirs)
+            ;
+
+            foreach ($finder as $file) {
+                list(, $locale) = explode('.', $file->getBasename(), 3);
+                if (!isset($files[$locale])) {
+                    $files[$locale] = array();
+                }
+
+                $files[$locale][] = (string) $file;
+            }
+
+            $options = array_merge(
+                $translator->getArgument(3),
+                array('resource_files' => $files)
+            );
+
+            $translator->replaceArgument(3, $options);
+        }
+    }
+
+    /**
+     * Loads the validator configuration.
+     *
+     * @param array            $config    A validation configuration array
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
+     */
+    private function registerValidationConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        if (!$this->isConfigEnabled($container, $config)) {
+            return;
+        }
+
+        if (!class_exists('Symfony\Component\Validator\Validation')) {
+            throw new LogicException('Validation support cannot be enabled as the Validator component is not installed.');
+        }
+
+        $loader->load('validator.xml');
+
+        $validatorBuilder = $container->getDefinition('validator.builder');
+
+        $container->setParameter('validator.translation_domain', $config['translation_domain']);
+
+        list($xmlMappings, $yamlMappings) = $this->getValidatorMappingFiles($container);
+        if (count($xmlMappings) > 0) {
+            $validatorBuilder->addMethodCall('addXmlMappings', array($xmlMappings));
+        }
+
+        if (count($yamlMappings) > 0) {
+            $validatorBuilder->addMethodCall('addYamlMappings', array($yamlMappings));
+        }
+
+        $definition = $container->findDefinition('validator.email');
+        $definition->replaceArgument(0, $config['strict_email']);
+
+        if (array_key_exists('enable_annotations', $config) && $config['enable_annotations']) {
+            $validatorBuilder->addMethodCall('enableAnnotationMapping', array(new Reference('annotation_reader')));
+        }
+
+        if (array_key_exists('static_method', $config) && $config['static_method']) {
+            foreach ($config['static_method'] as $methodName) {
+                $validatorBuilder->addMethodCall('addMethodMapping', array($methodName));
+            }
+        }
+
+        if (isset($config['cache'])) {
+            $container->setParameter(
+                'validator.mapping.cache.prefix',
+                'validator_'.$this->getKernelRootHash($container)
+            );
+
+            $validatorBuilder->addMethodCall('setMetadataCache', array(new Reference($config['cache'])));
+        }
+
+        // You can use this parameter to check the API version in your own
+        // bundle extension classes
+        // This is set to 2.5-bc for compatibility with Symfony 2.5 and 2.6.
+        // @deprecated since version 2.7, to be removed in 3.0
+        $container->setParameter('validator.api', '2.5-bc');
+    }
+
+    private function getValidatorMappingFiles(ContainerBuilder $container)
+    {
+        $files = array(array(), array());
+
+        if (interface_exists('Symfony\Component\Form\FormInterface')) {
+            $reflClass = new \ReflectionClass('Symfony\Component\Form\FormInterface');
+            $files[0][] = dirname($reflClass->getFileName()).'/Resources/config/validation.xml';
+            $container->addResource(new FileResource($files[0][0]));
+        }
+
+        foreach ($container->getParameter('kernel.bundles_metadata') as $bundle) {
+            $dirname = $bundle['path'];
+            if (is_file($file = $dirname.'/Resources/config/validation.xml')) {
+                $files[0][] = $file;
+                $container->addResource(new FileResource($file));
+            }
+
+            if (is_file($file = $dirname.'/Resources/config/validation.yml')) {
+                $files[1][] = $file;
+                $container->addResource(new FileResource($file));
+            }
+
+            if (is_dir($dir = $dirname.'/Resources/config/validation')) {
+                foreach (Finder::create()->files()->in($dir)->name('*.xml') as $file) {
+                    $files[0][] = $file->getPathname();
+                }
+                foreach (Finder::create()->files()->in($dir)->name('*.yml') as $file) {
+                    $files[1][] = $file->getPathname();
+                }
+
+                $container->addResource(new DirectoryResource($dir));
+            }
+        }
+
+        return $files;
+    }
+
     private function registerAnnotationsConfiguration(array $config, ContainerBuilder $container, $loader)
     {
         $loader->load('annotations.xml');
@@ -889,19 +852,22 @@ class FrameworkExtension extends Extension
 
                 $container
                     ->getDefinition('annotations.filesystem_cache')
-                    ->replaceArgument(0, $cacheDir);
+                    ->replaceArgument(0, $cacheDir)
+                ;
 
                 // The annotations.file_cache_reader service is deprecated
                 $container
                     ->getDefinition('annotations.file_cache_reader')
                     ->replaceArgument(1, $cacheDir)
-                    ->replaceArgument(2, $config['debug']);
+                    ->replaceArgument(2, $config['debug'])
+                ;
             }
 
             $container
                 ->getDefinition('annotations.cached_reader')
                 ->replaceArgument(1, new Reference('file' !== $config['cache'] ? $config['cache'] : 'annotations.filesystem_cache'))
-                ->replaceArgument(2, $config['debug']);
+                ->replaceArgument(2, $config['debug'])
+            ;
             $container->setAlias('annotation_reader', 'annotations.cached_reader');
         }
     }
@@ -911,15 +877,39 @@ class FrameworkExtension extends Extension
         $container
             ->getDefinition('property_accessor')
             ->replaceArgument(0, $config['magic_call'])
-            ->replaceArgument(1, $config['throw_exception_on_invalid_index']);
+            ->replaceArgument(1, $config['throw_exception_on_invalid_index'])
+        ;
+    }
+
+    /**
+     * Loads the security configuration.
+     *
+     * @param array            $config    A CSRF configuration array
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
+     *
+     * @throws \LogicException
+     */
+    private function registerSecurityCsrfConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        if (!$this->isConfigEnabled($container, $config)) {
+            return;
+        }
+
+        if (!$this->sessionConfigEnabled) {
+            throw new \LogicException('CSRF protection needs sessions to be enabled.');
+        }
+
+        // Enable services for CSRF protection (even without forms)
+        $loader->load('security_csrf.xml');
     }
 
     /**
      * Loads the serializer configuration.
      *
-     * @param array $config A serializer configuration array
+     * @param array            $config    A serializer configuration array
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param XmlFileLoader $loader An XmlFileLoader instance
+     * @param XmlFileLoader    $loader    An XmlFileLoader instance
      */
     private function registerSerializerConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
@@ -934,7 +924,7 @@ class FrameworkExtension extends Extension
         if (isset($config['enable_annotations']) && $config['enable_annotations']) {
             $annotationLoader = new Definition(
                 'Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader',
-                array(new Reference('annotation_reader'))
+                 array(new Reference('annotation_reader'))
             );
             $annotationLoader->setPublic(false);
 
@@ -944,7 +934,7 @@ class FrameworkExtension extends Extension
         foreach ($container->getParameter('kernel.bundles_metadata') as $bundle) {
             $dirname = $bundle['path'];
 
-            if (is_file($file = $dirname . '/Resources/config/serialization.xml')) {
+            if (is_file($file = $dirname.'/Resources/config/serialization.xml')) {
                 $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\XmlFileLoader', array($file));
                 $definition->setPublic(false);
 
@@ -952,7 +942,7 @@ class FrameworkExtension extends Extension
                 $container->addResource(new FileResource($file));
             }
 
-            if (is_file($file = $dirname . '/Resources/config/serialization.yml')) {
+            if (is_file($file = $dirname.'/Resources/config/serialization.yml')) {
                 $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader', array($file));
                 $definition->setPublic(false);
 
@@ -960,7 +950,7 @@ class FrameworkExtension extends Extension
                 $container->addResource(new FileResource($file));
             }
 
-            if (is_dir($dir = $dirname . '/Resources/config/serialization')) {
+            if (is_dir($dir = $dirname.'/Resources/config/serialization')) {
                 foreach (Finder::create()->files()->in($dir)->name('*.xml') as $file) {
                     $definition = new Definition('Symfony\Component\Serializer\Mapping\Loader\XmlFileLoader', array($file->getPathname()));
                     $definition->setPublic(false);
@@ -983,7 +973,7 @@ class FrameworkExtension extends Extension
         if (isset($config['cache']) && $config['cache']) {
             $container->setParameter(
                 'serializer.mapping.cache.prefix',
-                'serializer_' . $this->getKernelRootHash($container)
+                'serializer_'.$this->getKernelRootHash($container)
             );
 
             $container->getDefinition('serializer.mapping.class_metadata_factory')->replaceArgument(
@@ -999,9 +989,9 @@ class FrameworkExtension extends Extension
     /**
      * Loads property info configuration.
      *
-     * @param array $config
+     * @param array            $config
      * @param ContainerBuilder $container
-     * @param XmlFileLoader $loader
+     * @param XmlFileLoader    $loader
      */
     private function registerPropertyInfoConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
@@ -1019,13 +1009,29 @@ class FrameworkExtension extends Extension
     }
 
     /**
+     * Gets a hash of the kernel root directory.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return string
+     */
+    private function getKernelRootHash(ContainerBuilder $container)
+    {
+        if (!$this->kernelRootHash) {
+            $this->kernelRootHash = hash('sha256', $container->getParameter('kernel.root_dir'));
+        }
+
+        return $this->kernelRootHash;
+    }
+
+    /**
      * Returns the base path for the XSD files.
      *
      * @return string The XSD base path
      */
     public function getXsdValidationBasePath()
     {
-        return dirname(__DIR__) . '/Resources/config/schema';
+        return dirname(__DIR__).'/Resources/config/schema';
     }
 
     public function getNamespace()

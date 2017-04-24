@@ -32,7 +32,7 @@ class PropertyMetadata extends MemberMetadata
      * Constructor.
      *
      * @param string $class The class this property is defined on
-     * @param string $name The name of this property
+     * @param string $name  The name of this property
      *
      * @throws ValidatorException
      */

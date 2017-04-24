@@ -37,7 +37,8 @@ class DoctrineStepType extends AbstractType
                 'first_name' => 'password',
                 'second_name' => 'password_again',
                 'invalid_message' => 'The password fields must match.',
-            ));
+            ))
+        ;
     }
 
     public function getName()

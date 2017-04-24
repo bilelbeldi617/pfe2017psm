@@ -20,6 +20,17 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class RecursiveValidator2Dot5ApiTest extends Abstract2Dot5ApiTest
 {
+    protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array())
+    {
+        $translator = new IdentityTranslator();
+        $translator->setLocale('en');
+
+        $contextFactory = new ExecutionContextFactory($translator);
+        $validatorFactory = new ConstraintValidatorFactory();
+
+        return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory, $objectInitializers);
+    }
+
     public function testEmptyGroupsArrayDoesNotTriggerDeprecation()
     {
         $entity = new Entity();
@@ -42,16 +53,5 @@ class RecursiveValidator2Dot5ApiTest extends Abstract2Dot5ApiTest
             ->willReturn($validatorContext);
 
         $validator->validate($entity, null, array());
-    }
-
-    protected function createValidator(MetadataFactoryInterface $metadataFactory, array $objectInitializers = array())
-    {
-        $translator = new IdentityTranslator();
-        $translator->setLocale('en');
-
-        $contextFactory = new ExecutionContextFactory($translator);
-        $validatorFactory = new ConstraintValidatorFactory();
-
-        return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory, $objectInitializers);
     }
 }

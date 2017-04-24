@@ -64,8 +64,8 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
      * Constructor.
      *
      * @param string $name
-     * @param array $connections
-     * @param array $managers
+     * @param array  $connections
+     * @param array  $managers
      * @param string $defaultConnection
      * @param string $defaultManager
      * @param string $proxyInterfaceName
@@ -79,6 +79,28 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
         $this->defaultManager = $defaultManager;
         $this->proxyInterfaceName = $proxyInterfaceName;
     }
+
+    /**
+     * Fetches/creates the given services.
+     *
+     * A service in this context is connection or a manager instance.
+     *
+     * @param string $name The name of the service.
+     *
+     * @return object The instance of the given service.
+     */
+    abstract protected function getService($name);
+
+    /**
+     * Resets the given services.
+     *
+     * A service in this context is connection or a manager instance.
+     *
+     * @param string $name The name of the service.
+     *
+     * @return void
+     */
+    abstract protected function resetService($name);
 
     /**
      * Gets the name of the registry.
@@ -105,17 +127,6 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
 
         return $this->getService($this->connections[$name]);
     }
-
-    /**
-     * Fetches/creates the given services.
-     *
-     * A service in this context is connection or a manager instance.
-     *
-     * @param string $name The name of the service.
-     *
-     * @return object The instance of the given service.
-     */
-    abstract protected function getService($name);
 
     /**
      * {@inheritdoc}
@@ -156,6 +167,24 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getManager($name = null)
+    {
+        if (null === $name) {
+            $name = $this->defaultManager;
+        }
+
+        if (!isset($this->managers[$name])) {
+            throw new \InvalidArgumentException(sprintf('Doctrine %s Manager named "%s" does not exist.', $this->name, $name));
+        }
+
+        return $this->getService($this->managers[$name]);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getManagerForClass($class)
     {
@@ -168,7 +197,7 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
         $proxyClass = new \ReflectionClass($class);
 
         if ($proxyClass->implementsInterface($this->proxyInterfaceName)) {
-            if (!$parentClass = $proxyClass->getParentClass()) {
+            if (! $parentClass = $proxyClass->getParentClass()) {
                 return null;
             }
 
@@ -215,24 +244,6 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function getManager($name = null)
-    {
-        if (null === $name) {
-            $name = $this->defaultManager;
-        }
-
-        if (!isset($this->managers[$name])) {
-            throw new \InvalidArgumentException(sprintf('Doctrine %s Manager named "%s" does not exist.', $this->name, $name));
-        }
-
-        return $this->getService($this->managers[$name]);
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function resetManager($name = null)
     {
@@ -248,15 +259,4 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
         // if the current one is closed
         $this->resetService($this->managers[$name]);
     }
-
-    /**
-     * Resets the given services.
-     *
-     * A service in this context is connection or a manager instance.
-     *
-     * @param string $name The name of the service.
-     *
-     * @return void
-     */
-    abstract protected function resetService($name);
 }

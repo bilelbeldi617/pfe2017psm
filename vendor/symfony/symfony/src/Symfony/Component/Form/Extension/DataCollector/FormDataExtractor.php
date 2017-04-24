@@ -60,24 +60,6 @@ class FormDataExtractor implements FormDataExtractorInterface
     }
 
     /**
-     * Recursively builds an HTML ID for a form.
-     *
-     * @param FormInterface $form The form
-     *
-     * @return string The HTML ID
-     */
-    private function buildId(FormInterface $form)
-    {
-        $id = $form->getName();
-
-        if (null !== $form->getParent()) {
-            $id = $this->buildId($form->getParent()) . '_' . $id;
-        }
-
-        return $id;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function extractDefaultData(FormInterface $form)
@@ -193,5 +175,23 @@ class FormDataExtractor implements FormDataExtractorInterface
         ksort($data['view_vars']);
 
         return $data;
+    }
+
+    /**
+     * Recursively builds an HTML ID for a form.
+     *
+     * @param FormInterface $form The form
+     *
+     * @return string The HTML ID
+     */
+    private function buildId(FormInterface $form)
+    {
+        $id = $form->getName();
+
+        if (null !== $form->getParent()) {
+            $id = $this->buildId($form->getParent()).'_'.$id;
+        }
+
+        return $id;
     }
 }

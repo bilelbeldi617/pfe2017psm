@@ -48,7 +48,7 @@ abstract class DoctrineCommand extends ContainerAwareCommand
     /**
      * Get a doctrine entity manager by symfony name.
      *
-     * @param string $name
+     * @param string       $name
      * @param null|integer $shardId
      *
      * @return EntityManager

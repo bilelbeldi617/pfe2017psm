@@ -33,28 +33,26 @@ class Entity extends EntityParent implements EntityInterfaceB
      * @Assert\Choice(choices={"A", "B"}, message="Must be one of %choices%")
      */
     public $firstName;
+    protected $lastName;
     public $reference;
     public $reference2;
+    private $internal;
     public $data = 'Overridden data';
     public $initialized = false;
-    protected $lastName;
-    private $internal;
 
     public function __construct($internal = null)
     {
         $this->internal = $internal;
     }
 
-    /**
-     * @Assert\Callback
-     */
-    public static function validateMeStatic($object, ExecutionContextInterface $context)
-    {
-    }
-
     public function getInternal()
     {
-        return $this->internal . ' from getter';
+        return $this->internal.' from getter';
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
     }
 
     /**
@@ -63,11 +61,6 @@ class Entity extends EntityParent implements EntityInterfaceB
     public function getLastName()
     {
         return $this->lastName;
-    }
-
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
     }
 
     public function getValid()
@@ -99,6 +92,13 @@ class Entity extends EntityParent implements EntityInterfaceB
      * @Assert\Callback(payload="foo")
      */
     public function validateMe(ExecutionContextInterface $context)
+    {
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public static function validateMeStatic($object, ExecutionContextInterface $context)
     {
     }
 }

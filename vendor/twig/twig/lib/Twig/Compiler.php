@@ -64,8 +64,8 @@ class Twig_Compiler implements Twig_CompilerInterface
     /**
      * Compiles a node.
      *
-     * @param Twig_NodeInterface $node The node to compile
-     * @param int $indentation The current indentation
+     * @param Twig_NodeInterface $node        The node to compile
+     * @param int                $indentation The current indentation
      *
      * @return $this
      */
@@ -101,6 +101,35 @@ class Twig_Compiler implements Twig_CompilerInterface
     }
 
     /**
+     * Adds a raw string to the compiled code.
+     *
+     * @param string $string The string
+     *
+     * @return $this
+     */
+    public function raw($string)
+    {
+        $this->source .= $string;
+
+        return $this;
+    }
+
+    /**
+     * Writes a string to the compiled code by adding indentation.
+     *
+     * @return $this
+     */
+    public function write()
+    {
+        $strings = func_get_args();
+        foreach ($strings as $string) {
+            $this->source .= str_repeat(' ', $this->indentation * 4).$string;
+        }
+
+        return $this;
+    }
+
+    /**
      * Appends an indentation to the current PHP code after compilation.
      *
      * @return $this
@@ -109,9 +138,23 @@ class Twig_Compiler implements Twig_CompilerInterface
      */
     public function addIndentation()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use write(\'\') instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use write(\'\') instead.', E_USER_DEPRECATED);
 
         $this->source .= str_repeat(' ', $this->indentation * 4);
+
+        return $this;
+    }
+
+    /**
+     * Adds a quoted string to the compiled code.
+     *
+     * @param string $value The string
+     *
+     * @return $this
+     */
+    public function string($value)
+    {
+        $this->source .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
 
         return $this;
     }
@@ -160,34 +203,6 @@ class Twig_Compiler implements Twig_CompilerInterface
     }
 
     /**
-     * Adds a raw string to the compiled code.
-     *
-     * @param string $string The string
-     *
-     * @return $this
-     */
-    public function raw($string)
-    {
-        $this->source .= $string;
-
-        return $this;
-    }
-
-    /**
-     * Adds a quoted string to the compiled code.
-     *
-     * @param string $value The string
-     *
-     * @return $this
-     */
-    public function string($value)
-    {
-        $this->source .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
-
-        return $this;
-    }
-
-    /**
      * Adds debugging information.
      *
      * @return $this
@@ -200,7 +215,7 @@ class Twig_Compiler implements Twig_CompilerInterface
             // when mbstring.func_overload is set to 2
             // mb_substr_count() replaces substr_count()
             // but they have different signatures!
-            if (((int)ini_get('mbstring.func_overload')) & 2) {
+            if (((int) ini_get('mbstring.func_overload')) & 2) {
                 @trigger_error('Support for having "mbstring.func_overload" different from 0 is deprecated version 1.29 and will be removed in 2.0.', E_USER_DEPRECATED);
 
                 // this is much slower than the "right" version
@@ -212,21 +227,6 @@ class Twig_Compiler implements Twig_CompilerInterface
             $this->debugInfo[$this->sourceLine] = $node->getTemplateLine();
 
             $this->lastLine = $node->getTemplateLine();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Writes a string to the compiled code by adding indentation.
-     *
-     * @return $this
-     */
-    public function write()
-    {
-        $strings = func_get_args();
-        foreach ($strings as $string) {
-            $this->source .= str_repeat(' ', $this->indentation * 4) . $string;
         }
 
         return $this;

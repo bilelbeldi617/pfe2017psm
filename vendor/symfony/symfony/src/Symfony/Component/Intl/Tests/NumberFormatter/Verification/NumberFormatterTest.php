@@ -20,6 +20,13 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 class NumberFormatterTest extends AbstractNumberFormatterTest
 {
+    protected function setUp()
+    {
+        IntlTestHelper::requireFullIntl($this, '55.1');
+
+        parent::setUp();
+    }
+
     public function testCreate()
     {
         $this->assertInstanceOf('\NumberFormatter', \NumberFormatter::create('en', \NumberFormatter::DECIMAL));
@@ -30,13 +37,6 @@ class NumberFormatterTest extends AbstractNumberFormatterTest
         IntlTestHelper::requireFullIntl($this, '57.1');
 
         parent::testGetTextAttribute();
-    }
-
-    protected function setUp()
-    {
-        IntlTestHelper::requireFullIntl($this, '55.1');
-
-        parent::setUp();
     }
 
     protected function getNumberFormatter($locale = 'en', $style = null, $pattern = null)

@@ -9,8 +9,7 @@
 namespace projetBundle\Entity;
 
 
-class Resultat2
-{
+class Resultat2 {
     private $moyenne;
     private $matiere;
     private $note;

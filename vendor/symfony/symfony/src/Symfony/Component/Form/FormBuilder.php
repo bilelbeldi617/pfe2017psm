@@ -40,11 +40,11 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
     /**
      * Creates a new form builder.
      *
-     * @param string $name
-     * @param string $dataClass
+     * @param string                   $name
+     * @param string                   $dataClass
      * @param EventDispatcherInterface $dispatcher
-     * @param FormFactoryInterface $factory
-     * @param array $options
+     * @param FormFactoryInterface     $factory
+     * @param array                    $options
      */
     public function __construct($name, $dataClass, EventDispatcherInterface $dispatcher, FormFactoryInterface $factory, array $options = array())
     {
@@ -92,43 +92,6 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
     /**
      * {@inheritdoc}
      */
-    public function get($name)
-    {
-        if ($this->locked) {
-            throw new BadMethodCallException('FormBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
-        }
-
-        if (isset($this->unresolvedChildren[$name])) {
-            return $this->resolveChild($name);
-        }
-
-        if (isset($this->children[$name])) {
-            return $this->children[$name];
-        }
-
-        throw new InvalidArgumentException(sprintf('The child with the name "%s" does not exist.', $name));
-    }
-
-    /**
-     * Converts an unresolved child into a {@link FormBuilder} instance.
-     *
-     * @param string $name The name of the unresolved child
-     *
-     * @return self The created instance
-     */
-    private function resolveChild($name)
-    {
-        $info = $this->unresolvedChildren[$name];
-        $child = $this->create($name, $info['type'], $info['options']);
-        $this->children[$name] = $child;
-        unset($this->unresolvedChildren[$name]);
-
-        return $child;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function create($name, $type = null, array $options = array())
     {
         if ($this->locked) {
@@ -144,6 +107,26 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
         }
 
         return $this->getFormFactory()->createBuilderForProperty($this->getDataClass(), $name, null, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($name)
+    {
+        if ($this->locked) {
+            throw new BadMethodCallException('FormBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
+        }
+
+        if (isset($this->unresolvedChildren[$name])) {
+            return $this->resolveChild($name);
+        }
+
+        if (isset($this->children[$name])) {
+            return $this->children[$name];
+        }
+
+        throw new InvalidArgumentException(sprintf('The child with the name "%s" does not exist.', $name));
     }
 
     /**
@@ -183,6 +166,20 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
     /**
      * {@inheritdoc}
      */
+    public function all()
+    {
+        if ($this->locked) {
+            throw new BadMethodCallException('FormBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
+        }
+
+        $this->resolveChildren();
+
+        return $this->children;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function count()
     {
         if ($this->locked) {
@@ -190,6 +187,20 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
         }
 
         return count($this->children);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFormConfig()
+    {
+        /** @var $config self */
+        $config = parent::getFormConfig();
+
+        $config->children = array();
+        $config->unresolvedChildren = array();
+
+        return $config;
     }
 
     /**
@@ -219,32 +230,6 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
     }
 
     /**
-     * Converts all unresolved children into {@link FormBuilder} instances.
-     */
-    private function resolveChildren()
-    {
-        foreach ($this->unresolvedChildren as $name => $info) {
-            $this->children[$name] = $this->create($name, $info['type'], $info['options']);
-        }
-
-        $this->unresolvedChildren = array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormConfig()
-    {
-        /** @var $config self */
-        $config = parent::getFormConfig();
-
-        $config->children = array();
-        $config->unresolvedChildren = array();
-
-        return $config;
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @return FormBuilderInterface[]
@@ -259,16 +244,31 @@ class FormBuilder extends FormConfigBuilder implements \IteratorAggregate, FormB
     }
 
     /**
-     * {@inheritdoc}
+     * Converts an unresolved child into a {@link FormBuilder} instance.
+     *
+     * @param string $name The name of the unresolved child
+     *
+     * @return self The created instance
      */
-    public function all()
+    private function resolveChild($name)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException('FormBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
+        $info = $this->unresolvedChildren[$name];
+        $child = $this->create($name, $info['type'], $info['options']);
+        $this->children[$name] = $child;
+        unset($this->unresolvedChildren[$name]);
+
+        return $child;
+    }
+
+    /**
+     * Converts all unresolved children into {@link FormBuilder} instances.
+     */
+    private function resolveChildren()
+    {
+        foreach ($this->unresolvedChildren as $name => $info) {
+            $this->children[$name] = $this->create($name, $info['type'], $info['options']);
         }
 
-        $this->resolveChildren();
-
-        return $this->children;
+        $this->unresolvedChildren = array();
     }
 }

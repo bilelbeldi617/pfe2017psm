@@ -14,6 +14,7 @@ $fooFactory->setFactory(array(new Definition('Foobar'), 'createFooFactory'));
 $container
     ->register('foo', 'Foo')
     ->setFactory(array($fooFactory, 'createFoo'))
-    ->setConfigurator(array($bar, 'configureFoo'));
+    ->setConfigurator(array($bar, 'configureFoo'))
+;
 
 return $container;

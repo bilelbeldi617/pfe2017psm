@@ -39,7 +39,7 @@ class SqlValueVisitor extends ExpressionVisitor
     /**
      * @var array
      */
-    private $types = array();
+    private $types  = array();
 
     /**
      * Converts a comparison expression into the target query language output.
@@ -50,9 +50,9 @@ class SqlValueVisitor extends ExpressionVisitor
      */
     public function walkComparison(Comparison $comparison)
     {
-        $value = $this->getValueFromComparison($comparison);
-        $field = $comparison->getField();
-        $operator = $comparison->getOperator();
+        $value          = $this->getValueFromComparison($comparison);
+        $field          = $comparison->getField();
+        $operator       = $comparison->getOperator();
 
         if (($operator === Comparison::EQ || $operator === Comparison::IS) && $value === null) {
             return;
@@ -61,23 +61,7 @@ class SqlValueVisitor extends ExpressionVisitor
         }
 
         $this->values[] = $value;
-        $this->types[] = array($field, $value);
-    }
-
-    /**
-     * Returns the value from a Comparison. In case of a CONTAINS comparison,
-     * the value is wrapped in %-signs, because it will be used in a LIKE clause.
-     *
-     * @param \Doctrine\Common\Collections\Expr\Comparison $comparison
-     * @return mixed
-     */
-    protected function getValueFromComparison(Comparison $comparison)
-    {
-        $value = $comparison->getValue()->getValue();
-
-        return $comparison->getOperator() == Comparison::CONTAINS
-            ? "%{$value}%"
-            : $value;
+        $this->types[]  = array($field, $value);
     }
 
     /**
@@ -114,5 +98,21 @@ class SqlValueVisitor extends ExpressionVisitor
     public function getParamsAndTypes()
     {
         return array($this->values, $this->types);
+    }
+
+    /**
+     * Returns the value from a Comparison. In case of a CONTAINS comparison,
+     * the value is wrapped in %-signs, because it will be used in a LIKE clause.
+     *
+     * @param \Doctrine\Common\Collections\Expr\Comparison $comparison
+     * @return mixed
+     */
+    protected function getValueFromComparison(Comparison $comparison)
+    {
+        $value = $comparison->getValue()->getValue();
+
+        return $comparison->getOperator() == Comparison::CONTAINS
+            ? "%{$value}%"
+            : $value;
     }
 }

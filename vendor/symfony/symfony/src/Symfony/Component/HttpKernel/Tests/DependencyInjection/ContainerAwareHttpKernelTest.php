@@ -40,7 +40,8 @@ class ContainerAwareHttpKernelTest extends TestCase
             ->expectsEnterScopeOnce($container)
             ->expectsLeaveScopeOnce($container)
             ->expectsSetRequestWithAt($container, $request, 3)
-            ->expectsSetRequestWithAt($container, null, 4);
+            ->expectsSetRequestWithAt($container, null, 4)
+        ;
 
         $dispatcher = new EventDispatcher();
         $resolver = $this->getResolverMockFor($controller, $request);
@@ -50,51 +51,6 @@ class ContainerAwareHttpKernelTest extends TestCase
         $actual = $kernel->handle($request, $type);
 
         $this->assertSame($expected, $actual, '->handle() returns the response');
-    }
-
-    private function expectsSetRequestWithAt($container, $with, $at)
-    {
-        $container
-            ->expects($this->at($at))
-            ->method('set')
-            ->with($this->equalTo('request'), $this->equalTo($with), $this->equalTo('request'));
-
-        return $this;
-    }
-
-    private function expectsLeaveScopeOnce($container)
-    {
-        $container
-            ->expects($this->once())
-            ->method('leaveScope')
-            ->with($this->equalTo('request'));
-
-        return $this;
-    }
-
-    private function expectsEnterScopeOnce($container)
-    {
-        $container
-            ->expects($this->once())
-            ->method('enterScope')
-            ->with($this->equalTo('request'));
-
-        return $this;
-    }
-
-    private function getResolverMockFor($controller, $request)
-    {
-        $resolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolverInterface')->getMock();
-        $resolver->expects($this->once())
-            ->method('getController')
-            ->with($request)
-            ->will($this->returnValue($controller));
-        $resolver->expects($this->once())
-            ->method('getArguments')
-            ->with($request, $controller)
-            ->will($this->returnValue(array()));
-
-        return $resolver;
     }
 
     /**
@@ -136,7 +92,8 @@ class ContainerAwareHttpKernelTest extends TestCase
             ->expectsEnterScopeOnce($container)
             ->expectsLeaveScopeOnce($container)
             ->expectsSetRequestWithAt($container, $request, 3)
-            ->expectsSetRequestWithAt($container, null, 4);
+            ->expectsSetRequestWithAt($container, null, 4)
+        ;
 
         $dispatcher = new EventDispatcher();
         $resolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolverInterface')->getMock();
@@ -162,5 +119,53 @@ class ContainerAwareHttpKernelTest extends TestCase
             array(HttpKernelInterface::MASTER_REQUEST),
             array(HttpKernelInterface::SUB_REQUEST),
         );
+    }
+
+    private function getResolverMockFor($controller, $request)
+    {
+        $resolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolverInterface')->getMock();
+        $resolver->expects($this->once())
+            ->method('getController')
+            ->with($request)
+            ->will($this->returnValue($controller));
+        $resolver->expects($this->once())
+            ->method('getArguments')
+            ->with($request, $controller)
+            ->will($this->returnValue(array()));
+
+        return $resolver;
+    }
+
+    private function expectsSetRequestWithAt($container, $with, $at)
+    {
+        $container
+            ->expects($this->at($at))
+            ->method('set')
+            ->with($this->equalTo('request'), $this->equalTo($with), $this->equalTo('request'))
+        ;
+
+        return $this;
+    }
+
+    private function expectsEnterScopeOnce($container)
+    {
+        $container
+            ->expects($this->once())
+            ->method('enterScope')
+            ->with($this->equalTo('request'))
+        ;
+
+        return $this;
+    }
+
+    private function expectsLeaveScopeOnce($container)
+    {
+        $container
+            ->expects($this->once())
+            ->method('leaveScope')
+            ->with($this->equalTo('request'))
+        ;
+
+        return $this;
     }
 }

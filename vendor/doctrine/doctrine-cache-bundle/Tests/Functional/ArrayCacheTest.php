@@ -32,7 +32,7 @@ class ArrayCacheTest extends BaseCacheTest
     protected function createCacheDriver()
     {
         $container = $this->compileContainer('array');
-        $cache = $container->get('doctrine_cache.providers.my_array_cache');
+        $cache     = $container->get('doctrine_cache.providers.my_array_cache');
 
         return $cache;
     }

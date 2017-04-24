@@ -36,7 +36,7 @@ class Firewall implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param FirewallMapInterface $map A FirewallMapInterface instance
+     * @param FirewallMapInterface     $map        A FirewallMapInterface instance
      * @param EventDispatcherInterface $dispatcher An EventDispatcherInterface instance
      */
     public function __construct(FirewallMapInterface $map, EventDispatcherInterface $dispatcher)
@@ -44,17 +44,6 @@ class Firewall implements EventSubscriberInterface
         $this->map = $map;
         $this->dispatcher = $dispatcher;
         $this->exceptionListeners = new \SplObjectStorage();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::REQUEST => array('onKernelRequest', 8),
-            KernelEvents::FINISH_REQUEST => 'onKernelFinishRequest',
-        );
     }
 
     /**
@@ -93,5 +82,16 @@ class Firewall implements EventSubscriberInterface
             $this->exceptionListeners[$request]->unregister($this->dispatcher);
             unset($this->exceptionListeners[$request]);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::REQUEST => array('onKernelRequest', 8),
+            KernelEvents::FINISH_REQUEST => 'onKernelFinishRequest',
+        );
     }
 }

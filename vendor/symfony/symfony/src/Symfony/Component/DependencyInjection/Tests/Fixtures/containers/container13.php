@@ -5,10 +5,12 @@ use Symfony\Component\DependencyInjection\Reference;
 
 $container = new ContainerBuilder();
 $container->
-register('foo', 'FooClass')->
-addArgument(new Reference('bar'));
+    register('foo', 'FooClass')->
+    addArgument(new Reference('bar'))
+;
 $container->
-register('bar', 'BarClass');
+    register('bar', 'BarClass')
+;
 $container->compile();
 
 return $container;

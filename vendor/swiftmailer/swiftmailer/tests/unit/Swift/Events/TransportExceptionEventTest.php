@@ -10,22 +10,7 @@ class Swift_Events_TransportExceptionEventTest extends \PHPUnit_Framework_TestCa
         $ref = $evt->getException();
         $this->assertEquals($ex, $ref,
             '%s: Exception should be available via getException()'
-        );
-    }
-
-    private function _createException()
-    {
-        return new Swift_TransportException('');
-    }
-
-    private function _createTransport()
-    {
-        return $this->getMockBuilder('Swift_Transport')->getMock();
-    }
-
-    private function _createEvent(Swift_Transport $transport, Swift_TransportException $ex)
-    {
-        return new Swift_Events_TransportExceptionEvent($transport, $ex);
+            );
     }
 
     public function testSourceIsTransport()
@@ -36,6 +21,21 @@ class Swift_Events_TransportExceptionEventTest extends \PHPUnit_Framework_TestCa
         $ref = $evt->getSource();
         $this->assertEquals($transport, $ref,
             '%s: Transport should be available via getSource()'
-        );
+            );
+    }
+
+    private function _createEvent(Swift_Transport $transport, Swift_TransportException $ex)
+    {
+        return new Swift_Events_TransportExceptionEvent($transport, $ex);
+    }
+
+    private function _createTransport()
+    {
+        return $this->getMockBuilder('Swift_Transport')->getMock();
+    }
+
+    private function _createException()
+    {
+        return new Swift_TransportException('');
     }
 }

@@ -95,17 +95,17 @@ class SchemaDiff
     /**
      * Constructs an SchemaDiff object.
      *
-     * @param \Doctrine\DBAL\Schema\Table[] $newTables
+     * @param \Doctrine\DBAL\Schema\Table[]     $newTables
      * @param \Doctrine\DBAL\Schema\TableDiff[] $changedTables
-     * @param \Doctrine\DBAL\Schema\Table[] $removedTables
+     * @param \Doctrine\DBAL\Schema\Table[]     $removedTables
      * @param \Doctrine\DBAL\Schema\Schema|null $fromSchema
      */
     public function __construct($newTables = array(), $changedTables = array(), $removedTables = array(), Schema $fromSchema = null)
     {
-        $this->newTables = $newTables;
+        $this->newTables     = $newTables;
         $this->changedTables = $changedTables;
         $this->removedTables = $removedTables;
-        $this->fromSchema = $fromSchema;
+        $this->fromSchema    = $fromSchema;
     }
 
     /**
@@ -128,7 +128,17 @@ class SchemaDiff
 
     /**
      * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     * @param boolean $saveMode
+     *
+     * @return array
+     */
+    public function toSql(AbstractPlatform $platform)
+    {
+        return $this->_toSql($platform, false);
+    }
+
+    /**
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
+     * @param boolean                                   $saveMode
      *
      * @return array
      */
@@ -190,15 +200,5 @@ class SchemaDiff
         }
 
         return $sql;
-    }
-
-    /**
-     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     *
-     * @return array
-     */
-    public function toSql(AbstractPlatform $platform)
-    {
-        return $this->_toSql($platform, false);
     }
 }

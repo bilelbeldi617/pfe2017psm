@@ -54,8 +54,8 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      * Wrapper for {@link ExecutionContextInterface::buildViolation} that
      * supports the 2.4 context API.
      *
-     * @param string $message The violation message
-     * @param array $parameters The message parameters
+     * @param string $message    The violation message
+     * @param array  $parameters The message parameters
      *
      * @return ConstraintViolationBuilderInterface The violation builder
      *
@@ -63,7 +63,7 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      */
     protected function buildViolation($message, array $parameters = array())
     {
-        @trigger_error('The ' . __METHOD__ . ' is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         if ($this->context instanceof ExecutionContextInterface2Dot5) {
             return $this->context->buildViolation($message, $parameters);
@@ -76,9 +76,9 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      * Wrapper for {@link ExecutionContextInterface::buildViolation} that
      * supports the 2.4 context API.
      *
-     * @param ExecutionContextInterface $context The context to use
-     * @param string $message The violation message
-     * @param array $parameters The message parameters
+     * @param ExecutionContextInterface $context    The context to use
+     * @param string                    $message    The violation message
+     * @param array                     $parameters The message parameters
      *
      * @return ConstraintViolationBuilderInterface The violation builder
      *
@@ -86,7 +86,7 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      */
     protected function buildViolationInContext(ExecutionContextInterface $context, $message, array $parameters = array())
     {
-        @trigger_error('The ' . __METHOD__ . ' is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         if ($context instanceof ExecutionContextInterface2Dot5) {
             return $context->buildViolation($message, $parameters);
@@ -113,29 +113,6 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
     }
 
     /**
-     * Returns a string representation of a list of values.
-     *
-     * Each of the values is converted to a string using
-     * {@link formatValue()}. The values are then concatenated with commas.
-     *
-     * @param array $values A list of values
-     * @param int $format A bitwise combination of the format
-     *                      constants in this class
-     *
-     * @return string The string representation of the value list
-     *
-     * @see formatValue()
-     */
-    protected function formatValues(array $values, $format = 0)
-    {
-        foreach ($values as $key => $value) {
-            $values[$key] = $this->formatValue($value, $format);
-        }
-
-        return implode(', ', $values);
-    }
-
-    /**
      * Returns a string representation of the value.
      *
      * This method returns the equivalent PHP tokens for most scalar types
@@ -151,8 +128,8 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      * won't know what an "object", "array" or "resource" is and will be
      * confused by the violation message.
      *
-     * @param mixed $value The value to format as string
-     * @param int $format A bitwise combination of the format
+     * @param mixed $value  The value to format as string
+     * @param int   $format A bitwise combination of the format
      *                      constants in this class
      *
      * @return string The string representation of the passed value
@@ -194,7 +171,7 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
         }
 
         if (is_string($value)) {
-            return '"' . $value . '"';
+            return '"'.$value.'"';
         }
 
         if (is_resource($value)) {
@@ -213,6 +190,29 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
             return 'true';
         }
 
-        return (string)$value;
+        return (string) $value;
+    }
+
+    /**
+     * Returns a string representation of a list of values.
+     *
+     * Each of the values is converted to a string using
+     * {@link formatValue()}. The values are then concatenated with commas.
+     *
+     * @param array $values A list of values
+     * @param int   $format A bitwise combination of the format
+     *                      constants in this class
+     *
+     * @return string The string representation of the value list
+     *
+     * @see formatValue()
+     */
+    protected function formatValues(array $values, $format = 0)
+    {
+        foreach ($values as $key => $value) {
+            $values[$key] = $this->formatValue($value, $format);
+        }
+
+        return implode(', ', $values);
     }
 }

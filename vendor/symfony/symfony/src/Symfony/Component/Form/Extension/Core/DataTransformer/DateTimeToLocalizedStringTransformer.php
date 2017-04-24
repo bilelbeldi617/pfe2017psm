@@ -32,12 +32,12 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @see BaseDateTimeTransformer::formats for available format options
      *
-     * @param string $inputTimezone The name of the input timezone
+     * @param string $inputTimezone  The name of the input timezone
      * @param string $outputTimezone The name of the output timezone
-     * @param int $dateFormat The date format
-     * @param int $timeFormat The time format
-     * @param int $calendar One of the \IntlDateFormatter calendar constants
-     * @param string $pattern A pattern to pass to \IntlDateFormatter
+     * @param int    $dateFormat     The date format
+     * @param int    $timeFormat     The time format
+     * @param int    $calendar       One of the \IntlDateFormatter calendar constants
+     * @param string $pattern        A pattern to pass to \IntlDateFormatter
      *
      * @throws UnexpectedTypeException If a format is not supported or if a timezone is not a string
      */
@@ -98,35 +98,6 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     }
 
     /**
-     * Returns a preconfigured IntlDateFormatter instance.
-     *
-     * @param bool $ignoreTimezone Use UTC regardless of the configured timezone.
-     *
-     * @return \IntlDateFormatter
-     *
-     * @throws TransformationFailedException in case the date formatter can not be constructed.
-     */
-    protected function getIntlDateFormatter($ignoreTimezone = false)
-    {
-        $dateFormat = $this->dateFormat;
-        $timeFormat = $this->timeFormat;
-        $timezone = $ignoreTimezone ? 'UTC' : $this->outputTimezone;
-        $calendar = $this->calendar;
-        $pattern = $this->pattern;
-
-        $intlDateFormatter = new \IntlDateFormatter(\Locale::getDefault(), $dateFormat, $timeFormat, $timezone, $calendar, $pattern);
-
-        // new \intlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
-        if (!$intlDateFormatter) {
-            throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
-        }
-
-        $intlDateFormatter->setLenient(false);
-
-        return $intlDateFormatter;
-    }
-
-    /**
      * Transforms a localized date string/array into a normalized date.
      *
      * @param string|array $value Localized date string/array
@@ -176,6 +147,35 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         }
 
         return $dateTime;
+    }
+
+    /**
+     * Returns a preconfigured IntlDateFormatter instance.
+     *
+     * @param bool $ignoreTimezone Use UTC regardless of the configured timezone.
+     *
+     * @return \IntlDateFormatter
+     *
+     * @throws TransformationFailedException in case the date formatter can not be constructed.
+     */
+    protected function getIntlDateFormatter($ignoreTimezone = false)
+    {
+        $dateFormat = $this->dateFormat;
+        $timeFormat = $this->timeFormat;
+        $timezone = $ignoreTimezone ? 'UTC' : $this->outputTimezone;
+        $calendar = $this->calendar;
+        $pattern = $this->pattern;
+
+        $intlDateFormatter = new \IntlDateFormatter(\Locale::getDefault(), $dateFormat, $timeFormat, $timezone, $calendar, $pattern);
+
+        // new \intlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
+        if (!$intlDateFormatter) {
+            throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
+        }
+
+        $intlDateFormatter->setLenient(false);
+
+        return $intlDateFormatter;
     }
 
     /**

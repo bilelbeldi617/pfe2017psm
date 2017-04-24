@@ -37,8 +37,8 @@ class PackageFactory
      * Returns either the HTTP or SSL version of an asset package.
      *
      * @param Request $request The current request
-     * @param string $httpId The id for the package to use when the current request is HTTP
-     * @param string $sslId The id for the package to use when the current request is SSL
+     * @param string  $httpId  The id for the package to use when the current request is HTTP
+     * @param string  $sslId   The id for the package to use when the current request is SSL
      *
      * @return PackageInterface The package
      */

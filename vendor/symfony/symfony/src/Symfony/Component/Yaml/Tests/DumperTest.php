@@ -36,6 +36,21 @@ class DumperTest extends TestCase
         ),
     );
 
+    protected function setUp()
+    {
+        $this->parser = new Parser();
+        $this->dumper = new Dumper();
+        $this->path = __DIR__.'/Fixtures';
+    }
+
+    protected function tearDown()
+    {
+        $this->parser = null;
+        $this->dumper = null;
+        $this->path = null;
+        $this->array = null;
+    }
+
     public function testSetIndentation()
     {
         $this->dumper->setIndentation(7);
@@ -64,9 +79,9 @@ EOF;
 
     public function testSpecifications()
     {
-        $files = $this->parser->parse(file_get_contents($this->path . '/index.yml'));
+        $files = $this->parser->parse(file_get_contents($this->path.'/index.yml'));
         foreach ($files as $file) {
-            $yamls = file_get_contents($this->path . '/' . $file . '.yml');
+            $yamls = file_get_contents($this->path.'/'.$file.'.yml');
 
             // split YAMLs documents
             foreach (preg_split('/^---( %YAML\:1\.0)?/m', $yamls) as $yaml) {
@@ -80,7 +95,7 @@ EOF;
                 } elseif (isset($test['todo']) && $test['todo']) {
                     // TODO
                 } else {
-                    eval('$expected = ' . trim($test['php']) . ';');
+                    eval('$expected = '.trim($test['php']).';');
                     $this->assertSame($expected, $this->parser->parse($this->dumper->dump($expected, 10)), $test['test']);
                 }
             }
@@ -231,21 +246,6 @@ EOF;
     public function testNegativeIndentationThrowsException()
     {
         $this->dumper->setIndentation(-4);
-    }
-
-    protected function setUp()
-    {
-        $this->parser = new Parser();
-        $this->dumper = new Dumper();
-        $this->path = __DIR__ . '/Fixtures';
-    }
-
-    protected function tearDown()
-    {
-        $this->parser = null;
-        $this->dumper = null;
-        $this->path = null;
-        $this->array = null;
     }
 }
 

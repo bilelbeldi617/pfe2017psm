@@ -26,8 +26,8 @@ class SecurityIdentityRetrievalStrategyTest extends \PHPUnit_Framework_TestCase
 
         if ('anonymous' === $authenticationStatus) {
             $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\AnonymousToken')
-                ->disableOriginalConstructor()
-                ->getMock();
+                                ->disableOriginalConstructor()
+                                ->getMock();
         } else {
             $class = '';
             if (is_string($user)) {
@@ -35,22 +35,25 @@ class SecurityIdentityRetrievalStrategyTest extends \PHPUnit_Framework_TestCase
             }
 
             $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')
-                ->setMockClassName($class)
-                ->getMock();
+                        ->setMockClassName($class)
+                        ->getMock();
         }
         $token
             ->expects($this->once())
             ->method('getRoles')
-            ->will($this->returnValue(array('foo')));
+            ->will($this->returnValue(array('foo')))
+        ;
         if ('anonymous' === $authenticationStatus) {
             $token
                 ->expects($this->never())
-                ->method('getUser');
+                ->method('getUser')
+            ;
         } else {
             $token
                 ->expects($this->once())
                 ->method('getUser')
-                ->will($this->returnValue($user));
+                ->will($this->returnValue($user))
+            ;
         }
 
         $extractedSids = $strategy->getSecurityIdentities($token);
@@ -64,57 +67,6 @@ class SecurityIdentityRetrievalStrategyTest extends \PHPUnit_Framework_TestCase
                 $this->fail(sprintf('Index: %d, expected SID "%s", but got "%s".', $index, $sids[$index], $extractedSid));
             }
         }
-    }
-
-    protected function getStrategy(array $roles = array(), $authenticationStatus = 'fullFledged')
-    {
-        $roleHierarchy = $this->getMock('Symfony\Component\Security\Core\Role\RoleHierarchyInterface');
-        $roleHierarchy
-            ->expects($this->once())
-            ->method('getReachableRoles')
-            ->with($this->equalTo(array('foo')))
-            ->will($this->returnValue($roles));
-
-        $trustResolver = $this->getMock('Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolver', array(), array('', ''));
-
-        $trustResolver
-            ->expects($this->at(0))
-            ->method('isAnonymous')
-            ->will($this->returnValue('anonymous' === $authenticationStatus));
-
-        if ('fullFledged' === $authenticationStatus) {
-            $trustResolver
-                ->expects($this->once())
-                ->method('isFullFledged')
-                ->will($this->returnValue(true));
-            $trustResolver
-                ->expects($this->never())
-                ->method('isRememberMe');
-        } elseif ('rememberMe' === $authenticationStatus) {
-            $trustResolver
-                ->expects($this->once())
-                ->method('isFullFledged')
-                ->will($this->returnValue(false));
-            $trustResolver
-                ->expects($this->once())
-                ->method('isRememberMe')
-                ->will($this->returnValue(true));
-        } else {
-            $trustResolver
-                ->expects($this->at(1))
-                ->method('isAnonymous')
-                ->will($this->returnValue(true));
-            $trustResolver
-                ->expects($this->once())
-                ->method('isFullFledged')
-                ->will($this->returnValue(false));
-            $trustResolver
-                ->expects($this->once())
-                ->method('isRememberMe')
-                ->will($this->returnValue(false));
-        }
-
-        return new SecurityIdentityRetrievalStrategy($roleHierarchy, $trustResolver);
     }
 
     public function getSecurityIdentityRetrievalTests()
@@ -161,9 +113,70 @@ class SecurityIdentityRetrievalStrategyTest extends \PHPUnit_Framework_TestCase
         $account
             ->expects($this->any())
             ->method('getUsername')
-            ->will($this->returnValue($username));
+            ->will($this->returnValue($username))
+        ;
 
         return $account;
+    }
+
+    protected function getStrategy(array $roles = array(), $authenticationStatus = 'fullFledged')
+    {
+        $roleHierarchy = $this->getMock('Symfony\Component\Security\Core\Role\RoleHierarchyInterface');
+        $roleHierarchy
+            ->expects($this->once())
+            ->method('getReachableRoles')
+            ->with($this->equalTo(array('foo')))
+            ->will($this->returnValue($roles))
+        ;
+
+        $trustResolver = $this->getMock('Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolver', array(), array('', ''));
+
+        $trustResolver
+            ->expects($this->at(0))
+            ->method('isAnonymous')
+            ->will($this->returnValue('anonymous' === $authenticationStatus))
+        ;
+
+        if ('fullFledged' === $authenticationStatus) {
+            $trustResolver
+                ->expects($this->once())
+                ->method('isFullFledged')
+                ->will($this->returnValue(true))
+            ;
+            $trustResolver
+                ->expects($this->never())
+                ->method('isRememberMe')
+            ;
+        } elseif ('rememberMe' === $authenticationStatus) {
+            $trustResolver
+                ->expects($this->once())
+                ->method('isFullFledged')
+                ->will($this->returnValue(false))
+            ;
+            $trustResolver
+                ->expects($this->once())
+                ->method('isRememberMe')
+                ->will($this->returnValue(true))
+            ;
+        } else {
+            $trustResolver
+                ->expects($this->at(1))
+                ->method('isAnonymous')
+                ->will($this->returnValue(true))
+            ;
+            $trustResolver
+                ->expects($this->once())
+                ->method('isFullFledged')
+                ->will($this->returnValue(false))
+            ;
+            $trustResolver
+                ->expects($this->once())
+                ->method('isRememberMe')
+                ->will($this->returnValue(false))
+            ;
+        }
+
+        return new SecurityIdentityRetrievalStrategy($roleHierarchy, $trustResolver);
     }
 }
 

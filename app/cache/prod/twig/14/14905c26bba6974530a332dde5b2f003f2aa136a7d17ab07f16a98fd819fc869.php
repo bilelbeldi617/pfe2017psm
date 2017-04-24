@@ -1,7 +1,6 @@
 <?php
 
 /* :default:index.html.twig */
-
 class __TwigTemplate_3fd4391efe97cd3ed3d2060749796384c2157f119801c5e68fb9f9cca5d54567 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -16,6 +15,17 @@ class __TwigTemplate_3fd4391efe97cd3ed3d2060749796384c2157f119801c5e68fb9f9cca5d
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "baseForAdmin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+    }
+
+    // line 3
     public function block_body($context, array $blocks = array())
     {
         // line 4
@@ -74,6 +84,7 @@ class __TwigTemplate_3fd4391efe97cd3ed3d2060749796384c2157f119801c5e68fb9f9cca5d
 ";
     }
 
+    // line 49
     public function block_stylesheets($context, array $blocks = array())
     {
         // line 50
@@ -106,14 +117,10 @@ class __TwigTemplate_3fd4391efe97cd3ed3d2060749796384c2157f119801c5e68fb9f9cca5d
 ";
     }
 
-    // line 3
-
     public function getTemplateName()
     {
         return ":default:index.html.twig";
     }
-
-    // line 49
 
     public function isTraitable()
     {
@@ -122,13 +129,13 @@ class __TwigTemplate_3fd4391efe97cd3ed3d2060749796384c2157f119801c5e68fb9f9cca5d
 
     public function getDebugInfo()
     {
-        return array(91 => 50, 88 => 49, 75 => 39, 48 => 15, 37 => 7, 32 => 4, 29 => 3, 11 => 1,);
+        return array (  91 => 50,  88 => 49,  75 => 39,  48 => 15,  37 => 7,  32 => 4,  29 => 3,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -136,15 +143,5 @@ class __TwigTemplate_3fd4391efe97cd3ed3d2060749796384c2157f119801c5e68fb9f9cca5d
     public function getSourceContext()
     {
         return new Twig_Source("", ":default:index.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\app/Resources\\views/default/index.html.twig");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "baseForAdmin.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
     }
 }

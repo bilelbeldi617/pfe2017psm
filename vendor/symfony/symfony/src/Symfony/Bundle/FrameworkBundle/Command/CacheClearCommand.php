@@ -45,7 +45,8 @@ and debug mode:
   <info>php %command.full_name% --env=dev</info>
   <info>php %command.full_name% --env=prod --no-debug</info>
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -59,7 +60,7 @@ EOF
         $realCacheDir = $this->getContainer()->getParameter('kernel.cache_dir');
         // the old cache dir name must not be longer than the real one to avoid exceeding
         // the maximum length of a directory or file path within it (esp. Windows MAX_PATH)
-        $oldCacheDir = substr($realCacheDir, 0, -1) . ('~' === substr($realCacheDir, -1) ? '+' : '~');
+        $oldCacheDir = substr($realCacheDir, 0, -1).('~' === substr($realCacheDir, -1) ? '+' : '~');
         $filesystem = $this->getContainer()->get('filesystem');
 
         if (!is_writable($realCacheDir)) {
@@ -80,7 +81,7 @@ EOF
             // the warmup cache dir name must have the same length than the real one
             // to avoid the many problems in serialized resources files
             $realCacheDir = realpath($realCacheDir);
-            $warmupDir = substr($realCacheDir, 0, -1) . ('_' === substr($realCacheDir, -1) ? '-' : '_');
+            $warmupDir = substr($realCacheDir, 0, -1).('_' === substr($realCacheDir, -1) ? '-' : '_');
 
             if ($filesystem->exists($warmupDir)) {
                 if ($outputIsVerbose) {
@@ -117,7 +118,7 @@ EOF
     /**
      * @param string $warmupDir
      * @param string $realCacheDir
-     * @param bool $enableOptionalWarmers
+     * @param bool   $enableOptionalWarmers
      */
     protected function warmup($warmupDir, $realCacheDir, $enableOptionalWarmers = true)
     {
@@ -148,7 +149,7 @@ EOF
 
         foreach (Finder::create()->files()->name('*.meta')->in($warmupDir) as $file) {
             file_put_contents($file, preg_replace(
-                '/(C\:\d+\:)"' . $safeTempKernel . '"/',
+                '/(C\:\d+\:)"'.$safeTempKernel.'"/',
                 sprintf('$1"%s"', $realKernelFQN),
                 file_get_contents($file)
             ));
@@ -165,10 +166,10 @@ EOF
         // fix references to container's class
         $tempContainerClass = get_class($tempKernel->getContainer());
         $realContainerClass = get_class($realKernel->getContainer());
-        foreach (Finder::create()->files()->name($tempContainerClass . '*')->in($warmupDir) as $file) {
+        foreach (Finder::create()->files()->name($tempContainerClass.'*')->in($warmupDir) as $file) {
             $content = str_replace($tempContainerClass, $realContainerClass, file_get_contents($file));
             file_put_contents($file, $content);
-            rename($file, str_replace(DIRECTORY_SEPARATOR . $tempContainerClass, DIRECTORY_SEPARATOR . $realContainerClass, $file));
+            rename($file, str_replace(DIRECTORY_SEPARATOR.$tempContainerClass, DIRECTORY_SEPARATOR.$realContainerClass, $file));
         }
 
         // remove temp kernel file after cache warmed up
@@ -177,9 +178,9 @@ EOF
 
     /**
      * @param KernelInterface $parent
-     * @param string $namespace
-     * @param string $parentClass
-     * @param string $warmupDir
+     * @param string          $namespace
+     * @param string          $parentClass
+     * @param string          $warmupDir
      *
      * @return KernelInterface
      */
@@ -190,9 +191,9 @@ EOF
         $logDir = var_export(realpath($parent->getLogDir()), true);
         // the temp kernel class name must have the same length than the real one
         // to avoid the many problems in serialized resources files
-        $class = substr($parentClass, 0, -1) . '_';
+        $class = substr($parentClass, 0, -1).'_';
         // the temp container class must be changed too
-        $containerClass = var_export(substr(get_class($parent->getContainer()), 0, -1) . '_', true);
+        $containerClass = var_export(substr(get_class($parent->getContainer()), 0, -1).'_', true);
         $code = <<<EOF
 <?php
 
@@ -241,7 +242,7 @@ namespace $namespace
 }
 EOF;
         $this->getContainer()->get('filesystem')->mkdir($warmupDir);
-        file_put_contents($file = $warmupDir . '/kernel.tmp', $code);
+        file_put_contents($file = $warmupDir.'/kernel.tmp', $code);
         require_once $file;
         $class = "$namespace\\$class";
 

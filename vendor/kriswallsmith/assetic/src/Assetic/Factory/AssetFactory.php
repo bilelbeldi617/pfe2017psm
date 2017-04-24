@@ -40,25 +40,15 @@ class AssetFactory
     /**
      * Constructor.
      *
-     * @param string $root The default root directory
+     * @param string  $root  The default root directory
      * @param Boolean $debug Filters prefixed with a "?" will be omitted in debug mode
      */
     public function __construct($root, $debug = false)
     {
-        $this->root = rtrim($root, '/');
-        $this->debug = $debug;
-        $this->output = 'assetic/*';
-        $this->workers = array();
-    }
-
-    /**
-     * Checks if the factory is in debug mode.
-     *
-     * @return Boolean Debug mode
-     */
-    public function isDebug()
-    {
-        return $this->debug;
+        $this->root      = rtrim($root, '/');
+        $this->debug     = $debug;
+        $this->output    = 'assetic/*';
+        $this->workers   = array();
     }
 
     /**
@@ -69,6 +59,16 @@ class AssetFactory
     public function setDebug($debug)
     {
         $this->debug = $debug;
+    }
+
+    /**
+     * Checks if the factory is in debug mode.
+     *
+     * @return Boolean Debug mode
+     */
+    public function isDebug()
+    {
+        return $this->debug;
     }
 
     /**
@@ -144,9 +144,9 @@ class AssetFactory
      *  * debug:  Forces debug mode on or off for this asset
      *  * root:   An array or string of more root directories
      *
-     * @param array|string $inputs An array of input strings
+     * @param array|string $inputs  An array of input strings
      * @param array|string $filters An array of filter names
-     * @param array $options An array of options
+     * @param array        $options An array of options
      *
      * @return AssetCollection An asset collection
      */
@@ -213,21 +213,21 @@ class AssetFactory
         if (!empty($options['vars'])) {
             $toAdd = array();
             foreach ($options['vars'] as $var) {
-                if (false !== strpos($options['output'], '{' . $var . '}')) {
+                if (false !== strpos($options['output'], '{'.$var.'}')) {
                     continue;
                 }
 
-                $toAdd[] = '{' . $var . '}';
+                $toAdd[] = '{'.$var.'}';
             }
 
             if ($toAdd) {
-                $options['output'] = str_replace('*', '*.' . implode('.', $toAdd), $options['output']);
+                $options['output'] = str_replace('*', '*.'.implode('.', $toAdd), $options['output']);
             }
         }
 
         // append consensus extension if missing
         if (1 == count($extensions) && !pathinfo($options['output'], PATHINFO_EXTENSION) && $extension = key($extensions)) {
-            $options['output'] .= '.' . $extension;
+            $options['output'] .= '.'.$extension;
         }
 
         // output --> target url
@@ -245,12 +245,42 @@ class AssetFactory
 
         ksort($options);
 
-        return substr(sha1(serialize($inputs) . serialize($filters) . serialize($options)), 0, 7);
+        return substr(sha1(serialize($inputs).serialize($filters).serialize($options)), 0, 7);
     }
 
-    protected function createAssetCollection(array $assets = array(), array $options = array())
+    public function getLastModified(AssetInterface $asset)
     {
-        return new AssetCollection($assets, array(), null, isset($options['vars']) ? $options['vars'] : array());
+        $mtime = 0;
+        foreach ($asset instanceof AssetCollectionInterface ? $asset : array($asset) as $leaf) {
+            $mtime = max($mtime, $leaf->getLastModified());
+
+            if (!$filters = $leaf->getFilters()) {
+                continue;
+            }
+
+            $prevFilters = array();
+            foreach ($filters as $filter) {
+                $prevFilters[] = $filter;
+
+                if (!$filter instanceof DependencyExtractorInterface) {
+                    continue;
+                }
+
+                // extract children from leaf after running all preceeding filters
+                $clone = clone $leaf;
+                $clone->clearFilters();
+                foreach (array_slice($prevFilters, 0, -1) as $prevFilter) {
+                    $clone->ensureFilter($prevFilter);
+                }
+                $clone->load();
+
+                foreach ($filter->getChildren($this, $clone->getContent(), $clone->getSourceDirectory()) as $child) {
+                    $mtime = max($mtime, $this->getLastModified($child));
+                }
+            }
+        }
+
+        return $mtime;
     }
 
     /**
@@ -265,8 +295,8 @@ class AssetFactory
      *
      * Both globs and paths will be absolutized using the current root directory.
      *
-     * @param string $input An input string
-     * @param array $options An array of options
+     * @param string $input   An input string
+     * @param array  $options An array of options
      *
      * @return AssetInterface An asset
      */
@@ -287,9 +317,9 @@ class AssetFactory
                 $path = null;
             }
         } else {
-            $root = $this->root;
-            $path = $input;
-            $input = $this->root . '/' . $path;
+            $root  = $this->root;
+            $path  = $input;
+            $input = $this->root.'/'.$path;
         }
 
         if (false !== strpos($input, '*')) {
@@ -297,6 +327,11 @@ class AssetFactory
         }
 
         return $this->createFileAsset($input, $root, $path, $options['vars']);
+    }
+
+    protected function createAssetCollection(array $assets = array(), array $options = array())
+    {
+        return new AssetCollection($assets, array(), null, isset($options['vars']) ? $options['vars'] : array());
     }
 
     protected function createAssetReference($name)
@@ -311,28 +346,6 @@ class AssetFactory
     protected function createHttpAsset($sourceUrl, $vars)
     {
         return new HttpAsset($sourceUrl, array(), false, $vars);
-    }
-
-    private static function isAbsolutePath($path)
-    {
-        return '/' == $path[0] || '\\' == $path[0] || (3 < strlen($path) && ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
-    }
-
-    /**
-     * Loops through the root directories and returns the first match.
-     *
-     * @param string $path An absolute path
-     * @param array $roots An array of root directories
-     *
-     * @return string|null The matching root directory, if found
-     */
-    private static function findRootDir($path, array $roots)
-    {
-        foreach ($roots as $root) {
-            if (0 === strpos($path, $root)) {
-                return $root;
-            }
-        }
     }
 
     protected function createGlobAsset($glob, $root = null, $vars)
@@ -387,38 +400,25 @@ class AssetFactory
         return $asset instanceof AssetCollectionInterface ? $asset : $this->createAssetCollection(array($asset));
     }
 
-    public function getLastModified(AssetInterface $asset)
+    private static function isAbsolutePath($path)
     {
-        $mtime = 0;
-        foreach ($asset instanceof AssetCollectionInterface ? $asset : array($asset) as $leaf) {
-            $mtime = max($mtime, $leaf->getLastModified());
+        return '/' == $path[0] || '\\' == $path[0] || (3 < strlen($path) && ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
+    }
 
-            if (!$filters = $leaf->getFilters()) {
-                continue;
-            }
-
-            $prevFilters = array();
-            foreach ($filters as $filter) {
-                $prevFilters[] = $filter;
-
-                if (!$filter instanceof DependencyExtractorInterface) {
-                    continue;
-                }
-
-                // extract children from leaf after running all preceeding filters
-                $clone = clone $leaf;
-                $clone->clearFilters();
-                foreach (array_slice($prevFilters, 0, -1) as $prevFilter) {
-                    $clone->ensureFilter($prevFilter);
-                }
-                $clone->load();
-
-                foreach ($filter->getChildren($this, $clone->getContent(), $clone->getSourceDirectory()) as $child) {
-                    $mtime = max($mtime, $this->getLastModified($child));
-                }
+    /**
+     * Loops through the root directories and returns the first match.
+     *
+     * @param string $path  An absolute path
+     * @param array  $roots An array of root directories
+     *
+     * @return string|null The matching root directory, if found
+     */
+    private static function findRootDir($path, array $roots)
+    {
+        foreach ($roots as $root) {
+            if (0 === strpos($path, $root)) {
+                return $root;
             }
         }
-
-        return $mtime;
     }
 }

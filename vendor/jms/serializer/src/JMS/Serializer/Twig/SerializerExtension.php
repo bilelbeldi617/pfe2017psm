@@ -30,20 +30,20 @@ class SerializerExtension extends \Twig_Extension
 {
     protected $serializer;
 
-    public function __construct(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
-    }
-
     public function getName()
     {
         return 'jms_serializer';
     }
 
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
     public function getFilters()
     {
         return array(
-            'serialize' => new \Twig_Filter_Method($this, 'serialize'),
+            'serialize'      => new \Twig_Filter_Method($this, 'serialize'),
         );
     }
 

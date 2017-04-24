@@ -28,15 +28,6 @@ class FixedFilterListener implements EventSubscriberInterface
         ), $mapping);
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(
-            FormEvents::PRE_SUBMIT => 'preSubmit',
-            FormEvents::SUBMIT => 'onSubmit',
-            FormEvents::PRE_SET_DATA => 'preSetData',
-        );
-    }
-
     public function preSubmit(FormEvent $event)
     {
         $data = $event->getData();
@@ -62,5 +53,14 @@ class FixedFilterListener implements EventSubscriberInterface
         if (isset($this->mapping['preSetData'][$data])) {
             $event->setData($this->mapping['preSetData'][$data]);
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            FormEvents::PRE_SUBMIT => 'preSubmit',
+            FormEvents::SUBMIT => 'onSubmit',
+            FormEvents::PRE_SET_DATA => 'preSetData',
+        );
     }
 }

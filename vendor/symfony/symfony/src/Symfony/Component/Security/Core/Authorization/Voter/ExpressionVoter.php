@@ -33,9 +33,9 @@ class ExpressionVoter implements VoterInterface
     /**
      * Constructor.
      *
-     * @param ExpressionLanguage $expressionLanguage
+     * @param ExpressionLanguage                   $expressionLanguage
      * @param AuthenticationTrustResolverInterface $trustResolver
-     * @param RoleHierarchyInterface|null $roleHierarchy
+     * @param RoleHierarchyInterface|null          $roleHierarchy
      */
     public function __construct(ExpressionLanguage $expressionLanguage, AuthenticationTrustResolverInterface $trustResolver, RoleHierarchyInterface $roleHierarchy = null)
     {
@@ -47,6 +47,14 @@ class ExpressionVoter implements VoterInterface
     public function addExpressionLanguageProvider(ExpressionFunctionProviderInterface $provider)
     {
         $this->expressionLanguage->registerProvider($provider);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsAttribute($attribute)
+    {
+        return $attribute instanceof Expression;
     }
 
     /**
@@ -82,14 +90,6 @@ class ExpressionVoter implements VoterInterface
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsAttribute($attribute)
-    {
-        return $attribute instanceof Expression;
-    }
-
     private function getVariables(TokenInterface $token, $object)
     {
         if (null !== $this->roleHierarchy) {
@@ -103,9 +103,7 @@ class ExpressionVoter implements VoterInterface
             'user' => $token->getUser(),
             'object' => $object,
             'subject' => $object,
-            'roles' => array_map(function ($role) {
-                return $role->getRole();
-            }, $roles),
+            'roles' => array_map(function ($role) { return $role->getRole(); }, $roles),
             'trust_resolver' => $this->trustResolver,
         );
 

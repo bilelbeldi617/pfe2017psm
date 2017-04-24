@@ -20,6 +20,21 @@ class ChoicesToValuesTransformerTest extends TestCase
     protected $transformer;
     protected $transformerWithNull;
 
+    protected function setUp()
+    {
+        $list = new ArrayChoiceList(array('', false, 'X'));
+        $listWithNull = new ArrayChoiceList(array('', false, 'X', null));
+
+        $this->transformer = new ChoicesToValuesTransformer($list);
+        $this->transformerWithNull = new ChoicesToValuesTransformer($listWithNull);
+    }
+
+    protected function tearDown()
+    {
+        $this->transformer = null;
+        $this->transformerWithNull = null;
+    }
+
     public function testTransform()
     {
         $in = array('', false, 'X');
@@ -72,20 +87,5 @@ class ChoicesToValuesTransformerTest extends TestCase
     public function testReverseTransformExpectsArray()
     {
         $this->transformer->reverseTransform('foobar');
-    }
-
-    protected function setUp()
-    {
-        $list = new ArrayChoiceList(array('', false, 'X'));
-        $listWithNull = new ArrayChoiceList(array('', false, 'X', null));
-
-        $this->transformer = new ChoicesToValuesTransformer($list);
-        $this->transformerWithNull = new ChoicesToValuesTransformer($listWithNull);
-    }
-
-    protected function tearDown()
-    {
-        $this->transformer = null;
-        $this->transformerWithNull = null;
     }
 }

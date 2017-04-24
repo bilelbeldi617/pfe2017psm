@@ -34,6 +34,20 @@ class TextBundleWriterTest extends TestCase
      */
     private $filesystem;
 
+    protected function setUp()
+    {
+        $this->writer = new TextBundleWriter();
+        $this->directory = sys_get_temp_dir().'/TextBundleWriterTest/'.mt_rand(1000, 9999);
+        $this->filesystem = new Filesystem();
+
+        $this->filesystem->mkdir($this->directory);
+    }
+
+    protected function tearDown()
+    {
+        $this->filesystem->remove($this->directory);
+    }
+
     public function testWrite()
     {
         $this->writer->write($this->directory, 'en', array(
@@ -52,7 +66,7 @@ class TextBundleWriterTest extends TestCase
             'Entry2' => 'String',
         ));
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/en.txt', $this->directory . '/en.txt');
+        $this->assertFileEquals(__DIR__.'/Fixtures/en.txt', $this->directory.'/en.txt');
     }
 
     public function testWriteTraversable()
@@ -73,7 +87,7 @@ class TextBundleWriterTest extends TestCase
             'Entry2' => 'String',
         )));
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/en.txt', $this->directory . '/en.txt');
+        $this->assertFileEquals(__DIR__.'/Fixtures/en.txt', $this->directory.'/en.txt');
     }
 
     public function testWriteNoFallback()
@@ -84,7 +98,7 @@ class TextBundleWriterTest extends TestCase
 
         $this->writer->write($this->directory, 'en_nofallback', $data, $fallback = false);
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/en_nofallback.txt', $this->directory . '/en_nofallback.txt');
+        $this->assertFileEquals(__DIR__.'/Fixtures/en_nofallback.txt', $this->directory.'/en_nofallback.txt');
     }
 
     public function testEscapeKeysIfNecessary()
@@ -97,20 +111,6 @@ class TextBundleWriterTest extends TestCase
             'Entry With Spaces' => 'Value',
         ));
 
-        $this->assertFileEquals(__DIR__ . '/Fixtures/escaped.txt', $this->directory . '/escaped.txt');
-    }
-
-    protected function setUp()
-    {
-        $this->writer = new TextBundleWriter();
-        $this->directory = sys_get_temp_dir() . '/TextBundleWriterTest/' . mt_rand(1000, 9999);
-        $this->filesystem = new Filesystem();
-
-        $this->filesystem->mkdir($this->directory);
-    }
-
-    protected function tearDown()
-    {
-        $this->filesystem->remove($this->directory);
+        $this->assertFileEquals(__DIR__.'/Fixtures/escaped.txt', $this->directory.'/escaped.txt');
     }
 }

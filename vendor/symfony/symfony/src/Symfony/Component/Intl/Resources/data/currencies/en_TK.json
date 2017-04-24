@@ -1,9 +1,9 @@
 {
-  "Version": "2.1.27.40",
-  "Names": {
-    "NZD": [
-      "$",
-      "New Zealand Dollar"
-    ]
-  }
+    "Version": "2.1.27.40",
+    "Names": {
+        "NZD": [
+            "$",
+            "New Zealand Dollar"
+        ]
+    }
 }

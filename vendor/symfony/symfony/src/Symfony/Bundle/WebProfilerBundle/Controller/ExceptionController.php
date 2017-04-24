@@ -74,11 +74,6 @@ class ExceptionController
         ), 200, array('Content-Type' => 'text/html'));
     }
 
-    protected function getTemplate()
-    {
-        return '@Twig/Exception/' . ($this->debug ? 'exception' : 'error') . '.html.twig';
-    }
-
     /**
      * Renders the exception panel stylesheet for the given token.
      *
@@ -108,8 +103,12 @@ class ExceptionController
         return new Response($this->twig->render('@WebProfiler/Collector/exception.css.twig'), 200, array('Content-Type' => 'text/css'));
     }
 
-    // to be removed when the minimum required version of Twig is >= 2.0
+    protected function getTemplate()
+    {
+        return '@Twig/Exception/'.($this->debug ? 'exception' : 'error').'.html.twig';
+    }
 
+    // to be removed when the minimum required version of Twig is >= 2.0
     protected function templateExists($template)
     {
         $loader = $this->twig->getLoader();

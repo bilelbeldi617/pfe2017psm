@@ -22,6 +22,31 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 {
     private $cacheDir;
 
+    protected function setUp()
+    {
+        if (!class_exists('Assetic\\AssetManager')) {
+            $this->markTestSkipped('Assetic is not available.');
+        }
+
+        if (!class_exists('Symfony\Component\ClassLoader\ClassLoader')) {
+            $this->markTestSkipped('Symfony ClassLoader is not available.');
+        }
+
+        $this->cacheDir = __DIR__.'/Resources/cache';
+        if (file_exists($this->cacheDir)) {
+            $filesystem = new Filesystem();
+            $filesystem->remove($this->cacheDir);
+        }
+
+        mkdir($this->cacheDir, 0777, true);
+    }
+
+    protected function tearDown()
+    {
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->cacheDir);
+    }
+
     public function testTwigRenderDebug()
     {
         $kernel = new TestKernel('test', true);
@@ -46,30 +71,5 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, count($crawler->filter('link[href$=".css"]')));
         $this->assertEquals(2, count($crawler->filter('script[src$=".js"]')));
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Assetic\\AssetManager')) {
-            $this->markTestSkipped('Assetic is not available.');
-        }
-
-        if (!class_exists('Symfony\Component\ClassLoader\ClassLoader')) {
-            $this->markTestSkipped('Symfony ClassLoader is not available.');
-        }
-
-        $this->cacheDir = __DIR__ . '/Resources/cache';
-        if (file_exists($this->cacheDir)) {
-            $filesystem = new Filesystem();
-            $filesystem->remove($this->cacheDir);
-        }
-
-        mkdir($this->cacheDir, 0777, true);
-    }
-
-    protected function tearDown()
-    {
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->cacheDir);
     }
 }

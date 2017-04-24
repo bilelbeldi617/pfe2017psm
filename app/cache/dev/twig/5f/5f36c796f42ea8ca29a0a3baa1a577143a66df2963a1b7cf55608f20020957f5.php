@@ -16,10 +16,27 @@ class __TwigTemplate_33e010e50a7f981c3348eab7134fec3c10f2f183aebbcf2bce228006226
         );
     }
 
+    protected function doGetParent(array $context)
+    {
+        return "::baseForEnseignant.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = array())
+    {
+        $__internal_83df8b75e2ab9e6b6b4069446ab4d0571ac45549f67adb9b57154fd6dd0f37dd = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_83df8b75e2ab9e6b6b4069446ab4d0571ac45549f67adb9b57154fd6dd0f37dd->enter($__internal_83df8b75e2ab9e6b6b4069446ab4d0571ac45549f67adb9b57154fd6dd0f37dd_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Enseignant/insererNotesExamen"));
+
+        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_83df8b75e2ab9e6b6b4069446ab4d0571ac45549f67adb9b57154fd6dd0f37dd->leave($__internal_83df8b75e2ab9e6b6b4069446ab4d0571ac45549f67adb9b57154fd6dd0f37dd_prof);
+
+    }
+
+    // line 2
     public function block_script($context, array $blocks = array())
     {
-        $__internal_bef732b47f576ab6addd0b18d1e6f7b9cfd3a9ae00b16f78750a7c82cd3a208a = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_bef732b47f576ab6addd0b18d1e6f7b9cfd3a9ae00b16f78750a7c82cd3a208a->enter($__internal_bef732b47f576ab6addd0b18d1e6f7b9cfd3a9ae00b16f78750a7c82cd3a208a_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
+        $__internal_a92180f2ce27c2a6d63e07c1c91674d671d4cc678fa42ed6cdeed84e8436f8f5 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_a92180f2ce27c2a6d63e07c1c91674d671d4cc678fa42ed6cdeed84e8436f8f5->enter($__internal_a92180f2ce27c2a6d63e07c1c91674d671d4cc678fa42ed6cdeed84e8436f8f5_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "script"));
 
         // line 3
         echo "    <script language=\"JavaScript\">
@@ -123,30 +140,30 @@ class __TwigTemplate_33e010e50a7f981c3348eab7134fec3c10f2f183aebbcf2bce228006226
 
     </script>
     ";
-
-        $__internal_bef732b47f576ab6addd0b18d1e6f7b9cfd3a9ae00b16f78750a7c82cd3a208a->leave($__internal_bef732b47f576ab6addd0b18d1e6f7b9cfd3a9ae00b16f78750a7c82cd3a208a_prof);
+        
+        $__internal_a92180f2ce27c2a6d63e07c1c91674d671d4cc678fa42ed6cdeed84e8436f8f5->leave($__internal_a92180f2ce27c2a6d63e07c1c91674d671d4cc678fa42ed6cdeed84e8436f8f5_prof);
 
     }
 
+    // line 95
     public function block_title($context, array $blocks = array())
     {
-        $__internal_68cd6bb97135b1316efec28b2aeaea47a82dcc7b2220c930f07121e5f4190eb1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_68cd6bb97135b1316efec28b2aeaea47a82dcc7b2220c930f07121e5f4190eb1->enter($__internal_68cd6bb97135b1316efec28b2aeaea47a82dcc7b2220c930f07121e5f4190eb1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
+        $__internal_9ff2c48557c137898225be8afad9ae24b6a6da32366821c229aa16466b5b7af8 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_9ff2c48557c137898225be8afad9ae24b6a6da32366821c229aa16466b5b7af8->enter($__internal_9ff2c48557c137898225be8afad9ae24b6a6da32366821c229aa16466b5b7af8_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "title"));
 
         // line 96
         echo "    Insérer notes
 ";
-
-        $__internal_68cd6bb97135b1316efec28b2aeaea47a82dcc7b2220c930f07121e5f4190eb1->leave($__internal_68cd6bb97135b1316efec28b2aeaea47a82dcc7b2220c930f07121e5f4190eb1_prof);
+        
+        $__internal_9ff2c48557c137898225be8afad9ae24b6a6da32366821c229aa16466b5b7af8->leave($__internal_9ff2c48557c137898225be8afad9ae24b6a6da32366821c229aa16466b5b7af8_prof);
 
     }
 
-    // line 2
-
+    // line 98
     public function block_mainContent($context, array $blocks = array())
     {
-        $__internal_d37357a3226158f59ec9e82895e2ad593cd932f76dcf872d6611ab681972a5ed = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_d37357a3226158f59ec9e82895e2ad593cd932f76dcf872d6611ab681972a5ed->enter($__internal_d37357a3226158f59ec9e82895e2ad593cd932f76dcf872d6611ab681972a5ed_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
+        $__internal_d2a7b49a66ce4d468180c344ef227a6a30a5e26c5b3a9747c459ea99a3e41d85 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_d2a7b49a66ce4d468180c344ef227a6a30a5e26c5b3a9747c459ea99a3e41d85->enter($__internal_d2a7b49a66ce4d468180c344ef227a6a30a5e26c5b3a9747c459ea99a3e41d85_prof = new Twig_Profiler_Profile($this->getTemplateName(), "block", "mainContent"));
 
         // line 99
         echo "
@@ -210,29 +227,30 @@ class __TwigTemplate_33e010e50a7f981c3348eab7134fec3c10f2f183aebbcf2bce228006226
 
 
 ";
-
-        $__internal_d37357a3226158f59ec9e82895e2ad593cd932f76dcf872d6611ab681972a5ed->leave($__internal_d37357a3226158f59ec9e82895e2ad593cd932f76dcf872d6611ab681972a5ed_prof);
+        
+        $__internal_d2a7b49a66ce4d468180c344ef227a6a30a5e26c5b3a9747c459ea99a3e41d85->leave($__internal_d2a7b49a66ce4d468180c344ef227a6a30a5e26c5b3a9747c459ea99a3e41d85_prof);
 
     }
 
-    // line 95
+    public function getTemplateName()
+    {
+        return "@projet/Default/Enseignant/insererNotesExamen";
+    }
 
     public function isTraitable()
     {
         return false;
     }
 
-    // line 98
-
     public function getDebugInfo()
     {
-        return array(199 => 112, 188 => 110, 184 => 109, 175 => 103, 169 => 99, 163 => 98, 155 => 96, 149 => 95, 122 => 75, 85 => 41, 52 => 11, 42 => 3, 36 => 2, 11 => 1,);
+        return array (  199 => 112,  188 => 110,  184 => 109,  175 => 103,  169 => 99,  163 => 98,  155 => 96,  149 => 95,  122 => 75,  85 => 41,  52 => 11,  42 => 3,  36 => 2,  11 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
     public function getSource()
     {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
 
         return $this->getSourceContext()->getCode();
     }
@@ -381,26 +399,5 @@ class __TwigTemplate_33e010e50a7f981c3348eab7134fec3c10f2f183aebbcf2bce228006226
 
 
 {% endblock %}", "@projet/Default/Enseignant/insererNotesExamen", "C:\\wamp\\www\\PrimaSchoolManager\\src\\projetBundle\\Resources\\views\\Default\\Enseignant\\insererNotesExamen");
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "::baseForEnseignant.html.twig";
-    }
-
-    protected function doDisplay(array $context, array $blocks = array())
-    {
-        $__internal_68e663ec4a68aa5f4bec8943e7adbc367661aaa087913a3535b2273bb4c955b1 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_68e663ec4a68aa5f4bec8943e7adbc367661aaa087913a3535b2273bb4c955b1->enter($__internal_68e663ec4a68aa5f4bec8943e7adbc367661aaa087913a3535b2273bb4c955b1_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "@projet/Default/Enseignant/insererNotesExamen"));
-
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
-
-        $__internal_68e663ec4a68aa5f4bec8943e7adbc367661aaa087913a3535b2273bb4c955b1->leave($__internal_68e663ec4a68aa5f4bec8943e7adbc367661aaa087913a3535b2273bb4c955b1_prof);
-
-    }
-
-    public function getTemplateName()
-    {
-        return "@projet/Default/Enseignant/insererNotesExamen";
     }
 }

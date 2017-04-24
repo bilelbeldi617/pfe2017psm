@@ -64,34 +64,6 @@ class ContextListenerTest extends TestCase
         $this->assertEquals('test1', $token->getUsername());
     }
 
-    protected function runSessionOnKernelResponse($newToken, $original = null)
-    {
-        $session = new Session(new MockArraySessionStorage());
-
-        if ($original !== null) {
-            $session->set('_security_session', $original);
-        }
-
-        $tokenStorage = new TokenStorage();
-        $tokenStorage->setToken($newToken);
-
-        $request = new Request();
-        $request->setSession($session);
-        $request->cookies->set('MOCKSESSID', true);
-
-        $event = new FilterResponseEvent(
-            $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock(),
-            $request,
-            HttpKernelInterface::MASTER_REQUEST,
-            new Response()
-        );
-
-        $listener = new ContextListener($tokenStorage, array(), 'session', null, new EventDispatcher());
-        $listener->onKernelResponse($event);
-
-        return $session;
-    }
-
     public function testOnKernelResponseWillReplaceSession()
     {
         $session = $this->runSessionOnKernelResponse(
@@ -264,5 +236,33 @@ class ContextListenerTest extends TestCase
 
         $listener = new ContextListener($tokenStorage, array(), 'key123');
         $listener->handle($event);
+    }
+
+    protected function runSessionOnKernelResponse($newToken, $original = null)
+    {
+        $session = new Session(new MockArraySessionStorage());
+
+        if ($original !== null) {
+            $session->set('_security_session', $original);
+        }
+
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setToken($newToken);
+
+        $request = new Request();
+        $request->setSession($session);
+        $request->cookies->set('MOCKSESSID', true);
+
+        $event = new FilterResponseEvent(
+            $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock(),
+            $request,
+            HttpKernelInterface::MASTER_REQUEST,
+            new Response()
+        );
+
+        $listener = new ContextListener($tokenStorage, array(), 'session', null, new EventDispatcher());
+        $listener->onKernelResponse($event);
+
+        return $session;
     }
 }

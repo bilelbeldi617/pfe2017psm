@@ -30,7 +30,7 @@ class LocaleValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Locale) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Locale');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Locale');
         }
 
         if (null === $value || '' === $value) {
@@ -41,7 +41,7 @@ class LocaleValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string)$value;
+        $value = (string) $value;
         $locales = Intl::getLocaleBundle()->getLocaleNames();
         $aliases = Intl::getLocaleBundle()->getAliases();
 

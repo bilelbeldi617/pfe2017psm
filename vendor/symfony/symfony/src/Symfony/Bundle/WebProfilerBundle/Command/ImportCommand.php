@@ -64,7 +64,8 @@ You can also pipe the profile via STDIN:
 
   <info>cat profile_file | php %command.full_name%</info>
 EOF
-            );
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

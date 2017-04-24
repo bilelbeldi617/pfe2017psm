@@ -6,82 +6,83 @@
 
 {% block script %}
     <script language="JavaScript">
-        function show() {
+        function show(){
             $("#paiement").slideDown();
             $("#submitContainer").slideDown();
         }
 
-        function show2() {
+        function show2(){
             $("#paiement2").slideDown();
 
         }
-        $("document").ready(function () {
+        $("document").ready(function(){
 
-            $("#numChequeTot").blur(function () {
+            $("#numChequeTot").blur(function(){
                 $("#submitTotContainer").slideDown();
             });
 
-            $("#payerTotForm").submit(function () {
-                console.log($("#payerTotForm").serialize());
+            $("#payerTotForm").submit(function(){
+                console.log( $("#payerTotForm").serialize());
                 $.ajax({
-                    url: "{{ path('ajouterPaiementTot') }}" + "?idTranche=" + $("#idTranche").val(),
+                    url: "{{ path('ajouterPaiementTot') }}"+"?idTranche="+$("#idTranche").val(),
                     method: "GET",
-                    data: $("#payerTotForm").serialize(),
-                    success: function (response) {
+                    data : $("#payerTotForm").serialize(),
+                    success: function(response){
                         response = JSON.parse(response);
                         console.log(response);
                         var message = "<div class='alert alert-success'>Payé avec success!!</div>";
                         $("#messageContainer").html(message);
                         setTimeout(function () {
 
-                            window.location.assign("{{ path('consulterPaiements') }}" + "?idParent=" +{{ paiement.eleve.parent.id }});
+                            window.location.assign("{{ path('consulterPaiements') }}"+"?idParent="+{{ paiement.eleve.parent.id }});
                         }, 1500);
                     }
                 });
             });
 
 
-            $("#formPayer").submit(function () {
-                console.log($("#formPayer").serialize());
+
+            $("#formPayer").submit(function(){
+                console.log( $("#formPayer").serialize());
                 $.ajax({
-                    url: "{{ path('ajouterPaiement') }}" + "?idTranche=" + $("#idTranche").val(),
+                   url: "{{ path('ajouterPaiement') }}"+"?idTranche="+$("#idTranche").val(),
                     method: "GET",
-                    data: $("#formPayer").serialize(),
-                    success: function (response) {
+                    data : $("#formPayer").serialize(),
+                    success: function(response){
                         response = JSON.parse(response);
                         console.log(response);
                         var message = "<div class='alert alert-success'>Payé avec success!!</div>";
                         $("#messageContainer").html(message);
                         setTimeout(function () {
 
-                            window.location.assign("{{ path('consulterPaiements') }}" + "?idParent=" +{{ paiement.eleve.parent.id }});
+                            window.location.assign("{{ path('consulterPaiements') }}"+"?idParent="+{{ paiement.eleve.parent.id }});
                         }, 1500);
                     }
                 });
             });
 
-            $("#typePaiementTot").change(function () {
-                if ($("#typePaiementTot").val() == "null") {
+            $("#typePaiementTot").change(function(){
+                if($("#typePaiementTot").val() == "null"){
                     var message = "<div class='alert alert-danger'>SVP choisir!</div>";
                     $("#payerVirementContainer").fadeOut();
                     $("#payerEspeceContainer").fadeOut();
                     $("#payerChequeContainer").fadeOut();
                     $("#formPayer")[0].reset();
                     $("#messageContainer").html(message);
-                } else {
-                    if ($("#typePaiementTot").val() == "virement") {
+                }else{
+                    if($("#typePaiementTot").val() == "virement"){
                         console.log("virement");
                         $("#payerEspeceTotContainer").fadeOut();
                         $("#payerChequeTotContainer").fadeOut();
                         $("#payerVirementTotContainer").slideDown();
 
-                    } else {
-                        if ($("#typePaiementTot").val() == "espece") {
+                    }else{
+                        if($("#typePaiementTot").val() == "espece"){
                             $("#payerEspeceTotContainer").slideDown();
                             $("#payerChequeTotContainer").fadeOut();
                             $("#payerVirementTotContainer").fadeOut();
 
-                        } else {
+                        }else{
                             $("#payerEspeceTotContainer").fadeOut();
                             $("#payerChequeTotContainer").slideDown();
                             $("#payerVirementTotContainer").fadeOut();
@@ -92,27 +93,27 @@
                 }
             });
 
-            $("#typePaiement2").change(function () {
-                if ($("#typePaiement2").val() == "null") {
+            $("#typePaiement2").change(function(){
+                if($("#typePaiement2").val() == "null"){
                     var message = "<div class='alert alert-danger'>SVP choisir!</div>";
                     $("#payerVirementContainer").fadeOut();
                     $("#payerEspeceContainer").fadeOut();
                     $("#payerChequeContainer").fadeOut();
                     $("#formPayer")[0].reset();
                     $("#messageContainer").html(message);
-                } else {
-                    if ($("#typePaiement2").val() == "virement") {
+                }else{
+                    if($("#typePaiement2").val() == "virement"){
                         $("#payerEspeceContainer").fadeOut();
                         $("#payerChequeContainer").fadeOut();
                         $("#payerVirementContainer").slideDown();
 
-                    } else {
-                        if ($("#typePaiement2").val() == "espece") {
+                    }else{
+                        if($("#typePaiement2").val() == "espece"){
                             $("#payerEspeceContainer").slideDown();
                             $("#payerChequeContainer").fadeOut();
                             $("#payerVirementContainer").fadeOut();
 
-                        } else {
+                        }else{
                             $("#payerEspeceContainer").fadeOut();
                             $("#payerChequeContainer").slideDown();
                             $("#payerVirementContainer").fadeOut();
@@ -124,28 +125,28 @@
             });
 
 
-            $("#typePaiement").change(function () {
-                $("#messageContainer").html("");
-                if ($("#typePaiement").val() == "null") {
+
+
+
+           $("#typePaiement").change(function(){
+               $("#messageContainer").html("");
+                if($("#typePaiement").val() == "null"){
                     var message = "<div class='alert alert-danger'>SVP choisir!</div>";
                     $("#payerTranchesContainer").fadeOut();
                     $("#payerTotaliteContainer").fadeOut();
                     $("#messageContainer").html(message);
-                } else {
-                    if ($("#typePaiement").val() == "totalite") {
+                }else{
+                    if($("#typePaiement").val() == "totalite"){
                         $("#payerTranchesContainer").fadeOut();
 
                         $.ajax({
-                            url: "{{ path('ajouterTranches') }}",
+                           url: "{{ path('ajouterTranches') }}",
                             method: "GET",
-                            data: {
-                                "idPaiement": $("#idPaiementHidden").val(),
-                                "typePaiement": $("#typePaiement").val()
-                            },
-                            success: function (response) {
+                            data: {"idPaiement" : $("#idPaiementHidden").val(), "typePaiement" : $("#typePaiement").val()},
+                            success : function(response){
                                 response = JSON.parse(response);
                                 console.log(response);
-                                if (response.status == "mawjoud") {
+                                if(response.status == "mawjoud") {
                                     var tranche = "<input type='text' value='" + response.tranche[0].id + "' id='idTranche'>";
                                     $("#trancheContainer").html(tranche);
                                     var tableau = "<table class='table table-bordered'><tr class='table-header'><td>N° Tranche</td><td>Montant Tranche</td><td>Etat</td><td>Payer</td></tr>";
@@ -155,7 +156,7 @@
                                     } else {
                                         tableau += "<td>Payé</td>";
                                     }
-                                } else {
+                                }else{
                                     var tranche = "<input type='text' value='" + response.tranches.id + "' id='idTranche'>";
                                     $("#trancheContainer").html(tranche);
                                     var tableau = "<table class='table table-bordered'><tr class='table-header'><td>N° Tranche</td><td>Montant Tranche</td><td>Etat</td><td>Payer</td></tr>";
@@ -166,33 +167,30 @@
                                         tableau += "<td>Payé</td>";
                                     }
                                 }
-                                tableau += "</table>";
+                                tableau +="</table>";
                                 $("#tableauTrancheContainer").html(tableau);
 
                             }
                         });
 
                         $("#payerTotaliteContainer").slideDown();
-                    } else {
+                    }else{
                         $("#payerTotaliteContainer").fadeOut();
                         $.ajax({
-                            url: "{{ path('ajouterTranches') }}",
+                           url: "{{ path('ajouterTranches') }}",
                             method: "GET",
-                            data: {
-                                "idPaiement": $("#idPaiementHidden").val(),
-                                "typePaiement": $("#typePaiement").val()
-                            },
-                            success: function (response) {
+                            data :{"idPaiement" : $("#idPaiementHidden").val(), "typePaiement" : $("#typePaiement").val()} ,
+                            success : function(response){
                                 response = JSON.parse(response);
                                 console.log(response);
                                 var tableau = "<table class='table table-bordered'><tr class='table-header'><td>N° Tranche</td><td>Montant Tranche</td><td>Etat</td><td>Payer</td></tr>";
                                 var tranche = "";
-                                $.each(response.listTranches, function (i, item) {
-                                    tranche = "<input type='text' value='" + item.id + "' id='idTranche'>";
-                                    tableau += "<tr><td>" + item.numero_tranche + "</td><td>" + item.montant_tranche + "</td><td>" + item.etat_tranche + "</td>";
-                                    if (item.etat_tranche == "non payé") {
-                                        tableau += "<td><input type='button' value='payer' onclick='show()' class='btn btn-primary'></td></tr>";
-                                    } else {
+                                $.each(response.listTranches, function(i, item){
+                                    tranche = "<input type='text' value='"+item.id+"' id='idTranche'>";
+                                   tableau +="<tr><td>"+item.numero_tranche+"</td><td>"+item.montant_tranche+"</td><td>"+item.etat_tranche+"</td>";
+                                    if(item.etat_tranche == "non payé"){
+                                        tableau +="<td><input type='button' value='payer' onclick='show()' class='btn btn-primary'></td></tr>";
+                                    }else{
                                         tableau += "<td>Payé</td>";
                                     }
                                 });
@@ -208,7 +206,7 @@
 
                     }
                 }
-            });
+           }) ;
 
 
         });
@@ -222,26 +220,25 @@
         <div id="messageContainer">
 
         </div>
-        <center><h4>Frais : {{ paiement.fraisPaiement }}, Montant : {{ paiement.totalePaiement }}, pour l'eleve
-                : {{ paiement.eleve.prenomEleve }} {{ paiement.eleve.nomEleve }}</h4></center>
+        <center><h4>Frais : {{ paiement.fraisPaiement}}, Montant : {{ paiement.totalePaiement }}, pour l'eleve : {{ paiement.eleve.prenomEleve }} {{ paiement.eleve.nomEleve }}</h4></center>
         <div class="row" align="center">
 
-            <div id="trancheContainer" style="display: none">
+                <div id="trancheContainer" style="display: none">
 
-            </div>
-            <input type="text" value="{{ paiement.id }}" style="display: none" id="idPaiementHidden">
+                </div>
+                <input type="text" value="{{ paiement.id }}" style="display: none" id="idPaiementHidden">
             Payer : <select id="typePaiement" name="idPaiement">
                 <option value="null">Choisir</option>
                 {% if typePaiement is defined %}
                     <option value="{{ typePaiement }}">{{ typePaiement }}</option>
-                {% else %}
-                    <option value="totalite">La totalité</option>
-                    <option value="tranches">Par tranches</option>
-                {% endif %}
+                    {% else %}
+                <option value="totalite">La totalité</option>
+                <option value="tranches">Par tranches</option>
+                        {% endif %}
             </select>
-            <div id="payerTranchesContainer" style="display: none">
-                <center><h4>Paiement par tranches</h4></center>
-                <form name="formPayer" id="formPayer" onsubmit="return false" action="#">
+                <div id="payerTranchesContainer" style="display: none">
+                    <center><h4>Paiement par tranches</h4></center>
+                    <form name="formPayer" id="formPayer" onsubmit="return false" action="#">
                     <div id="tableauTranchesContainer">
 
                     </div>
@@ -260,7 +257,7 @@
                         <table class="table table-bordered" border="1" width="50%">
                             <tr>
                                 <td width="50%">Upload</td>
-                                <td width="50%"><input type="file" name="fichierVirement"></td>
+                                <td width="50%"><input type="file" name="fichierVirement"> </td>
                             </tr>
                         </table>
                     </div>
@@ -282,15 +279,15 @@
                             </tr>
                         </table>
                     </div>
-                    <div id="submitContainer" style="display: none">
-                        <input type="submit">
-                    </div>
-                </form>
+                        <div id="submitContainer" style="display: none">
+                            <input type="submit">
+                        </div>
+                    </form>
 
-            </div>
+                </div>
 
-            <div id="payerTotaliteContainer" style="display: none">
-                <form name="payerTotForm" id="payerTotForm" action="#" onsubmit="return false">
+                <div id="payerTotaliteContainer" style="display: none">
+                    <form name="payerTotForm" id="payerTotForm" action="#" onsubmit="return false">
                     <div id="tableauTrancheContainer">
 
                     </div>
@@ -312,7 +309,7 @@
                         <table class="table table-bordered" border="1" width="50%">
                             <tr>
                                 <td width="50%">Upload</td>
-                                <td width="50%"><input type="file" name="fichierVirementTot"></td>
+                                <td width="50%"><input type="file" name="fichierVirementTot"> </td>
                             </tr>
                         </table>
                     </div>
@@ -335,11 +332,11 @@
                             </tr>
                         </table>
                     </div>
-                    <div id="submitTotContainer" style="display: none">
-                        <input type="submit">
-                    </div>
-                </form>
-            </div>
+                        <div id="submitTotContainer" style="display: none">
+                            <input type="submit">
+                        </div>
+                    </form>
+                </div>
 
 
         </div>

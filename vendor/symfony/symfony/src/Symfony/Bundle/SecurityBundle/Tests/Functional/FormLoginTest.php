@@ -13,16 +13,6 @@ namespace Symfony\Bundle\SecurityBundle\Tests\Functional;
 
 class FormLoginTest extends WebTestCase
 {
-    public static function setUpBeforeClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::deleteTmpDir('StandardFormLogin');
-    }
-
     /**
      * @dataProvider getConfigs
      */
@@ -122,5 +112,15 @@ class FormLoginTest extends WebTestCase
             array('config.yml'),
             array('routes_as_path.yml'),
         );
+    }
+
+    public static function setUpBeforeClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::deleteTmpDir('StandardFormLogin');
     }
 }

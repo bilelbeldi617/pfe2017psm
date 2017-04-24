@@ -41,10 +41,10 @@ class ConnectionFactory
     /**
      * Create a connection by name.
      *
-     * @param array $params
+     * @param array         $params
      * @param Configuration $config
-     * @param EventManager $eventManager
-     * @param array $mappingTypes
+     * @param EventManager  $eventManager
+     * @param array         $mappingTypes
      *
      * @return \Doctrine\DBAL\Connection
      */

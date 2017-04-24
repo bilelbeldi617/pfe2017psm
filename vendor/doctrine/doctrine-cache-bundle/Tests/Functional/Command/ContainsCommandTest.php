@@ -30,7 +30,7 @@ class ContainsCommandTest extends CommandTestCase
         parent::setUp();
 
         $this->command = new ContainsCommand();
-        $this->tester = $this->getTester($this->command);
+        $this->tester  = $this->getTester($this->command);
     }
 
     /**
@@ -40,7 +40,7 @@ class ContainsCommandTest extends CommandTestCase
     {
         $this->tester->execute(array(
             'cache-name' => $this->cacheName,
-            'cache-id' => $this->cacheId,
+            'cache-id'   => $this->cacheId,
         ));
         $this->assertEquals("FALSE\n", $this->tester->getDisplay());
     }

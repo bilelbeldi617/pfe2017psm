@@ -17,16 +17,18 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
             ->expects($this->at(0))
             ->method('loadMetadataForClass')
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestObject')))
-            ->will($this->returnCallback(function ($class) {
+            ->will($this->returnCallback(function($class) {
                 return new ClassMetadata($class->getName());
-            }));
+            }))
+        ;
         $driver
             ->expects($this->at(1))
             ->method('loadMetadataForClass')
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestParent')))
-            ->will($this->returnCallback(function ($class) {
+            ->will($this->returnCallback(function($class) {
                 return new ClassMetadata($class->getName());
-            }));
+            }))
+        ;
 
         $factory = new MetadataFactory($driver);
         $metadata = $factory->getMetadataForClass('Metadata\Tests\Fixtures\TestParent');
@@ -43,16 +45,18 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
             ->expects($this->at(0))
             ->method('loadMetadataForClass')
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestObject')))
-            ->will($this->returnCallback(function ($class) {
+            ->will($this->returnCallback(function($class) {
                 return new MergeableClassMetadata($class->getName());
-            }));
+            }))
+        ;
         $driver
             ->expects($this->at(1))
             ->method('loadMetadataForClass')
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestParent')))
-            ->will($this->returnCallback(function ($class) {
+            ->will($this->returnCallback(function($class) {
                 return new MergeableClassMetadata($class->getName());
-            }));
+            }))
+        ;
 
         $factory = new MetadataFactory($driver);
         $metadata = $factory->getMetadataForClass('Metadata\Tests\Fixtures\TestParent');
@@ -68,7 +72,7 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->any())
             ->method('loadMetadataForClass')
-            ->will($this->returnCallback(function ($class) {
+            ->will($this->returnCallback(function($class) {
                 $metadata = new MergeableClassMetadata($class->name);
 
                 switch ($class->name) {
@@ -89,7 +93,8 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
                 }
 
                 return $metadata;
-            }));
+            }))
+        ;
 
         $factory = new MetadataFactory($driver);
 
@@ -108,7 +113,8 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->once())
             ->method('loadMetadataForClass')
-            ->will($this->returnValue($metadata = new ClassMetadata('Metadata\Tests\Fixtures\TestObject')));
+            ->will($this->returnValue($metadata = new ClassMetadata('Metadata\Tests\Fixtures\TestObject')))
+        ;
 
         $factory = new MetadataFactory($driver);
 
@@ -117,11 +123,13 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('loadClassMetadataFromCache')
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestObject')))
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
         $cache
             ->expects($this->once())
             ->method('putClassMetadataInCache')
-            ->with($this->equalTo($metadata));
+            ->with($this->equalTo($metadata))
+        ;
         $factory->setCache($cache);
 
 
@@ -136,7 +144,8 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->once())
             ->method('loadMetadataForClass')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $factory = new MetadataFactory($driver);
 
@@ -150,19 +159,23 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->at(3))
             ->method('loadMetadataForClass')
-            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\SubClassA')));
+            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\SubClassA')))
+        ;
         $driver
             ->expects($this->at(2))
             ->method('loadMetadataForClass')
-            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\InterfaceB')));
+            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\InterfaceB')))
+        ;
         $driver
             ->expects($this->at(1))
             ->method('loadMetadataForClass')
-            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\BaseClass')));
+            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\BaseClass')))
+        ;
         $driver
             ->expects($this->at(0))
             ->method('loadMetadataForClass')
-            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\InterfaceA')));
+            ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\ComplexHierarchy\InterfaceA')))
+        ;
 
         $factory = new MetadataFactory($driver);
         $factory->setIncludeInterfaces(true);
@@ -193,9 +206,10 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $driver = $this->getMock('Metadata\Driver\DriverInterface');
         $driver
-            ->expects($this->once())// This is the important part of this test
+            ->expects($this->once()) // This is the important part of this test
             ->method('loadMetadataForClass')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $cachedMetadata = null;
         $cache = $this->getMock('Metadata\Cache\CacheInterface');
@@ -205,13 +219,15 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestObject')))
             ->will($this->returnCallback(function () use (&$cachedMetadata) {
                 return $cachedMetadata;
-            }));
+            }))
+        ;
         $cache
             ->expects($this->once())
             ->method('putClassMetadataInCache')
             ->will($this->returnCallback(function ($metadata) use (&$cachedMetadata) {
                 $cachedMetadata = $metadata;
-            }));
+            }))
+        ;
 
         $factory = new MetadataFactory($driver);
         $factory->setCache($cache);
@@ -233,7 +249,8 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
         $driver
             ->expects($this->exactly(2))
             ->method('loadMetadataForClass')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
 
         $cachedMetadata = null;
         $cache = $this->getMock('Metadata\Cache\CacheInterface');
@@ -241,10 +258,12 @@ class MetadataFactoryTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('loadClassMetadataFromCache')
             ->with($this->equalTo(new \ReflectionClass('Metadata\Tests\Fixtures\TestObject')))
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(null))
+        ;
         $cache
             ->expects($this->never())
-            ->method('putClassMetadataInCache');
+            ->method('putClassMetadataInCache')
+        ;
 
         $factory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', true);
         $factory->setCache($cache);

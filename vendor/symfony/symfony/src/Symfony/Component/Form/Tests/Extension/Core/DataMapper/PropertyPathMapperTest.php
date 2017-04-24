@@ -33,6 +33,51 @@ class PropertyPathMapperTest extends TestCase
      */
     private $propertyAccessor;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->propertyAccessor = $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyAccessorInterface')->getMock();
+        $this->mapper = new PropertyPathMapper($this->propertyAccessor);
+    }
+
+    /**
+     * @param $path
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getPropertyPath($path)
+    {
+        return $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyPath')
+            ->setConstructorArgs(array($path))
+            ->setMethods(array('getValue', 'setValue'))
+            ->getMock();
+    }
+
+    /**
+     * @param FormConfigInterface $config
+     * @param bool                $synchronized
+     * @param bool                $submitted
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getForm(FormConfigInterface $config, $synchronized = true, $submitted = true)
+    {
+        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->setConstructorArgs(array($config))
+            ->setMethods(array('isSynchronized', 'isSubmitted'))
+            ->getMock();
+
+        $form->expects($this->any())
+            ->method('isSynchronized')
+            ->will($this->returnValue($synchronized));
+
+        $form->expects($this->any())
+            ->method('isSubmitted')
+            ->will($this->returnValue($submitted));
+
+        return $form;
+    }
+
     public function testMapDataToFormsPassesObjectRefIfByReference()
     {
         $car = new \stdClass();
@@ -54,44 +99,6 @@ class PropertyPathMapperTest extends TestCase
         // Can't use isIdentical() above because mocks always clone their
         // arguments which can't be disabled in PHPUnit 3.6
         $this->assertSame($engine, $form->getData());
-    }
-
-    /**
-     * @param $path
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getPropertyPath($path)
-    {
-        return $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyPath')
-            ->setConstructorArgs(array($path))
-            ->setMethods(array('getValue', 'setValue'))
-            ->getMock();
-    }
-
-    /**
-     * @param FormConfigInterface $config
-     * @param bool $synchronized
-     * @param bool $submitted
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getForm(FormConfigInterface $config, $synchronized = true, $submitted = true)
-    {
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->setConstructorArgs(array($config))
-            ->setMethods(array('isSynchronized', 'isSubmitted'))
-            ->getMock();
-
-        $form->expects($this->any())
-            ->method('isSynchronized')
-            ->will($this->returnValue($synchronized));
-
-        $form->expects($this->any())
-            ->method('isSubmitted')
-            ->will($this->returnValue($submitted));
-
-        return $form;
     }
 
     public function testMapDataToFormsPassesObjectCloneIfNotByReference()
@@ -351,12 +358,5 @@ class PropertyPathMapperTest extends TestCase
         $form = $this->getForm($config);
 
         $this->mapper->mapFormsToData(array($form), $car);
-    }
-
-    protected function setUp()
-    {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->propertyAccessor = $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyAccessorInterface')->getMock();
-        $this->mapper = new PropertyPathMapper($this->propertyAccessor);
     }
 }

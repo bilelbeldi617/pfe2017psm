@@ -47,7 +47,7 @@ abstract class BaseCrawler implements CrawlerInterface
         try {
             list($headers, $body) = $this->doCheck($lock, $certFile);
         } catch (\Exception $e) {
-            if (__DIR__ . '/../Resources/security.sensiolabs.org.crt' !== $certFile) {
+            if (__DIR__.'/../Resources/security.sensiolabs.org.crt' !== $certFile) {
                 unlink($certFile);
             }
 
@@ -61,9 +61,14 @@ abstract class BaseCrawler implements CrawlerInterface
         return array(intval($matches[1]), json_decode($body, true));
     }
 
+    /**
+     * @return array An array where the first element is a headers string and second one the response body
+     */
+    abstract protected function doCheck($lock, $certFile);
+
     private function getCertFile()
     {
-        $certFile = __DIR__ . '/../Resources/security.sensiolabs.org.crt';
+        $certFile = __DIR__.'/../Resources/security.sensiolabs.org.crt';
         if ('phar://' !== substr(__FILE__, 0, 7)) {
             return $certFile;
         }
@@ -75,9 +80,4 @@ abstract class BaseCrawler implements CrawlerInterface
 
         return $tmpFile;
     }
-
-    /**
-     * @return array An array where the first element is a headers string and second one the response body
-     */
-    abstract protected function doCheck($lock, $certFile);
 }

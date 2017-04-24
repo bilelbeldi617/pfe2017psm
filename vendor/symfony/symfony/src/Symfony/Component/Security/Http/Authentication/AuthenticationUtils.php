@@ -61,22 +61,6 @@ class AuthenticationUtils
     }
 
     /**
-     * @return Request
-     *
-     * @throws \LogicException
-     */
-    private function getRequest()
-    {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (null === $request) {
-            throw new \LogicException('Request should exist so it can be processed for error.');
-        }
-
-        return $request;
-    }
-
-    /**
      * @return string
      */
     public function getLastUsername()
@@ -90,5 +74,21 @@ class AuthenticationUtils
         $session = $request->getSession();
 
         return null === $session ? '' : $session->get(Security::LAST_USERNAME);
+    }
+
+    /**
+     * @return Request
+     *
+     * @throws \LogicException
+     */
+    private function getRequest()
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            throw new \LogicException('Request should exist so it can be processed for error.');
+        }
+
+        return $request;
     }
 }

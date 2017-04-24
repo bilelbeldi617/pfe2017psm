@@ -282,7 +282,8 @@ class DefinitionTest extends TestCase
         $def->addArgument('moo');
         $def
             ->replaceArgument(0, 'foo')
-            ->replaceArgument(1, 'bar');
+            ->replaceArgument(1, 'bar')
+        ;
         $this->assertSame(array('foo', 'bar'), $def->getArguments());
     }
 

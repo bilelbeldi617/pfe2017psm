@@ -23,7 +23,7 @@ class CommandTestCase extends FunctionalTestCase
     /**
      * @var string
      */
-    protected $cacheId = 'test_cache_id';
+    protected $cacheId   = 'test_cache_id';
 
     /**
      * @var
@@ -48,19 +48,9 @@ class CommandTestCase extends FunctionalTestCase
     public function setUp()
     {
         $this->container = $this->compileContainer('array');
-        $this->provider = $this->container->get('doctrine_cache.providers.' . $this->cacheName);
-        $this->kernel = $this->getMockKernel();
-        $this->app = new Application($this->kernel);
-    }
-
-    /**
-     * Gets Kernel mock instance
-     *
-     * @return \Symfony\Component\HttpKernel\Kernel
-     */
-    private function getMockKernel()
-    {
-        return $this->getMock('\Symfony\Component\HttpKernel\Kernel', array(), array(), '', false, false);
+        $this->provider  = $this->container->get('doctrine_cache.providers.' . $this->cacheName);
+        $this->kernel    = $this->getMockKernel();
+        $this->app       = new Application($this->kernel);
     }
 
     /**
@@ -74,6 +64,16 @@ class CommandTestCase extends FunctionalTestCase
         $command->setApplication($this->app);
 
         return new CommandTester($command);
+    }
+
+    /**
+     * Gets Kernel mock instance
+     *
+     * @return \Symfony\Component\HttpKernel\Kernel
+     */
+    private function getMockKernel()
+    {
+        return $this->getMock('\Symfony\Component\HttpKernel\Kernel', array(), array(), '', false, false);
     }
 
     /**

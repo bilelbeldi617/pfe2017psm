@@ -21,6 +21,16 @@ use Symfony\Component\Validator\Validation;
  */
 class EmailValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new EmailValidator(false);
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new Email());
@@ -74,7 +84,7 @@ class EmailValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($email, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $email . '"')
+            ->setParameter('{{ value }}', '"'.$email.'"')
             ->setCode(Email::INVALID_FORMAT_ERROR)
             ->assertRaised();
     }
@@ -148,15 +158,5 @@ class EmailValidatorTest extends AbstractConstraintValidatorTest
         );
 
         $this->assertNoViolation();
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new EmailValidator(false);
     }
 }

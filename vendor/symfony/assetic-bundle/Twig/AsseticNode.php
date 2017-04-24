@@ -46,12 +46,13 @@ class AsseticNode extends BaseAsseticNode
             ->raw('isset($context[\'assetic\'][\'use_controller\']) && $context[\'assetic\'][\'use_controller\'] ? ')
             ->subcompile($this->getPathFunction($name, $vars))
             ->raw(' : ')
-            ->subcompile($this->getAssetFunction(new TargetPathNode($this, $asset, $name)));
+            ->subcompile($this->getAssetFunction(new TargetPathNode($this, $asset, $name)))
+        ;
     }
 
     private function getPathFunction($name, array $vars = array())
     {
-        $nodes = array(new \Twig_Node_Expression_Constant('_assetic_' . $name, $this->getTemplateLine()));
+        $nodes = array(new \Twig_Node_Expression_Constant('_assetic_'.$name, $this->getTemplateLine()));
 
         if (!empty($vars)) {
             $nodes[] = new \Twig_Node_Expression_Array($vars, $this->getTemplateLine());

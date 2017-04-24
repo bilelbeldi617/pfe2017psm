@@ -21,6 +21,20 @@ class ExecutableFinderTest extends TestCase
 {
     private $path;
 
+    protected function tearDown()
+    {
+        if ($this->path) {
+            // Restore path if it was changed.
+            putenv('PATH='.$this->path);
+        }
+    }
+
+    private function setPath($path)
+    {
+        $this->path = getenv('PATH');
+        putenv('PATH='.$path);
+    }
+
     /**
      * @requires PHP 5.4
      */
@@ -36,26 +50,6 @@ class ExecutableFinderTest extends TestCase
         $result = $finder->find($this->getPhpBinaryName());
 
         $this->assertSamePath(PHP_BINARY, $result);
-    }
-
-    private function setPath($path)
-    {
-        $this->path = getenv('PATH');
-        putenv('PATH=' . $path);
-    }
-
-    private function getPhpBinaryName()
-    {
-        return basename(PHP_BINARY, '\\' === DIRECTORY_SEPARATOR ? '.exe' : '');
-    }
-
-    private function assertSamePath($expected, $tested)
-    {
-        if ('\\' === DIRECTORY_SEPARATOR) {
-            $this->assertEquals(strtolower($expected), strtolower($tested));
-        } else {
-            $this->assertEquals($expected, $tested);
-        }
     }
 
     public function testFindWithDefault()
@@ -106,7 +100,7 @@ class ExecutableFinderTest extends TestCase
             $this->markTestSkipped('Cannot test when open_basedir is set');
         }
 
-        $this->iniSet('open_basedir', dirname(PHP_BINARY) . (!defined('HHVM_VERSION') || HHVM_VERSION_ID >= 30800 ? PATH_SEPARATOR . '/' : ''));
+        $this->iniSet('open_basedir', dirname(PHP_BINARY).(!defined('HHVM_VERSION') || HHVM_VERSION_ID >= 30800 ? PATH_SEPARATOR.'/' : ''));
 
         $finder = new ExecutableFinder();
         $result = $finder->find($this->getPhpBinaryName());
@@ -127,7 +121,7 @@ class ExecutableFinderTest extends TestCase
         }
 
         $this->setPath('');
-        $this->iniSet('open_basedir', PHP_BINARY . (!defined('HHVM_VERSION') || HHVM_VERSION_ID >= 30800 ? PATH_SEPARATOR . '/' : ''));
+        $this->iniSet('open_basedir', PHP_BINARY.(!defined('HHVM_VERSION') || HHVM_VERSION_ID >= 30800 ? PATH_SEPARATOR.'/' : ''));
 
         $finder = new ExecutableFinder();
         $result = $finder->find($this->getPhpBinaryName(), false);
@@ -135,11 +129,17 @@ class ExecutableFinderTest extends TestCase
         $this->assertSamePath(PHP_BINARY, $result);
     }
 
-    protected function tearDown()
+    private function assertSamePath($expected, $tested)
     {
-        if ($this->path) {
-            // Restore path if it was changed.
-            putenv('PATH=' . $this->path);
+        if ('\\' === DIRECTORY_SEPARATOR) {
+            $this->assertEquals(strtolower($expected), strtolower($tested));
+        } else {
+            $this->assertEquals($expected, $tested);
         }
+    }
+
+    private function getPhpBinaryName()
+    {
+        return basename(PHP_BINARY, '\\' === DIRECTORY_SEPARATOR ? '.exe' : '');
     }
 }

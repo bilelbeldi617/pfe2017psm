@@ -22,6 +22,20 @@ class FormBuilderTest extends TestCase
     private $factory;
     private $builder;
 
+    protected function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->builder = new FormBuilder('name', null, $this->dispatcher, $this->factory);
+    }
+
+    protected function tearDown()
+    {
+        $this->dispatcher = null;
+        $this->factory = null;
+        $this->builder = null;
+    }
+
     /**
      * Changing the name is not allowed, otherwise the name and property path
      * are not synchronized anymore.
@@ -90,6 +104,9 @@ class FormBuilderTest extends TestCase
         $this->assertArrayHasKey('foo', $children);
     }
 
+    /*
+     * https://github.com/symfony/symfony/issues/4693
+     */
     public function testMaintainOrderOfLazyAndExplicitChildren()
     {
         $this->builder->add('foo', 'Symfony\Component\Form\Extension\Core\Type\TextType');
@@ -100,23 +117,6 @@ class FormBuilderTest extends TestCase
 
         $this->assertSame(array('foo', 'bar', 'baz'), array_keys($children));
     }
-
-    private function getFormBuilder($name = 'name')
-    {
-        $mock = $this->getMockBuilder('Symfony\Component\Form\FormBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mock->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($name));
-
-        return $mock;
-    }
-
-    /*
-     * https://github.com/symfony/symfony/issues/4693
-     */
 
     public function testAddFormType()
     {
@@ -138,6 +138,7 @@ class FormBuilderTest extends TestCase
         $this->assertFalse($this->builder->has('foo'));
     }
 
+    // https://github.com/symfony/symfony/pull/4826
     public function testRemoveAndGetForm()
     {
         $this->builder->add('foo', 'Symfony\Component\Form\Extension\Core\Type\TextType');
@@ -146,13 +147,12 @@ class FormBuilderTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Form\Form', $form);
     }
 
-    // https://github.com/symfony/symfony/pull/4826
-
     public function testCreateNoTypeNo()
     {
         $this->factory->expects($this->once())
             ->method('createNamedBuilder')
-            ->with('foo', 'Symfony\Component\Form\Extension\Core\Type\TextType', null, array());
+            ->with('foo', 'Symfony\Component\Form\Extension\Core\Type\TextType', null, array())
+        ;
 
         $this->builder->create('foo');
     }
@@ -226,17 +226,16 @@ class FormBuilderTest extends TestCase
         $this->assertEmpty($unresolvedChildren->getValue($config));
     }
 
-    protected function setUp()
+    private function getFormBuilder($name = 'name')
     {
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
-        $this->builder = new FormBuilder('name', null, $this->dispatcher, $this->factory);
-    }
+        $mock = $this->getMockBuilder('Symfony\Component\Form\FormBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    protected function tearDown()
-    {
-        $this->dispatcher = null;
-        $this->factory = null;
-        $this->builder = null;
+        $mock->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($name));
+
+        return $mock;
     }
 }

@@ -26,10 +26,18 @@ final class Locale extends \Locale
     private static $defaultFallback = 'en';
 
     /**
-     * This class must not be instantiated.
+     * Sets the default fallback locale.
+     *
+     * The default fallback locale is used as fallback for locales that have no
+     * fallback otherwise.
+     *
+     * @param string $locale The default fallback locale
+     *
+     * @see getFallback()
      */
-    private function __construct()
+    public static function setDefaultFallback($locale)
     {
+        self::$defaultFallback = $locale;
     }
 
     /**
@@ -43,21 +51,6 @@ final class Locale extends \Locale
     public static function getDefaultFallback()
     {
         return self::$defaultFallback;
-    }
-
-    /**
-     * Sets the default fallback locale.
-     *
-     * The default fallback locale is used as fallback for locales that have no
-     * fallback otherwise.
-     *
-     * @param string $locale The default fallback locale
-     *
-     * @see getFallback()
-     */
-    public static function setDefaultFallback($locale)
-    {
-        self::$defaultFallback = $locale;
     }
 
     /**
@@ -89,5 +82,12 @@ final class Locale extends \Locale
         }
 
         return substr($locale, 0, $pos);
+    }
+
+    /**
+     * This class must not be instantiated.
+     */
+    private function __construct()
+    {
     }
 }

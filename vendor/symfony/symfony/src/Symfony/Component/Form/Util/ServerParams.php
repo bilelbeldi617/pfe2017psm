@@ -39,22 +39,6 @@ class ServerParams
     }
 
     /**
-     * Returns the content length of the request.
-     *
-     * @return mixed The request content length
-     */
-    public function getContentLength()
-    {
-        if (null !== $this->requestStack && null !== $request = $this->requestStack->getCurrentRequest()) {
-            return $request->server->get('CONTENT_LENGTH');
-        }
-
-        return isset($_SERVER['CONTENT_LENGTH'])
-            ? (int)$_SERVER['CONTENT_LENGTH']
-            : null;
-    }
-
-    /**
      * Returns maximum post size in bytes.
      *
      * @return null|int The maximum post size in bytes
@@ -73,18 +57,14 @@ class ServerParams
         } elseif (0 === strpos($max, '0')) {
             $max = intval($max, 8);
         } else {
-            $max = (int)$max;
+            $max = (int) $max;
         }
 
         switch (substr($iniMax, -1)) {
-            case 't':
-                $max *= 1024;
-            case 'g':
-                $max *= 1024;
-            case 'm':
-                $max *= 1024;
-            case 'k':
-                $max *= 1024;
+            case 't': $max *= 1024;
+            case 'g': $max *= 1024;
+            case 'm': $max *= 1024;
+            case 'k': $max *= 1024;
         }
 
         return $max;
@@ -98,5 +78,21 @@ class ServerParams
     public function getNormalizedIniPostMaxSize()
     {
         return strtoupper(trim(ini_get('post_max_size')));
+    }
+
+    /**
+     * Returns the content length of the request.
+     *
+     * @return mixed The request content length
+     */
+    public function getContentLength()
+    {
+        if (null !== $this->requestStack && null !== $request = $this->requestStack->getCurrentRequest()) {
+            return $request->server->get('CONTENT_LENGTH');
+        }
+
+        return isset($_SERVER['CONTENT_LENGTH'])
+            ? (int) $_SERVER['CONTENT_LENGTH']
+            : null;
     }
 }

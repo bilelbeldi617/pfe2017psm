@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:exception.txt.twig */
-
 class __TwigTemplate_efee9266e8c5a4fe05dba3fc3d3dcfe5819fd858b467337f8ce1afc78595dc2c extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,42 +9,15 @@ class __TwigTemplate_efee9266e8c5a4fe05dba3fc3d3dcfe5819fd858b467337f8ce1afc7859
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function getTemplateName()
-    {
-        return "TwigBundle:Exception:exception.txt.twig";
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(43 => 6, 41 => 5, 32 => 4, 28 => 3, 24 => 2, 19 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("", "TwigBundle:Exception:exception.txt.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.txt.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
         // line 1
         echo "[exception] ";
-        echo(((((isset($context["status_code"]) ? $context["status_code"] : null) . " | ") . (isset($context["status_text"]) ? $context["status_text"] : null)) . " | ") . $this->getAttribute((isset($context["exception"]) ? $context["exception"] : null), "class", array()));
+        echo (((((isset($context["status_code"]) ? $context["status_code"] : null) . " | ") . (isset($context["status_text"]) ? $context["status_text"] : null)) . " | ") . $this->getAttribute((isset($context["exception"]) ? $context["exception"] : null), "class", array()));
         echo "
 [message] ";
         // line 2
@@ -58,7 +30,7 @@ class __TwigTemplate_efee9266e8c5a4fe05dba3fc3d3dcfe5819fd858b467337f8ce1afc7859
         foreach ($context['_seq'] as $context["i"] => $context["e"]) {
             // line 4
             echo "[";
-            echo($context["i"] + 1);
+            echo ($context["i"] + 1);
             echo "] ";
             echo $this->getAttribute($context["e"], "class", array());
             echo ": ";
@@ -74,5 +46,33 @@ class __TwigTemplate_efee9266e8c5a4fe05dba3fc3d3dcfe5819fd858b467337f8ce1afc7859
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['i'], $context['e'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
+    }
+
+    public function getTemplateName()
+    {
+        return "TwigBundle:Exception:exception.txt.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  43 => 6,  41 => 5,  32 => 4,  28 => 3,  24 => 2,  19 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("", "TwigBundle:Exception:exception.txt.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/exception.txt.twig");
     }
 }

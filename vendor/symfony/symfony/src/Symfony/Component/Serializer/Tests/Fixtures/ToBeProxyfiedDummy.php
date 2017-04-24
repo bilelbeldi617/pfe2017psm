@@ -18,13 +18,13 @@ class ToBeProxyfiedDummy
 {
     private $foo;
 
-    public function getFoo()
-    {
-        return $this->foo;
-    }
-
     public function setFoo($foo)
     {
         $this->foo = $foo;
+    }
+
+    public function getFoo()
+    {
+        return $this->foo;
     }
 }

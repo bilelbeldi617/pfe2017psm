@@ -30,9 +30,9 @@ class LazyLoadingFragmentHandler extends FragmentHandler
      *
      * RequestStack will become required in 3.0.
      *
-     * @param ContainerInterface $container A container
-     * @param RequestStack $requestStack The Request stack that controls the lifecycle of requests
-     * @param bool $debug Whether the debug mode is enabled or not
+     * @param ContainerInterface $container    A container
+     * @param RequestStack       $requestStack The Request stack that controls the lifecycle of requests
+     * @param bool               $debug        Whether the debug mode is enabled or not
      */
     public function __construct(ContainerInterface $container, $requestStack = null, $debug = false)
     {
@@ -43,9 +43,9 @@ class LazyLoadingFragmentHandler extends FragmentHandler
             $debug = $requestStack;
             $requestStack = func_num_args() < 3 ? null : $tmp;
 
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack to be given as second argument as ' . __CLASS__ . '::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack to be given as second argument as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         } elseif (!$requestStack instanceof RequestStack) {
-            @trigger_error('The ' . __METHOD__ . ' method now requires a RequestStack instance as ' . __CLASS__ . '::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
+            @trigger_error('The '.__METHOD__.' method now requires a RequestStack instance as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         }
 
         parent::__construct($requestStack, array(), $debug);
@@ -54,7 +54,7 @@ class LazyLoadingFragmentHandler extends FragmentHandler
     /**
      * Adds a service as a fragment renderer.
      *
-     * @param string $name The service name
+     * @param string $name     The service name
      * @param string $renderer The render service id
      */
     public function addRendererService($name, $renderer)

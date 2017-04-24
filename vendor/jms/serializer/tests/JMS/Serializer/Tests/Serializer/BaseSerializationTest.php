@@ -115,10 +115,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    abstract protected function getContent($key);
-
-    abstract protected function getFormat();
-
     public function testSerializeNullObject()
     {
         $obj = new ObjectWithNullProperty('foo', 'bar');
@@ -139,21 +135,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $this->assertEquals(null, $this->deserialize($this->getContent('null'), $type));
         }
-    }
-
-    protected function serialize($data, Context $context = null)
-    {
-        return $this->serializer->serialize($data, $this->getFormat(), $context);
-    }
-
-    protected function hasDeserializer()
-    {
-        return true;
-    }
-
-    protected function deserialize($content, $type, Context $context = null)
-    {
-        return $this->serializer->deserialize($content, $type, $this->getFormat(), $context);
     }
 
     public function getTypes()
@@ -182,10 +163,10 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testBooleans($strBoolean, $boolean)
     {
-        $this->assertEquals($this->getContent('boolean_' . $strBoolean), $this->serialize($boolean));
+        $this->assertEquals($this->getContent('boolean_'.$strBoolean), $this->serialize($boolean));
 
         if ($this->hasDeserializer()) {
-            $this->assertSame($boolean, $this->deserialize($this->getContent('boolean_' . $strBoolean), 'boolean'));
+            $this->assertSame($boolean, $this->deserialize($this->getContent('boolean_'.$strBoolean), 'boolean'));
         }
     }
 
@@ -276,6 +257,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+
     public function testDateTimeArrays()
     {
         $data = array(
@@ -284,7 +266,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $object = new DateTimeArraysObject($data, $data);
-        $serializedObject = $this->serialize($object);
+        $serializedObject = $this->serialize( $object );
 
         $this->assertEquals($this->getContent('array_datetimes_object'), $serializedObject);
 
@@ -313,7 +295,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
-        $serializedObject = $this->serialize($object);
+        $serializedObject = $this->serialize( $object );
 
         $this->assertEquals($this->getContent('array_named_datetimes_object'), $serializedObject);
 
@@ -335,6 +317,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($object, $deserializedObject);
         }
     }
+
 
     public function testArrayMixed()
     {
@@ -391,14 +374,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    protected function getField($obj, $name)
-    {
-        $ref = new \ReflectionProperty($obj, $name);
-        $ref->setAccessible(true);
-
-        return $ref->getValue($obj);
-    }
-
     public function testDeserializingNull()
     {
         $objectConstructor = new InitializedBlogPostConstructor();
@@ -420,13 +395,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
             $this->assertEquals(null, $this->getField($deserialized, 'author'));
         }
-    }
-
-    private function setField($obj, $name, $value)
-    {
-        $ref = new \ReflectionProperty($obj, $name);
-        $ref->setAccessible(true);
-        $ref->setValue($obj, $value);
     }
 
     public function testReadOnly()
@@ -771,11 +739,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testCustomHandler()
     {
-        if (!$this->hasDeserializer()) {
+        if ( ! $this->hasDeserializer()) {
             return;
         }
 
-        $handler = function () {
+        $handler = function() {
             return new CustomDeserializationObject('customly_unserialized_value');
         };
 
@@ -871,7 +839,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testDepthExclusionStrategy()
     {
         $context = SerializationContext::create()
-            ->addExclusionStrategy(new DepthExclusionStrategy());
+            ->addExclusionStrategy(new DepthExclusionStrategy())
+        ;
 
         $data = new Tree(
             new Node(array(
@@ -917,6 +886,24 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInstanceOf('JMS\Serializer\Tests\Fixtures\Price', 'cost', $deseralizedOrder);
     }
 
+    abstract protected function getContent($key);
+    abstract protected function getFormat();
+
+    protected function hasDeserializer()
+    {
+        return true;
+    }
+
+    protected function serialize($data, Context $context = null)
+    {
+        return $this->serializer->serialize($data, $this->getFormat(), $context);
+    }
+
+    protected function deserialize($content, $type, Context $context = null)
+    {
+        return $this->serializer->deserialize($content, $type, $this->getFormat(), $context);
+    }
+
     protected function setUp()
     {
         $this->factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
@@ -928,12 +915,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
-            function (VisitorInterface $visitor, $object, array $type, Context $context) {
+            function(VisitorInterface $visitor, $object, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($object), $type, $context);
             }
         );
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),
-            function (VisitorInterface $visitor, $data, $type, Context $context) {
+            function(VisitorInterface $visitor, $data, $type, Context $context) {
                 $type = array(
                     'name' => 'array',
                     'params' => array(
@@ -959,14 +946,29 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $objectConstructor = new UnserializeObjectConstructor();
         $this->serializationVisitors = new Map(array(
             'json' => new JsonSerializationVisitor($namingStrategy),
-            'xml' => new XmlSerializationVisitor($namingStrategy),
-            'yml' => new YamlSerializationVisitor($namingStrategy),
+            'xml'  => new XmlSerializationVisitor($namingStrategy),
+            'yml'  => new YamlSerializationVisitor($namingStrategy),
         ));
         $this->deserializationVisitors = new Map(array(
             'json' => new JsonDeserializationVisitor($namingStrategy),
-            'xml' => new XmlDeserializationVisitor($namingStrategy),
+            'xml'  => new XmlDeserializationVisitor($namingStrategy),
         ));
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+    }
+
+    protected function getField($obj, $name)
+    {
+        $ref = new \ReflectionProperty($obj, $name);
+        $ref->setAccessible(true);
+
+        return $ref->getValue($obj);
+    }
+
+    private function setField($obj, $name, $value)
+    {
+        $ref = new \ReflectionProperty($obj, $name);
+        $ref->setAccessible(true);
+        $ref->setValue($obj, $value);
     }
 }

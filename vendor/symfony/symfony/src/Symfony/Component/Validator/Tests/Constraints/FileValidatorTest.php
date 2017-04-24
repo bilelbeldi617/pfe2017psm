@@ -22,6 +22,41 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
 
     protected $file;
 
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new FileValidator();
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->path = sys_get_temp_dir().DIRECTORY_SEPARATOR.'FileValidatorTest';
+        $this->file = fopen($this->path, 'w');
+        fwrite($this->file, ' ', 1);
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        if (is_resource($this->file)) {
+            fclose($this->file);
+        }
+
+        if (file_exists($this->path)) {
+            unlink($this->path);
+        }
+
+        $this->path = null;
+        $this->file = null;
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new File());
@@ -145,12 +180,10 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
             ->setParameter('{{ limit }}', $limitAsString)
             ->setParameter('{{ size }}', $sizeAsString)
             ->setParameter('{{ suffix }}', $suffix)
-            ->setParameter('{{ file }}', '"' . $this->path . '"')
+            ->setParameter('{{ file }}', '"'.$this->path.'"')
             ->setCode(File::TOO_LARGE_ERROR)
             ->assertRaised();
     }
-
-    abstract protected function getFile($filename);
 
     public function provideMaxSizeNotExceededTests()
     {
@@ -249,7 +282,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
             ->setParameter('{{ limit }}', $limitAsString)
             ->setParameter('{{ size }}', $sizeAsString)
             ->setParameter('{{ suffix }}', $suffix)
-            ->setParameter('{{ file }}', '"' . $this->path . '"')
+            ->setParameter('{{ file }}', '"'.$this->path.'"')
             ->setCode(File::TOO_LARGE_ERROR)
             ->assertRaised();
     }
@@ -258,7 +291,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     {
         $file = $this
             ->getMockBuilder('Symfony\Component\HttpFoundation\File\File')
-            ->setConstructorArgs(array(__DIR__ . '/Fixtures/foo'))
+            ->setConstructorArgs(array(__DIR__.'/Fixtures/foo'))
             ->getMock();
         $file
             ->expects($this->once())
@@ -282,7 +315,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     {
         $file = $this
             ->getMockBuilder('Symfony\Component\HttpFoundation\File\File')
-            ->setConstructorArgs(array(__DIR__ . '/Fixtures/foo'))
+            ->setConstructorArgs(array(__DIR__.'/Fixtures/foo'))
             ->getMock();
         $file
             ->expects($this->once())
@@ -306,7 +339,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     {
         $file = $this
             ->getMockBuilder('Symfony\Component\HttpFoundation\File\File')
-            ->setConstructorArgs(array(__DIR__ . '/Fixtures/foo'))
+            ->setConstructorArgs(array(__DIR__.'/Fixtures/foo'))
             ->getMock();
         $file
             ->expects($this->once())
@@ -327,7 +360,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
         $this->buildViolation('myMessage')
             ->setParameter('{{ type }}', '"application/pdf"')
             ->setParameter('{{ types }}', '"image/png", "image/jpg"')
-            ->setParameter('{{ file }}', '"' . $this->path . '"')
+            ->setParameter('{{ file }}', '"'.$this->path.'"')
             ->setCode(File::INVALID_MIME_TYPE_ERROR)
             ->assertRaised();
     }
@@ -336,7 +369,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     {
         $file = $this
             ->getMockBuilder('Symfony\Component\HttpFoundation\File\File')
-            ->setConstructorArgs(array(__DIR__ . '/Fixtures/foo'))
+            ->setConstructorArgs(array(__DIR__.'/Fixtures/foo'))
             ->getMock();
         $file
             ->expects($this->once())
@@ -357,7 +390,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
         $this->buildViolation('myMessage')
             ->setParameter('{{ type }}', '"application/pdf"')
             ->setParameter('{{ types }}', '"image/*", "image/jpg"')
-            ->setParameter('{{ file }}', '"' . $this->path . '"')
+            ->setParameter('{{ file }}', '"'.$this->path.'"')
             ->setCode(File::INVALID_MIME_TYPE_ERROR)
             ->assertRaised();
     }
@@ -373,7 +406,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($this->getFile($this->path), $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ file }}', '"' . $this->path . '"')
+            ->setParameter('{{ file }}', '"'.$this->path.'"')
             ->setCode(File::EMPTY_ERROR)
             ->assertRaised();
     }
@@ -440,38 +473,5 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
         return $tests;
     }
 
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new FileValidator();
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'FileValidatorTest';
-        $this->file = fopen($this->path, 'w');
-        fwrite($this->file, ' ', 1);
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        if (is_resource($this->file)) {
-            fclose($this->file);
-        }
-
-        if (file_exists($this->path)) {
-            unlink($this->path);
-        }
-
-        $this->path = null;
-        $this->file = null;
-    }
+    abstract protected function getFile($filename);
 }

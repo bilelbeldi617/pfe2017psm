@@ -29,10 +29,10 @@ class PhpEngine extends BasePhpEngine implements EngineInterface
     /**
      * Constructor.
      *
-     * @param TemplateNameParserInterface $parser A TemplateNameParserInterface instance
-     * @param ContainerInterface $container The DI container
-     * @param LoaderInterface $loader A loader instance
-     * @param GlobalVariables|null $globals A GlobalVariables instance or null
+     * @param TemplateNameParserInterface $parser    A TemplateNameParserInterface instance
+     * @param ContainerInterface          $container The DI container
+     * @param LoaderInterface             $loader    A loader instance
+     * @param GlobalVariables|null        $globals   A GlobalVariables instance or null
      */
     public function __construct(TemplateNameParserInterface $parser, ContainerInterface $container, LoaderInterface $loader, GlobalVariables $globals = null)
     {

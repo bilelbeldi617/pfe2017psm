@@ -5,17 +5,17 @@
 
 {% block script %}
     <script language="JavaScript">
-        $("document").ready(function () {
-            $("#listNiveau").change(function () {
+        $("document").ready(function(){
+            $("#listNiveau").change(function(){
                 $("#messageContainer").html("");
                 $("#mySpinner").fadeIn();
-                console.log("bilel");
+               console.log("bilel");
                 var niveau = $("#listNiveau").val();
                 $.ajax({
-                    url: "{{ path('getNumeroGroupe') }}",
+                   url: "{{ path('getNumeroGroupe') }}",
                     method: "GET",
-                    data: {"niveauGroupe": niveau},
-                    success: function (response) {
+                    data: {"niveauGroupe" : niveau},
+                    success : function(response){
                         response = JSON.parse(response);
 
                         console.log(response);
@@ -24,13 +24,13 @@
                     }
                 });
             });
-            $("#formCreerGroupe").submit(function () {
+            $("#formCreerGroupe").submit(function(){
 
 
-                if ($("#listNiveau").val() == "null") {
+                if($("#listNiveau").val() == "null"){
                     var message = "<div class='alert alert-danger'>Il faut choisir un niveau</div>";
                     $("#messageContainer").html(message);
-                } else {
+                }else {
                     $("#tableSpinner").fadeIn();
 
 
@@ -82,23 +82,20 @@
                                 <option value="4">Quatrieme Annee</option>
                                 <option value="5">Cinquieme Annee</option>
                                 <option value="6">Sixieme Annee</option>
-                            </select></td>
+                        </select></td>
                     </tr>
                     <tr>
                         <td>Numéro groupe</td>
-                        <td></i><input type="number" name="numGroupe" id="numGroupe" readonly><i
-                                    class="ace-icon fa fa-spin fa-refresh blue bigger-170" id="mySpinner"
-                                    style="display: none;margin-left: 15px"></td>
+                        <td></i><input type="number" name="numGroupe" id="numGroupe" readonly><i class="ace-icon fa fa-spin fa-refresh blue bigger-170" id="mySpinner" style="display: none;margin-left: 15px"></td>
                     </tr>
                     <tr align="center">
                         <td><input type="submit" value="Créer" class="btn btn-primary"></td>
-                        <td><input type="reset" value="Vider" class="btn btn-danger"></td>
+                        <td><input type="reset" value="Vider" class="btn btn-danger"> </td>
                     </tr>
                 </table>
 
             </form>
-            <center><span><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="tableSpinner"
-                             style="display: none;margin-left: 15px"></i></span></center>
+            <center><span><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="tableSpinner" style="display: none;margin-left: 15px"></i></span></center>
         </div>
     </div>
 {% endblock %}

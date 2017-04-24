@@ -24,7 +24,7 @@ class FragmentController extends ContainerAware
 
     public function inlinedAction($options, $_format)
     {
-        return new Response($options['bar']->getBar() . ' ' . $_format);
+        return new Response($options['bar']->getBar().' '.$_format);
     }
 
     public function customFormatAction($_format)

@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\DependencyInjection;
 
-@trigger_error('The ' . __NAMESPACE__ . '\SimpleXMLElement class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\SimpleXMLElement class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 use Symfony\Component\Config\Util\XmlUtils;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -38,22 +38,10 @@ class SimpleXMLElement extends \SimpleXMLElement
     }
 
     /**
-     * Converts an xml value to a PHP type.
-     *
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    public static function phpize($value)
-    {
-        return XmlUtils::phpize($value);
-    }
-
-    /**
      * Returns arguments as valid PHP types.
      *
      * @param string $name
-     * @param bool $lowercase
+     * @param bool   $lowercase
      *
      * @return mixed
      */
@@ -62,9 +50,9 @@ class SimpleXMLElement extends \SimpleXMLElement
         $arguments = array();
         foreach ($this->$name as $arg) {
             if (isset($arg['name'])) {
-                $arg['key'] = (string)$arg['name'];
+                $arg['key'] = (string) $arg['name'];
             }
-            $key = isset($arg['key']) ? (string)$arg['key'] : (!$arguments ? 0 : max(array_keys($arguments)) + 1);
+            $key = isset($arg['key']) ? (string) $arg['key'] : (!$arguments ? 0 : max(array_keys($arguments)) + 1);
 
             // parameter keys are case insensitive
             if ('parameter' == $name && $lowercase) {
@@ -74,7 +62,7 @@ class SimpleXMLElement extends \SimpleXMLElement
             // this is used by DefinitionDecorator to overwrite a specific
             // argument of the parent definition
             if (isset($arg['index'])) {
-                $key = 'index_' . $arg['index'];
+                $key = 'index_'.$arg['index'];
             }
 
             switch ($arg['type']) {
@@ -92,19 +80,19 @@ class SimpleXMLElement extends \SimpleXMLElement
                         $strict = true;
                     }
 
-                    $arguments[$key] = new Reference((string)$arg['id'], $invalidBehavior, $strict);
+                    $arguments[$key] = new Reference((string) $arg['id'], $invalidBehavior, $strict);
                     break;
                 case 'expression':
-                    $arguments[$key] = new Expression((string)$arg);
+                    $arguments[$key] = new Expression((string) $arg);
                     break;
                 case 'collection':
                     $arguments[$key] = $arg->getArgumentsAsPhp($name, false);
                     break;
                 case 'string':
-                    $arguments[$key] = (string)$arg;
+                    $arguments[$key] = (string) $arg;
                     break;
                 case 'constant':
-                    $arguments[$key] = constant((string)$arg);
+                    $arguments[$key] = constant((string) $arg);
                     break;
                 default:
                     $arguments[$key] = self::phpize($arg);
@@ -112,5 +100,17 @@ class SimpleXMLElement extends \SimpleXMLElement
         }
 
         return $arguments;
+    }
+
+    /**
+     * Converts an xml value to a PHP type.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public static function phpize($value)
+    {
+        return XmlUtils::phpize($value);
     }
 }

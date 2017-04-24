@@ -47,7 +47,7 @@ You can also optionally specify the name of a connection to create the database 
 
     <info>php %command.full_name% --connection=default</info>
 EOT
-            );
+        );
     }
 
     /**

@@ -28,10 +28,23 @@ class DoctrineExtractorTest extends TestCase
      */
     private $extractor;
 
+    protected function setUp()
+    {
+        $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__.DIRECTORY_SEPARATOR.'Fixtures'), true);
+        $entityManager = EntityManager::create(array('driver' => 'pdo_sqlite'), $config);
+
+        if (!DBALType::hasType('foo')) {
+            DBALType::addType('foo', 'Symfony\Bridge\Doctrine\Tests\PropertyInfo\Fixtures\DoctrineFooType');
+            $entityManager->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('custom_foo', 'foo');
+        }
+
+        $this->extractor = new DoctrineExtractor($entityManager->getMetadataFactory());
+    }
+
     public function testGetProperties()
     {
         $this->assertEquals(
-            array(
+             array(
                 'id',
                 'guid',
                 'time',
@@ -99,18 +112,5 @@ class DoctrineExtractorTest extends TestCase
     public function testGetTypesCatchException()
     {
         $this->assertNull($this->extractor->getTypes('Not\Exist', 'baz'));
-    }
-
-    protected function setUp()
-    {
-        $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . DIRECTORY_SEPARATOR . 'Fixtures'), true);
-        $entityManager = EntityManager::create(array('driver' => 'pdo_sqlite'), $config);
-
-        if (!DBALType::hasType('foo')) {
-            DBALType::addType('foo', 'Symfony\Bridge\Doctrine\Tests\PropertyInfo\Fixtures\DoctrineFooType');
-            $entityManager->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('custom_foo', 'foo');
-        }
-
-        $this->extractor = new DoctrineExtractor($entityManager->getMetadataFactory());
     }
 }

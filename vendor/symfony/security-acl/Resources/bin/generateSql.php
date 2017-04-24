@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../../../../ClassLoader/ClassLoader.php';
+require_once __DIR__.'/../../../../ClassLoader/ClassLoader.php';
 
 use Symfony\Component\ClassLoader\ClassLoader;
 use Symfony\Component\Finder\Finder;
@@ -17,11 +17,11 @@ use Symfony\Component\Security\Acl\Dbal\Schema;
 
 $loader = new ClassLoader();
 $loader->addPrefixes(array(
-    'Symfony' => __DIR__ . '/../../../../../..',
-    'Doctrine\\Common' => __DIR__ . '/../../../../../../../vendor/doctrine-common/lib',
-    'Doctrine\\DBAL\\Migrations' => __DIR__ . '/../../../../../../../vendor/doctrine-migrations/lib',
-    'Doctrine\\DBAL' => __DIR__ . '/../../../../../../../vendor/doctrine/dbal/lib',
-    'Doctrine' => __DIR__ . '/../../../../../../../vendor/doctrine/lib',
+    'Symfony' => __DIR__.'/../../../../../..',
+    'Doctrine\\Common' => __DIR__.'/../../../../../../../vendor/doctrine-common/lib',
+    'Doctrine\\DBAL\\Migrations' => __DIR__.'/../../../../../../../vendor/doctrine-migrations/lib',
+    'Doctrine\\DBAL' => __DIR__.'/../../../../../../../vendor/doctrine/dbal/lib',
+    'Doctrine' => __DIR__.'/../../../../../../../vendor/doctrine/lib',
 ));
 $loader->register();
 
@@ -38,7 +38,7 @@ $finder = new Finder();
 $finder->name('*Platform.php')->in(dirname($reflection->getFileName()));
 foreach ($finder as $file) {
     require_once $file->getPathName();
-    $className = 'Doctrine\\DBAL\\Platforms\\' . $file->getBasename('.php');
+    $className = 'Doctrine\\DBAL\\Platforms\\'.$file->getBasename('.php');
 
     $reflection = new ReflectionClass($className);
     if ($reflection->isAbstract()) {
@@ -46,6 +46,6 @@ foreach ($finder as $file) {
     }
 
     $platform = $reflection->newInstance();
-    $targetFile = sprintf(__DIR__ . '/../schema/%s.sql', $platform->getName());
+    $targetFile = sprintf(__DIR__.'/../schema/%s.sql', $platform->getName());
     file_put_contents($targetFile, implode("\n\n", $schema->toSql($platform)));
 }

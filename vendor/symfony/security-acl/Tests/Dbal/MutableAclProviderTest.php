@@ -34,6 +34,27 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected $con;
 
+    public static function assertAceEquals(EntryInterface $a, EntryInterface $b)
+    {
+        self::assertInstanceOf(get_class($a), $b);
+
+        foreach (array('getId', 'getMask', 'getStrategy', 'isGranting') as $getter) {
+            self::assertSame($a->$getter(), $b->$getter());
+        }
+
+        self::assertTrue($a->getSecurityIdentity()->equals($b->getSecurityIdentity()));
+        self::assertSame($a->getAcl()->getId(), $b->getAcl()->getId());
+
+        if ($a instanceof AuditableEntryInterface) {
+            self::assertSame($a->isAuditSuccess(), $b->isAuditSuccess());
+            self::assertSame($a->isAuditFailure(), $b->isAuditFailure());
+        }
+
+        if ($a instanceof FieldEntryInterface) {
+            self::assertSame($a->getField(), $b->getField());
+        }
+    }
+
     /**
      * @expectedException \Symfony\Component\Security\Acl\Exception\AclAlreadyExistsException
      */
@@ -43,27 +64,6 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
         $oid = new ObjectIdentity('123456', 'FOO');
         $provider->createAcl($oid);
         $provider->createAcl($oid);
-    }
-
-    protected function getProvider($cache = null)
-    {
-        return new MutableAclProvider($this->con, $this->getStrategy(), $this->getOptions(), $cache);
-    }
-
-    protected function getStrategy()
-    {
-        return new PermissionGrantingStrategy();
-    }
-
-    protected function getOptions()
-    {
-        return array(
-            'oid_table_name' => 'acl_object_identities',
-            'oid_ancestors_table_name' => 'acl_object_identity_ancestors',
-            'class_table_name' => 'acl_classes',
-            'sid_table_name' => 'acl_security_identities',
-            'entry_table_name' => 'acl_entries',
-        );
     }
 
     public function testCreateAcl()
@@ -93,14 +93,6 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
             $this->fail('ACL has not been properly deleted.');
         } catch (AclNotFoundException $e) {
         }
-    }
-
-    protected function getField($object, $field)
-    {
-        $reflection = new \ReflectionProperty($object, $field);
-        $reflection->setAccessible(true);
-
-        return $reflection->getValue($object);
     }
 
     public function testDeleteAclDeletesChildren()
@@ -171,77 +163,6 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $propertyChanges);
         $this->assertTrue($propertyChanges->contains($acl));
         $this->assertTrue($propertyChanges->contains($acl->getParentAcl()));
-    }
-
-    /**
-     * Imports acls.
-     *
-     * Data must have the following format:
-     * array(
-     *     *name* => array(
-     *         'object_identifier' => *required*
-     *         'class_type' => *required*,
-     *         'parent_acl' => *name (optional)*
-     *     ),
-     * )
-     *
-     * @param AclProvider $provider
-     * @param array $data
-     *
-     * @throws \InvalidArgumentException
-     * @throws \Exception
-     */
-    protected function importAcls(AclProvider $provider, array $data)
-    {
-        $aclIds = $parentAcls = array();
-        $con = $this->getField($provider, 'connection');
-        $con->beginTransaction();
-        try {
-            foreach ($data as $name => $aclData) {
-                if (!isset($aclData['object_identifier'], $aclData['class_type'])) {
-                    throw new \InvalidArgumentException('"object_identifier", and "class_type" must be present.');
-                }
-
-                $this->callMethod($provider, 'createObjectIdentity', array(new ObjectIdentity($aclData['object_identifier'], $aclData['class_type'])));
-                $aclId = $con->lastInsertId();
-                $aclIds[$name] = $aclId;
-
-                $sql = $this->callMethod($provider, 'getInsertObjectIdentityRelationSql', array($aclId, $aclId));
-                $con->executeQuery($sql);
-
-                if (isset($aclData['parent_acl'])) {
-                    if (isset($aclIds[$aclData['parent_acl']])) {
-                        $con->executeQuery('UPDATE acl_object_identities SET parent_object_identity_id = ' . $aclIds[$aclData['parent_acl']] . ' WHERE id = ' . $aclId);
-                        $con->executeQuery($this->callMethod($provider, 'getInsertObjectIdentityRelationSql', array($aclId, $aclIds[$aclData['parent_acl']])));
-                    } else {
-                        $parentAcls[$aclId] = $aclData['parent_acl'];
-                    }
-                }
-            }
-
-            foreach ($parentAcls as $aclId => $name) {
-                if (!isset($aclIds[$name])) {
-                    throw new \InvalidArgumentException(sprintf('"%s" does not exist.', $name));
-                }
-
-                $con->executeQuery(sprintf('UPDATE acl_object_identities SET parent_object_identity_id = %d WHERE id = %d', $aclIds[$name], $aclId));
-                $con->executeQuery($this->callMethod($provider, 'getInsertObjectIdentityRelationSql', array($aclId, $aclIds[$name])));
-            }
-
-            $con->commit();
-        } catch (\Exception $e) {
-            $con->rollBack();
-
-            throw $e;
-        }
-    }
-
-    protected function callMethod($object, $method, array $args)
-    {
-        $method = new \ReflectionMethod($object, $method);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $args);
     }
 
     /**
@@ -337,10 +258,12 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
         $con = $this->getMock('Doctrine\DBAL\Connection', array(), array(), '', false);
         $con
             ->expects($this->never())
-            ->method('beginTransaction');
+            ->method('beginTransaction')
+        ;
         $con
             ->expects($this->never())
-            ->method('executeQuery');
+            ->method('executeQuery')
+        ;
 
         $provider = new MutableAclProvider($con, new PermissionGrantingStrategy(), array());
         $acl = new Acl(1, new ObjectIdentity(1, 'Foo'), new PermissionGrantingStrategy(), array(), true);
@@ -403,27 +326,6 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($aces), count($reloadedAces));
         foreach ($aces as $index => $ace) {
             $this->assertAceEquals($ace, $reloadedAces[$index]);
-        }
-    }
-
-    public static function assertAceEquals(EntryInterface $a, EntryInterface $b)
-    {
-        self::assertInstanceOf(get_class($a), $b);
-
-        foreach (array('getId', 'getMask', 'getStrategy', 'isGranting') as $getter) {
-            self::assertSame($a->$getter(), $b->$getter());
-        }
-
-        self::assertTrue($a->getSecurityIdentity()->equals($b->getSecurityIdentity()));
-        self::assertSame($a->getAcl()->getId(), $b->getAcl()->getId());
-
-        if ($a instanceof AuditableEntryInterface) {
-            self::assertSame($a->isAuditSuccess(), $b->isAuditSuccess());
-            self::assertSame($a->isAuditFailure(), $b->isAuditFailure());
-        }
-
-        if ($a instanceof FieldEntryInterface) {
-            self::assertSame($a->getField(), $b->getField());
         }
     }
 
@@ -541,12 +443,75 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function setField($object, $field, $value)
+    /**
+     * Imports acls.
+     *
+     * Data must have the following format:
+     * array(
+     *     *name* => array(
+     *         'object_identifier' => *required*
+     *         'class_type' => *required*,
+     *         'parent_acl' => *name (optional)*
+     *     ),
+     * )
+     *
+     * @param AclProvider $provider
+     * @param array       $data
+     *
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
+    protected function importAcls(AclProvider $provider, array $data)
     {
-        $reflection = new \ReflectionProperty($object, $field);
-        $reflection->setAccessible(true);
-        $reflection->setValue($object, $value);
-        $reflection->setAccessible(false);
+        $aclIds = $parentAcls = array();
+        $con = $this->getField($provider, 'connection');
+        $con->beginTransaction();
+        try {
+            foreach ($data as $name => $aclData) {
+                if (!isset($aclData['object_identifier'], $aclData['class_type'])) {
+                    throw new \InvalidArgumentException('"object_identifier", and "class_type" must be present.');
+                }
+
+                $this->callMethod($provider, 'createObjectIdentity', array(new ObjectIdentity($aclData['object_identifier'], $aclData['class_type'])));
+                $aclId = $con->lastInsertId();
+                $aclIds[$name] = $aclId;
+
+                $sql = $this->callMethod($provider, 'getInsertObjectIdentityRelationSql', array($aclId, $aclId));
+                $con->executeQuery($sql);
+
+                if (isset($aclData['parent_acl'])) {
+                    if (isset($aclIds[$aclData['parent_acl']])) {
+                        $con->executeQuery('UPDATE acl_object_identities SET parent_object_identity_id = '.$aclIds[$aclData['parent_acl']].' WHERE id = '.$aclId);
+                        $con->executeQuery($this->callMethod($provider, 'getInsertObjectIdentityRelationSql', array($aclId, $aclIds[$aclData['parent_acl']])));
+                    } else {
+                        $parentAcls[$aclId] = $aclData['parent_acl'];
+                    }
+                }
+            }
+
+            foreach ($parentAcls as $aclId => $name) {
+                if (!isset($aclIds[$name])) {
+                    throw new \InvalidArgumentException(sprintf('"%s" does not exist.', $name));
+                }
+
+                $con->executeQuery(sprintf('UPDATE acl_object_identities SET parent_object_identity_id = %d WHERE id = %d', $aclIds[$name], $aclId));
+                $con->executeQuery($this->callMethod($provider, 'getInsertObjectIdentityRelationSql', array($aclId, $aclIds[$name])));
+            }
+
+            $con->commit();
+        } catch (\Exception $e) {
+            $con->rollBack();
+
+            throw $e;
+        }
+    }
+
+    protected function callMethod($object, $method, array $args)
+    {
+        $method = new \ReflectionMethod($object, $method);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $args);
     }
 
     protected function setUp()
@@ -566,5 +531,42 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         $this->con = null;
+    }
+
+    protected function getField($object, $field)
+    {
+        $reflection = new \ReflectionProperty($object, $field);
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($object);
+    }
+
+    public function setField($object, $field, $value)
+    {
+        $reflection = new \ReflectionProperty($object, $field);
+        $reflection->setAccessible(true);
+        $reflection->setValue($object, $value);
+        $reflection->setAccessible(false);
+    }
+
+    protected function getOptions()
+    {
+        return array(
+            'oid_table_name' => 'acl_object_identities',
+            'oid_ancestors_table_name' => 'acl_object_identity_ancestors',
+            'class_table_name' => 'acl_classes',
+            'sid_table_name' => 'acl_security_identities',
+            'entry_table_name' => 'acl_entries',
+        );
+    }
+
+    protected function getStrategy()
+    {
+        return new PermissionGrantingStrategy();
+    }
+
+    protected function getProvider($cache = null)
+    {
+        return new MutableAclProvider($this->con, $this->getStrategy(), $this->getOptions(), $cache);
     }
 }

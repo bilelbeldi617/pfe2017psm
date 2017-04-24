@@ -28,15 +28,15 @@ class CouchbaseDefinition extends CacheDefinition
     public function configure($name, array $config, Definition $service, ContainerBuilder $container)
     {
         $couchbaseConf = $config['couchbase'];
-        $connRef = $this->getConnectionReference($name, $couchbaseConf, $container);
+        $connRef       = $this->getConnectionReference($name, $couchbaseConf, $container);
 
         $service->addMethodCall('setCouchbase', array($connRef));
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return \Symfony\Component\DependencyInjection\Reference
      */
@@ -46,13 +46,13 @@ class CouchbaseDefinition extends CacheDefinition
             return new Reference($config['connection_id']);
         }
 
-        $host = $config['hostnames'];
-        $user = $config['username'];
-        $pass = $config['password'];
-        $bucket = $config['bucket_name'];
+        $host      = $config['hostnames'];
+        $user      = $config['username'];
+        $pass      = $config['password'];
+        $bucket    = $config['bucket_name'];
         $connClass = '%doctrine_cache.couchbase.connection.class%';
-        $connId = sprintf('doctrine_cache.services.%s_couchbase.connection', $name);
-        $connDef = new Definition($connClass, array($host, $user, $pass, $bucket));
+        $connId    = sprintf('doctrine_cache.services.%s_couchbase.connection', $name);
+        $connDef   = new Definition($connClass, array($host, $user, $pass, $bucket));
 
         $connDef->setPublic(false);
         $container->setDefinition($connId, $connDef);

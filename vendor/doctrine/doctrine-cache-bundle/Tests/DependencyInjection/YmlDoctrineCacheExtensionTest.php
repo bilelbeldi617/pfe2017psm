@@ -34,7 +34,7 @@ class YmlDoctrineCacheExtensionTest extends AbstractDoctrineCacheExtensionTest
      */
     protected function loadFromFile(ContainerBuilder $container, $file)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/config/yml'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/Fixtures/config/yml'));
 
         $loader->load($file . '.yml');
     }

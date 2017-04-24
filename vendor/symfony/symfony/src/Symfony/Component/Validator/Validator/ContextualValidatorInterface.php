@@ -39,10 +39,10 @@ interface ContextualValidatorInterface
      * If no constraint is passed, the constraint
      * {@link \Symfony\Component\Validator\Constraints\Valid} is assumed.
      *
-     * @param mixed $value The value to validate
+     * @param mixed                   $value       The value to validate
      * @param Constraint|Constraint[] $constraints The constraint(s) to validate
      *                                             against
-     * @param array|null $groups The validation groups to
+     * @param array|null              $groups      The validation groups to
      *                                             validate. If none is given,
      *                                             "Default" is assumed
      *
@@ -54,9 +54,9 @@ interface ContextualValidatorInterface
      * Validates a property of an object against the constraints specified
      * for this property.
      *
-     * @param object $object The object
-     * @param string $propertyName The name of the validated property
-     * @param array|null $groups The validation groups to validate. If
+     * @param object     $object       The object
+     * @param string     $propertyName The name of the validated property
+     * @param array|null $groups       The validation groups to validate. If
      *                                 none is given, "Default" is assumed
      *
      * @return $this
@@ -68,10 +68,10 @@ interface ContextualValidatorInterface
      * property.
      *
      * @param object|string $objectOrClass The object or its class name
-     * @param string $propertyName The name of the property
-     * @param mixed $value The value to validate against the
+     * @param string        $propertyName  The name of the property
+     * @param mixed         $value         The value to validate against the
      *                                     property's constraints
-     * @param array|null $groups The validation groups to validate. If
+     * @param array|null    $groups        The validation groups to validate. If
      *                                     none is given, "Default" is assumed
      *
      * @return $this

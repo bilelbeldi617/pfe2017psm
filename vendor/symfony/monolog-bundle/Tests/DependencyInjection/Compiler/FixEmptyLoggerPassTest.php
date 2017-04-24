@@ -31,7 +31,7 @@ class FixEmptyLoggerPassTest extends \PHPUnit_Framework_TestCase
         $calls = $container->getDefinition('monolog.logger.foo')->getMethodCalls();
         $this->assertCount(1, $calls);
         $this->assertSame('pushHandler', $calls[0][0]);
-        $this->assertSame('monolog.handler.null_internal', (string)$calls[0][1][0]);
+        $this->assertSame('monolog.handler.null_internal', (string) $calls[0][1][0]);
 
         $calls = $container->getDefinition('monolog.logger.bar')->getMethodCalls();
         $this->assertCount(1, $calls);

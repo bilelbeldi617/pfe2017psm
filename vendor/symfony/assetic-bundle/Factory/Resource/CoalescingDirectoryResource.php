@@ -23,7 +23,7 @@ class CoalescingDirectoryResource extends BaseCoalescingDirectoryResource
 {
     protected function getRelativeName(ResourceInterface $file, ResourceInterface $directory)
     {
-        $name = (string)$file;
+        $name = (string) $file;
 
         return substr($name, strpos($name, ':'));
     }

@@ -69,8 +69,8 @@ class ResolveInvalidReferencesPass implements CompilerPassInterface
     /**
      * Processes arguments to determine invalid references.
      *
-     * @param array $arguments An array of Reference objects
-     * @param bool $inMethodCall
+     * @param array $arguments    An array of Reference objects
+     * @param bool  $inMethodCall
      *
      * @return array
      *
@@ -82,7 +82,7 @@ class ResolveInvalidReferencesPass implements CompilerPassInterface
             if (is_array($argument)) {
                 $arguments[$k] = $this->processArguments($argument, $inMethodCall);
             } elseif ($argument instanceof Reference) {
-                $id = (string)$argument;
+                $id = (string) $argument;
 
                 $invalidBehavior = $argument->getInvalidBehavior();
                 $exists = $this->container->has($id);

@@ -46,14 +46,14 @@ class Cookie
     /**
      * Sets a cookie.
      *
-     * @param string $name The cookie name
-     * @param string $value The value of the cookie
-     * @param string $expires The time the cookie expires
-     * @param string $path The path on the server in which the cookie will be available on
-     * @param string $domain The domain that the cookie is available
-     * @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
-     * @param bool $httponly The cookie httponly flag
-     * @param bool $encodedValue Whether the value is encoded or not
+     * @param string $name         The cookie name
+     * @param string $value        The value of the cookie
+     * @param string $expires      The time the cookie expires
+     * @param string $path         The path on the server in which the cookie will be available on
+     * @param string $domain       The domain that the cookie is available
+     * @param bool   $secure       Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
+     * @param bool   $httponly     The cookie httponly flag
+     * @param bool   $encodedValue Whether the value is encoded or not
      */
     public function __construct($name, $value, $expires = null, $path = null, $domain = '', $secure = false, $httponly = true, $encodedValue = false)
     {
@@ -67,8 +67,8 @@ class Cookie
         $this->name = $name;
         $this->path = empty($path) ? '/' : $path;
         $this->domain = $domain;
-        $this->secure = (bool)$secure;
-        $this->httponly = (bool)$httponly;
+        $this->secure = (bool) $secure;
+        $this->httponly = (bool) $httponly;
 
         if (null !== $expires) {
             $timestampAsDateTime = \DateTime::createFromFormat('U', $expires);
@@ -81,10 +81,45 @@ class Cookie
     }
 
     /**
+     * Returns the HTTP representation of the Cookie.
+     *
+     * @return string The HTTP representation of the Cookie
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function __toString()
+    {
+        $cookie = sprintf('%s=%s', $this->name, $this->rawValue);
+
+        if (null !== $this->expires) {
+            $dateTime = \DateTime::createFromFormat('U', $this->expires, new \DateTimeZone('GMT'));
+            $cookie .= '; expires='.str_replace('+0000', '', $dateTime->format(self::$dateFormats[0]));
+        }
+
+        if ('' !== $this->domain) {
+            $cookie .= '; domain='.$this->domain;
+        }
+
+        if ($this->path) {
+            $cookie .= '; path='.$this->path;
+        }
+
+        if ($this->secure) {
+            $cookie .= '; secure';
+        }
+
+        if ($this->httponly) {
+            $cookie .= '; httponly';
+        }
+
+        return $cookie;
+    }
+
+    /**
      * Creates a Cookie instance from a Set-Cookie header value.
      *
      * @param string $cookie A Set-Cookie header value
-     * @param string $url The base URL
+     * @param string $url    The base URL
      *
      * @return static
      *
@@ -178,41 +213,6 @@ class Cookie
         if (false !== $date = date_create($dateValue, new \DateTimeZone('GMT'))) {
             return $date->format('U');
         }
-    }
-
-    /**
-     * Returns the HTTP representation of the Cookie.
-     *
-     * @return string The HTTP representation of the Cookie
-     *
-     * @throws \UnexpectedValueException
-     */
-    public function __toString()
-    {
-        $cookie = sprintf('%s=%s', $this->name, $this->rawValue);
-
-        if (null !== $this->expires) {
-            $dateTime = \DateTime::createFromFormat('U', $this->expires, new \DateTimeZone('GMT'));
-            $cookie .= '; expires=' . str_replace('+0000', '', $dateTime->format(self::$dateFormats[0]));
-        }
-
-        if ('' !== $this->domain) {
-            $cookie .= '; domain=' . $this->domain;
-        }
-
-        if ($this->path) {
-            $cookie .= '; path=' . $this->path;
-        }
-
-        if ($this->secure) {
-            $cookie .= '; secure';
-        }
-
-        if ($this->httponly) {
-            $cookie .= '; httponly';
-        }
-
-        return $cookie;
     }
 
     /**

@@ -23,6 +23,15 @@ class LegacyPdoSessionHandlerTest extends TestCase
 {
     private $pdo;
 
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->pdo = new \PDO('sqlite::memory:');
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $sql = 'CREATE TABLE sessions (sess_id VARCHAR(128) PRIMARY KEY, sess_data TEXT, sess_time INTEGER)';
+        $this->pdo->exec($sql);
+    }
+
     public function testIncompleteOptions()
     {
         $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('InvalidArgumentException');
@@ -101,14 +110,5 @@ class LegacyPdoSessionHandlerTest extends TestCase
         $method->setAccessible(true);
 
         $this->assertInstanceOf('\PDO', $method->invoke($storage));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->pdo = new \PDO('sqlite::memory:');
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $sql = 'CREATE TABLE sessions (sess_id VARCHAR(128) PRIMARY KEY, sess_data TEXT, sess_time INTEGER)';
-        $this->pdo->exec($sql);
     }
 }

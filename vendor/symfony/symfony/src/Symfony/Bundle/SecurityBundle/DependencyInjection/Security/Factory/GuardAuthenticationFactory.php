@@ -38,19 +38,20 @@ class GuardAuthenticationFactory implements SecurityFactoryInterface
         $node
             ->fixXmlConfig('authenticator')
             ->children()
-            ->scalarNode('provider')
-            ->info('A key from the "providers" section of your security config, in case your user provider is different than the firewall')
+                ->scalarNode('provider')
+                    ->info('A key from the "providers" section of your security config, in case your user provider is different than the firewall')
+                ->end()
+                ->scalarNode('entry_point')
+                    ->info('A service id (of one of your authenticators) whose start() method should be called when an anonymous user hits a page that requires authentication')
+                    ->defaultValue(null)
+                ->end()
+                ->arrayNode('authenticators')
+                    ->info('An array of service ids for all of your "authenticators"')
+                    ->requiresAtLeastOneElement()
+                    ->prototype('scalar')->end()
+                ->end()
             ->end()
-            ->scalarNode('entry_point')
-            ->info('A service id (of one of your authenticators) whose start() method should be called when an anonymous user hits a page that requires authentication')
-            ->defaultValue(null)
-            ->end()
-            ->arrayNode('authenticators')
-            ->info('An array of service ids for all of your "authenticators"')
-            ->requiresAtLeastOneElement()
-            ->prototype('scalar')->end()
-            ->end()
-            ->end();
+        ;
     }
 
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
@@ -62,16 +63,17 @@ class GuardAuthenticationFactory implements SecurityFactoryInterface
         }
 
         // configure the GuardAuthenticationFactory to have the dynamic constructor arguments
-        $providerId = 'security.authentication.provider.guard.' . $id;
+        $providerId = 'security.authentication.provider.guard.'.$id;
         $container
             ->setDefinition($providerId, new DefinitionDecorator('security.authentication.provider.guard'))
             ->replaceArgument(0, $authenticatorReferences)
             ->replaceArgument(1, new Reference($userProvider))
             ->replaceArgument(2, $id)
-            ->replaceArgument(3, new Reference('security.user_checker.' . $id));
+            ->replaceArgument(3, new Reference('security.user_checker.'.$id))
+        ;
 
         // listener
-        $listenerId = 'security.authentication.listener.guard.' . $id;
+        $listenerId = 'security.authentication.listener.guard.'.$id;
         $listener = $container->setDefinition($listenerId, new DefinitionDecorator('security.authentication.listener.guard'));
         $listener->replaceArgument(2, $id);
         $listener->replaceArgument(3, $authenticatorReferences);

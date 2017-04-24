@@ -19,6 +19,16 @@ use Symfony\Component\Validator\Validation;
 
 class AllValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new AllValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new All(new Range(array('min' => 4))));
@@ -44,7 +54,7 @@ class AllValidatorTest extends AbstractConstraintValidatorTest
         $i = 0;
 
         foreach ($array as $key => $value) {
-            $this->expectValidateValueAt($i++, '[' . $key . ']', $value, array($constraint));
+            $this->expectValidateValueAt($i++, '['.$key.']', $value, array($constraint));
         }
 
         $this->validator->validate($array, new All($constraint));
@@ -65,7 +75,7 @@ class AllValidatorTest extends AbstractConstraintValidatorTest
         $i = 0;
 
         foreach ($array as $key => $value) {
-            $this->expectValidateValueAt($i++, '[' . $key . ']', $value, array($constraint1, $constraint2));
+            $this->expectValidateValueAt($i++, '['.$key.']', $value, array($constraint1, $constraint2));
         }
 
         $this->validator->validate($array, new All($constraints));
@@ -79,15 +89,5 @@ class AllValidatorTest extends AbstractConstraintValidatorTest
             array(array(5, 6, 7)),
             array(new \ArrayObject(array(5, 6, 7))),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new AllValidator();
     }
 }

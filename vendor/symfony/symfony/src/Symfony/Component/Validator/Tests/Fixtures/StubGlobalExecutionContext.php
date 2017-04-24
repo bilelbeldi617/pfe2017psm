@@ -38,24 +38,24 @@ class StubGlobalExecutionContext implements GlobalExecutionContextInterface
         return $this->violations;
     }
 
-    public function getRoot()
-    {
-        return $this->root;
-    }
-
     public function setRoot($root)
     {
         $this->root = $root;
     }
 
-    public function getVisitor()
+    public function getRoot()
     {
-        return $this->visitor;
+        return $this->root;
     }
 
     public function setVisitor(ValidationVisitorInterface $visitor)
     {
         $this->visitor = $visitor;
+    }
+
+    public function getVisitor()
+    {
+        return $this->visitor;
     }
 
     public function getValidatorFactory()

@@ -27,17 +27,17 @@ class Sqlite3Definition extends CacheDefinition
      */
     public function configure($name, array $config, Definition $service, ContainerBuilder $container)
     {
-        $sqlite3Conf = $config['sqlite3'];
-        $tableName = $sqlite3Conf['table_name'];
+        $sqlite3Conf   = $config['sqlite3'];
+        $tableName     = $sqlite3Conf['table_name'];
         $connectionRef = $this->getConnectionReference($name, $sqlite3Conf, $container);
 
         $service->setArguments(array($connectionRef, $tableName));
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return \Symfony\Component\DependencyInjection\Reference
      */
@@ -47,10 +47,10 @@ class Sqlite3Definition extends CacheDefinition
             return new Reference($config['connection_id']);
         }
 
-        $fileName = $config['file_name'];
+        $fileName  = $config['file_name'];
         $connClass = '%doctrine_cache.sqlite3.connection.class%';
-        $connId = sprintf('doctrine_cache.services.%s.connection', $name);
-        $connDef = new Definition($connClass, array($fileName, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE));
+        $connId    = sprintf('doctrine_cache.services.%s.connection', $name);
+        $connDef   = new Definition($connClass, array($fileName, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE));
 
         $connDef->setPublic(false);
         $container->setDefinition($connId, $connDef);

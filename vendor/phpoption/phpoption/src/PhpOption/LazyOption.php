@@ -30,6 +30,19 @@ final class LazyOption extends Option
     private $option;
 
     /**
+     * Helper Constructor.
+     *
+     * @param callable $callback
+     * @param array $arguments
+     *
+     * @return LazyOption
+     */
+    public static function create($callback, array $arguments = array())
+    {
+        return new self($callback, $arguments);
+    }
+
+    /**
      * Constructor.
      *
      * @param callable $callback
@@ -45,38 +58,9 @@ final class LazyOption extends Option
         $this->arguments = $arguments;
     }
 
-    /**
-     * Helper Constructor.
-     *
-     * @param callable $callback
-     * @param array $arguments
-     *
-     * @return LazyOption
-     */
-    public static function create($callback, array $arguments = array())
-    {
-        return new self($callback, $arguments);
-    }
-
     public function isDefined()
     {
         return $this->option()->isDefined();
-    }
-
-    /**
-     * @return Option
-     */
-    private function option()
-    {
-        if (null === $this->option) {
-            $this->option = call_user_func_array($this->callback, $this->arguments);
-            if (!$this->option instanceof Option) {
-                $this->option = null;
-                throw new \RuntimeException('Expected instance of \PhpOption\Option');
-            }
-        }
-
-        return $this->option;
     }
 
     public function isEmpty()
@@ -165,5 +149,21 @@ final class LazyOption extends Option
     public function foldRight($initialValue, $callable)
     {
         return $this->option()->foldRight($initialValue, $callable);
+    }
+
+    /**
+     * @return Option
+     */
+    private function option()
+    {
+        if (null === $this->option) {
+            $this->option = call_user_func_array($this->callback, $this->arguments);
+            if (!$this->option instanceof Option) {
+                $this->option = null;
+                throw new \RuntimeException('Expected instance of \PhpOption\Option');
+            }
+        }
+
+        return $this->option;
     }
 }

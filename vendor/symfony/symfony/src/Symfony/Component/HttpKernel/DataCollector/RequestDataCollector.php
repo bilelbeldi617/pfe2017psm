@@ -32,11 +32,6 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
         $this->controllers = new \SplObjectStorage();
     }
 
-    public static function getSubscribedEvents()
-    {
-        return array(KernelEvents::CONTROLLER => 'onKernelController');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -44,7 +39,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
     {
         $responseHeaders = $response->headers->all();
         foreach ($response->headers->getCookies() as $cookie) {
-            $responseHeaders['set-cookie'][] = (string)$cookie;
+            $responseHeaders['set-cookie'][] = (string) $cookie;
         }
 
         // attributes are serialized and as they can be anything, they need to be converted to strings.
@@ -125,9 +120,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
                 continue;
             }
             if ('request_headers' === $key || 'response_headers' === $key) {
-                $value = array_map(function ($v) {
-                    return isset($v[0]) && !isset($v[1]) ? $v[0] : $v;
-                }, $value);
+                $value = array_map(function ($v) { return isset($v[0]) && !isset($v[1]) ? $v[0] : $v; }, $value);
             }
             if ('request_server' !== $key && 'request_cookies' !== $key) {
                 $this->data[$key] = $value;
@@ -173,7 +166,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
                     'line' => $r->getStartLine(),
                 );
             } else {
-                $this->data['controller'] = (string)$controller ?: 'n/a';
+                $this->data['controller'] = (string) $controller ?: 'n/a';
             }
             unset($this->controllers[$request]);
         }
@@ -301,6 +294,11 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
     public function onKernelController(FilterControllerEvent $event)
     {
         $this->controllers[$event->getRequest()] = $event->getController();
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::CONTROLLER => 'onKernelController');
     }
 
     /**

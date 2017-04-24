@@ -40,7 +40,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
-                    'method' => $method . 'To' . $format,
+                    'method' => $method.'To'.$format,
                 );
             }
         }
@@ -59,6 +59,16 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         }
     }
 
+    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
+    {
+        return $visitor->visitArray(iterator_to_array($list), $type, $context);
+    }
+
+    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
+    {
+        return $visitor->visitArray(iterator_to_array($list), $type, $context);
+    }
+
     public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
     {
         if (null === $visitor->document) {
@@ -75,16 +85,6 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         $violationNode->appendChild($messageNode = $visitor->document->createElement('message'));
 
         $messageNode->appendChild($visitor->document->createCDATASection($violation->getMessage()));
-    }
-
-    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
-    {
-        return $visitor->visitArray(iterator_to_array($list), $type, $context);
-    }
-
-    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
-    {
-        return $visitor->visitArray(iterator_to_array($list), $type, $context);
     }
 
     public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)

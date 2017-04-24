@@ -16,19 +16,24 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Loader\StaticMethodLoader;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
 
-interface StaticLoaderInterface
-{
-    public static function loadMetadata(ClassMetadata $metadata);
-}
-
 class StaticMethodLoaderTest extends TestCase
 {
     private $errorLevel;
 
+    protected function setUp()
+    {
+        $this->errorLevel = error_reporting();
+    }
+
+    protected function tearDown()
+    {
+        error_reporting($this->errorLevel);
+    }
+
     public function testLoadClassMetadataReturnsTrueIfSuccessful()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\StaticLoaderEntity');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderEntity');
 
         $this->assertTrue($loader->loadClassMetadata($metadata));
     }
@@ -44,7 +49,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadata()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\StaticLoaderEntity');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderEntity');
 
         $loader->loadClassMetadata($metadata);
 
@@ -54,12 +59,12 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataDoesNotRepeatLoadWithParentClasses()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\StaticLoaderDocument');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderDocument');
         $loader->loadClassMetadata($metadata);
         $this->assertCount(0, $metadata->getConstraints());
 
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\BaseStaticLoaderDocument');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\BaseStaticLoaderDocument');
         $loader->loadClassMetadata($metadata);
         $this->assertCount(1, $metadata->getConstraints());
     }
@@ -67,7 +72,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataIgnoresInterfaces()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\StaticLoaderInterface');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderInterface');
 
         $loader->loadClassMetadata($metadata);
 
@@ -77,7 +82,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataInAbstractClasses()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\AbstractStaticLoader');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\AbstractStaticLoader');
 
         $loader->loadClassMetadata($metadata);
 
@@ -90,23 +95,18 @@ class StaticMethodLoaderTest extends TestCase
         // strict standards error
         error_reporting(0);
 
-        $metadata = new ClassMetadata(__NAMESPACE__ . '\AbstractStaticMethodLoader');
+        $metadata = new ClassMetadata(__NAMESPACE__.'\AbstractStaticMethodLoader');
 
         $loader = new StaticMethodLoader('loadMetadata');
         $loader->loadClassMetadata($metadata);
 
         $this->assertCount(0, $metadata->getConstraints());
     }
+}
 
-    protected function setUp()
-    {
-        $this->errorLevel = error_reporting();
-    }
-
-    protected function tearDown()
-    {
-        error_reporting($this->errorLevel);
-    }
+interface StaticLoaderInterface
+{
+    public static function loadMetadata(ClassMetadata $metadata);
 }
 
 abstract class AbstractStaticLoader

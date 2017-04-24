@@ -37,8 +37,8 @@ class AuthenticationProviderManager implements AuthenticationManagerInterface
     /**
      * Constructor.
      *
-     * @param AuthenticationProviderInterface[] $providers An array of AuthenticationProviderInterface instances
-     * @param bool $eraseCredentials Whether to erase credentials after authentication or not
+     * @param AuthenticationProviderInterface[] $providers        An array of AuthenticationProviderInterface instances
+     * @param bool                              $eraseCredentials Whether to erase credentials after authentication or not
      *
      * @throws \InvalidArgumentException
      */
@@ -55,7 +55,7 @@ class AuthenticationProviderManager implements AuthenticationManagerInterface
         }
 
         $this->providers = $providers;
-        $this->eraseCredentials = (bool)$eraseCredentials;
+        $this->eraseCredentials = (bool) $eraseCredentials;
     }
 
     public function setEventDispatcher(EventDispatcherInterface $dispatcher)

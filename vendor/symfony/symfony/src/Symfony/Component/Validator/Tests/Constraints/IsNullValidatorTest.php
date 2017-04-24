@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class IsNullValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new IsNullValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new IsNull());
@@ -53,15 +63,5 @@ class IsNullValidatorTest extends AbstractConstraintValidatorTest
             array(new \stdClass(), 'object'),
             array(array(), 'array'),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new IsNullValidator();
     }
 }

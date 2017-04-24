@@ -46,6 +46,11 @@ class AclVoter implements VoterInterface
         $this->allowIfObjectIdentityUnavailable = $allowIfObjectIdentityUnavailable;
     }
 
+    public function supportsAttribute($attribute)
+    {
+        return is_string($attribute) && $this->permissionMap->contains($attribute);
+    }
+
     public function vote(TokenInterface $token, $object, array $attributes)
     {
         foreach ($attributes as $attribute) {
@@ -125,11 +130,6 @@ class AclVoter implements VoterInterface
 
         // no attribute was supported
         return self::ACCESS_ABSTAIN;
-    }
-
-    public function supportsAttribute($attribute)
-    {
-        return is_string($attribute) && $this->permissionMap->contains($attribute);
     }
 
     /**

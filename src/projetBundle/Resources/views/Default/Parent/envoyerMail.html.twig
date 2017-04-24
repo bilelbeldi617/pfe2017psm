@@ -5,13 +5,13 @@
 
 {% block script %}
     <script language="JavaScript">
-        $("document").ready(function () {
-            $("#formEnvoyerEmail").submit(function () {
+        $("document").ready(function(){
+            $("#formEnvoyerEmail").submit(function(){
                 $.ajax({
                     url: "{{ path('sendmail') }}",
                     method: "POST",
                     data: $("#formEnvoyerEmail").serialize(),
-                    success: function (response) {
+                    success : function(response){
                         response = JSON.parse(response);
                         console.log(response);
                         var message = "<div class='alert alert-success'>Message Envoyé!!</div>";
@@ -34,19 +34,19 @@
 
         </div>
         <form name="formEmail" id="formEnvoyerEmail" action="#" onsubmit="return false">
-            <table class="table table-bordered" align="center" width="30%">
-                <tr>
-                    <td width="50%">Email Enseignant</td>
-                    <td><input type="email" value="{{ email }}" name="emailEnseignant" readonly></td>
-                </tr>
-                <tr>
-                    <td>Votre message</td>
-                    <td><textarea cols="50" rows="5" name="message" id="message"></textarea></td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center"><input type="submit" value="Envoyer" class="btn btn-primary"></td>
-                </tr>
-            </table>
+        <table class="table table-bordered" align="center" width="30%">
+            <tr>
+                <td width="50%">Email Enseignant</td>
+                <td><input type="email" value="{{ email }}" name="emailEnseignant" readonly></td>
+            </tr>
+            <tr>
+                <td>Votre message</td>
+                <td><textarea cols="50" rows="5" name="message" id="message"></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="submit" value="Envoyer" class="btn btn-primary"></td>
+            </tr>
+        </table>
         </form>
     </div>
 {% endblock %}

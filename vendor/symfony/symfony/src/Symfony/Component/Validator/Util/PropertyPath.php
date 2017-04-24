@@ -21,13 +21,6 @@ namespace Symfony\Component\Validator\Util;
 class PropertyPath
 {
     /**
-     * Not instantiable.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Appends a path to a given property path.
      *
      * If the base path is empty, the appended path will be returned unchanged.
@@ -37,20 +30,27 @@ class PropertyPath
      * separated by a dot (".").
      *
      * @param string $basePath The base path
-     * @param string $subPath The path to append
+     * @param string $subPath  The path to append
      *
      * @return string The concatenation of the two property paths
      */
     public static function append($basePath, $subPath)
     {
-        if ('' !== (string)$subPath) {
+        if ('' !== (string) $subPath) {
             if ('[' === $subPath[0]) {
-                return $basePath . $subPath;
+                return $basePath.$subPath;
             }
 
-            return '' !== (string)$basePath ? $basePath . '.' . $subPath : $subPath;
+            return '' !== (string) $basePath ? $basePath.'.'.$subPath : $subPath;
         }
 
         return $basePath;
+    }
+
+    /**
+     * Not instantiable.
+     */
+    private function __construct()
+    {
     }
 }

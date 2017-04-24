@@ -38,27 +38,6 @@ class AclProviderTest extends \PHPUnit_Framework_TestCase
         $this->getProvider()->findAcl(new ObjectIdentity('foo', 'foo'));
     }
 
-    protected function getProvider()
-    {
-        return new AclProvider($this->con, $this->getStrategy(), $this->getOptions());
-    }
-
-    protected function getStrategy()
-    {
-        return new PermissionGrantingStrategy();
-    }
-
-    protected function getOptions()
-    {
-        return array(
-            'oid_table_name' => 'acl_object_identities',
-            'oid_ancestors_table_name' => 'acl_object_identity_ancestors',
-            'class_table_name' => 'acl_classes',
-            'sid_table_name' => 'acl_security_identities',
-            'entry_table_name' => 'acl_entries',
-        );
-    }
-
     public function testFindAclsThrowsExceptionUnlessAnACLIsFoundForEveryOID()
     {
         $oids = array();
@@ -163,14 +142,6 @@ class AclProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SomeClass', $sid->getClass());
     }
 
-    protected function getField($object, $field)
-    {
-        $reflection = new \ReflectionProperty($object, $field);
-        $reflection->setAccessible(true);
-
-        return $reflection->getValue($object);
-    }
-
     protected function setUp()
     {
         $this->con = DriverManager::getConnection(array(
@@ -211,24 +182,28 @@ class AclProviderTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    protected function getClassData()
+    protected function tearDown()
     {
-        return array(
-            array(1, 'Bundle\SomeVendor\MyBundle\Entity\SomeEntity'),
-            array(2, 'Bundle\MyBundle\Entity\AnotherEntity'),
-            array(3, 'foo'),
-        );
+        $this->con = null;
     }
 
-    protected function getSidData()
+    protected function getField($object, $field)
     {
+        $reflection = new \ReflectionProperty($object, $field);
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($object);
+    }
+
+    protected function getEntryData()
+    {
+        // id, cid, oid, field, order, sid, mask, granting, strategy, a success, a failure
         return array(
-            array(1, 'SomeClass-john.doe', 1),
-            array(2, 'MyClass-john.doe@foo.com', 1),
-            array(3, 'FooClass-123', 1),
-            array(4, 'MooClass-ROLE_USER', 1),
-            array(5, 'ROLE_USER', 0),
-            array(6, 'IS_AUTHENTICATED_FULLY', 0),
+            array(1, 1, 1, null, 0, 1, 1, 1, 'all', 1, 1),
+            array(2, 1, 1, null, 1, 2, 1 << 2 | 1 << 1, 0, 'any', 0, 0),
+            array(3, 3, 4, null, 0, 1, 2, 1, 'all', 1, 1),
+            array(4, 3, 4, null, 2, 2, 1, 1, 'all', 1, 1),
+            array(5, 3, 4, null, 1, 3, 1, 1, 'all', 1, 1),
         );
     }
 
@@ -241,18 +216,6 @@ class AclProviderTest extends \PHPUnit_Framework_TestCase
             array(3, 2, 'i:3:123', 1, 1),
             array(4, 3, '1', 2, 1),
             array(5, 3, '2', 2, 1),
-        );
-    }
-
-    protected function getEntryData()
-    {
-        // id, cid, oid, field, order, sid, mask, granting, strategy, a success, a failure
-        return array(
-            array(1, 1, 1, null, 0, 1, 1, 1, 'all', 1, 1),
-            array(2, 1, 1, null, 1, 2, 1 << 2 | 1 << 1, 0, 'any', 0, 0),
-            array(3, 3, 4, null, 0, 1, 2, 1, 'all', 1, 1),
-            array(4, 3, 4, null, 2, 2, 1, 1, 'all', 1, 1),
-            array(5, 3, 4, null, 1, 3, 1, 1, 'all', 1, 1),
         );
     }
 
@@ -273,8 +236,45 @@ class AclProviderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    protected function tearDown()
+    protected function getSidData()
     {
-        $this->con = null;
+        return array(
+            array(1, 'SomeClass-john.doe', 1),
+            array(2, 'MyClass-john.doe@foo.com', 1),
+            array(3, 'FooClass-123', 1),
+            array(4, 'MooClass-ROLE_USER', 1),
+            array(5, 'ROLE_USER', 0),
+            array(6, 'IS_AUTHENTICATED_FULLY', 0),
+        );
+    }
+
+    protected function getClassData()
+    {
+        return array(
+            array(1, 'Bundle\SomeVendor\MyBundle\Entity\SomeEntity'),
+            array(2, 'Bundle\MyBundle\Entity\AnotherEntity'),
+            array(3, 'foo'),
+        );
+    }
+
+    protected function getOptions()
+    {
+        return array(
+            'oid_table_name' => 'acl_object_identities',
+            'oid_ancestors_table_name' => 'acl_object_identity_ancestors',
+            'class_table_name' => 'acl_classes',
+            'sid_table_name' => 'acl_security_identities',
+            'entry_table_name' => 'acl_entries',
+        );
+    }
+
+    protected function getStrategy()
+    {
+        return new PermissionGrantingStrategy();
+    }
+
+    protected function getProvider()
+    {
+        return new AclProvider($this->con, $this->getStrategy(), $this->getOptions());
     }
 }

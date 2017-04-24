@@ -48,23 +48,14 @@ class ArrayNode extends Node
         $compiler->raw(')');
     }
 
-    protected function compileArguments(Compiler $compiler, $withKeys = true)
+    public function evaluate($functions, $values)
     {
-        $first = true;
+        $result = array();
         foreach ($this->getKeyValuePairs() as $pair) {
-            if (!$first) {
-                $compiler->raw(', ');
-            }
-            $first = false;
-
-            if ($withKeys) {
-                $compiler
-                    ->compile($pair['key'])
-                    ->raw(' => ');
-            }
-
-            $compiler->compile($pair['value']);
+            $result[$pair['key']->evaluate($functions, $values)] = $pair['value']->evaluate($functions, $values);
         }
+
+        return $result;
     }
 
     protected function getKeyValuePairs()
@@ -77,13 +68,23 @@ class ArrayNode extends Node
         return $pairs;
     }
 
-    public function evaluate($functions, $values)
+    protected function compileArguments(Compiler $compiler, $withKeys = true)
     {
-        $result = array();
+        $first = true;
         foreach ($this->getKeyValuePairs() as $pair) {
-            $result[$pair['key']->evaluate($functions, $values)] = $pair['value']->evaluate($functions, $values);
-        }
+            if (!$first) {
+                $compiler->raw(', ');
+            }
+            $first = false;
 
-        return $result;
+            if ($withKeys) {
+                $compiler
+                    ->compile($pair['key'])
+                    ->raw(' => ')
+                ;
+            }
+
+            $compiler->compile($pair['value']);
+        }
     }
 }

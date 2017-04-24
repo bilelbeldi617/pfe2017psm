@@ -65,6 +65,6 @@ class TraversableArrayObject implements \ArrayAccess, \IteratorAggregate, \Count
 
     public function unserialize($serialized)
     {
-        $this->array = (array)unserialize((string)$serialized);
+        $this->array = (array) unserialize((string) $serialized);
     }
 }

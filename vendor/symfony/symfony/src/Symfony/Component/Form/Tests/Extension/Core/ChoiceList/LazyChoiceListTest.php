@@ -27,6 +27,24 @@ class LazyChoiceListTest extends TestCase
      */
     private $list;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->list = new LazyChoiceListImpl(new SimpleChoiceList(array(
+            'a' => 'A',
+            'b' => 'B',
+            'c' => 'C',
+        ), array('b')));
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->list = null;
+    }
+
     public function testGetChoices()
     {
         $this->assertSame(array(0 => 'a', 1 => 'b', 2 => 'c'), $this->list->getChoices());
@@ -79,23 +97,5 @@ class LazyChoiceListTest extends TestCase
         $list = new LazyChoiceListInvalidImpl();
 
         $list->getChoices();
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->list = new LazyChoiceListImpl(new SimpleChoiceList(array(
-            'a' => 'A',
-            'b' => 'B',
-            'c' => 'C',
-        ), array('b')));
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->list = null;
     }
 }

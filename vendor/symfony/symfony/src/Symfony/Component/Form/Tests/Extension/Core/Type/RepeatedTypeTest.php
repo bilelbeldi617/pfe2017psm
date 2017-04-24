@@ -22,6 +22,15 @@ class RepeatedTypeTest extends BaseTypeTest
      */
     protected $form;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->form = $this->factory->create(static::TESTED_TYPE, null, array(
+            'type' => TextTypeTest::TESTED_TYPE,
+        ));
+    }
+
     /**
      * @group legacy
      */
@@ -192,14 +201,5 @@ class RepeatedTypeTest extends BaseTypeTest
     public function testSubmitNull($expected = null, $norm = null, $view = null)
     {
         parent::testSubmitNull($expected, $norm, array('first' => null, 'second' => null));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->form = $this->factory->create(static::TESTED_TYPE, null, array(
-            'type' => TextTypeTest::TESTED_TYPE,
-        ));
     }
 }

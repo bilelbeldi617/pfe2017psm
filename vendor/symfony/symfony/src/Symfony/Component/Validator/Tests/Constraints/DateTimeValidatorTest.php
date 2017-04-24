@@ -17,6 +17,16 @@ use Symfony\Component\Validator\Validation;
 
 class DateTimeValidatorTest extends AbstractConstraintValidatorTest
 {
+    protected function getApiVersion()
+    {
+        return Validation::API_VERSION_2_5;
+    }
+
+    protected function createValidator()
+    {
+        return new DateTimeValidator();
+    }
+
     public function testNullIsValid()
     {
         $this->validator->validate(null, new DateTime());
@@ -77,7 +87,7 @@ class DateTimeValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($dateTime, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"' . $dateTime . '"')
+            ->setParameter('{{ value }}', '"'.$dateTime.'"')
             ->setCode($code)
             ->assertRaised();
     }
@@ -96,15 +106,5 @@ class DateTimeValidatorTest extends AbstractConstraintValidatorTest
             array('2010-01-01 00:60:00', DateTime::INVALID_TIME_ERROR),
             array('2010-01-01 00:00:60', DateTime::INVALID_TIME_ERROR),
         );
-    }
-
-    protected function getApiVersion()
-    {
-        return Validation::API_VERSION_2_5;
-    }
-
-    protected function createValidator()
-    {
-        return new DateTimeValidator();
     }
 }

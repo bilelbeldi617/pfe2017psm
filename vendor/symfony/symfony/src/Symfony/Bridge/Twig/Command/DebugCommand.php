@@ -45,6 +45,14 @@ class DebugCommand extends Command
         $this->twig = $twig;
     }
 
+    /**
+     * @return \Twig_Environment $twig
+     */
+    protected function getTwigEnvironment()
+    {
+        return $this->twig;
+    }
+
     protected function configure()
     {
         $this
@@ -69,7 +77,8 @@ The command lists everything that contains the word date.
 
 The command lists everything in a machine readable json format.
 EOF
-            );
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -88,7 +97,7 @@ EOF
         if ($input->getOption('format') === 'json') {
             $data = array();
             foreach ($types as $type) {
-                foreach ($twig->{'get' . ucfirst($type)}() as $name => $entity) {
+                foreach ($twig->{'get'.ucfirst($type)}() as $name => $entity) {
                     $data[$type][$name] = $this->getMetadata($type, $entity);
                 }
             }
@@ -102,9 +111,9 @@ EOF
 
         foreach ($types as $index => $type) {
             $items = array();
-            foreach ($twig->{'get' . ucfirst($type)}() as $name => $entity) {
+            foreach ($twig->{'get'.ucfirst($type)}() as $name => $entity) {
                 if (!$filter || false !== strpos($name, $filter)) {
-                    $items[$name] = $name . $this->getPrettyMetadata($type, $entity);
+                    $items[$name] = $name.$this->getPrettyMetadata($type, $entity);
                 }
             }
 
@@ -119,14 +128,6 @@ EOF
         }
 
         return 0;
-    }
-
-    /**
-     * @return \Twig_Environment $twig
-     */
-    protected function getTwigEnvironment()
-    {
-        return $this->twig;
     }
 
     private function getMetadata($type, $entity)
@@ -169,7 +170,7 @@ EOF
             // format args
             $args = array_map(function ($param) {
                 if ($param->isDefaultValueAvailable()) {
-                    return $param->getName() . ' = ' . json_encode($param->getDefaultValue());
+                    return $param->getName().' = '.json_encode($param->getDefaultValue());
                 }
 
                 return $param->getName();
@@ -196,23 +197,23 @@ EOF
                 return '(unknown?)';
             }
         } catch (\UnexpectedValueException $e) {
-            return ' <error>' . $e->getMessage() . '</error>';
+            return ' <error>'.$e->getMessage().'</error>';
         }
 
         if ($type === 'globals') {
             if (is_object($meta)) {
-                return ' = object(' . get_class($meta) . ')';
+                return ' = object('.get_class($meta).')';
             }
 
-            return ' = ' . substr(@json_encode($meta), 0, 50);
+            return ' = '.substr(@json_encode($meta), 0, 50);
         }
 
         if ($type === 'functions') {
-            return '(' . implode(', ', $meta) . ')';
+            return '('.implode(', ', $meta).')';
         }
 
         if ($type === 'filters') {
-            return $meta ? '(' . implode(', ', $meta) . ')' : '';
+            return $meta ? '('.implode(', ', $meta).')' : '';
         }
     }
 }

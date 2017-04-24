@@ -36,12 +36,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAceThrowsExceptionOnInvalidIndex($type)
     {
         $acl = $this->getAcl();
-        $acl->{'delete' . $type . 'Ace'}(0);
-    }
-
-    protected function getAcl()
-    {
-        return new Acl(1, new ObjectIdentity(1, 'foo'), new PermissionGrantingStrategy(), array(), true);
+        $acl->{'delete'.$type.'Ace'}(0);
     }
 
     /**
@@ -50,46 +45,25 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAce($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type . 'Ace'}(new RoleSecurityIdentity('foo'), 1);
-        $acl->{'insert' . $type . 'Ace'}(new RoleSecurityIdentity('foo'), 2, 1);
-        $acl->{'insert' . $type . 'Ace'}(new RoleSecurityIdentity('foo'), 3, 2);
+        $acl->{'insert'.$type.'Ace'}(new RoleSecurityIdentity('foo'), 1);
+        $acl->{'insert'.$type.'Ace'}(new RoleSecurityIdentity('foo'), 2, 1);
+        $acl->{'insert'.$type.'Ace'}(new RoleSecurityIdentity('foo'), 3, 2);
 
         $listener = $this->getListener(array(
-            $type . 'Aces', 'aceOrder', 'aceOrder', $type . 'Aces',
+            $type.'Aces', 'aceOrder', 'aceOrder', $type.'Aces',
         ));
         $acl->addPropertyChangedListener($listener);
 
-        $this->assertCount(3, $acl->{'get' . $type . 'Aces'}());
+        $this->assertCount(3, $acl->{'get'.$type.'Aces'}());
 
-        $acl->{'delete' . $type . 'Ace'}(0);
-        $this->assertCount(2, $aces = $acl->{'get' . $type . 'Aces'}());
+        $acl->{'delete'.$type.'Ace'}(0);
+        $this->assertCount(2, $aces = $acl->{'get'.$type.'Aces'}());
         $this->assertEquals(2, $aces[0]->getMask());
         $this->assertEquals(3, $aces[1]->getMask());
 
-        $acl->{'delete' . $type . 'Ace'}(1);
-        $this->assertCount(1, $aces = $acl->{'get' . $type . 'Aces'}());
+        $acl->{'delete'.$type.'Ace'}(1);
+        $this->assertCount(1, $aces = $acl->{'get'.$type.'Aces'}());
         $this->assertEquals(2, $aces[0]->getMask());
-    }
-
-    protected function getListener($expectedChanges)
-    {
-        $aceProperties = array('aceOrder', 'mask', 'strategy', 'auditSuccess', 'auditFailure');
-
-        $listener = $this->getMock('Doctrine\Common\PropertyChangedListener');
-        foreach ($expectedChanges as $index => $property) {
-            if (in_array($property, $aceProperties)) {
-                $class = 'Symfony\Component\Security\Acl\Domain\Entry';
-            } else {
-                $class = 'Symfony\Component\Security\Acl\Domain\Acl';
-            }
-
-            $listener
-                ->expects($this->at($index))
-                ->method('propertyChanged')
-                ->with($this->isInstanceOf($class), $this->equalTo($property));
-        }
-
-        return $listener;
     }
 
     public function getDeleteAceTests()
@@ -107,7 +81,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testDeleteFieldAceThrowsExceptionOnInvalidIndex($type)
     {
         $acl = $this->getAcl();
-        $acl->{'delete' . $type . 'Ace'}('foo', 0);
+        $acl->{'delete'.$type.'Ace'}('foo', 0);
     }
 
     /**
@@ -116,24 +90,24 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testDeleteFieldAce($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type . 'Ace'}('foo', new RoleSecurityIdentity('foo'), 1, 0);
-        $acl->{'insert' . $type . 'Ace'}('foo', new RoleSecurityIdentity('foo'), 2, 1);
-        $acl->{'insert' . $type . 'Ace'}('foo', new RoleSecurityIdentity('foo'), 3, 2);
+        $acl->{'insert'.$type.'Ace'}('foo', new RoleSecurityIdentity('foo'), 1, 0);
+        $acl->{'insert'.$type.'Ace'}('foo', new RoleSecurityIdentity('foo'), 2, 1);
+        $acl->{'insert'.$type.'Ace'}('foo', new RoleSecurityIdentity('foo'), 3, 2);
 
         $listener = $this->getListener(array(
-            $type . 'Aces', 'aceOrder', 'aceOrder', $type . 'Aces',
+            $type.'Aces', 'aceOrder', 'aceOrder', $type.'Aces',
         ));
         $acl->addPropertyChangedListener($listener);
 
-        $this->assertCount(3, $acl->{'get' . $type . 'Aces'}('foo'));
+        $this->assertCount(3, $acl->{'get'.$type.'Aces'}('foo'));
 
-        $acl->{'delete' . $type . 'Ace'}(0, 'foo');
-        $this->assertCount(2, $aces = $acl->{'get' . $type . 'Aces'}('foo'));
+        $acl->{'delete'.$type.'Ace'}(0, 'foo');
+        $this->assertCount(2, $aces = $acl->{'get'.$type.'Aces'}('foo'));
         $this->assertEquals(2, $aces[0]->getMask());
         $this->assertEquals(3, $aces[1]->getMask());
 
-        $acl->{'delete' . $type . 'Ace'}(1, 'foo');
-        $this->assertCount(1, $aces = $acl->{'get' . $type . 'Aces'}('foo'));
+        $acl->{'delete'.$type.'Ace'}(1, 'foo');
+        $this->assertCount(1, $aces = $acl->{'get'.$type.'Aces'}('foo'));
         $this->assertEquals(2, $aces[0]->getMask());
     }
 
@@ -162,7 +136,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
         $acl->$method($sid, 2);
         $acl->$method($sid, 3, 1, false);
 
-        $this->assertCount(3, $aces = $acl->{'get' . $property}());
+        $this->assertCount(3, $aces = $acl->{'get'.$property}());
         $this->assertEquals(2, $aces[0]->getMask());
         $this->assertEquals(3, $aces[1]->getMask());
         $this->assertEquals(1, $aces[2]->getMask());
@@ -205,8 +179,8 @@ class AclTest extends \PHPUnit_Framework_TestCase
         $acl->$method('foo', $sid, 3);
         $acl->$method('foo', $sid, 2);
 
-        $this->assertCount(3, $aces = $acl->{'get' . $property}('foo'));
-        $this->assertCount(1, $acl->{'get' . $property}('foo2'));
+        $this->assertCount(3, $aces = $acl->{'get'.$property}('foo'));
+        $this->assertCount(1, $acl->{'get'.$property}('foo2'));
         $this->assertEquals(2, $aces[0]->getMask());
         $this->assertEquals(3, $aces[1]->getMask());
         $this->assertEquals(1, $aces[2]->getMask());
@@ -241,7 +215,8 @@ class AclTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('isFieldGranted')
             ->with($this->equalTo($acl), $this->equalTo('foo'), $this->equalTo($masks), $this->equalTo($sids), $this->isTrue())
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $this->assertTrue($acl->isFieldGranted('foo', $masks, $sids, true));
     }
@@ -257,7 +232,8 @@ class AclTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('isGranted')
             ->with($this->equalTo($acl), $this->equalTo($masks), $this->equalTo($sids), $this->isTrue())
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $this->assertTrue($acl->isGranted($masks, $sids, true));
     }
@@ -324,7 +300,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAceThrowsOutOfBoundsExceptionOnInvalidIndex($type)
     {
         $acl = $this->getAcl();
-        $acl->{'update' . $type}(0, 1);
+        $acl->{'update'.$type}(0, 1);
     }
 
     /**
@@ -333,23 +309,23 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAce($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type}(new RoleSecurityIdentity('foo'), 1);
+        $acl->{'insert'.$type}(new RoleSecurityIdentity('foo'), 1);
 
         $listener = $this->getListener(array(
             'mask', 'mask', 'strategy',
         ));
         $acl->addPropertyChangedListener($listener);
 
-        $aces = $acl->{'get' . $type . 's'}();
+        $aces = $acl->{'get'.$type.'s'}();
         $ace = reset($aces);
         $this->assertEquals(1, $ace->getMask());
         $this->assertEquals('all', $ace->getStrategy());
 
-        $acl->{'update' . $type}(0, 3);
+        $acl->{'update'.$type}(0, 3);
         $this->assertEquals(3, $ace->getMask());
         $this->assertEquals('all', $ace->getStrategy());
 
-        $acl->{'update' . $type}(0, 1, 'foo');
+        $acl->{'update'.$type}(0, 1, 'foo');
         $this->assertEquals(1, $ace->getMask());
         $this->assertEquals('foo', $ace->getStrategy());
     }
@@ -369,7 +345,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateFieldAceThrowsExceptionOnInvalidIndex($type)
     {
         $acl = $this->getAcl();
-        $acl->{'update' . $type}(0, 'foo', 1);
+        $acl->{'update'.$type}(0, 'foo', 1);
     }
 
     /**
@@ -378,23 +354,23 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateFieldAce($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type}('foo', new UserSecurityIdentity('foo', 'Foo'), 1);
+        $acl->{'insert'.$type}('foo', new UserSecurityIdentity('foo', 'Foo'), 1);
 
         $listener = $this->getListener(array(
             'mask', 'mask', 'strategy',
         ));
         $acl->addPropertyChangedListener($listener);
 
-        $aces = $acl->{'get' . $type . 's'}('foo');
+        $aces = $acl->{'get'.$type.'s'}('foo');
         $ace = reset($aces);
         $this->assertEquals(1, $ace->getMask());
         $this->assertEquals('all', $ace->getStrategy());
 
-        $acl->{'update' . $type}(0, 'foo', 3);
+        $acl->{'update'.$type}(0, 'foo', 3);
         $this->assertEquals(3, $ace->getMask());
         $this->assertEquals('all', $ace->getStrategy());
 
-        $acl->{'update' . $type}(0, 'foo', 1, 'foo');
+        $acl->{'update'.$type}(0, 'foo', 1, 'foo');
         $this->assertEquals(1, $ace->getMask());
         $this->assertEquals('foo', $ace->getStrategy());
     }
@@ -414,7 +390,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAuditingThrowsExceptionOnInvalidIndex($type)
     {
         $acl = $this->getAcl();
-        $acl->{'update' . $type . 'Auditing'}(0, true, false);
+        $acl->{'update'.$type.'Auditing'}(0, true, false);
     }
 
     /**
@@ -423,23 +399,23 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAuditing($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type . 'Ace'}(new RoleSecurityIdentity('foo'), 1);
+        $acl->{'insert'.$type.'Ace'}(new RoleSecurityIdentity('foo'), 1);
 
         $listener = $this->getListener(array(
             'auditFailure', 'auditSuccess', 'auditFailure',
         ));
         $acl->addPropertyChangedListener($listener);
 
-        $aces = $acl->{'get' . $type . 'Aces'}();
+        $aces = $acl->{'get'.$type.'Aces'}();
         $ace = reset($aces);
         $this->assertFalse($ace->isAuditSuccess());
         $this->assertFalse($ace->isAuditFailure());
 
-        $acl->{'update' . $type . 'Auditing'}(0, false, true);
+        $acl->{'update'.$type.'Auditing'}(0, false, true);
         $this->assertFalse($ace->isAuditSuccess());
         $this->assertTrue($ace->isAuditFailure());
 
-        $acl->{'update' . $type . 'Auditing'}(0, true, false);
+        $acl->{'update'.$type.'Auditing'}(0, true, false);
         $this->assertTrue($ace->isAuditSuccess());
         $this->assertFalse($ace->isAuditFailure());
     }
@@ -459,7 +435,7 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateFieldAuditingThrowsExceptionOnInvalidField($type)
     {
         $acl = $this->getAcl();
-        $acl->{'update' . $type . 'Auditing'}(0, 'foo', true, true);
+        $acl->{'update'.$type.'Auditing'}(0, 'foo', true, true);
     }
 
     /**
@@ -469,8 +445,8 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateFieldAuditingThrowsExceptionOnInvalidIndex($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type . 'Ace'}('foo', new RoleSecurityIdentity('foo'), 1);
-        $acl->{'update' . $type . 'Auditing'}(1, 'foo', true, false);
+        $acl->{'insert'.$type.'Ace'}('foo', new RoleSecurityIdentity('foo'), 1);
+        $acl->{'update'.$type.'Auditing'}(1, 'foo', true, false);
     }
 
     /**
@@ -479,23 +455,23 @@ class AclTest extends \PHPUnit_Framework_TestCase
     public function testUpdateFieldAuditing($type)
     {
         $acl = $this->getAcl();
-        $acl->{'insert' . $type . 'Ace'}('foo', new RoleSecurityIdentity('foo'), 1);
+        $acl->{'insert'.$type.'Ace'}('foo', new RoleSecurityIdentity('foo'), 1);
 
         $listener = $this->getListener(array(
             'auditSuccess', 'auditSuccess', 'auditFailure',
         ));
         $acl->addPropertyChangedListener($listener);
 
-        $aces = $acl->{'get' . $type . 'Aces'}('foo');
+        $aces = $acl->{'get'.$type.'Aces'}('foo');
         $ace = reset($aces);
         $this->assertFalse($ace->isAuditSuccess());
         $this->assertFalse($ace->isAuditFailure());
 
-        $acl->{'update' . $type . 'Auditing'}(0, 'foo', true, false);
+        $acl->{'update'.$type.'Auditing'}(0, 'foo', true, false);
         $this->assertTrue($ace->isAuditSuccess());
         $this->assertFalse($ace->isAuditFailure());
 
-        $acl->{'update' . $type . 'Auditing'}(0, 'foo', false, true);
+        $acl->{'update'.$type.'Auditing'}(0, 'foo', false, true);
         $this->assertFalse($ace->isAuditSuccess());
         $this->assertTrue($ace->isAuditFailure());
     }
@@ -506,5 +482,32 @@ class AclTest extends \PHPUnit_Framework_TestCase
             array('classField'),
             array('objectField'),
         );
+    }
+
+    protected function getListener($expectedChanges)
+    {
+        $aceProperties = array('aceOrder', 'mask', 'strategy', 'auditSuccess', 'auditFailure');
+
+        $listener = $this->getMock('Doctrine\Common\PropertyChangedListener');
+        foreach ($expectedChanges as $index => $property) {
+            if (in_array($property, $aceProperties)) {
+                $class = 'Symfony\Component\Security\Acl\Domain\Entry';
+            } else {
+                $class = 'Symfony\Component\Security\Acl\Domain\Acl';
+            }
+
+            $listener
+                ->expects($this->at($index))
+                ->method('propertyChanged')
+                ->with($this->isInstanceOf($class), $this->equalTo($property))
+            ;
+        }
+
+        return $listener;
+    }
+
+    protected function getAcl()
+    {
+        return new Acl(1, new ObjectIdentity(1, 'foo'), new PermissionGrantingStrategy(), array(), true);
     }
 }

@@ -28,15 +28,15 @@ class MemcacheDefinition extends CacheDefinition
     public function configure($name, array $config, Definition $service, ContainerBuilder $container)
     {
         $memcacheConf = $config['memcache'];
-        $connRef = $this->getConnectionReference($name, $memcacheConf, $container);
+        $connRef      = $this->getConnectionReference($name, $memcacheConf, $container);
 
         $service->addMethodCall('setMemcache', array($connRef));
     }
 
     /**
-     * @param string $name
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string                                                    $name
+     * @param array                                                     $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      *
      * @return \Symfony\Component\DependencyInjection\Reference
      */
@@ -46,9 +46,9 @@ class MemcacheDefinition extends CacheDefinition
             return new Reference($config['connection_id']);
         }
 
-        $connClass = '%doctrine_cache.memcache.connection.class%';
-        $connId = sprintf('doctrine_cache.services.%s.connection', $name);
-        $connDef = new Definition($connClass);
+        $connClass  = '%doctrine_cache.memcache.connection.class%';
+        $connId     = sprintf('doctrine_cache.services.%s.connection', $name);
+        $connDef    = new Definition($connClass);
 
         foreach ($config['servers'] as $host => $server) {
             $connDef->addMethodCall('addServer', array($host, $server['port']));

@@ -74,6 +74,13 @@ class CsrfValidationListener implements EventSubscriberInterface
      */
     private $serverParams;
 
+    public static function getSubscribedEvents()
+    {
+        return array(
+            FormEvents::PRE_SUBMIT => 'preSubmit',
+        );
+    }
+
     public function __construct($fieldName, $tokenManager, $tokenId, $errorMessage, TranslatorInterface $translator = null, $translationDomain = null, ServerParams $serverParams = null)
     {
         if ($tokenManager instanceof CsrfProviderInterface) {
@@ -89,26 +96,6 @@ class CsrfValidationListener implements EventSubscriberInterface
         $this->translator = $translator;
         $this->translationDomain = $translationDomain;
         $this->serverParams = $serverParams ?: new ServerParams();
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            FormEvents::PRE_SUBMIT => 'preSubmit',
-        );
-    }
-
-    /**
-     * Alias of {@link preSubmit()}.
-     *
-     * @deprecated since version 2.3, to be removed in 3.0.
-     *             Use {@link preSubmit()} instead.
-     */
-    public function preBind(FormEvent $event)
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 2.3 and will be removed in 3.0. Use the preSubmit() method instead.', E_USER_DEPRECATED);
-
-        $this->preSubmit($event);
     }
 
     public function preSubmit(FormEvent $event)
@@ -134,5 +121,18 @@ class CsrfValidationListener implements EventSubscriberInterface
                 $event->setData($data);
             }
         }
+    }
+
+    /**
+     * Alias of {@link preSubmit()}.
+     *
+     * @deprecated since version 2.3, to be removed in 3.0.
+     *             Use {@link preSubmit()} instead.
+     */
+    public function preBind(FormEvent $event)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.3 and will be removed in 3.0. Use the preSubmit() method instead.', E_USER_DEPRECATED);
+
+        $this->preSubmit($event);
     }
 }

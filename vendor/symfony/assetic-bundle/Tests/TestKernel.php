@@ -19,7 +19,7 @@ class TestKernel extends Kernel
 {
     public function getRootDir()
     {
-        return __DIR__ . '/Resources';
+        return __DIR__.'/Resources';
     }
 
     public function registerBundles()
@@ -34,7 +34,7 @@ class TestKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__ . '/Resources/config/config.yml');
+        $loader->load(__DIR__.'/Resources/config/config.yml');
 
         if (class_exists('Symfony\Component\Asset\Package')) {
             $loader->load(function (ContainerBuilder $container) {

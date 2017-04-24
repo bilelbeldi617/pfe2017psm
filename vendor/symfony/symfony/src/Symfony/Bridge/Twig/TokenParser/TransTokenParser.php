@@ -72,6 +72,11 @@ class TransTokenParser extends \Twig_TokenParser
         return new TransNode($body, $domain, null, $vars, $locale, $lineno, $this->getTag());
     }
 
+    public function decideTransFork($token)
+    {
+        return $token->test(array('endtrans'));
+    }
+
     /**
      * Gets the tag name associated with this token parser.
      *
@@ -80,10 +85,5 @@ class TransTokenParser extends \Twig_TokenParser
     public function getTag()
     {
         return 'trans';
-    }
-
-    public function decideTransFork($token)
-    {
-        return $token->test(array('endtrans'));
     }
 }

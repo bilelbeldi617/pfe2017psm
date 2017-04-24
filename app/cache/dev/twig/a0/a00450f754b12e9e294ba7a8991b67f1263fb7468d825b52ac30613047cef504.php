@@ -1,7 +1,6 @@
 <?php
 
 /* TwigBundle:Exception:traces.html.twig */
-
 class __TwigTemplate_5e70d04c1e4c031598ac8d34f6a77042dca5fe7edd3febb4ac2ba7982312d29f extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
@@ -10,61 +9,14 @@ class __TwigTemplate_5e70d04c1e4c031598ac8d34f6a77042dca5fe7edd3febb4ac2ba798231
 
         $this->parent = false;
 
-        $this->blocks = array();
-    }
-
-    public function isTraitable()
-    {
-        return false;
-    }
-
-    public function getDebugInfo()
-    {
-        return array(104 => 24, 97 => 22, 95 => 21, 92 => 20, 88 => 19, 82 => 18, 78 => 17, 75 => 16, 71 => 14, 67 => 12, 59 => 9, 53 => 8, 44 => 7, 42 => 6, 36 => 5, 30 => 4, 27 => 3, 25 => 2, 22 => 1,);
-    }
-
-    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
-    public function getSource()
-    {
-        @trigger_error('The ' . __METHOD__ . ' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return $this->getSourceContext()->getCode();
-    }
-
-    public function getSourceContext()
-    {
-        return new Twig_Source("<div class=\"block\">
-    {% if count > 0 %}
-        <h2>
-            <span><small>[{{ count - position + 1 }}/{{ count + 1 }}]</small></span>
-            {{ exception.class|abbr_class }}: {{ exception.message|nl2br|format_file_from_text }}&nbsp;
-            {% spaceless %}
-            <a href=\"#\" onclick=\"toggle('traces-{{ position }}', 'traces'); switchIcons('icon-traces-{{ position }}-open', 'icon-traces-{{ position }}-close'); return false;\">
-                <img class=\"toggle\" id=\"icon-traces-{{ position }}-close\" alt=\"-\" src=\"data:image/gif;base64,R0lGODlhEgASAMQSANft94TG57Hb8GS44ez1+mC24IvK6ePx+Wa44dXs92+942e54o3L6W2844/M6dnu+P/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAASABIAQAVCoCQBTBOd6Kk4gJhGBCTPxysJb44K0qD/ER/wlxjmisZkMqBEBW5NHrMZmVKvv9hMVsO+hE0EoNAstEYGxG9heIhCADs=\" style=\"display: {{ 0 == count ? 'inline' : 'none' }}\" />
-                <img class=\"toggle\" id=\"icon-traces-{{ position }}-open\" alt=\"+\" src=\"data:image/gif;base64,R0lGODlhEgASAMQTANft99/v+Ga44bHb8ITG52S44dXs9+z1+uPx+YvK6WC24G+944/M6W28443L6dnu+Ge54v/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABMALAAAAAASABIAQAVS4DQBTiOd6LkwgJgeUSzHSDoNaZ4PU6FLgYBA5/vFID/DbylRGiNIZu74I0h1hNsVxbNuUV4d9SsZM2EzWe1qThVzwWFOAFCQFa1RQq6DJB4iIQA7\" style=\"display: {{ 0 == count ? 'none' : 'inline' }}\" />
-            </a>
-            {% endspaceless %}
-        </h2>
-    {% else %}
-        <h2>Stack Trace</h2>
-    {% endif %}
-
-    <a id=\"traces-link-{{ position }}\"></a>
-    <ol class=\"traces list-exception\" id=\"traces-{{ position }}\" style=\"display: {{ 0 == count ? 'block' : 'none' }}\">
-        {% for i, trace in exception.trace %}
-            <li>
-                {% include '@Twig/Exception/trace.html.twig' with { 'prefix': position, 'i': i, 'trace': trace } only %}
-            </li>
-        {% endfor %}
-    </ol>
-</div>
-", "TwigBundle:Exception:traces.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/traces.html.twig");
+        $this->blocks = array(
+        );
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_34346cbdf2856ae52140d85bcf992bc0703b2d5f4beddc269aee4ee1aa787f6d = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
-        $__internal_34346cbdf2856ae52140d85bcf992bc0703b2d5f4beddc269aee4ee1aa787f6d->enter($__internal_34346cbdf2856ae52140d85bcf992bc0703b2d5f4beddc269aee4ee1aa787f6d_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:traces.html.twig"));
+        $__internal_82c810e4129952680a375dd302b47c0edbe76e2128e6b472583231a59e933014 = $this->env->getExtension("Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension");
+        $__internal_82c810e4129952680a375dd302b47c0edbe76e2128e6b472583231a59e933014->enter($__internal_82c810e4129952680a375dd302b47c0edbe76e2128e6b472583231a59e933014_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "TwigBundle:Exception:traces.html.twig"));
 
         // line 1
         echo "<div class=\"block\">
@@ -100,13 +52,13 @@ class __TwigTemplate_5e70d04c1e4c031598ac8d34f6a77042dca5fe7edd3febb4ac2ba798231
             // line 8
             echo twig_escape_filter($this->env, (isset($context["position"]) ? $context["position"] : $this->getContext($context, "position")), "html", null, true);
             echo "-close\" alt=\"-\" src=\"data:image/gif;base64,R0lGODlhEgASAMQSANft94TG57Hb8GS44ez1+mC24IvK6ePx+Wa44dXs92+942e54o3L6W2844/M6dnu+P/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAASABIAQAVCoCQBTBOd6Kk4gJhGBCTPxysJb44K0qD/ER/wlxjmisZkMqBEBW5NHrMZmVKvv9hMVsO+hE0EoNAstEYGxG9heIhCADs=\" style=\"display: ";
-            echo(((0 == (isset($context["count"]) ? $context["count"] : $this->getContext($context, "count")))) ? ("inline") : ("none"));
+            echo (((0 == (isset($context["count"]) ? $context["count"] : $this->getContext($context, "count")))) ? ("inline") : ("none"));
             echo "\" />
                 <img class=\"toggle\" id=\"icon-traces-";
             // line 9
             echo twig_escape_filter($this->env, (isset($context["position"]) ? $context["position"] : $this->getContext($context, "position")), "html", null, true);
             echo "-open\" alt=\"+\" src=\"data:image/gif;base64,R0lGODlhEgASAMQTANft99/v+Ga44bHb8ITG52S44dXs9+z1+uPx+YvK6WC24G+944/M6W28443L6dnu+Ge54v/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABMALAAAAAASABIAQAVS4DQBTiOd6LkwgJgeUSzHSDoNaZ4PU6FLgYBA5/vFID/DbylRGiNIZu74I0h1hNsVxbNuUV4d9SsZM2EzWe1qThVzwWFOAFCQFa1RQq6DJB4iIQA7\" style=\"display: ";
-            echo(((0 == (isset($context["count"]) ? $context["count"] : $this->getContext($context, "count")))) ? ("none") : ("inline"));
+            echo (((0 == (isset($context["count"]) ? $context["count"] : $this->getContext($context, "count")))) ? ("none") : ("inline"));
             echo "\" />
             </a>
             ";
@@ -129,7 +81,7 @@ class __TwigTemplate_5e70d04c1e4c031598ac8d34f6a77042dca5fe7edd3febb4ac2ba798231
         // line 18
         echo twig_escape_filter($this->env, (isset($context["position"]) ? $context["position"] : $this->getContext($context, "position")), "html", null, true);
         echo "\" style=\"display: ";
-        echo(((0 == (isset($context["count"]) ? $context["count"] : $this->getContext($context, "count")))) ? ("block") : ("none"));
+        echo (((0 == (isset($context["count"]) ? $context["count"] : $this->getContext($context, "count")))) ? ("block") : ("none"));
         echo "\">
         ";
         // line 19
@@ -152,13 +104,61 @@ class __TwigTemplate_5e70d04c1e4c031598ac8d34f6a77042dca5fe7edd3febb4ac2ba798231
         echo "    </ol>
 </div>
 ";
-
-        $__internal_34346cbdf2856ae52140d85bcf992bc0703b2d5f4beddc269aee4ee1aa787f6d->leave($__internal_34346cbdf2856ae52140d85bcf992bc0703b2d5f4beddc269aee4ee1aa787f6d_prof);
+        
+        $__internal_82c810e4129952680a375dd302b47c0edbe76e2128e6b472583231a59e933014->leave($__internal_82c810e4129952680a375dd302b47c0edbe76e2128e6b472583231a59e933014_prof);
 
     }
 
     public function getTemplateName()
     {
         return "TwigBundle:Exception:traces.html.twig";
+    }
+
+    public function isTraitable()
+    {
+        return false;
+    }
+
+    public function getDebugInfo()
+    {
+        return array (  104 => 24,  97 => 22,  95 => 21,  92 => 20,  88 => 19,  82 => 18,  78 => 17,  75 => 16,  71 => 14,  67 => 12,  59 => 9,  53 => 8,  44 => 7,  42 => 6,  36 => 5,  30 => 4,  27 => 3,  25 => 2,  22 => 1,);
+    }
+
+    /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
+    public function getSource()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
+
+        return $this->getSourceContext()->getCode();
+    }
+
+    public function getSourceContext()
+    {
+        return new Twig_Source("<div class=\"block\">
+    {% if count > 0 %}
+        <h2>
+            <span><small>[{{ count - position + 1 }}/{{ count + 1 }}]</small></span>
+            {{ exception.class|abbr_class }}: {{ exception.message|nl2br|format_file_from_text }}&nbsp;
+            {% spaceless %}
+            <a href=\"#\" onclick=\"toggle('traces-{{ position }}', 'traces'); switchIcons('icon-traces-{{ position }}-open', 'icon-traces-{{ position }}-close'); return false;\">
+                <img class=\"toggle\" id=\"icon-traces-{{ position }}-close\" alt=\"-\" src=\"data:image/gif;base64,R0lGODlhEgASAMQSANft94TG57Hb8GS44ez1+mC24IvK6ePx+Wa44dXs92+942e54o3L6W2844/M6dnu+P/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAASABIAQAVCoCQBTBOd6Kk4gJhGBCTPxysJb44K0qD/ER/wlxjmisZkMqBEBW5NHrMZmVKvv9hMVsO+hE0EoNAstEYGxG9heIhCADs=\" style=\"display: {{ 0 == count ? 'inline' : 'none' }}\" />
+                <img class=\"toggle\" id=\"icon-traces-{{ position }}-open\" alt=\"+\" src=\"data:image/gif;base64,R0lGODlhEgASAMQTANft99/v+Ga44bHb8ITG52S44dXs9+z1+uPx+YvK6WC24G+944/M6W28443L6dnu+Ge54v/+/l614P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABMALAAAAAASABIAQAVS4DQBTiOd6LkwgJgeUSzHSDoNaZ4PU6FLgYBA5/vFID/DbylRGiNIZu74I0h1hNsVxbNuUV4d9SsZM2EzWe1qThVzwWFOAFCQFa1RQq6DJB4iIQA7\" style=\"display: {{ 0 == count ? 'none' : 'inline' }}\" />
+            </a>
+            {% endspaceless %}
+        </h2>
+    {% else %}
+        <h2>Stack Trace</h2>
+    {% endif %}
+
+    <a id=\"traces-link-{{ position }}\"></a>
+    <ol class=\"traces list-exception\" id=\"traces-{{ position }}\" style=\"display: {{ 0 == count ? 'block' : 'none' }}\">
+        {% for i, trace in exception.trace %}
+            <li>
+                {% include '@Twig/Exception/trace.html.twig' with { 'prefix': position, 'i': i, 'trace': trace } only %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>
+", "TwigBundle:Exception:traces.html.twig", "C:\\wamp\\www\\PrimaSchoolManager\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views/Exception/traces.html.twig");
     }
 }

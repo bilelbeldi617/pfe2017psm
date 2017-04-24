@@ -122,7 +122,7 @@ abstract class IntlGlobals
     /**
      * Sets the current error.
      *
-     * @param int $code One of the error constants in this class
+     * @param int    $code    One of the error constants in this class
      * @param string $message The ICU class error message
      *
      * @throws \InvalidArgumentException If the code is not one of the error constants in this class

@@ -31,35 +31,6 @@ class FormExtensionBootstrap3LayoutTest extends AbstractBootstrap3LayoutTest
         'choice_attr',
     );
 
-    public function testStartTagHasNoActionAttributeWhenActionIsEmpty()
-    {
-        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
-            'method' => 'get',
-            'action' => '',
-        ));
-
-        $html = $this->renderStart($form->createView());
-
-        $this->assertSame('<form name="form" method="get">', $html);
-    }
-
-    protected function renderStart(FormView $view, array $vars = array())
-    {
-        return (string)$this->extension->renderer->renderBlock($view, 'form_start', $vars);
-    }
-
-    public function testStartTagHasActionAttributeWhenActionIsZero()
-    {
-        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
-            'method' => 'get',
-            'action' => '0',
-        ));
-
-        $html = $this->renderStart($form->createView());
-
-        $this->assertSame('<form name="form" method="get" action="0">', $html);
-    }
-
     protected function setUp()
     {
         parent::setUp();
@@ -73,8 +44,8 @@ class FormExtensionBootstrap3LayoutTest extends AbstractBootstrap3LayoutTest
         $this->extension = new FormExtension($renderer);
 
         $loader = new StubFilesystemLoader(array(
-            __DIR__ . '/../../Resources/views/Form',
-            __DIR__ . '/Fixtures/templates/form',
+            __DIR__.'/../../Resources/views/Form',
+            __DIR__.'/Fixtures/templates/form',
         ));
 
         $environment = new \Twig_Environment($loader, array('strict_variables' => true));
@@ -91,14 +62,38 @@ class FormExtensionBootstrap3LayoutTest extends AbstractBootstrap3LayoutTest
         $this->extension = null;
     }
 
+    public function testStartTagHasNoActionAttributeWhenActionIsEmpty()
+    {
+        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
+            'method' => 'get',
+            'action' => '',
+        ));
+
+        $html = $this->renderStart($form->createView());
+
+        $this->assertSame('<form name="form" method="get">', $html);
+    }
+
+    public function testStartTagHasActionAttributeWhenActionIsZero()
+    {
+        $form = $this->factory->create('Symfony\Component\Form\Extension\Core\Type\FormType', null, array(
+            'method' => 'get',
+            'action' => '0',
+        ));
+
+        $html = $this->renderStart($form->createView());
+
+        $this->assertSame('<form name="form" method="get" action="0">', $html);
+    }
+
     protected function renderForm(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form', $vars);
     }
 
     protected function renderEnctype(FormView $view)
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'enctype');
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'enctype');
     }
 
     protected function renderLabel(FormView $view, $label = null, array $vars = array())
@@ -107,32 +102,37 @@ class FormExtensionBootstrap3LayoutTest extends AbstractBootstrap3LayoutTest
             $vars += array('label' => $label);
         }
 
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'label', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'label', $vars);
     }
 
     protected function renderErrors(FormView $view)
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'errors');
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'errors');
     }
 
     protected function renderWidget(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'widget', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'widget', $vars);
     }
 
     protected function renderRow(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'row', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'row', $vars);
     }
 
     protected function renderRest(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->searchAndRenderBlock($view, 'rest', $vars);
+        return (string) $this->extension->renderer->searchAndRenderBlock($view, 'rest', $vars);
+    }
+
+    protected function renderStart(FormView $view, array $vars = array())
+    {
+        return (string) $this->extension->renderer->renderBlock($view, 'form_start', $vars);
     }
 
     protected function renderEnd(FormView $view, array $vars = array())
     {
-        return (string)$this->extension->renderer->renderBlock($view, 'form_end', $vars);
+        return (string) $this->extension->renderer->renderBlock($view, 'form_end', $vars);
     }
 
     protected function setTheme(FormView $view, array $themes)

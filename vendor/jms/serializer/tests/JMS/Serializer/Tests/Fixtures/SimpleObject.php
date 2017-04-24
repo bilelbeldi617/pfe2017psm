@@ -24,14 +24,16 @@ use JMS\Serializer\Annotation\Type;
 class SimpleObject
 {
     /** @Type("string") */
-    protected $camelCase = 'boo';
-    /** @Type("string") */
     private $foo;
+
     /**
      * @SerializedName("moo")
      * @Type("string")
      */
     private $bar;
+
+    /** @Type("string") */
+    protected $camelCase = 'boo';
 
     public function __construct($foo, $bar)
     {

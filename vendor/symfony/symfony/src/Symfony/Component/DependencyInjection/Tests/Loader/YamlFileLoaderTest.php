@@ -28,14 +28,14 @@ class YamlFileLoaderTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$fixturesPath = realpath(__DIR__ . '/../Fixtures/');
-        require_once self::$fixturesPath . '/includes/foo.php';
-        require_once self::$fixturesPath . '/includes/ProjectExtension.php';
+        self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
+        require_once self::$fixturesPath.'/includes/foo.php';
+        require_once self::$fixturesPath.'/includes/ProjectExtension.php';
     }
 
     public function testLoadFile()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/ini'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/ini'));
         $r = new \ReflectionObject($loader);
         $m = $r->getMethod('loadFile');
         $m->setAccessible(true);
@@ -56,11 +56,11 @@ class YamlFileLoaderTest extends TestCase
             $this->assertEquals('The service file "parameters.ini" is not valid.', $e->getMessage(), '->load() throws an InvalidArgumentException if the loaded file is not a valid YAML file');
         }
 
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
 
         foreach (array('nonvalid1', 'nonvalid2') as $fixture) {
             try {
-                $m->invoke($loader, $fixture . '.yml');
+                $m->invoke($loader, $fixture.'.yml');
                 $this->fail('->load() throws an InvalidArgumentException if the loaded file does not validate');
             } catch (\Exception $e) {
                 $this->assertInstanceOf('\InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if the loaded file does not validate');
@@ -75,9 +75,9 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testLoadInvalidFile($file)
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
 
-        $loader->load($file . '.yml');
+        $loader->load($file.'.yml');
     }
 
     public function provideInvalidFiles()
@@ -96,7 +96,7 @@ class YamlFileLoaderTest extends TestCase
     public function testLoadParameters()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services2.yml');
         $this->assertEquals(array('foo' => 'bar', 'mixedcase' => array('MixedCaseKey' => 'value'), 'values' => array(true, false, 0, 1000.3), 'bar' => 'foo', 'escape' => '@escapeme', 'foo_bar' => new Reference('foo_bar')), $container->getParameterBag()->all(), '->load() converts YAML keys to lowercase');
     }
@@ -105,10 +105,10 @@ class YamlFileLoaderTest extends TestCase
     {
         $container = new ContainerBuilder();
         $resolver = new LoaderResolver(array(
-            new IniFileLoader($container, new FileLocator(self::$fixturesPath . '/ini')),
-            new XmlFileLoader($container, new FileLocator(self::$fixturesPath . '/xml')),
-            new PhpFileLoader($container, new FileLocator(self::$fixturesPath . '/php')),
-            $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml')),
+            new IniFileLoader($container, new FileLocator(self::$fixturesPath.'/ini')),
+            new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml')),
+            new PhpFileLoader($container, new FileLocator(self::$fixturesPath.'/php')),
+            $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml')),
         ));
         $loader->setResolver($resolver);
         $loader->load('services4.yml');
@@ -127,7 +127,7 @@ class YamlFileLoaderTest extends TestCase
     public function testLegacyLoadServices()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('legacy-services6.yml');
         $services = $container->getDefinitions();
         $this->assertEquals('FooClass', $services['constructor']->getClass());
@@ -147,7 +147,7 @@ class YamlFileLoaderTest extends TestCase
     public function testLoadServices()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services6.yml');
         $services = $container->getDefinitions();
         $this->assertTrue(isset($services['foo']), '->load() parses service elements');
@@ -167,10 +167,10 @@ class YamlFileLoaderTest extends TestCase
 
         $aliases = $container->getAliases();
         $this->assertTrue(isset($aliases['alias_for_foo']), '->load() parses aliases');
-        $this->assertEquals('foo', (string)$aliases['alias_for_foo'], '->load() parses aliases');
+        $this->assertEquals('foo', (string) $aliases['alias_for_foo'], '->load() parses aliases');
         $this->assertTrue($aliases['alias_for_foo']->isPublic());
         $this->assertTrue(isset($aliases['another_alias_for_foo']));
-        $this->assertEquals('foo', (string)$aliases['another_alias_for_foo']);
+        $this->assertEquals('foo', (string) $aliases['another_alias_for_foo']);
         $this->assertFalse($aliases['another_alias_for_foo']->isPublic());
 
         $this->assertEquals(array('decorated', null, 0), $services['decorator_service']->getDecoratedService());
@@ -181,7 +181,7 @@ class YamlFileLoaderTest extends TestCase
     public function testLoadFactoryShortSyntax()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services14.yml');
         $services = $container->getDefinitions();
 
@@ -193,7 +193,7 @@ class YamlFileLoaderTest extends TestCase
     {
         $container = new ContainerBuilder();
         $container->registerExtension(new \ProjectExtension());
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services10.yml');
         $container->compile();
         $services = $container->getDefinitions();
@@ -225,7 +225,7 @@ class YamlFileLoaderTest extends TestCase
 
     public function testNonArrayTagsThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         try {
             $loader->load('badtag1.yml');
             $this->fail('->load() should throw an exception when the tags key of a service is not an array');
@@ -241,13 +241,13 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testNonArrayTagThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('badtag4.yml');
     }
 
     public function testTagWithoutNameThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         try {
             $loader->load('badtag2.yml');
             $this->fail('->load() should throw an exception when a tag is missing the name key');
@@ -259,7 +259,7 @@ class YamlFileLoaderTest extends TestCase
 
     public function testTagWithAttributeArrayThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         try {
             $loader->load('badtag3.yml');
             $this->fail('->load() should throw an exception when a tag-attribute is not a scalar');
@@ -272,7 +272,7 @@ class YamlFileLoaderTest extends TestCase
     public function testLoadYamlOnlyWithKeys()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services21.yml');
 
         $definition = $container->getDefinition('manager');
@@ -287,7 +287,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testTagWithEmptyNameThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('tag_name_empty_string.yml');
     }
 
@@ -297,7 +297,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testTagWithNonStringNameThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('tag_name_no_string.yml');
     }
 
@@ -306,7 +306,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testTypesNotArray()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('bad_types1.yml');
     }
 
@@ -315,14 +315,14 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testTypeNotString()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('bad_types2.yml');
     }
 
     public function testTypes()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services22.yml');
 
         $this->assertEquals(array('Foo', 'Bar'), $container->getDefinition('foo_service')->getAutowiringTypes());
@@ -332,7 +332,7 @@ class YamlFileLoaderTest extends TestCase
     public function testAutowire()
     {
         $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('services23.yml');
 
         $this->assertTrue($container->getDefinition('bar_service')->isAutowired());
@@ -344,7 +344,7 @@ class YamlFileLoaderTest extends TestCase
      */
     public function testDecoratedServicesWithWrongSyntaxThrowsException()
     {
-        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath . '/yaml'));
+        $loader = new YamlFileLoader(new ContainerBuilder(), new FileLocator(self::$fixturesPath.'/yaml'));
         $loader->load('bad_decorates.yml');
     }
 }

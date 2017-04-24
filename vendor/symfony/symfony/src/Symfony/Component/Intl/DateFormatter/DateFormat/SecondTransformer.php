@@ -25,7 +25,7 @@ class SecondTransformer extends Transformer
      */
     public function format(\DateTime $dateTime, $length)
     {
-        $secondOfMinute = (int)$dateTime->format('s');
+        $secondOfMinute = (int) $dateTime->format('s');
 
         return $this->padLeft($secondOfMinute, $length);
     }
@@ -35,7 +35,7 @@ class SecondTransformer extends Transformer
      */
     public function getReverseMatchingRegExp($length)
     {
-        return 1 === $length ? '\d{1,2}' : '\d{' . $length . '}';
+        return 1 === $length ? '\d{1,2}' : '\d{'.$length.'}';
     }
 
     /**
@@ -44,7 +44,7 @@ class SecondTransformer extends Transformer
     public function extractDateOptions($matched, $length)
     {
         return array(
-            'second' => (int)$matched,
+            'second' => (int) $matched,
         );
     }
 }

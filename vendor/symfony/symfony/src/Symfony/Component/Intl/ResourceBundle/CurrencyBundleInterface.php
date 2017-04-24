@@ -21,7 +21,7 @@ interface CurrencyBundleInterface extends ResourceBundleInterface
     /**
      * Returns the symbol used for a currency.
      *
-     * @param string $currency A currency code (e.g. "EUR")
+     * @param string $currency      A currency code (e.g. "EUR")
      * @param string $displayLocale Optional. The locale to return the result in
      *                              Defaults to {@link \Locale::getDefault()}.
      *
@@ -32,7 +32,7 @@ interface CurrencyBundleInterface extends ResourceBundleInterface
     /**
      * Returns the name of a currency.
      *
-     * @param string $currency A currency code (e.g. "EUR")
+     * @param string $currency      A currency code (e.g. "EUR")
      * @param string $displayLocale Optional. The locale to return the name in
      *                              Defaults to {@link \Locale::getDefault()}.
      *

@@ -26,7 +26,7 @@ class UseControllerWorker implements WorkerInterface
     {
         $targetUrl = $asset->getTargetPath();
         if ($targetUrl && '/' != $targetUrl[0] && 0 !== strpos($targetUrl, '_controller/')) {
-            $asset->setTargetPath('_controller/' . $targetUrl);
+            $asset->setTargetPath('_controller/'.$targetUrl);
         }
 
         return $asset;

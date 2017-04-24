@@ -35,15 +35,6 @@ class QuestionHelper extends BaseQuestionHelper
         }
     }
 
-    public function writeSection(OutputInterface $output, $text, $style = 'bg=blue;fg=white')
-    {
-        $output->writeln(array(
-            '',
-            $this->getHelperSet()->get('formatter')->formatBlock($text, $style, true),
-            '',
-        ));
-    }
-
     public function getRunner(OutputInterface $output, &$errors)
     {
         $runner = function ($err) use ($output, &$errors) {
@@ -56,6 +47,15 @@ class QuestionHelper extends BaseQuestionHelper
         };
 
         return $runner;
+    }
+
+    public function writeSection(OutputInterface $output, $text, $style = 'bg=blue;fg=white')
+    {
+        $output->writeln(array(
+            '',
+            $this->getHelperSet()->get('formatter')->formatBlock($text, $style, true),
+            '',
+        ));
     }
 
     public function getQuestion($question, $default, $sep = ':')

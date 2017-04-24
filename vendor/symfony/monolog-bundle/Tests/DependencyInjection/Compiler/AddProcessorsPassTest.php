@@ -38,22 +38,22 @@ class AddProcessorsPassTest extends \PHPUnit_Framework_TestCase
     protected function getContainer()
     {
         $container = new ContainerBuilder();
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config'));
         $loader->load('monolog.xml');
 
         $definition = $container->getDefinition('monolog.logger_prototype');
-        $container->setDefinition('monolog.handler.test', new Definition('%monolog.handler.null.class%', array(100, false)));
-        $container->setDefinition('handler_test', new Definition('%monolog.handler.null.class%', array(100, false)));
+        $container->setDefinition('monolog.handler.test', new Definition('%monolog.handler.null.class%', array (100, false)));
+        $container->setDefinition('handler_test', new Definition('%monolog.handler.null.class%', array (100, false)));
         $container->setAlias('monolog.handler.test2', 'handler_test');
         $definition->addMethodCall('pushHandler', array(new Reference('monolog.handler.test')));
         $definition->addMethodCall('pushHandler', array(new Reference('monolog.handler.test2')));
 
         $service = new Definition('TestClass', array('false', new Reference('logger')));
-        $service->addTag('monolog.processor', array('handler' => 'test'));
+        $service->addTag('monolog.processor', array ('handler' => 'test'));
         $container->setDefinition('test', $service);
 
         $service = new Definition('TestClass', array('false', new Reference('logger')));
-        $service->addTag('monolog.processor', array('handler' => 'test2'));
+        $service->addTag('monolog.processor', array ('handler' => 'test2'));
         $container->setDefinition('test2', $service);
 
         $container->getCompilerPassConfig()->setOptimizationPasses(array());

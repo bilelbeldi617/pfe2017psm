@@ -16,6 +16,11 @@ class ExpressionBuilderTest extends \PHPUnit_Framework_TestCase
      */
     private $builder;
 
+    protected function setUp()
+    {
+        $this->builder = new ExpressionBuilder();
+    }
+
     public function testAndX()
     {
         $expr = $this->builder->andX($this->builder->eq("a", "b"));
@@ -116,10 +121,5 @@ class ExpressionBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Doctrine\Common\Collections\Expr\Comparison', $expr);
         $this->assertEquals(Comparison::CONTAINS, $expr->getOperator());
-    }
-
-    protected function setUp()
-    {
-        $this->builder = new ExpressionBuilder();
     }
 }

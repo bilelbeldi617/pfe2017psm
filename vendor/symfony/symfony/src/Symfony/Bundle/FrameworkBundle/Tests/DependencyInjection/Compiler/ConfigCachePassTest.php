@@ -39,10 +39,10 @@ class ConfigCachePassTest extends TestCase
         $definition->expects($this->once())
             ->method('replaceArgument')
             ->with(0, array(
-                new Reference('checker_1'),
-                new Reference('checker_2'),
-                new Reference('checker_3'),
-            ));
+                    new Reference('checker_1'),
+                    new Reference('checker_2'),
+                    new Reference('checker_3'),
+                ));
 
         $pass = new ConfigCachePass();
         $pass->process($container);

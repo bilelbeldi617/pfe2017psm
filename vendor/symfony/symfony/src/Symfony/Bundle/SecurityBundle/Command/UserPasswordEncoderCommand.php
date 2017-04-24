@@ -75,7 +75,8 @@ In case your encoder doesn't require a salt, add the <comment>empty-salt</commen
   <info>php %command.full_name% --empty-salt [password] AppBundle\Entity\User</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**
@@ -113,7 +114,7 @@ EOF
         if ($input->isInteractive() && !$emptySalt) {
             $emptySalt = true;
 
-            $io->note('The command will take care of generating a salt for you. Be aware that some encoders advise to let them generate their own salt. If you\'re using one of those encoders, please answer \'no\' to the question below. ' . PHP_EOL . 'Provide the \'empty-salt\' option in order to let the encoder handle the generation itself.');
+            $io->note('The command will take care of generating a salt for you. Be aware that some encoders advise to let them generate their own salt. If you\'re using one of those encoders, please answer \'no\' to the question below. '.PHP_EOL.'Provide the \'empty-salt\' option in order to let the encoder handle the generation itself.');
 
             if ($io->confirm('Confirm salt generation ?')) {
                 $salt = $this->generateSalt();
