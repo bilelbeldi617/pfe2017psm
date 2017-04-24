@@ -30,6 +30,24 @@ class forAdminController extends Controller
     }
 
 
+    /**
+     * @Route("/affecterEnseignantGroupe", name="affecterEnseignantGroupe")
+     */
+    public function affecterEnseignantGroupeMatiereAction(Request $request)
+    {
+        $session = $request->getSession();
+        $matricule = $request->get("matricule");
+        $annee = $session->get('anneeScolaireCourante');
+        $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("matriculeEnseignant" => $matricule));
+        $listEleveGroupe = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findBy(array("anneeScolaire" => $annee));
+        $listGroupeParAnneeCourante = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("anneeScolaire" => $annee));
+        $query = $this->getDoctrine()->getManager()->createQuery('SELECT DISTINCT m.libelleMatiere FROM projetBundle\Entity\Matiere m WHERE m.anneeScolaire=:anneeScolaire')
+            ->setParameter("anneeScolaire", $annee->getId());
+        $listMatiere = $query->getResult();
+        return $this->render("@projet/Default/Admin/affecterEnseignantGroupeMatiere.html.twig", array("listMatiere" => $listMatiere, "enseignant" => $enseignant, "listGroupe" => $listGroupeParAnneeCourante));
+    }
+
+
 
     /**
      * @Route("/listerEleveParGroupe", name="listerEleveParGroupe")

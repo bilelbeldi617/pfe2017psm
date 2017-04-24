@@ -5,6 +5,40 @@
 
     {% block script %}
         <script language="JavaScript">
+            function affecter(matricule) {
+                window.location.assign("{{ path('affecterEnseignantGroupe') }}?matricule=" + matricule + "");
+            }
+            function voirInfo(matricule) {
+                $("#modalSpinner").show();
+                $("#nomEnseignant").html("Veuillez patienter...");
+                $("#matiereGroupeTable").html("");
+                $.ajax({
+                    url: "{{ path('infoEnseignantAjax') }}",
+                    method: "GET",
+                    data: {"matricule": matricule},
+                    success: function (response) {
+                        response = JSON.parse(response);
+                        console.log(response);
+                        var tableauMatiereGroupe = "<table border='1' class='table table-bordered'><tr class='table-header'><td>Matiere</td><td>Groupe</td></tr>";
+                        var btnAffecter = "<input type='button' value='Affecter à une matiere' class='btn btn-primary' onclick='affecter(" + response.matricule + ")'>";
+                        if (response.listMatiereGroupe.length == 0) {
+                            var text = "<h3 style='margin-bottom: 15px'>L'enseignant sélectionné n'est pas affceté à une matiere</h3>";
+                            console.log("y'a pas des matieres");
+                            $("#modalSpinner").hide();
+                            $("#matiereGroupeTable").html(text + btnAffecter);
+                            $("#nomEnseignant").html("Nom Enseignant : " + response.nomEnseignant);
+                        } else {
+                            $.each(response.listMatiereGroupe, function (i, item) {
+                                tableauMatiereGroupe += "<tr><td>" + item.matiere.libelle_matiere + "</td><td>" + item.groupe.nom_groupe + " " + item.groupe.num_groupe + "</td></tr>";
+                            });
+                            tableauMatiereGroupe += "</table>" + btnAffecter;
+                            $("#modalSpinner").hide();
+                            $("#nomEnseignant").html("Nom Enseignant : " + response.nomEnseignant);
+                            $("#matiereGroupeTable").html(tableauMatiereGroupe);
+                        }
+                    }
+                });
+            }
             $("document").ready(function(){
                 $("#btnLister").click(function(){
                     var idGrade = $("#gradeList").val();
@@ -12,7 +46,6 @@
                     $("#mySpinner").fadeIn("slow");
                     $("#tableContainer").slideUp("fast");
                     $("#alertVide").slideUp("fast");
-
                     $.ajax({
                         url :"{{ path('ListerEnseignantAJAX') }}",
                         method : "GET",
@@ -27,7 +60,7 @@
                                 $("#tableContainer").slideUp("fast");
                             }else{
                                 $.each(response.listEnseignant, function(i , item){
-                                    lines+="<tr><td>"+item.matricule_enseignant+"</td><td>"+item.nom_enseignant+"</td><td>"+item.prenom_enseignant+"</td><td>"+item.cin_enseignant+"</td><td>"+item.adresse_enseignant+"</td><td>"+item.email_enseignant+"</td><td>"+item.num_tel_enseignant+"</td></tr>";
+                                    lines += "<tr><td>" + item.matricule_enseignant + "</td><td>" + item.nom_enseignant + "</td><td>" + item.prenom_enseignant + "</td><td>" + item.cin_enseignant + "</td><td>" + item.adresse_enseignant + "</td><td>" + item.email_enseignant + "</td><td>" + item.num_tel_enseignant + "</td><td><input type='button' value='Voir information' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onclick='voirInfo(" + item.matricule_enseignant + ")'></td></tr>";
                                 });
                                 $("#tableBody").html(lines);
                                 $("#tableEnseignant").dataTable();
@@ -68,18 +101,20 @@
                             <th>Adresse</th>
                             <th>Email</th>
                             <th>Numéro de téléphone</th>
+                            <th>Plus d'information</th>
                         </tr>
                         </thead>
                         <tfoot>
-                            <tr>
-                                <th>Matricule</th>
-                                <th>Nom</th>
-                                <th>Prenom</th>
-                                <th>Cin</th>
-                                <th>Adresse</th>
-                                <th>Email</th>
-                                <th>Numéro de téléphone</th>
-                            </tr>
+                        <tr>
+                            <th>Matricule</th>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Cin</th>
+                            <th>Adresse</th>
+                            <th>Email</th>
+                            <th>Numéro de téléphone</th>
+                            <th>Plus d'information</th>
+                        </tr>
                         </tfoot>
                         <tbody id="tableBody">
 
@@ -87,5 +122,37 @@
                     </table>
                 </div>
             </div>
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title"><span id="nomEnseignant">Veuillez patienter...</span></h4>
+                        </div>
+                        <div class="modal-body" align="center">
+                            <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="modalSpinner"></i>
+                            </center>
+                            <div id="spanModalContainer">
+                                <p>
+                                    <span id="matiereGroupeTable" style="margin-top: 15px"></span>
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
         </div>
     {% endblock %}

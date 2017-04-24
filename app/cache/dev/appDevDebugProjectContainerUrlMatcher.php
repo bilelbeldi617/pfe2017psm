@@ -305,6 +305,11 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
 
         if (0 === strpos($pathinfo, '/Admin')) {
+            // affecterEnseignantGroupe
+            if ($pathinfo === '/Admin/affecterEnseignantGroupe') {
+                return array (  '_controller' => 'projetBundle\\Controller\\forAdminController::affecterEnseignantGroupeMatiereAction',  '_route' => 'affecterEnseignantGroupe',);
+            }
+
             // listerEleveParGroupe
             if ($pathinfo === '/Admin/listerEleveParGroupe') {
                 return array (  '_controller' => 'projetBundle\\Controller\\forAdminController::listerEleveParGroupeAction',  '_route' => 'listerEleveParGroupe',);
