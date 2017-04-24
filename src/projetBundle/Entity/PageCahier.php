@@ -22,7 +22,6 @@ class PageCahier
     private $id;
 
 
-
     /**
      * @var datetime
      *
@@ -30,20 +29,32 @@ class PageCahier
      */
     private $date;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Groupe")
+     *
+     */
+    private $groupe;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Enseignant")
+     *
+     */
+    private $enseignant;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AnneeScolaire")
+     *
+     */
+    private $anneeScolaire;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="Matiere")
      *
      */
-    private $matiere ;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Groupe")
-     * @ORM\JoinColumn(name="cahier", referencedColumnName="id")
-     *
-     */
-    private $cahier ;
-
+    private $matiere;
 
 
     /**
@@ -68,6 +79,54 @@ class PageCahier
     public function setTextePageCahier($textePageCahier)
     {
         $this->textePageCahier = $textePageCahier;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupe()
+    {
+        return $this->groupe;
+    }
+
+    /**
+     * @param mixed $groupe
+     */
+    public function setGroupe($groupe)
+    {
+        $this->groupe = $groupe;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnseignant()
+    {
+        return $this->enseignant;
+    }
+
+    /**
+     * @param mixed $enseignant
+     */
+    public function setEnseignant($enseignant)
+    {
+        $this->enseignant = $enseignant;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAnneeScolaire()
+    {
+        return $this->anneeScolaire;
+    }
+
+    /**
+     * @param mixed $anneeScolaire
+     */
+    public function setAnneeScolaire($anneeScolaire)
+    {
+        $this->anneeScolaire = $anneeScolaire;
     }
 
     /**
@@ -106,7 +165,7 @@ class PageCahier
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {

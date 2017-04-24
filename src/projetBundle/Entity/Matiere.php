@@ -44,6 +44,22 @@ class Matiere
     /**
      * @return mixed
      */
+    public function getAnneeScolaire()
+    {
+        return $this->anneeScolaire;
+    }
+
+    /**
+     * @param mixed $anneeScolaire
+     */
+    public function setAnneeScolaire($anneeScolaire)
+    {
+        $this->anneeScolaire = $anneeScolaire;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getEnseignant()
     {
         return $this->enseignant;

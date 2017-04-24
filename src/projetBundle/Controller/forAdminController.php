@@ -30,6 +30,70 @@ class forAdminController extends Controller
     }
 
 
+
+    /**
+     * @Route("/listerEleveParGroupe", name="listerEleveParGroupe")
+     */
+    public function listerEleveParGroupeAction(Request $request)
+    {
+        if (!$this->SecurityManager()) {
+            return $this->redirect($this->generateUrl("login"));
+
+        } else {
+            $listEleve = array();
+            $session = $request->getSession();
+            $annee = $session->get("anneeScolaireCourante");
+            $idGroupe = $request->get("idGroupe");
+            $listEleveGroupe = $this->getDoctrine()->getRepository("projetBundle:EleveGroupe")->findBy(array("anneeScolaire" => $annee, "groupe" => $idGroupe));
+
+
+            foreach ($listEleveGroupe as $lEg) {
+                $listEleve[] = $lEg->getEleve();
+            }
+            return $this->render("@projet/Default/Admin/listerEleveParGroupe.html.twig", array("listEleve" => $listEleve));
+        }
+    }
+
+
+
+
+
+    /**
+     * @Route("/ajouterMatiere", name="ajouterMatiere")
+     */
+    public function ajouterMatiereAction(Request $request)
+    {
+        $session = $request->getSession();
+        $annee = $session->get("anneeScolaireCourante");
+        $query = $this->getDoctrine()->getManager()->createQuery('SELECT DISTINCT m.libelleMatiere FROM projetBundle\Entity\Matiere m WHERE m.anneeScolaire=:anneeScolaire')
+            ->setParameter("anneeScolaire", $annee->getId());
+        $listMatiere = $query->getResult();
+
+
+        return $this->render("@projet/Default/Admin/ajouterMatiere.html.twig", array("listMatiere" => $listMatiere));
+
+
+    }
+
+
+    /**
+     * @Route("/listerMatieres", name="listerMatieres")
+     */
+    public function listerMatieresAction(Request $request)
+    {
+        $session = $request->getSession();
+        $annee = $session->get("anneeScolaireCourante");
+        $query = $this->getDoctrine()->getManager()->createQuery('SELECT DISTINCT m.libelleMatiere FROM projetBundle\Entity\Matiere m WHERE m.anneeScolaire=:anneeScolaire')
+            ->setParameter("anneeScolaire", $annee->getId());
+        $listMatiere = $query->getResult();
+        return $this->render("@projet/Default/Admin/listerMatieres.html.twig", array("listeMatieres" => $listMatiere));
+
+
+    }
+
+
+
+
     /**
      * @Route("/affecterManuellement", name="affecterManuellement")
      */
@@ -258,22 +322,22 @@ class forAdminController extends Controller
     }
 
 
+
+
+
     /**
      * @Route("/listerGroupe", name="listerGroupe")
      */
     public function listerGroupeAction(Request $request)
     {
-        if(!$this->SecurityManager()){
+        if (!$this->SecurityManager()) {
             return $this->redirect($this->generateUrl("login"));
 
-        }else{
-            //$grade = $this->getDoctrine()->getRepository("projetBundle:Grade")->findAll();
-            $groupes = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findAll();
-            $annees = $this->getDoctrine()->getRepository("projetBundle:AnneeScolaire")->findAll();
-
-
-            return $this->render("@projet/Default/Admin/listerGroupe.html.twig", array("groupes"=>$groupes, "annees"=>$annees)) ;
-
+        } else {
+            $session = $request->getSession();
+            $annee = $session->get("anneeScolaireCourante");
+            $listGroupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findBy(array("anneeScolaire" => $annee));
+            return $this->render("projetBundle:Default/Admin:listerGroupe.html.twig", array("listGroupe" => $listGroupe));
         }
     }
 

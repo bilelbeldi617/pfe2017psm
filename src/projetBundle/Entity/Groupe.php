@@ -14,6 +14,28 @@ use projetBundle\Entity\Emploi;
  */
 class Groupe
 {
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AnneeScolaire")
+     */
+    private $anneeScolaire;
+
+    /**
+     * @return mixed
+     */
+    public function getAnneeScolaire()
+    {
+        return $this->anneeScolaire;
+    }
+
+    /**
+     * @param mixed $anneeScolaire
+     */
+    public function setAnneeScolaire($anneeScolaire)
+    {
+        $this->anneeScolaire = $anneeScolaire;
+    }
     private $nombreEleve ;
 
     /**

@@ -106,6 +106,45 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
 
         if (0 === strpos($pathinfo, '/RESTAPI')) {
+            if (0 === strpos($pathinfo, '/RESTAPI/voir')) {
+                // voirPageCahierAJAX
+                if ($pathinfo === '/RESTAPI/voirPageCahier') {
+                    return array (  '_controller' => 'projetBundle\\Controller\\AJAXAPIController::voirPageCahierAJAX',  '_route' => 'voirPageCahierAJAX',);
+                }
+
+                // voirInfoMatiereAJAX
+                if ($pathinfo === '/RESTAPI/voirInfoMatiere') {
+                    return array (  '_controller' => 'projetBundle\\Controller\\AJAXAPIController::voirInfoMatiere',  '_route' => 'voirInfoMatiereAJAX',);
+                }
+
+            }
+
+            if (0 === strpos($pathinfo, '/RESTAPI/a')) {
+                // ajouterMatiereAjax
+                if ($pathinfo === '/RESTAPI/ajouterMatiere') {
+                    return array (  '_controller' => 'projetBundle\\Controller\\AJAXAPIController::ajouterMatiere',  '_route' => 'ajouterMatiereAjax',);
+                }
+
+                // affecterEnseignantGroupeAjax
+                if ($pathinfo === '/RESTAPI/affecterEnseignantGroupe') {
+                    return array (  '_controller' => 'projetBundle\\Controller\\AJAXAPIController::affecterEnseignantGroupe',  '_route' => 'affecterEnseignantGroupeAjax',);
+                }
+
+            }
+
+            if (0 === strpos($pathinfo, '/RESTAPI/in')) {
+                // infoEnseignantAjax
+                if ($pathinfo === '/RESTAPI/infoEnseignant') {
+                    return array (  '_controller' => 'projetBundle\\Controller\\AJAXAPIController::infoEnseignant',  '_route' => 'infoEnseignantAjax',);
+                }
+
+                // insererNotesEnseignantAJAX
+                if ($pathinfo === '/RESTAPI/insererNotesEnseignant') {
+                    return array (  '_controller' => 'projetBundle\\Controller\\AJAXAPIController::insererNotesAJAX',  '_route' => 'insererNotesEnseignantAJAX',);
+                }
+
+            }
+
             if (0 === strpos($pathinfo, '/RESTAPI/ajouter')) {
                 if (0 === strpos($pathinfo, '/RESTAPI/ajouterPaiement')) {
                     // ajouterPaiementTot
@@ -266,6 +305,21 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
 
         if (0 === strpos($pathinfo, '/Admin')) {
+            // listerEleveParGroupe
+            if ($pathinfo === '/Admin/listerEleveParGroupe') {
+                return array (  '_controller' => 'projetBundle\\Controller\\forAdminController::listerEleveParGroupeAction',  '_route' => 'listerEleveParGroupe',);
+            }
+
+            // ajouterMatiere
+            if ($pathinfo === '/Admin/ajouterMatiere') {
+                return array (  '_controller' => 'projetBundle\\Controller\\forAdminController::ajouterMatiereAction',  '_route' => 'ajouterMatiere',);
+            }
+
+            // listerMatieres
+            if ($pathinfo === '/Admin/listerMatieres') {
+                return array (  '_controller' => 'projetBundle\\Controller\\forAdminController::listerMatieresAction',  '_route' => 'listerMatieres',);
+            }
+
             if (0 === strpos($pathinfo, '/Admin/affecter')) {
                 // affecterManuellement
                 if ($pathinfo === '/Admin/affecterManuellement') {
@@ -384,6 +438,16 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
 
         if (0 === strpos($pathinfo, '/Enseignant')) {
+            // listerCahierEnseignant
+            if ($pathinfo === '/Enseignant/listerCahierEnseignant') {
+                return array (  '_controller' => 'projetBundle\\Controller\\forEnseignantController::listerCahierEnseignantAction',  '_route' => 'listerCahierEnseignant',);
+            }
+
+            // saisirCahierTexte
+            if ($pathinfo === '/Enseignant/saisirCahierTexte') {
+                return array (  '_controller' => 'projetBundle\\Controller\\forEnseignantController::saisirCahierTexteAction',  '_route' => 'saisirCahierTexte',);
+            }
+
             // dashEnseignant
             if (rtrim($pathinfo, '/') === '/Enseignant') {
                 if (substr($pathinfo, -1) !== '/') {

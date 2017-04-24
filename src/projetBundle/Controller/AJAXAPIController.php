@@ -9,6 +9,8 @@ use projetBundle\Entity\Eleve;
 use projetBundle\Entity\EleveGroupe;
 use projetBundle\Entity\Enseignant;
 use projetBundle\Entity\Frais;
+use projetBundle\Entity\PageCahier;
+use projetBundle\Entity\MatiereGroupeEnseignant;
 use projetBundle\Entity\Grade;
 use projetBundle\Entity\Groupe;
 use projetBundle\Entity\Notification;
@@ -36,6 +38,179 @@ use Symfony\Component\Validator\Constraints\Date;
  */
 class AJAXAPIController extends Controller
 {
+
+
+
+    /**
+     * @Route("/voirPageCahier", name="voirPageCahierAJAX")
+     */
+    public function voirPageCahierAJAX(Request $request)
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $session = $request->getSession();
+        $enseignant = $session->get("user");
+        $idPage=$request->get("idPage") ;
+        $annee = $session->get("anneeScolaireCourante");
+        $pageCahier = $this->getDoctrine()->getRepository("projetBundle:PageCahier")->findOneBy(array("id"=>$idPage));
+
+        echo $pageCahier->getTextePageCahier() ;
+        die ;
+
+
+
+    }
+
+
+
+    /**
+     * @Route("/voirInfoMatiere", name="voirInfoMatiereAJAX")
+     */
+    public function voirInfoMatiere(Request $request)
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $session = $request->getSession();
+        $annee = $session->get("anneeScolaireCourante");
+        $libMatiere = $request->get("libMatiere");
+
+        $matieresByLib = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("libelleMatiere" => $libMatiere, "anneeScolaire" => $annee));
+
+
+        $listMatiereGroupeEnseignant = array();
+        foreach ($matieresByLib as $matiere) {
+
+            if ($matiere->getEnseignant() != null || $matiere->getGroupe() != null) {
+                $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("id" => $matiere->getEnseignant()->getId()));
+                $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $matiere->getGroupe()->getId(), "anneeScolaire" => $annee));
+                $objEnseiGroupe = new MatiereGroupeEnseignant();
+                $objEnseiGroupe->setEnseignant($enseignant->getNomEnseignant() . " " . $enseignant->getPrenomEnseignant());
+                $objEnseiGroupe->setGroupe($groupe->getNomGroupe() . " " . $groupe->getNumGroupe());
+                $listMatiereGroupeEnseignant[] = $objEnseiGroupe;
+            }
+
+
+        }
+
+        return new Response($serializer->serialize(array("listMat" => $listMatiereGroupeEnseignant), "json"));
+
+    }
+
+
+    /**
+     * @Route("/ajouterMatiere", name="ajouterMatiereAjax")
+     */
+    public function ajouterMatiere(Request $request)
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $session = $request->getSession();
+        $annee = $session->get("anneeScolaireCourante");
+        $libMatiere = $request->get("libelleMatiere");
+        $matieres = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("libelleMatiere" => $libMatiere));
+
+        if ($matieres != null) {
+            return new Response($serializer->serialize(array("status" => "existed"), "json"));
+        } else {
+            $matiere = new Matiere();
+            $matiere->setAnneeScolaire($annee);
+            $matiere->setLibelleMatiere($libMatiere);
+            $matiere->setGroupe(null);
+            $matiere->setEnseignant(null);
+            $em = $this->getDoctrine()->getManager();
+            $em->merge($matiere);
+            $em->flush();
+            return new Response($serializer->serialize(array("status" => "inserted"), "json"));
+        }
+
+
+    }
+
+
+    /**
+     * @Route("/affecterEnseignantGroupe", name="affecterEnseignantGroupeAjax")
+     */
+    public function affecterEnseignantGroupe(Request $request)
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $session = $request->getSession();
+        $annee = $session->get("anneeScolaireCourante");
+        $groupe = $request->get("groupe");
+        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $groupe));
+        $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("matriculeEnseignant" => $request->get('enseignant')));
+        $nomMatiere = $request->get("matiere");
+        $matiere = new Matiere();
+        $matiere->setGroupe($groupe);
+        $matiere->setLibelleMatiere($nomMatiere);
+        $matiere->setEnseignant($enseignant);
+        $matiere->setAnneeScolaire($annee);
+        $em = $this->getDoctrine()->getManager();
+        $em->merge($matiere);
+        $em->flush();
+
+        return new Response($serializer->serialize(array("status" => "affected"), "json"));
+
+
+    }
+
+
+    /**
+     * @Route("/infoEnseignant", name="infoEnseignantAjax")
+     */
+    public function infoEnseignant(Request $request)
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $matricule = $request->get("matricule");
+        $session = $request->getSession();
+        $annee = $session->get("anneeScolaireCourante");
+        $enseignant = $this->getDoctrine()->getRepository("projetBundle:Enseignant")->findOneBy(array("matriculeEnseignant" => $matricule));
+        $listMatieres = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findBy(array("anneeScolaire" => $annee, "enseignant" => $enseignant));
+        $listMatiereGroupe = array();
+        foreach ($listMatieres as $mat) {
+            $matiere = new Matiere();
+            $matiere = $mat;
+            $matiereGroupe = new MatiereGroupe();
+            $matiereGroupe->setGroupe($matiere->getGroupe());
+            $matiereGroupe->setMatiere($matiere);
+            // echo "<br>".$matiere->getGroupe()->getNomGroupe()." ".$matiere->getLibelleMatiere() ;
+            $listMatiereGroupe[] = $matiereGroupe;
+        }
+
+        return new Response($serializer->serialize(array("matricule" => $enseignant->getMatriculeEnseignant(), "nomEnseignant" => $enseignant->getNomEnseignant() . " " . $enseignant->getPrenomEnseignant(), "listMatiereGroupe" => $listMatiereGroupe), "json"));
+
+    }
+
+
+
+    /**
+     * @Route("/insererNotesEnseignant", name="insererNotesEnseignantAJAX")
+     */
+    public function insererNotesAJAX(Request $request)
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $session = $request->getSession();
+        $enseignant = $session->get("user");
+        $annee = $session->get("anneeScolaireCourante");
+        $matiereGroupe = $request->get("matiereGroupe");
+        $matiereGroupe = explode("|", $matiereGroupe);
+
+        $matiere = $this->getDoctrine()->getRepository("projetBundle:Matiere")->findOneBy(array("id" => $matiereGroupe[0]));
+        $groupe = $this->getDoctrine()->getRepository("projetBundle:Groupe")->findOneBy(array("id" => $matiereGroupe[1]));
+
+        $noteEnseignant = $request->get("noteEnseinant");
+        $date = $request->get("laDate");
+        $pageCahier = new PageCahier();
+        $pageCahier->setMatiere($matiere);
+        $pageCahier->setGroupe($groupe);
+        $pageCahier->setEnseignant($enseignant);
+        $pageCahier->setDate(new \DateTime("now"));
+        $pageCahier->setAnneeScolaire($annee);
+        $pageCahier->setTextePageCahier($noteEnseignant);
+        $em = $this->getDoctrine()->getManager();
+        $em->merge($pageCahier);
+        $em->flush();
+
+        return new Response($serializer->serialize(array("status" => "inserted"), "json"));
+
+    }
+
 
     /**
      * @Route("/ajouterPaiementTot", name="ajouterPaiementTot")

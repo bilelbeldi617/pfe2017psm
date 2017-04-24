@@ -3,9 +3,68 @@
     Saisir le cahier de texte
 {% endblock %}
 {% block script %}
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=cl575g9t4h7hx6y9gs3nywe1r5vw8fk08uqiyut2kvlo06xq"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            menubar: false
+        });
+
+    </script>
+
     <script language="JavaScript">
         $("document").ready(function () {
+
+            $("#mceu_22-0").hide();
+
+
+            $("#sauvegarder").click(function () {
+
+                var content = tinyMCE.activeEditor.getContent();
+                // tinyMCE.activeEditor.setContent("") ;
+                console.log(content);
+                $("#sauvegarder").hide();
+                $("#mySpinner").show();
+                $.ajax({
+                    url: "{{ path('insererNotesEnseignantAJAX') }}",
+                    method: "GET",
+                    data: {
+                        "noteEnseinant": content,
+                        "matiereGroupe": $("#matiereGroupe").val(),
+                        "laDate": $("#laDate").val()
+                    },
+                    success: function (response) {
+                        response = JSON.parse(response);
+                        console.log(response.status);
+                        if (response.status == "inserted") {
+
+                            $("#mySpinner").hide();
+                            $("#check").show();
+                            setTimeout(function () {
+                                $("#slideIt").slideUp();
+                                tinyMCE.activeEditor.setContent("");
+                            }, 2000);
+
+
+                        }
+                    }
+
+                });
+
+
+            });
+
+            $("#matiereGroupe").change(function () {
+                $("#slideIt").slideUp();
+                $("#noteEnseignant").html("");
+            });
+
             $("#btnCharger").click(function () {
+
+
+                $("#sauvegarder").show();
+                $("#check").hide();
+
                 var matiereGroupe = $("#matiereGroupe").val();
                 if (matiereGroupe == "null") {
                     $(".alert-danger").html("Veuillez sélectionner une matiere et groupe !");
@@ -15,7 +74,8 @@
                     }, 2500);
 
                 } else {
-                    $("#container").slideDown();
+                    $("#Classe").html("Date d'ajourd'hui : {{ date | date("d/m/Y") }}");
+                    $("#slideIt").slideDown();
                 }
             });
 
@@ -49,37 +109,29 @@
             </select>
             <input type="button" value="Charger une page vide" class="btn btn-primary" id="btnCharger">
 
-            <div class="row" align="center" id="container" style="display: none">
+        </div>
 
-                <form id="formulaire">
-                    <table border="0">
-                        <tr>
-                            <td>
+        <div id="slideIt" style="display: none; margin-top: 25px;">
 
-                            <textarea id="contenuJour" placeholder="Ecrivez elli t7eb..." rows="40" cols="80"
-                                      class="responsive search-area">
+            <p id="Classe" style="font-size: 18px"></p>
 
-                    </textarea>
-                            </td>
-                        </tr>
+            <div class="row" align="center" id="container" style="margin-top:25px">
+
+                <input type="hidden" value="{{ date | date("d/m/Y") }}" name="laDate" id="laDate">
+                <textarea id="noteEnseignant"></textarea>
 
 
-                        <tr>
-                            <td>
-                                <input class="btn btn-primary" value="Enregistrer" id="btnEnregistrer">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-
-
+            </div>
+            <div class="row" align="center" style="margin-top:25px">
+                <i class="fa fa-check green bigger-300" id="check" style="display: none"></i>
+                <i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="mySpinner" style="display: none"></i>
+                <input type="button" class="btn btn-primary" id="sauvegarder" value="Sauvegarder">
             </div>
 
         </div>
 
 
     </div>
-
 
 
 {% endblock %}
