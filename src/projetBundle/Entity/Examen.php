@@ -23,7 +23,7 @@ class Examen
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Matiere")
+     * @ORM\ManyToOne(targetEntity="Matiere", cascade={"remove"})
      *
      */
     private $matiere ;

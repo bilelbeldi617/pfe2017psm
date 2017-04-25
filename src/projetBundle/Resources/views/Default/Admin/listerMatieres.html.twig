@@ -5,6 +5,32 @@
 {% endblock %}
 {% block script %}
     <script language="javascript">
+        function loadToHidden(libMatiere) {
+            $("#messagedeleteContainer").html("");
+               $("#titleDeleteModal").html(libMatiere);
+        }
+        
+        function loadUpdateForm(nomMatiere){
+            $("#messageContainer").html("");
+         $("#updateModalSpinner").show();
+            $("#updateModalContainer").html("");
+         $("#nomMatiereMaj").html(nomMatiere);
+           $.ajax({
+               method:"GET" ,
+              url:"{{ path('updateFormMatiere') }}", 
+               data : {"nomMatiere" : nomMatiere }, 
+               success:function (response) {
+                   $("#updateModalSpinner").hide();
+                   $("#updateModalContainer").html(response);
+               }
+
+           }) ;
+
+
+
+
+
+        }
         function voirInfoMatiere(libMatiere) {
             $("#matiere").html(libMatiere);
             $("#spanModalContainer").html("");
@@ -34,6 +60,45 @@
 
 
         }
+
+        $("document").ready(function () {
+          $("#btnMaj").click(function () {
+
+              $("#messageContainer").html("");
+
+              if($("#libMatiere").val()==""){
+                  $("#messageContainer").html("<div class='alert alert-danger'> Veuillez remplir le champ ! </div>");
+
+              }else {
+                  $.ajax({
+                      method: "GET",
+                      url: "{{ path('updateLibelleMatiere') }}",
+                      data: {"newlibMatiere": $("#libMatiere").val(), "oldlibMatiere": $("#nomMatiereMaj").html()},
+                      success: function (response) {
+                          if (response == "done") {
+                              $("#messageContainer").html("<div class='alert alert-success'> Mise à jour avec succccesssss ! </div>");
+                              window.location.assign("{{ path('listerMatieres') }}") ;
+                          } else {
+                              $("#messageContainer").html("<div class='alert alert-danger'> Who cares ! </div>");
+                          }
+                      }
+
+                  });
+              }
+
+
+
+
+          });
+          
+
+          
+          
+        }) ;
+        
+        
+        
+        
     </script>
 
 
@@ -52,12 +117,27 @@
                 <tr class="table-header" align="center">
                     <td>Libellé Matiere</td>
                     <td>Plus d'information</td>
+                    <td>Opérations</td>
                 </tr>
                 {% for mat in listeMatieres %}
                     <tr align="center">
                         <td>{{ mat.libelleMatiere }}</td>
                         <td><input type="button" value="Voir information" data-toggle='modal' data-target='#myModal'
                                    class="btn btn-primary" onclick="voirInfoMatiere('{{ mat.libelleMatiere }}')"></td>
+
+                        <td>
+
+                            <button onclick="loadUpdateForm('{{ mat.libelleMatiere }}')" class="btn btn-xs btn-warning" data-toggle="modal" data-target="#modalUpdate">
+                                <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                Modifier
+                            </button>
+
+
+
+
+
+                        </td>
+
                     </tr>
 
                 {% endfor %}
@@ -73,13 +153,12 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-
-
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title" align="center"><span id="matiere"></span></h4>
                     </div>
                     <div class="modal-body" align="center">
+
                         <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="modalSpinner"></i>
                         </center>
                         <div id="spanModalContainer">
@@ -95,6 +174,37 @@
 
             </div>
         </div>
+
+
+
+        <div class="modal fade" id="modalUpdate" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" align="center"><span id="nomMatiereMaj"></span></h4>
+                    </div>
+                    <div class="modal-body" align="center">
+                        <center><i class="ace-icon fa fa-spin fa-refresh blue bigger-300" id="updateModalSpinner"></i>
+                        </center>
+                        <div id="messageContainer"></div>
+                        <div id="updateModalContainer">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="btnMaj">Mettre à jour</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
 
     </div>
 
