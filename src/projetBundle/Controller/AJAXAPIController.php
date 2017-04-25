@@ -535,12 +535,11 @@ class AJAXAPIController extends Controller
 
 
             $message = \Swift_Message::newInstance(null);
-        $messageCorps = "Votre compte a ete cree avec succes \n votre Login : ".$emailParent." \n votre MPD :".$cinParent;
             $message->setFrom("primaschooltest@gmail.com");
             $message->setTo($emailParent);
-            $message->setSubject("Votre compte chez primaSchoolManager");
+            $message->setSubject("Votre compte chez PrimaSchoolManager");
             $message->setContentType("text/html") ;
-            $message->setBody($messageCorps);
+            $message->setBody($this->render("@projet/Default/Admin/InscriptionParentEmailModel.html.twig",array("loginParent"=>$emailParent, "passwordParent"=>$cinParent)));
             $mailer = $this->get("mailer");
             $mailer->send($message);
 
@@ -597,9 +596,9 @@ class AJAXAPIController extends Controller
         $messageCorps = "Votre enfant : ".$eleve->getPrenomEleve()." ".$eleve->getNomEleve()." a ete affecte dans le groupe : ".$groupe->getNomGroupe()." ".$groupe->getNumGroupe()." pour l'annee scolaire : ".$annee->getPeriode();
         $message->setFrom("primaschooltest@gmail.com");
         $message->setTo($parent->getEmailParent());
-        $message->setSubject("Votre enfant a ete affecte a un groupe");
+        $message->setSubject("Votre enfant a été affecté à un groupe");
         $message->setContentType("text/html") ;
-        $message->setBody($messageCorps);
+        $message->setBody($this->renderView("@projet/Default/Admin/AffecterEleveGroupeEmailModel.html.twig", array("nomPrenomEleve"=>$eleve->getNomEleve()." ".$eleve->getPrenomEleve(), "nomnumGroupe"=>$groupe->getNomGroupe()." ".$groupe->getNumGroupe(), "anneeScolaire"=>$annee->getPeriode())));
         $mailer = $this->get("mailer");
         $mailer->send($message);
 
@@ -914,7 +913,7 @@ class AJAXAPIController extends Controller
         $message->setTo($parent->getEmailParent());
         $message->setSubject("Un eleve vous a ete affecte");
         $message->setContentType("text/html") ;
-        $message->setBody($messageCorps);
+        $message->setBody($this->renderView("@projet/Default/Admin/AffecterEleveParentEmailModel.html.twig", array("nomPrenomEleve"=>$eleve->getNomEleve()." ".$eleve->getPrenomEleve())));
         $mailer = $this->get("mailer");
         $mailer->send($message);
 

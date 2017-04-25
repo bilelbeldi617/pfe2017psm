@@ -21,6 +21,22 @@ class DefaultController extends Controller
 {
 
 
+
+
+    /**
+     * @Route("/testTemplate", name="testTemplate")
+     */
+    public function EleveAffecterParentAction()
+    {
+
+        return $this->render("AffecterEleveGroupeEmailModel.html.twig", array("nomPrenomEleve"=>"chaouki", "nomnumGroupe"=>"Troisieme 1", "anneeScolaire"=>"2017/2018"));
+
+
+    }
+
+
+
+
     /**
      * @Route("/sendmail", name="sendmail")
      */
